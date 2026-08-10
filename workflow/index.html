@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCenterStudio Premium — Workflow Foto & Video</title>
+<script src="../licenza.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    min-height: 100vh; padding: 20px; color: #333;
+  }
+  .container { max-width: 1600px; margin: 0 auto; }
+  .app { display: block; }
+  header {
+    background: rgba(255,255,255,0.95); border-radius: 20px; padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); margin-bottom: 25px;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+  }
+  .logo {
+    font-size: 2em; font-weight: bold;
+    background: linear-gradient(45deg, #667eea, #f093fb);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .logo span { font-size: 0.5em; display: block; color: #888; -webkit-text-fill-color: #888; }
+  .actions button {
+    margin-left: 8px; padding: 10px 18px; border: none; border-radius: 10px;
+    cursor: pointer; font-weight: 600; transition: transform 0.2s;
+  }
+  .actions button:hover { transform: translateY(-2px); }
+  .btn-new { background: linear-gradient(45deg, #f093fb, #f5576c); color: white; }
+  .btn-archive { background: linear-gradient(45deg, #667eea, #764ba2); color: white; }
+  .btn-table { background: linear-gradient(45deg, #ff9a9e, #fad0c4); color: white; }
+  .btn-backup { background: linear-gradient(45deg, #4facfe, #00f2fe); color: white; }
+  .btn-restore { background: linear-gradient(45deg, #43e97b, #38f9d7); color: white; }
+  .new-service {
+    background: white; border-radius: 18px; padding: 25px; margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15); display: none;
+  }
+  .new-service.open { display: block; }
+  .new-service h2 { color: #4a3f8c; margin-bottom: 15px; }
+  .form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px; }
+  .form-row input, .form-row select {
+    flex: 1; min-width: 200px; padding: 10px; border: 2px solid #e0e0e0;
+    border-radius: 10px; font-size: 1em;
+  }
+  .form-row input:focus, .form-row select:focus { outline: none; border-color: #764ba2; }
+  .form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .form-actions button {
+    padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;
+  }
+  .btn-save { background: linear-gradient(45deg, #43e97b, #38f9d7); color: white; }
+  .btn-cancel { background: #eee; color: #555; }
+  .card {
+    background: white; border-radius: 18px; padding: 20px; margin-bottom: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.2s;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; flex-wrap: wrap; gap: 10px;
+  }
+  .client-info { flex: 1; min-width: 200px; }
+  .client-name { font-size: 1.3em; font-weight: 700; color: #4a3f8c; }
+  .client-date { font-size: 0.85em; color: #888; margin-top: 3px; }
+  .videographer-info { font-size: 0.85em; color: #764ba2; margin-top: 3px; font-weight: 500; }
+  .service-badge {
+    padding: 6px 14px; border-radius: 20px; font-size: 0.85em;
+    color: white; font-weight: 600; text-transform: uppercase;
+  }
+  .progress-bar {
+    background: #eee; height: 10px; border-radius: 5px; margin-top: 12px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: linear-gradient(90deg, #43e97b, #38f9d7);
+    transition: width 0.4s;
+  }
+  .progress-text { font-size: 0.85em; color: #666; margin-top: 5px; }
+  .progress-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; }
+  .progress-row > div { flex: 1; min-width: 180px; }
+  .progress-label { font-size: 0.75em; color: #888; margin-bottom: 3px; font-weight: 600; }
+  .steps { margin-top: 18px; display: none; padding-top: 15px; }
+  .steps.open { display: block; }
+  .section-title {
+    font-size: 1.1em; font-weight: 700; padding: 10px 15px; margin: 10px 0;
+    border-radius: 10px; color: white;
+  }
+  .section-title.preview { background: linear-gradient(45deg, #ffd700, #ffb347); }
+  .section-title.service { background: linear-gradient(45deg, #667eea, #764ba2); }
+  .section-title.maternity { background: linear-gradient(45deg, #fbc2eb, #a6c1ee); }
+  .section-title.newborn { background: linear-gradient(45deg, #a1c4fd, #c2e9fb); }
+  .section-title.family { background: linear-gradient(45deg, #84fab0, #8fd3f4); }
+  .step {
+    display: flex; align-items: center; padding: 10px; margin: 6px 0;
+    background: #f8f9ff; border-radius: 10px; gap: 12px; flex-wrap: wrap;
+  }
+  .step.done { background: linear-gradient(90deg, #e0ffe0, #f0fff0); }
+  .step input[type=checkbox] {
+    width: 22px; height: 22px; cursor: pointer; accent-color: #43e97b; flex-shrink: 0;
+  }
+  .step-label { flex: 1; font-weight: 500; min-width: 200px; }
+  .step input[type=date] {
+    padding: 5px 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em;
+  }
+  .step input[type=text] {
+    padding: 5px 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em; width: 180px;
+  }
+  .step select {
+    padding: 5px 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em;
+    background: white; cursor: pointer;
+  }
+  .step.done .step-label { text-decoration: line-through; color: #888; }
+  .step-extra { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; width: 100%; padding-left: 34px; }
+  .step-extra input, .step-extra select { flex: 1; min-width: 150px; }
+  .card-footer {
+    margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;
+    padding-top: 15px; border-top: 1px dashed #ddd; flex-wrap: wrap;
+  }
+  .btn-view { background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .btn-edit { background: linear-gradient(45deg, #f093fb, #f5576c); color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .btn-pdf { background: linear-gradient(45deg, #4facfe, #00f2fe); color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .btn-del { background: linear-gradient(45deg, #fa709a, #fee140); color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .empty {
+    text-align: center; padding: 60px 20px; color: white; font-size: 1.2em;
+    background: rgba(255,255,255,0.15); border-radius: 20px;
+  }
+  .modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
+    padding: 20px;
+  }
+  .modal.active { display: flex; }
+  .modal-content {
+    background: white; border-radius: 20px; max-width: 800px; width: 100%;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal-header {
+    background: linear-gradient(45deg, #667eea, #f093fb); color: white;
+    padding: 25px; border-radius: 20px 20px 0 0; display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h2 { font-size: 1.5em; }
+  .modal-close {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2em;
+  }
+  .modal-body { padding: 25px; }
+  .detail-row { margin-bottom: 15px; padding: 12px; background: #f8f9ff; border-radius: 10px; }
+  .detail-label { font-weight: 600; color: #4a3f8c; margin-bottom: 5px; font-size: 0.9em; }
+  .detail-value { color: #333; font-size: 1em; }
+  .step-detail {
+    padding: 10px; margin: 6px 0; background: white; border-radius: 8px;
+    border-left: 4px solid #ddd;
+  }
+  .step-detail.completed { border-left-color: #43e97b; background: #f0fff0; }
+  .step-detail .step-name { font-weight: 600; margin-bottom: 5px; }
+  .step-detail .step-date { color: #667eea; font-size: 0.9em; }
+  .step-detail .step-extra-info { color: #888; font-size: 0.85em; margin-top: 3px; }
+  .archive-header {
+    background: white; border-radius: 18px; padding: 20px; margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
+  }
+  .search-box {
+    flex: 1; min-width: 200px; padding: 10px 15px; border: 2px solid #e0e0e0;
+    border-radius: 10px; font-size: 1em;
+  }
+  .filter-select {
+    padding: 10px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1em;
+  }
+  .table-container {
+    background: white; border-radius: 12px; padding: 15px; margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15); overflow-x: auto;
+  }
+  .table-header {
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 15px; margin-bottom: 12px;
+  }
+  .table-header h2 { color: #4a3f8c; font-size: 1.3em; }
+  .table-toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+  .workflow-table {
+    width: 100%; border-collapse: collapse; font-size: 0.95em;
+  }
+  .workflow-table thead {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white; position: sticky; top: 0; z-index: 10;
+  }
+  .workflow-table th {
+    padding: 12px 15px; text-align: left; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.2); font-size: 0.9em;
+    white-space: nowrap;
+  }
+  .workflow-table th.center { text-align: center; }
+  .workflow-table td {
+    padding: 12px 15px; border-bottom: 1px solid #e8ecf5;
+    vertical-align: middle;
+  }
+  .workflow-table tbody tr:nth-child(even) { background: #f8f9fc; }
+  .workflow-table tbody tr:nth-child(odd) { background: #ffffff; }
+  .workflow-table tbody tr:hover { background: #e8ecf8 !important; }
+  .workflow-table tbody tr:hover td { border-bottom-color: #c5cbe0; }
+  .td-client { font-weight: 700; color: #2c3e6b; font-size: 1.05em; }
+  .td-type { text-align: center; }
+  .td-center { text-align: center; }
+  .td-laststep { font-weight: 600; color: #43e97b; }
+  .td-laststep.empty { color: #999; font-weight: 400; font-style: italic; }
+  .badge-cell {
+    display: inline-block; padding: 4px 12px; border-radius: 12px;
+    color: white; font-size: 0.82em; font-weight: 600;
+  }
+  .pct-badge {
+    display: inline-block; padding: 4px 10px; border-radius: 12px;
+    font-size: 0.85em; font-weight: 700; color: white;
+    min-width: 50px; text-align: center;
+  }
+  .pct-100 { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+  .pct-high { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+  .pct-mid { background: linear-gradient(90deg, #fa709a, #fee140); }
+  .pct-low { background: linear-gradient(90deg, #f093fb, #f5576c); }
+  .pct-zero { background: #ccc; color: #666; }
+  .cell-actions {
+    display: flex; gap: 6px; justify-content: center; flex-wrap: nowrap;
+  }
+  .cell-actions button {
+    padding: 5px 10px; border: none; border-radius: 6px; cursor: pointer;
+    font-size: 0.85em; font-weight: 600; transition: transform 0.15s;
+  }
+  .cell-actions button:hover { transform: translateY(-2px); }
+  .mini-view { background: #667eea; color: white; }
+  .mini-edit { background: #f093fb; color: white; }
+  .mini-pdf { background: #4facfe; color: white; }
+  .mini-del { background: #fa709a; color: white; }
+  .section-tag {
+    display: inline-block; padding: 2px 6px; border-radius: 4px;
+    font-size: 0.7em; font-weight: 600; color: white; margin-left: 6px;
+    vertical-align: middle;
+  }
+  @media (max-width: 600px) {
+    .logo { font-size: 1.5em; }
+    .actions button { margin: 4px; padding: 8px 12px; font-size: 0.9em; }
+    .modal-content { margin: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app" class="app">
+  <div class="container">
+    <header>
+      <div class="logo">AppCenterStudio Premium<span>Workflow Foto & Video</span></div>
+      <div class="actions">
+        <button class="btn-new" onclick="toggleNewService()">Nuovo Servizio</button>
+        <button class="btn-archive" onclick="showArchive()">Archivio</button>
+        <button class="btn-table" onclick="showTable()">Tabella Clienti</button>
+        <button class="btn-backup" onclick="doBackup()">Backup</button>
+        <button class="btn-restore" onclick="document.getElementById('restoreFile').click()">Ripristina</button>
+      </div>
+    </header>
+
+    <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="doRestore(event)">
+
+    <div id="newService" class="new-service">
+      <h2>Nuovo Servizio</h2>
+      <div class="form-row">
+        <input type="text" id="inputClient" placeholder="Nome cliente (es. Rossi - Bianchi)">
+        <select id="inputType">
+          <option value="">-- Tipo di servizio --</option>
+          <optgroup label="Anteprima">
+            <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
+            <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
+            <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
+          </optgroup>
+          <optgroup label="Famiglia & Neonati">
+            <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
+            <option value="Maternity + New Born">Maternity + New Born</option>
+            <option value="Maternity + Family">Maternity + Family</option>
+            <option value="New Born + Family">New Born + Family</option>
+            <option value="Maternity">Maternity</option>
+            <option value="New Born">New Born</option>
+            <option value="Family">Family</option>
+          </optgroup>
+          <optgroup label="Cerimonie">
+            <option value="Matrimonio">Matrimonio</option>
+            <option value="Battesimo">Battesimo</option>
+            <option value="Comunione">Comunione</option>
+            <option value="Cresima">Cresima</option>
+          </optgroup>
+          <optgroup label="Feste & Celebrazioni">
+            <option value="1° Compleanno">1° Compleanno</option>
+            <option value="18° Compleanno">18° Compleanno</option>
+            <option value="Compleanno">Compleanno</option>
+            <option value="Anniversario">Anniversario</option>
+          </optgroup>
+          <optgroup label="Altro">
+            <option value="Evento">Evento</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="date" id="inputDate">
+        <input type="text" id="inputVideographer" placeholder="Videografo/Collega (nome)">
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="toggleNewService()">Annulla</button>
+        <button class="btn-save" onclick="saveService()">Salva</button>
+      </div>
+    </div>
+
+    <div id="archiveView" style="display:none;">
+      <div class="archive-header">
+        <h2>Archivio Servizi</h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input type="text" class="search-box" id="searchBox" placeholder="Cerca cliente..." oninput="filterServices()">
+          <select class="filter-select" id="filterType" onchange="filterServices()">
+            <option value="">Tutti i tipi</option>
+            <optgroup label="Anteprima">
+              <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
+              <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
+              <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
+            </optgroup>
+            <optgroup label="Famiglia & Neonati">
+              <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
+              <option value="Maternity + New Born">Maternity + New Born</option>
+              <option value="Maternity + Family">Maternity + Family</option>
+              <option value="New Born + Family">New Born + Family</option>
+              <option value="Maternity">Maternity</option>
+              <option value="New Born">New Born</option>
+              <option value="Family">Family</option>
+            </optgroup>
+            <optgroup label="Cerimonie">
+              <option value="Matrimonio">Matrimonio</option>
+              <option value="Battesimo">Battesimo</option>
+              <option value="Comunione">Comunione</option>
+              <option value="Cresima">Cresima</option>
+            </optgroup>
+            <optgroup label="Feste & Celebrazioni">
+              <option value="1° Compleanno">1° Compleanno</option>
+              <option value="18° Compleanno">18° Compleanno</option>
+              <option value="Compleanno">Compleanno</option>
+              <option value="Anniversario">Anniversario</option>
+            </optgroup>
+            <optgroup label="Altro">
+              <option value="Evento">Evento</option>
+            </optgroup>
+          </select>
+          <button class="btn-pdf" onclick="generateArchivePDF()" style="background: linear-gradient(45deg, #4facfe, #00f2fe); color: white; padding: 10px 18px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600;">PDF Archivio</button>
+          <button class="btn-cancel" onclick="showMain()">Torna alla Home</button>
+        </div>
+      </div>
+      <div id="archiveList"></div>
+    </div>
+
+    <div id="tableView" style="display:none;">
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Tabella Clienti — Stato Lavori</h2>
+          <div class="table-toolbar">
+            <input type="text" class="search-box" id="tableSearch" placeholder="Cerca cliente..." oninput="renderTable()" style="min-width:200px;">
+            <button class="btn-pdf" onclick="generateTablePDF()">PDF Tabella</button>
+            <button class="btn-cancel" onclick="showMain()">Torna alla Home</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="workflow-table" id="workflowTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="servicesList"></div>
+  </div>
+</div>
+
+<div id="detailModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="detailTitle">Dettagli Servizio</h2>
+      <button class="modal-close" onclick="closeModal('detailModal')">&times;</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Modifica Servizio</h2>
+      <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <input type="text" id="editClient" placeholder="Nome cliente">
+        <select id="editType">
+          <optgroup label="Anteprima">
+            <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
+            <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
+            <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
+          </optgroup>
+          <optgroup label="Famiglia & Neonati">
+            <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
+            <option value="Maternity + New Born">Maternity + New Born</option>
+            <option value="Maternity + Family">Maternity + Family</option>
+            <option value="New Born + Family">New Born + Family</option>
+            <option value="Maternity">Maternity</option>
+            <option value="New Born">New Born</option>
+            <option value="Family">Family</option>
+          </optgroup>
+          <optgroup label="Cerimonie">
+            <option value="Matrimonio">Matrimonio</option>
+            <option value="Battesimo">Battesimo</option>
+            <option value="Comunione">Comunione</option>
+            <option value="Cresima">Cresima</option>
+          </optgroup>
+          <optgroup label="Feste & Celebrazioni">
+            <option value="1° Compleanno">1° Compleanno</option>
+            <option value="18° Compleanno">18° Compleanno</option>
+            <option value="Compleanno">Compleanno</option>
+            <option value="Anniversario">Anniversario</option>
+          </optgroup>
+          <optgroup label="Altro">
+            <option value="Evento">Evento</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="date" id="editDate">
+        <input type="text" id="editVideographer" placeholder="Videografo/Collega">
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeModal('editModal')">Annulla</button>
+        <button class="btn-save" onclick="saveEdit()">Salva Modifiche</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TYPE_ORDER = [
+  "Anteprima + Matrimonio", "Anteprima + Battesimo", "Anteprima + 18° Compleanno",
+  "Maternity + New Born + Family", "Maternity + New Born", "Maternity + Family", "New Born + Family",
+  "Maternity", "New Born", "Family",
+  "Matrimonio", "Battesimo", "Comunione", "Cresima",
+  "1° Compleanno", "18° Compleanno", "Compleanno", "Anniversario",
+  "Evento"
+];
+
+const STEPS = [
+  { id: "download",    label: "Download schede", short: "D" },
+  { id: "backupAB",    label: "Archiviazione HD A/B", short: "A" },
+  { id: "archiveVideo",label: "Archiviazione Video", short: "V", extra: true, extraType: "archivedBy" },
+  { id: "backupAltro", label: "Archiviazione su altro", short: "O", extra: true, extraLabel: "Dove" },
+  { id: "rawToJpg",    label: "RAW → JPEG", short: "R" },
+  { id: "selection",   label: "Selezione + Copertina", short: "S", extra: true, extraType: "cover" },
+  { id: "albumEdit",   label: "Lavorazione album", short: "L" },
+  { id: "sendLab",     label: "Invio laboratorio", short: "I" },
+  { id: "labToStudio", label: "Lab → Studio", short: "B" },
+  { id: "albumClient", label: "Album al cliente", short: "C" },
+  { id: "filesClient", label: "Consegna file cliente", short: "F" },
+  { id: "videoClient", label: "Video Pronto cliente", short: "P" },
+  { id: "confirmDel",  label: "Conferma cancellazione", short: "X" }
+];
+
+const STEPS_PREVIEW = [
+  { id: "p_download",    label: "Download schede", short: "PD" },
+  { id: "p_backupAB",    label: "Archiviazione HD A/B", short: "PA" },
+  { id: "p_archiveVideo",label: "Archiviazione Video", short: "PV", extra: true, extraType: "archivedBy" },
+  { id: "p_backupAltro", label: "Archiviazione su altro", short: "PO", extra: true, extraLabel: "Dove" },
+  { id: "p_rawToJpg",    label: "RAW → JPEG", short: "PR" },
+  { id: "p_deliverPreview", label: "Consegna Anteprima al cliente", short: "PC" }
+];
+
+const COMBO_TYPES = {
+  "Maternity + New Born": ["Maternity", "New Born"],
+  "Maternity + Family": ["Maternity", "Family"],
+  "Maternity + New Born + Family": ["Maternity", "New Born", "Family"],
+  "New Born + Family": ["New Born", "Family"]
+};
+
+const SECTION_COLORS = {
+  "Maternity": { bg: "linear-gradient(45deg, #fbc2eb, #a6c1ee)", hex: "#fbc2eb" },
+  "New Born":  { bg: "linear-gradient(45deg, #a1c4fd, #c2e9fb)", hex: "#a1c4fd" },
+  "Family":    { bg: "linear-gradient(45deg, #84fab0, #8fd3f4)", hex: "#84fab0" }
+};
+
+const TYPE_COLORS = {
+  "Anteprima + Matrimonio": "#ff8c42",
+  "Anteprima + Battesimo": "#4facfe",
+  "Anteprima + 18° Compleanno": "#fa709a",
+  "Maternity + New Born": "#e8a0bf",
+  "Maternity + Family": "#a0d8e8",
+  "Maternity + New Born + Family": "#b8a0e8",
+  "New Born + Family": "#7ec8e3",
+  "Matrimonio":     "#f5576c",
+  "Battesimo":      "#4facfe",
+  "New Born":       "#a1c4fd",
+  "Maternity":      "#fbc2eb",
+  "Family":         "#84fab0",
+  "1° Compleanno":  "#ffd700",
+  "18° Compleanno": "#fa709a",
+  "Compleanno":     "#ff9a9e",
+  "Anniversario":   "#a18cd1",
+  "Comunione":      "#84fab0",
+  "Cresima":        "#fccb90",
+  "Evento":         "#667eea"
+};
+
+const STEP_LABEL_CLEAN = {
+  "Download schede": "Download schede",
+  "Archiviazione HD A/B": "Archiviazione HD A/B",
+  "Archiviazione Video": "Archiviazione Video",
+  "Archiviazione su altro": "Archiviazione su altro",
+  "RAW → JPEG": "RAW -> JPEG",
+  "Selezione + Copertina": "Selezione + Copertina",
+  "Lavorazione album": "Lavorazione album",
+  "Invio laboratorio": "Invio laboratorio",
+  "Lab → Studio": "Lab -> Studio",
+  "Album al cliente": "Album al cliente",
+  "Consegna file cliente": "Consegna file cliente",
+  "Video Pronto cliente": "Video Pronto cliente",
+  "Conferma cancellazione": "Conferma cancellazione",
+  "Consegna Anteprima al cliente": "Consegna Anteprima al cliente"
+};
+
+// Nome dello studio (preso dalla personalizzazione del portale se disponibile)
+const _codiceStudio = new URLSearchParams(location.search).get("studio") || sessionStorage.getItem("studio") || "";
+let NOME_STUDIO = "";
+try {
+  const p = JSON.parse(localStorage.getItem("acsp:" + _codiceStudio) || "{}");
+  NOME_STUDIO = p.nome || "";
+} catch(e) {}
+
+let services = JSON.parse(localStorage.getItem("gl_services") || "[]");
+let editingId = null;
+
+function migrateService(s) {
+  if (!s) return null;
+  if (!s.client) s.client = "Cliente sconosciuto";
+  if (!s.type) s.type = "Evento";
+  if (!s.steps) s.steps = {};
+  if (!s.createdAt) s.createdAt = new Date().toISOString();
+  if (s.videographer === undefined) s.videographer = "";
+  STEPS.forEach(st => {
+    if (!s.steps[st.id]) s.steps[st.id] = { done: false, date: "", extra: {} };
+    if (!s.steps[st.id].extra) s.steps[st.id].extra = {};
+    if (s.steps[st.id].done === undefined) s.steps[st.id].done = false;
+    if (!s.steps[st.id].date) s.steps[st.id].date = "";
+  });
+  if (isPreviewType(s.type)) {
+    if (!s.previewSteps) s.previewSteps = {};
+    STEPS_PREVIEW.forEach(st => {
+      if (!s.previewSteps[st.id]) s.previewSteps[st.id] = { done: false, date: "", extra: {} };
+      if (!s.previewSteps[st.id].extra) s.previewSteps[st.id].extra = {};
+      if (s.previewSteps[st.id].done === undefined) s.previewSteps[st.id].done = false;
+      if (!s.previewSteps[st.id].date) s.previewSteps[st.id].date = "";
+    });
+  } else {
+    delete s.previewSteps;
+  }
+  if (isComboType(s.type)) {
+    if (!s.sections) s.sections = {};
+    COMBO_TYPES[s.type].forEach(secName => {
+      if (!s.sections[secName]) s.sections[secName] = {};
+      STEPS.forEach(st => {
+        if (!s.sections[secName][st.id]) s.sections[secName][st.id] = { done: false, date: "", extra: {} };
+        if (!s.sections[secName][st.id].extra) s.sections[secName][st.id].extra = {};
+        if (s.sections[secName][st.id].done === undefined) s.sections[secName][st.id].done = false;
+        if (!s.sections[secName][st.id].date) s.sections[secName][st.id].date = "";
+      });
+    });
+  } else {
+    delete s.sections;
+  }
+  return s;
+}
+
+function isPreviewType(type) { return type && type.startsWith("Anteprima +"); }
+function isComboType(type) { return type && COMBO_TYPES[type]; }
+function getComboSections(type) { return COMBO_TYPES[type] || []; }
+
+function toggleNewService() { document.getElementById("newService").classList.toggle("open"); }
+function saveService() {
+  const client = document.getElementById("inputClient").value.trim();
+  const type = document.getElementById("inputType").value;
+  const date = document.getElementById("inputDate").value;
+  const videographer = document.getElementById("inputVideographer").value.trim();
+  if (!client || !type) { alert("Inserisci nome cliente e tipo di servizio"); return; }
+  const steps = {};
+  STEPS.forEach(s => steps[s.id] = { done: false, date: "", extra: {} });
+  const newService = { id: Date.now(), client, type, date, videographer, steps, createdAt: new Date().toISOString() };
+  if (isPreviewType(type)) {
+    newService.previewSteps = {};
+    STEPS_PREVIEW.forEach(s => newService.previewSteps[s.id] = { done: false, date: "", extra: {} });
+  }
+  if (isComboType(type)) {
+    newService.sections = {};
+    COMBO_TYPES[type].forEach(secName => {
+      newService.sections[secName] = {};
+      STEPS.forEach(st => newService.sections[secName][st.id] = { done: false, date: "", extra: {} });
+    });
+  }
+  services.unshift(newService);
+  save();
+  document.getElementById("inputClient").value = "";
+  document.getElementById("inputType").value = "";
+  document.getElementById("inputDate").value = "";
+  document.getElementById("inputVideographer").value = "";
+  toggleNewService();
+  renderServices();
+}
+
+function getArchiveByOptions(s) {
+  const nomeStudio = NOME_STUDIO || "Studio";
+  const options = [`<option value="${nomeStudio}">${nomeStudio}</option>`];
+  if (s.videographer && s.videographer.trim()) {
+    options.push(`<option value="${s.videographer}">${s.videographer} (collega)</option>`);
+  }
+  options.push(`<option value="__altro__">Altro...</option>`);
+  return options.join("");
+}
+
+function countDone(stepsObj, stepsList) {
+  return stepsList.filter(st => stepsObj[st.id]?.done).length;
+}
+
+function getLastMainStepInfo(s) {
+  const completed = [];
+  const mainSteps = s.steps || {};
+  STEPS.forEach((st, idx) => {
+    const d = mainSteps[st.id];
+    if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx, section: null });
+  });
+  if (isComboType(s.type) && s.sections) {
+    Object.keys(s.sections).forEach(secName => {
+      const secSteps = s.sections[secName];
+      STEPS.forEach((st, idx) => {
+        const d = secSteps[st.id];
+        if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx, section: secName });
+      });
+    });
+  }
+  if (completed.length === 0) return null;
+  completed.sort((a, b) => {
+    if (a.date && b.date) { const cmp = a.date.localeCompare(b.date); if (cmp !== 0) return cmp; }
+    else if (a.date && !b.date) return -1;
+    else if (!a.date && b.date) return 1;
+    return a.order - b.order;
+  });
+  return completed[completed.length - 1];
+}
+
+function getLastPreviewStepInfo(s) {
+  if (!isPreviewType(s.type) || !s.previewSteps) return null;
+  const completed = [];
+  STEPS_PREVIEW.forEach((st, idx) => {
+    const d = s.previewSteps[st.id];
+    if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx });
+  });
+  if (completed.length === 0) return null;
+  completed.sort((a, b) => {
+    if (a.date && b.date) { const cmp = a.date.localeCompare(b.date); if (cmp !== 0) return cmp; }
+    else if (a.date && !b.date) return -1;
+    else if (!a.date && b.date) return 1;
+    return a.order - b.order;
+  });
+  return completed[completed.length - 1];
+}
+
+function getVideoReadyDate(s) {
+  const mainSteps = s.steps || {};
+  const videoStep = mainSteps["videoClient"];
+  if (videoStep && videoStep.done && videoStep.date) return videoStep.date;
+  if (isComboType(s.type) && s.sections) {
+    for (let secName of Object.keys(s.sections)) {
+      const secSteps = s.sections[secName];
+      const secVideoStep = secSteps["videoClient"];
+      if (secVideoStep && secVideoStep.done && secVideoStep.date) return secVideoStep.date;
+    }
+  }
+  return null;
+}
+
+function renderServices(data = services) {
+  const list = document.getElementById("servicesList");
+  if (data.length === 0) {
+    list.innerHTML = '<div class="empty">Nessun servizio. Clicca su "Nuovo Servizio" per iniziare!</div>';
+    return;
+  }
+  list.innerHTML = data.map(s => {
+    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
+    const videoInfo = s.videographer ? `<div class="videographer-info">Videografo: ${s.videographer}</div>` : '';
+    let progressHtml = '';
+    if (isPreviewType(s.type)) {
+      const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW);
+      const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
+      const serviceDone = countDone(s.steps, STEPS);
+      const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+      progressHtml = `<div class="progress-row">
+        <div><div class="progress-label">ANTEPRIMA</div><div class="progress-bar"><div class="progress-fill" style="width:${previewPct}%; background: linear-gradient(90deg, #ffd700, #ffb347);"></div></div><div class="progress-text">${previewDone}/${STEPS_PREVIEW.length} (${previewPct}%)</div></div>
+        <div><div class="progress-label">SERVIZIO</div><div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">${serviceDone}/${STEPS.length} (${servicePct}%)</div></div>
+      </div>`;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      progressHtml = '<div class="progress-row">';
+      sections.forEach(secName => {
+        const secSteps = s.sections?.[secName] || {};
+        const done = countDone(secSteps, STEPS);
+        const pct = Math.round((done / STEPS.length) * 100);
+        const secColor = SECTION_COLORS[secName]?.bg || '#667eea';
+        progressHtml += `<div><div class="progress-label">${secName}</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%; background: ${secColor};"></div></div><div class="progress-text">${done}/${STEPS.length} (${pct}%)</div></div>`;
+      });
+      progressHtml += '</div>';
+    } else {
+      const serviceDone = countDone(s.steps, STEPS);
+      const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+      progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">Avanzamento: ${serviceDone}/${STEPS.length} (${servicePct}%)</div>`;
+    }
+    return `<div class="card">
+      <div class="card-header" onclick="toggleSteps(${s.id})">
+        <div class="client-info"><div class="client-name">${s.client}</div><div class="client-date">${s.date ? s.date : ''}</div>${videoInfo}</div>
+        <div class="service-badge" style="background:${color}">${s.type}</div>
+      </div>
+      ${progressHtml}
+      <div class="steps" id="steps-${s.id}">${renderSteps(s)}</div>
+      <div class="card-footer">
+        <button class="btn-view" onclick="viewService(${s.id})">Visualizza</button>
+        <button class="btn-edit" onclick="editService(${s.id})">Modifica</button>
+        <button class="btn-pdf" onclick="generatePDF(${s.id})">PDF</button>
+        <button class="btn-del" onclick="deleteService(${s.id})">Elimina</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderSteps(s) {
+  let html = '';
+  if (isPreviewType(s.type)) {
+    html += `<div class="section-title preview">ANTEPRIMA</div>`;
+    html += STEPS_PREVIEW.map(st => renderStepRow(s, st, 'preview')).join('');
+  }
+  if (isComboType(s.type)) {
+    const sections = getComboSections(s.type);
+    sections.forEach(secName => {
+      html += `<div class="section-title ${secName.toLowerCase().replace(' ', '')}">${secName.toUpperCase()}</div>`;
+      html += STEPS.map(st => renderComboStepRow(s, st, secName)).join('');
+    });
+    return html;
+  }
+  const serviceTitle = isPreviewType(s.type) ? `SERVIZIO (${s.type.replace("Anteprima + ", "")})` : 'WORKFLOW SERVIZIO';
+  html += `<div class="section-title service">${serviceTitle}</div>`;
+  html += STEPS.map(st => renderStepRow(s, st, 'service')).join('');
+  return html;
+}
+
+function renderStepRow(s, st, section) {
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
+  const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
+  let extraHtml = "";
+  if (st.extra) {
+    if (st.extraType === "archivedBy") {
+      const nomeStudio = NOME_STUDIO || "Studio";
+      const currentVal = d.extra?.archivedBy || nomeStudio;
+      const isAltro = currentVal && ![nomeStudio, s.videographer].includes(currentVal);
+      const displayVal = isAltro ? currentVal : "";
+      extraHtml = `<div class="step-extra"><select onchange="handleArchiveByChange(${s.id}, '${st.id}', this.value, '${section}')">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateExtra(${s.id},'${st.id}','archivedBy',this.value,'${section}')">` : ''}</div>`;
+    } else if (st.extraType === "cover") {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="Fornitore copertina" value="${d.extra?.supplier || ''}" onchange="updateExtra(${s.id},'${st.id}','supplier',this.value,'${section}')"><input type="text" placeholder="Articolo prodotto" value="${d.extra?.article || ''}" onchange="updateExtra(${s.id},'${st.id}','article',this.value,'${section}')"></div>`;
+    } else if (st.extraLabel) {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="${st.extraLabel}" value="${d.extra?.luogo || ''}" onchange="updateExtra(${s.id},'${st.id}','luogo',this.value,'${section}')" style="flex:2;"></div>`;
+    }
+  }
+  return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleStep(${s.id},'${st.id}',this.checked,'${section}')"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateDate(${s.id},'${st.id}',this.value,'${section}')">${extraHtml}</div>`;
+}
+
+function renderComboStepRow(s, st, sectionName) {
+  const stepsObj = s.sections?.[sectionName] || {};
+  const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
+  let extraHtml = "";
+  if (st.extra) {
+    if (st.extraType === "archivedBy") {
+      const nomeStudio = NOME_STUDIO || "Studio";
+      const currentVal = d.extra?.archivedBy || nomeStudio;
+      const isAltro = currentVal && ![nomeStudio, s.videographer].includes(currentVal);
+      const displayVal = isAltro ? currentVal : "";
+      extraHtml = `<div class="step-extra"><select onchange="handleComboArchiveByChange(${s.id}, '${sectionName}', '${st.id}', this.value)">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','archivedBy',this.value)">` : ''}</div>`;
+    } else if (st.extraType === "cover") {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="Fornitore copertina" value="${d.extra?.supplier || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','supplier',this.value)"><input type="text" placeholder="Articolo prodotto" value="${d.extra?.article || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','article',this.value)"></div>`;
+    } else if (st.extraLabel) {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="${st.extraLabel}" value="${d.extra?.luogo || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','luogo',this.value)" style="flex:2;"></div>`;
+    }
+  }
+  return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleComboStep(${s.id},'${sectionName}','${st.id}',this.checked)"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateComboDate(${s.id},'${sectionName}','${st.id}',this.value)">${extraHtml}</div>`;
+}
+
+function handleArchiveByChange(serviceId, stepId, value, section) {
+  const s = services.find(x => x.id === serviceId);
+  if (value === "__altro__") return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
+  stepsObj[stepId].extra = stepsObj[stepId].extra || {};
+  stepsObj[stepId].extra.archivedBy = value;
+  save(); renderServices();
+  document.getElementById("steps-" + serviceId).classList.add("open");
+}
+function handleComboArchiveByChange(serviceId, sectionName, stepId, value) {
+  const s = services.find(x => x.id === serviceId);
+  if (value === "__altro__") return;
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
+  s.sections[sectionName][stepId].extra = s.sections[sectionName][stepId].extra || {};
+  s.sections[sectionName][stepId].extra.archivedBy = value;
+  save(); renderServices();
+  document.getElementById("steps-" + serviceId).classList.add("open");
+}
+
+function toggleSteps(id) { document.getElementById("steps-" + id).classList.toggle("open"); }
+function toggleStep(id, stepId, checked, section) {
+  const s = services.find(x => x.id === id);
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
+  stepsObj[stepId].done = checked;
+  if (checked && !stepsObj[stepId].date) stepsObj[stepId].date = new Date().toISOString().slice(0,10);
+  if ((stepId === "archiveVideo" && section === 'service') || (stepId === "p_archiveVideo" && section === 'preview')) {
+    if (!stepsObj[stepId].extra.archivedBy) stepsObj[stepId].extra.archivedBy = NOME_STUDIO || "Studio";
+  }
+  save(); renderServices();
+  document.getElementById("steps-" + id).classList.add("open");
+  renderTable();
+}
+function toggleComboStep(serviceId, sectionName, stepId, checked) {
+  const s = services.find(x => x.id === serviceId);
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
+  s.sections[sectionName][stepId].done = checked;
+  if (checked && !s.sections[sectionName][stepId].date) s.sections[sectionName][stepId].date = new Date().toISOString().slice(0,10);
+  if (stepId === "archiveVideo" && !s.sections[sectionName][stepId].extra.archivedBy) s.sections[sectionName][stepId].extra.archivedBy = NOME_STUDIO || "Studio";
+  save(); renderServices();
+  document.getElementById("steps-" + serviceId).classList.add("open");
+  renderTable();
+}
+function updateDate(id, stepId, val, section) {
+  const s = services.find(x => x.id === id);
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
+  stepsObj[stepId].date = val; save();
+}
+function updateComboDate(serviceId, sectionName, stepId, val) {
+  const s = services.find(x => x.id === serviceId);
+  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
+  s.sections[sectionName][stepId].date = val; save();
+}
+function updateExtra(id, stepId, field, val, section) {
+  const s = services.find(x => x.id === id);
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
+  if (!stepsObj[stepId].extra) stepsObj[stepId].extra = {};
+  stepsObj[stepId].extra[field] = val; save();
+}
+function updateComboExtra(serviceId, sectionName, stepId, field, val) {
+  const s = services.find(x => x.id === serviceId);
+  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
+  if (!s.sections[sectionName][stepId].extra) s.sections[sectionName][stepId].extra = {};
+  s.sections[sectionName][stepId].extra[field] = val; save();
+}
+function deleteService(id) {
+  if (!confirm("Eliminare questo servizio?")) return;
+  services = services.filter(x => x.id !== id);
+  save(); renderServices(); renderTable();
+}
+function save() { localStorage.setItem("gl_services", JSON.stringify(services)); }
+
+function viewService(id) {
+  const s = services.find(x => x.id === id);
+  let html = `<div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${s.client}</div></div>
+    <div class="detail-row"><div class="detail-label">Tipo Servizio</div><div class="detail-value">${s.type}</div></div>
+    <div class="detail-row"><div class="detail-label">Data Evento</div><div class="detail-value">${s.date || 'Non specificata'}</div></div>
+    <div class="detail-row"><div class="detail-label">Videografo/Collega</div><div class="detail-value">${s.videographer || 'Non specificato'}</div></div>`;
+  if (isPreviewType(s.type)) {
+    const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW);
+    const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
+    const serviceDone = countDone(s.steps, STEPS);
+    const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+    html += `<div class="detail-row" style="background: linear-gradient(90deg, #fff8e0, #fff0c0);"><div class="detail-label">Avanzamento ANTEPRIMA</div><div class="detail-value">${previewDone}/${STEPS_PREVIEW.length} completati (${previewPct}%)</div></div>`;
+    html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
+    html += `<h3 style="margin:20px 0 10px; padding:10px; background: linear-gradient(45deg, #ffd700, #ffb347); color: white; border-radius: 10px;">ANTEPRIMA</h3>`;
+    STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+    html += `<h3 style="margin:20px 0 10px; padding:10px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; border-radius: 10px;">SERVIZIO</h3>`;
+    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+  } else if (isComboType(s.type)) {
+    const sections = getComboSections(s.type);
+    sections.forEach(secName => {
+      const secSteps = s.sections?.[secName] || {};
+      const done = countDone(secSteps, STEPS);
+      const pct = Math.round((done / STEPS.length) * 100);
+      const secColor = SECTION_COLORS[secName]?.bg || '#667eea';
+      html += `<div class="detail-row" style="background: ${secColor};"><div class="detail-label">Avanzamento ${secName}</div><div class="detail-value">${done}/${STEPS.length} completati (${pct}%)</div></div>`;
+    });
+    sections.forEach(secName => {
+      const secColor = SECTION_COLORS[secName]?.bg || '#667eea';
+      html += `<h3 style="margin:20px 0 10px; padding:10px; background: ${secColor}; color: white; border-radius: 10px;">${secName.toUpperCase()}</h3>`;
+      const secSteps = s.sections?.[secName] || {};
+      STEPS.forEach(st => { const d = secSteps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+    });
+  } else {
+    const serviceDone = countDone(s.steps, STEPS);
+    const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+    html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
+    html += `<h3 style="margin:20px 0 10px; padding:10px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; border-radius: 10px;">SERVIZIO</h3>`;
+    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+  }
+  document.getElementById("detailTitle").textContent = `${s.client} - ${s.type}`;
+  document.getElementById("detailBody").innerHTML = html;
+  document.getElementById("detailModal").classList.add("active");
+}
+
+function renderStepDetail(st, d) {
+  const status = d.done ? 'Completato' : 'In attesa';
+  const dateStr = d.date ? ` - ${d.date}` : '';
+  const extraInfo = [];
+  if (st.extraType === "archivedBy" && d.extra?.archivedBy) extraInfo.push(`Archiviato da: ${d.extra.archivedBy}`);
+  if (st.extraType === "cover") {
+    if (d.extra?.supplier) extraInfo.push(`Fornitore: ${d.extra.supplier}`);
+    if (d.extra?.article) extraInfo.push(`Articolo: ${d.extra.article}`);
+  }
+  if (st.extraLabel && d.extra?.luogo) extraInfo.push(`Luogo: ${d.extra.luogo}`);
+  return `<div class="step-detail ${d.done ? 'completed' : ''}"><div class="step-name">${status} - ${st.label}${dateStr}</div>${extraInfo.length ? `<div class="step-extra-info">${extraInfo.join(' | ')}</div>` : ''}</div>`;
+}
+
+function editService(id) {
+  const s = services.find(x => x.id === id);
+  editingId = id;
+  document.getElementById("editClient").value = s.client;
+  document.getElementById("editType").value = s.type;
+  document.getElementById("editDate").value = s.date || '';
+  document.getElementById("editVideographer").value = s.videographer || '';
+  document.getElementById("editModal").classList.add("active");
+}
+function saveEdit() {
+  if (!editingId) return;
+  const s = services.find(x => x.id === editingId);
+  const oldType = s.type;
+  s.client = document.getElementById("editClient").value.trim();
+  s.type = document.getElementById("editType").value;
+  s.date = document.getElementById("editDate").value;
+  s.videographer = document.getElementById("editVideographer").value.trim();
+  if (isPreviewType(s.type) && !s.previewSteps) { s.previewSteps = {}; STEPS_PREVIEW.forEach(st => s.previewSteps[st.id] = { done: false, date: "", extra: {} }); }
+  if (!isPreviewType(s.type) && isPreviewType(oldType)) delete s.previewSteps;
+  if (isComboType(s.type) && !s.sections) { s.sections = {}; COMBO_TYPES[s.type].forEach(secName => { s.sections[secName] = {}; STEPS.forEach(st => s.sections[secName][st.id] = { done: false, date: "", extra: {} }); }); }
+  if (!isComboType(s.type) && isComboType(oldType)) delete s.sections;
+  save(); closeModal('editModal'); renderServices(); renderTable();
+}
+
+async function generatePDF(id) {
+  const s = services.find(x => x.id === id);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFillColor(102, 126, 234);
+  doc.rect(0, 0, 210, 40, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24); doc.text(NOME_STUDIO || "Studio Fotografico", 15, 20);
+  doc.setFontSize(12); doc.text("AppCenterStudio Premium - Workflow Foto & Video", 15, 28);
+  doc.setTextColor(0, 0, 0); doc.setFontSize(14);
+  doc.text(`Cliente: ${s.client}`, 15, 55);
+  doc.text(`Tipo: ${s.type}`, 15, 63);
+  doc.text(`Data Evento: ${s.date || 'N/D'}`, 15, 71);
+  doc.text(`Videografo: ${s.videographer || 'N/D'}`, 15, 79);
+  let y = 92;
+  if (isPreviewType(s.type)) {
+    doc.setFillColor(255, 215, 0); doc.rect(15, y - 5, 180, 8, 'F');
+    doc.setTextColor(0, 0, 0); doc.setFontSize(12); doc.text("ANTEPRIMA", 20, y); y += 8;
+    STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+    y += 5;
+    doc.setFillColor(102, 126, 234); doc.rect(15, y - 5, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
+    doc.setTextColor(0, 0, 0); y += 8;
+    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+  } else if (isComboType(s.type)) {
+    const sections = getComboSections(s.type);
+    sections.forEach(secName => {
+      const secColor = SECTION_COLORS[secName]?.hex || '#667eea';
+      const rgb = hexToRgb(secColor);
+      doc.setFillColor(rgb.r, rgb.g, rgb.b); doc.rect(15, y - 5, 180, 8, 'F');
+      doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text(secName.toUpperCase(), 20, y);
+      doc.setTextColor(0, 0, 0); y += 8;
+      const secSteps = s.sections?.[secName] || {};
+      STEPS.forEach(st => { const d = secSteps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+      y += 5;
+    });
+  } else {
+    doc.setFillColor(102, 126, 234); doc.rect(15, y - 5, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
+    doc.setTextColor(0, 0, 0); y += 8;
+    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+  }
+  doc.setFontSize(10); doc.setTextColor(150, 150, 150);
+  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, 15, 285);
+  doc.save(`${(NOME_STUDIO||'Studio').replace(/\s+/g,'_')}_${s.client.replace(/\s+/g, '_')}_${s.type.replace(/\s+/g, '_')}.pdf`);
+}
+
+function renderPDFStep(doc, st, d, y) {
+  const status = d.done ? "[X]" : "[ ]";
+  const dateStr = d.date ? ` - ${d.date}` : '';
+  const cleanLabel = STEP_LABEL_CLEAN[st.label] || st.label;
+  doc.text(`${status} ${cleanLabel}${dateStr}`, 20, y); y += 7;
+  const extra = getExtraText(st, d);
+  if (extra) { doc.setTextColor(100, 100, 100); doc.text(`    -> ${extra}`, 20, y); doc.setTextColor(0, 0, 0); y += 7; }
+  if (y > 270) { doc.addPage(); y = 20; }
+  return y;
+}
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 102, g: 126, b: 234 };
+}
+function getExtraText(st, d) {
+  const extra = [];
+  if (st.extraType === "archivedBy" && d.extra?.archivedBy) extra.push(`Archiviato da: ${d.extra.archivedBy}`);
+  if (st.extraType === "cover") { if (d.extra?.supplier) extra.push(`Fornitore: ${d.extra.supplier}`); if (d.extra?.article) extra.push(`Articolo: ${d.extra.article}`); }
+  if (st.extraLabel && d.extra?.luogo) extra.push(`Luogo: ${d.extra.luogo}`);
+  return extra.join(' | ');
+}
+
+function showArchive() { document.getElementById("servicesList").style.display = "none"; document.getElementById("tableView").style.display = "none"; document.getElementById("newService").classList.remove("open"); document.getElementById("archiveView").style.display = "block"; filterServices(); }
+function showTable() { document.getElementById("servicesList").style.display = "none"; document.getElementById("archiveView").style.display = "none"; document.getElementById("newService").classList.remove("open"); document.getElementById("tableView").style.display = "block"; renderTable(); }
+function showMain() { document.getElementById("archiveView").style.display = "none"; document.getElementById("tableView").style.display = "none"; document.getElementById("servicesList").style.display = "block"; renderServices(); }
+
+function filterServices() {
+  const search = document.getElementById("searchBox").value.toLowerCase();
+  const type = document.getElementById("filterType").value;
+  let filtered = services;
+  if (search) filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
+  if (type) filtered = filtered.filter(s => s.type === type);
+  const list = document.getElementById("archiveList");
+  if (filtered.length === 0) { list.innerHTML = '<div class="empty">Nessun servizio trovato</div>'; return; }
+  list.innerHTML = filtered.map(s => {
+    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
+    const videoInfo = s.videographer ? `<div class="videographer-info">Videografo: ${s.videographer}</div>` : '';
+    let progressHtml = '';
+    if (isPreviewType(s.type)) {
+      const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW); const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
+      const serviceDone = countDone(s.steps, STEPS); const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+      progressHtml = `<div class="progress-row"><div><div class="progress-label">ANTEPRIMA</div><div class="progress-bar"><div class="progress-fill" style="width:${previewPct}%; background: linear-gradient(90deg, #ffd700, #ffb347);"></div></div><div class="progress-text">${previewDone}/${STEPS_PREVIEW.length} (${previewPct}%)</div></div><div><div class="progress-label">SERVIZIO</div><div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">${serviceDone}/${STEPS.length} (${servicePct}%)</div></div></div>`;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type); progressHtml = '<div class="progress-row">';
+      sections.forEach(secName => { const secSteps = s.sections?.[secName] || {}; const done = countDone(secSteps, STEPS); const pct = Math.round((done / STEPS.length) * 100); const secColor = SECTION_COLORS[secName]?.bg || '#667eea'; progressHtml += `<div><div class="progress-label">${secName}</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%; background: ${secColor};"></div></div><div class="progress-text">${done}/${STEPS.length} (${pct}%)</div></div>`; });
+      progressHtml += '</div>';
+    } else { const serviceDone = countDone(s.steps, STEPS); const servicePct = Math.round((serviceDone / STEPS.length) * 100); progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">Completamento: ${servicePct}%</div>`; }
+    return `<div class="card"><div class="card-header"><div class="client-info"><div class="client-name">${s.client}</div><div class="client-date">${s.date ? s.date : ''}</div>${videoInfo}</div><div class="service-badge" style="background:${color}">${s.type}</div></div>${progressHtml}<div class="card-footer"><button class="btn-view" onclick="viewService(${s.id})">Visualizza</button><button class="btn-edit" onclick="editService(${s.id})">Modifica</button><button class="btn-pdf" onclick="generatePDF(${s.id})">PDF</button><button class="btn-del" onclick="deleteService(${s.id})">Elimina</button></div></div>`;
+  }).join("");
+}
+
+function renderTable() {
+  const search = (document.getElementById("tableSearch")?.value || "").toLowerCase();
+  let filtered = services.slice();
+  if (search) {
+    filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || s.type.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
+  }
+  filtered.sort((a, b) => {
+    const orderA = TYPE_ORDER.indexOf(a.type);
+    const orderB = TYPE_ORDER.indexOf(b.type);
+    if (orderA !== orderB) return orderA - orderB;
+    return a.client.localeCompare(b.client, 'it');
+  });
+  const table = document.getElementById("workflowTable");
+  if (filtered.length === 0) {
+    table.innerHTML = '<tr><td colspan="11" style="padding:40px;text-align:center;color:#888;">Nessun servizio trovato</td></tr>';
+    return;
+  }
+  let thead = '<thead><tr>';
+  thead += '<th>#</th><th>Cliente</th><th class="center">Tipo Servizio</th><th class="center">Data Evento</th><th>Videografo</th><th class="center">Video Pronto</th><th class="center">Data Video</th><th>Ultimo Step (Servizio)</th><th class="center">Data Step</th><th class="center">Stato</th><th class="center">Azioni</th>';
+  thead += '</tr></thead>';
+  let tbody = '<tbody>';
+  filtered.forEach((s, idx) => {
+    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
+    const lastStep = getLastMainStepInfo(s);
+    const videoDate = getVideoReadyDate(s);
+    let totalDone = 0, totalSteps = 0;
+    if (isPreviewType(s.type)) {
+      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
+      totalSteps = STEPS_PREVIEW.length + STEPS.length;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
+    } else {
+      totalDone = countDone(s.steps, STEPS);
+      totalSteps = STEPS.length;
+    }
+    const pct = Math.round((totalDone / totalSteps) * 100);
+    const pctClass = pct === 100 ? 'pct-100' : pct >= 70 ? 'pct-high' : pct >= 40 ? 'pct-mid' : pct > 0 ? 'pct-low' : 'pct-zero';
+    let lastStepHtml = '';
+    if (lastStep) {
+      const sectionTag = lastStep.section ? `<span class="section-tag" style="background:${SECTION_COLORS[lastStep.section]?.hex || '#667eea'}">${lastStep.section}</span>` : '';
+      lastStepHtml = `<span class="td-laststep">${lastStep.label}${sectionTag}</span>`;
+    } else {
+      lastStepHtml = `<span class="td-laststep empty">Nessuno step completato</span>`;
+    }
+    const dateDisplay = lastStep?.date ? formatDate(lastStep.date) : '-';
+    const videoDisplay = videoDate ? formatDate(videoDate) : '-';
+    const videoDone = videoDate ? 'OK' : '-';
+    tbody += '<tr>';
+    tbody += `<td style="color:#888;font-size:0.85em;">${idx + 1}</td>`;
+    tbody += `<td class="td-client">${s.client}</td>`;
+    tbody += `<td class="td-type"><span class="badge-cell" style="background:${color}">${s.type}</span></td>`;
+    tbody += `<td class="td-center">${s.date ? formatDate(s.date) : '-'}</td>`;
+    tbody += `<td>${s.videographer || '-'}</td>`;
+    tbody += `<td class="td-center">${videoDone}</td>`;
+    tbody += `<td class="td-center" style="font-weight:600;color:#667eea;">${videoDisplay}</td>`;
+    tbody += `<td>${lastStepHtml}</td>`;
+    tbody += `<td class="td-center" style="font-weight:600;color:#667eea;">${dateDisplay}</td>`;
+    tbody += `<td class="td-center"><span class="pct-badge ${pctClass}">${pct}%</span></td>`;
+    tbody += `<td><div class="cell-actions">
+      <button class="mini-view" onclick="viewService(${s.id})" title="Visualizza">V</button>
+      <button class="mini-edit" onclick="editService(${s.id})" title="Modifica">M</button>
+      <button class="mini-pdf" onclick="generatePDF(${s.id})" title="PDF">P</button>
+      <button class="mini-del" onclick="deleteService(${s.id})" title="Elimina">X</button>
+    </div></td>`;
+    tbody += '</tr>';
+  });
+  tbody += '</tbody>';
+  table.innerHTML = thead + tbody;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '-';
+  const parts = dateStr.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return dateStr;
+}
+
+function generateTablePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  doc.setFillColor(102, 126, 234);
+  doc.rect(0, 0, 297, 25, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.text((NOME_STUDIO || "Studio") + " - Stato Lavori Clienti", 14, 16);
+  const sorted = services.slice().sort((a, b) => {
+    const orderA = TYPE_ORDER.indexOf(a.type);
+    const orderB = TYPE_ORDER.indexOf(b.type);
+    if (orderA !== orderB) return orderA - orderB;
+    return a.client.localeCompare(b.client, 'it');
+  });
+  const head = [['#', 'Cliente', 'Tipo', 'Data Evento', 'Videografo', 'Video Pronto', 'Data Video', 'Ultimo Step', 'Data Step', 'Stato']];
+  const body = sorted.map((s, idx) => {
+    const lastStep = getLastMainStepInfo(s);
+    const videoDate = getVideoReadyDate(s);
+    let totalDone = 0, totalSteps = 0;
+    if (isPreviewType(s.type)) {
+      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
+      totalSteps = STEPS_PREVIEW.length + STEPS.length;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
+    } else {
+      totalDone = countDone(s.steps, STEPS);
+      totalSteps = STEPS.length;
+    }
+    const pct = Math.round((totalDone / totalSteps) * 100);
+    const cleanLabel = lastStep ? (STEP_LABEL_CLEAN[lastStep.label] || lastStep.label) : '-';
+    return [
+      idx + 1, s.client, s.type,
+      s.date ? formatDate(s.date) : '-',
+      s.videographer || '-',
+      videoDate ? 'OK' : '-',
+      videoDate ? formatDate(videoDate) : '-',
+      cleanLabel,
+      lastStep?.date ? formatDate(lastStep.date) : '-',
+      `${pct}%`
+    ];
+  });
+  doc.autoTable({
+    startY: 30,
+    margin: { left: 8, right: 8, top: 30, bottom: 15 },
+    head: head,
+    body: body,
+    theme: 'grid',
+    headStyles: { fillColor: [102, 126, 234], textColor: 255, fontSize: 7, halign: 'center' },
+    bodyStyles: { fontSize: 6.5, cellPadding: 2 },
+    columnStyles: {
+      0: { cellWidth: 8, halign: 'center' },
+      1: { cellWidth: 50 },
+      2: { cellWidth: 38, halign: 'center' },
+      3: { cellWidth: 18, halign: 'center' },
+      4: { cellWidth: 38 },
+      5: { cellWidth: 18, halign: 'center' },
+      6: { cellWidth: 18, halign: 'center' },
+      7: { cellWidth: 35 },
+      8: { cellWidth: 18, halign: 'center' },
+      9: { cellWidth: 13, halign: 'center', fontStyle: 'bold' }
+    },
+    alternateRowStyles: { fillColor: [240, 245, 255] }
+  });
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text(`Pagina ${i} di ${pageCount} - Generato il ${new Date().toLocaleDateString('it-IT')}`, 14, doc.internal.pageSize.height - 10);
+  }
+  doc.save(`${(NOME_STUDIO||'Studio').replace(/\s+/g,'_')}_Stato_Lavori_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function generateArchivePDF() {
+  const search = (document.getElementById("searchBox")?.value || "").toLowerCase();
+  const type = document.getElementById("filterType")?.value || "";
+  let filtered = services.slice();
+  if (search) filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
+  if (type) filtered = filtered.filter(s => s.type === type);
+  filtered.sort((a, b) => {
+    const orderA = TYPE_ORDER.indexOf(a.type);
+    const orderB = TYPE_ORDER.indexOf(b.type);
+    if (orderA !== orderB) return orderA - orderB;
+    return a.client.localeCompare(b.client, 'it');
+  });
+  if (filtered.length === 0) {
+    alert("Nessun cliente nell'archivio con i filtri attuali.");
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  doc.setFillColor(102, 126, 234);
+  doc.rect(0, 0, 297, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(22);
+  doc.text((NOME_STUDIO || "Studio") + " - Archivio Clienti", 14, 14);
+  doc.setFontSize(11);
+  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')} - ${filtered.length} servizi`, 14, 23);
+  const head = [['#', 'Cliente', 'Tipo', 'Data', 'Videografo', 'Video', 'Data Video', 'Ult. Step Anteprima', 'Data Anteprima', 'Ult. Step Servizio', 'Data Servizio', 'Stato']];
+  const body = filtered.map((s, idx) => {
+    const lastMainStep = getLastMainStepInfo(s);
+    const lastPreviewStep = getLastPreviewStepInfo(s);
+    const videoDate = getVideoReadyDate(s);
+    let totalDone = 0, totalSteps = 0;
+    if (isPreviewType(s.type)) {
+      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
+      totalSteps = STEPS_PREVIEW.length + STEPS.length;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
+    } else {
+      totalDone = countDone(s.steps, STEPS);
+      totalSteps = STEPS.length;
+    }
+    const pct = Math.round((totalDone / totalSteps) * 100);
+    const cleanMainLabel = lastMainStep ? (STEP_LABEL_CLEAN[lastMainStep.label] || lastMainStep.label) : '-';
+    const mainDate = lastMainStep?.date ? formatDate(lastMainStep.date) : '-';
+    const cleanPreviewLabel = lastPreviewStep ? (STEP_LABEL_CLEAN[lastPreviewStep.label] || lastPreviewStep.label) : '-';
+    const previewDate = lastPreviewStep?.date ? formatDate(lastPreviewStep.date) : '-';
+    return [
+      idx + 1, s.client, s.type,
+      s.date ? formatDate(s.date) : '-',
+      s.videographer || '-',
+      videoDate ? 'OK' : '-',
+      videoDate ? formatDate(videoDate) : '-',
+      cleanPreviewLabel, previewDate,
+      cleanMainLabel, mainDate,
+      `${pct}%`
+    ];
+  });
+  doc.autoTable({
+    startY: 35,
+    margin: { left: 6, right: 6, top: 35, bottom: 15 },
+    head: head,
+    body: body,
+    theme: 'grid',
+    headStyles: { fillColor: [102, 126, 234], textColor: 255, fontSize: 6, halign: 'center', fontStyle: 'bold' },
+    bodyStyles: { fontSize: 6, cellPadding: 1.8 },
+    columnStyles: {
+      0: { cellWidth: 7, halign: 'center' },
+      1: { cellWidth: 42 },
+      2: { cellWidth: 30, halign: 'center' },
+      3: { cellWidth: 17, halign: 'center' },
+      4: { cellWidth: 32 },
+      5: { cellWidth: 12, halign: 'center' },
+      6: { cellWidth: 17, halign: 'center' },
+      7: { cellWidth: 32 },
+      8: { cellWidth: 17, halign: 'center' },
+      9: { cellWidth: 32 },
+      10: { cellWidth: 17, halign: 'center' },
+      11: { cellWidth: 12, halign: 'center', fontStyle: 'bold' }
+    },
+    alternateRowStyles: { fillColor: [240, 245, 255] },
+    didParseCell: function(data) {
+      if (data.section === 'body' && data.column.index === 11) {
+        if (data.cell.raw === '100%') {
+          data.cell.styles.fillColor = [67, 233, 123];
+          data.cell.styles.textColor = [255, 255, 255];
+        }
+      }
+      if (data.section === 'body' && data.column.index === 5) {
+        if (data.cell.raw === 'OK') {
+          data.cell.styles.fillColor = [220, 255, 220];
+        }
+      }
+    }
+  });
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Nota: L'ultimo step del servizio principale è sempre mostrato separatamente dall'anteprima`, 14, doc.internal.pageSize.height - 15);
+    doc.text(`Pagina ${i} di ${pageCount}`, 14, doc.internal.pageSize.height - 8);
+  }
+  doc.save(`${(NOME_STUDIO||'Studio').replace(/\s+/g,'_')}_Archivio_Clienti_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function doBackup() {
+  const data = { version: 19, exportedAt: new Date().toISOString(), studio: NOME_STUDIO, services };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (NOME_STUDIO||"Studio").replace(/\s+/g,'_') + "_Backup_" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+}
+
+function doRestore(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const rawText = ev.target.result;
+      let data;
+      try { data = JSON.parse(rawText); }
+      catch (parseErr) { alert("ERRORE: Il file non è un JSON valido.\n\n" + parseErr.message); return; }
+      let servicesToImport = null;
+      if (data.services && Array.isArray(data.services)) servicesToImport = data.services;
+      else if (Array.isArray(data)) servicesToImport = data;
+      else if (data.data && Array.isArray(data.data)) servicesToImport = data.data;
+      if (!servicesToImport || servicesToImport.length === 0) {
+        alert("ERRORE: Nessun servizio trovato nel file di backup."); return;
+      }
+      const info = `File di backup trovato:\n\n` +
+        `- Servizi: ${servicesToImport.length}\n` +
+        `- Versione: ${data.version || 'sconosciuta'}\n` +
+        `- Data export: ${data.exportedAt || 'sconosciuta'}\n\n` +
+        `Vuoi ripristinare questi ${servicesToImport.length} servizi?\n\n` +
+        `ATTENZIONE: i dati attuali verranno sostituiti.`;
+      if (!confirm(info)) { e.target.value = ""; return; }
+      const migrated = servicesToImport.map(migrateService).filter(s => s !== null);
+      if (migrated.length === 0) { alert("ERRORE: Nessun servizio valido dopo la migrazione."); return; }
+      services = migrated;
+      save();
+      renderServices();
+      renderTable();
+      alert(`RIPRISTINO COMPLETATO!\n\n${migrated.length} servizi recuperati con successo.`);
+    } catch (err) {
+      alert("ERRORE DURANTE IL RIPRISTINO:\n\n" + err.message);
+      console.error(err);
+    }
+  };
+  reader.onerror = () => { alert("ERRORE: Impossibile leggere il file."); };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove("active"); editingId = null; }
+
+renderServices();
+</script>
+</body>
+</html>
