@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppCenterStudio Premium - Selezione Album</title>
+    <script src="../licenza.js"></script>
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <style>
+        :root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
+        .container{max-width:1400px;margin:0 auto}
+        .app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 1px 3px rgba(40,40,60,.06)}
+        .app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px;color:var(--testo)}
+        .subtitle{font-size:16px;color:var(--soft)}
+        .panel{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 1px 3px rgba(40,40,60,.06);overflow:hidden;margin-bottom:30px}
+        .panel-content{padding:30px;max-width:600px;margin:0 auto}
+        .panel-content.wide{max-width:100%;padding:30px}
+        .panel-content h2{color:var(--accento);margin-bottom:20px;font-family:Georgia,serif}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--testo);font-size:13px}
+        .form-group input,.form-group textarea{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
+        .form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
+        .form-group small{display:block;margin-top:5px;color:var(--soft);font-size:12px}
+        .btn-primary{width:100%;padding:12px;background:var(--accento);color:white;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
+        .btn-primary:hover{opacity:.9}
+        .btn-secondary{padding:9px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
+        .btn-secondary:hover{border-color:var(--accento)}
+        .btn-small{padding:8px 14px;background:var(--ok);color:white;border:none;border-radius:999px;cursor:pointer;margin-right:5px;font-size:12px}
+        .btn-download{padding:8px 14px;background:var(--accento);color:white;border:none;border-radius:999px;cursor:pointer;font-weight:bold;font-size:12px;margin-right:5px}
+        .btn-status{padding:8px 14px;background:#c9b283;color:white;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
+        .btn-status.downloaded{background:var(--ok)}
+        .btn-delete{padding:8px 14px;background:var(--ko);color:white;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+        .error-msg{color:var(--ko);margin-top:15px;text-align:center;font-weight:600}
+        .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+        .card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:20px;margin-bottom:20px}
+        .card h3{color:var(--accento);margin-bottom:15px;font-family:Georgia,serif;font-size:16px}
+        .link-box{margin-top:20px;padding:15px;background:#eef4f0;border-left:4px solid var(--ok);border-radius:8px}
+        .link-box strong{display:block;margin-bottom:10px;color:var(--ok)}
+        .link-box input{width:100%;padding:10px;border:1px solid var(--bordo);border-radius:8px;font-family:monospace;font-size:12px}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin:30px 0}
+        .photo-card{background:var(--carta);border:1px solid var(--bordo);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(40,40,60,.06);cursor:pointer;transition:transform .3s,box-shadow .3s;position:relative}
+        .photo-card:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(40,40,60,.1)}
+        .photo-card.selected{border:4px solid var(--ok)}
+        .photo-card.selected::after{content:'✓';position:absolute;top:10px;right:10px;background:var(--ok);color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold}
+        .photo-card img{width:100%;height:250px;object-fit:cover;display:block}
+        .client-header{text-align:center;margin-bottom:25px}
+        .client-name{font-size:18px;color:var(--testo);font-weight:600;font-family:Georgia,serif}
+        .info-box{background:#eef4f0;padding:15px;border-radius:10px;margin-bottom:25px;text-align:center;border:1px solid var(--bordo)}
+        .counter{margin-top:10px;font-size:18px;color:var(--accento);font-weight:600}
+        .actions{text-align:center;margin:40px 0}
+        .btn-submit{padding:16px 50px;background:var(--ok);color:white;border:none;border-radius:999px;font-size:18px;font-weight:700;cursor:pointer;transition:opacity .2s}
+        .btn-submit:hover{opacity:.9}
+        .message{padding:30px;border-radius:10px;text-align:center;font-size:16px;font-weight:600;background:#eef4f0;color:var(--ok);border:2px solid var(--ok)}
+        .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(40,40,60,.5);justify-content:center;align-items:center}
+        .modal-content{background:white;padding:30px;border-radius:14px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+        .close-modal{position:absolute;top:15px;right:20px;font-size:28px;cursor:pointer;color:var(--soft)}
+        .close-modal:hover{color:var(--testo)}
+        .selection-list{list-style:none;margin-top:15px}
+        .selection-list li{padding:10px;border-bottom:1px solid var(--bordo);display:flex;align-items:center;gap:15px}
+        .selection-list li img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+        .upload-info{background:#f6f1e7;padding:15px;border-radius:8px;margin:15px 0;border-left:4px solid #c9b283}
+        .instruction-box{margin-top:20px;padding:15px;background:#eef1f4;border-radius:8px;font-size:13px;color:var(--accento);border:1px solid var(--bordo)}
+        .selection-row{background:white;padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid var(--ok);display:flex;justify-content:space-between;align-items:center;transition:all .3s;border:1px solid var(--bordo)}
+        .selection-row.is-downloaded{background:#f6f4f0;border-left-color:var(--soft);opacity:.8}
+        .selection-row.is-downloaded strong{color:var(--soft);text-decoration:line-through}
+        .backup-section{margin-top:30px;padding-top:20px;border-top:1px solid var(--bordo)}
+        @media(max-width:768px){.gallery-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.photo-card img{height:150px}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>AppCenterStudio Premium</h1>
+            <p class="subtitle">Selezione Foto per Album</p>
+        </header>
+
+        <!-- DASHBOARD ADMIN (accesso garantito dal portale) -->
+        <div id="adminDashboard" class="panel">
+            <div class="panel-content wide">
+                <div class="dashboard-header">
+                    <h2>👋 Dashboard Admin</h2>
+                </div>
+
+                <div class="card">
+                    <h3>📁 Crea Nuova Selezione Album</h3>
+                    <div class="form-group">
+                        <label>Nome Cliente:</label>
+                        <input type="text" id="clientName" placeholder="Es. Mario e Lucia">
+                    </div>
+                    <div class="form-group">
+                        <label>Cloud Name Cloudinary:</label>
+                        <input type="text" id="cloudName" placeholder="g3439ih4" value="g3439ih4">
+                        <small>Il tuo Cloud Name (lo trovi in Dashboard Cloudinary)</small>
+                    </div>
+                    <div class="upload-info">
+                        <strong>📤 Come caricare le foto:</strong>
+                        <ol style="margin:10px 0 0 20px;">
+                            <li>Clicca "Apri Widget Upload"</li>
+                            <li>Trascina le anteprime dal tuo computer</li>
+                            <li>Attendi il caricamento</li>
+                        </ol>
+                    </div>
+                    <button class="btn-primary" style="background:var(--accento);margin-bottom:15px;" onclick="openUploadWidget()">📤 Apri Widget Upload Cloudinary</button>
+                    <div id="uploadStatus" style="margin:15px 0;display:none;">
+                        <p style="color:var(--ok);font-weight:600;">✅ <span id="uploadedCount">0</span> foto caricate!</p>
+                    </div>
+                    <div class="form-group" style="display:none;" id="urlsContainer">
+                        <label>URL generati:</label>
+                        <textarea id="photoUrls" rows="3" readonly></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="createGallery()" style="margin-top:20px;">🔗 Crea Galleria</button>
+                    <div id="generatedLink" class="link-box" style="display:none;">
+                        <strong>Link da inviare al cliente:</strong>
+                        <input type="text" id="linkOutput" readonly>
+                        <button class="btn-small" onclick="copyLink()">📋 Copia Link</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>✅ Selezioni Ricevute</h3>
+                    <div id="selectionsList"></div>
+                </div>
+
+                <div class="card backup-section">
+                    <h3>💾 Backup & Ripristino</h3>
+                    <p style="color:var(--soft);font-size:13px;margin-bottom:15px;">I dati delle gallerie sono salvati in questo browser. Scarica periodicamente un backup.</p>
+                    <button class="btn-small" onclick="doBackup()">⬇️ Scarica Backup</button>
+                    <label class="btn-small" style="cursor:pointer;display:inline-block;margin-left:8px;">⬆️ Ripristina Backup<input type="file" id="fileRestore" accept=".json" hidden onchange="doRestore(event)"></label>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA CLIENTE -->
+        <div id="clientView" class="panel" style="display:none;">
+            <div class="panel-content wide">
+                <div class="client-header">
+                    <h2>📸 Scegli le Foto per il Tuo Album</h2>
+                    <p class="client-name" id="clientNameDisplay"></p>
+                </div>
+                <div class="info-box">
+                    <p>✅ Clicca sulle foto che vuoi inserire nell'album</p>
+                    <div class="counter">Foto scelte: <strong id="selectedCount">0</strong></div>
+                </div>
+                <div id="gallery" class="gallery-grid"></div>
+                <div class="actions">
+                    <button class="btn-submit" onclick="submitSelection()">✅ Conferma Scelta Album</button>
+                </div>
+                <div id="message" class="message" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- MODALE DETTAGLIO SELEZIONE -->
+        <div id="selectionModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+                <h3>📋 Dettaglio Selezione</h3>
+                <div id="selectionDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'selezioneAlbumData';
+        let uploadedUrls = [];
+        let uploadedFileNames = [];
+        let cloudinaryWidget = null;
+
+        function loadData() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { galleries: [] }; }
+            catch (e) { return { galleries: [] }; }
+        }
+        function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const galleryId = new URLSearchParams(window.location.search).get('gallery');
+            galleryId ? showClientView(galleryId) : showAdminDashboard();
+        });
+
+        function showAdminDashboard() {
+            document.getElementById('adminDashboard').style.display = 'block';
+            document.getElementById('clientView').style.display = 'none';
+            renderSelections();
+        }
+
+        // === CLOUDINARY WIDGET ===
+        function openUploadWidget() {
+            const cn = document.getElementById('cloudName').value.trim();
+            if (!cn) return alert('⚠️ Inserisci Cloud Name!');
+            if (!cloudinaryWidget) {
+                cloudinaryWidget = cloudinary.createUploadWidget({
+                    cloudName: cn, uploadPreset: 'unsigned', sources: ['local'],
+                    multiple: true, folder: 'gallerie_clienti'
+                }, (err, res) => {
+                    if (!err && res?.event === 'success') {
+                        uploadedUrls.push(res.info.secure_url);
+                        uploadedFileNames.push(`${res.info.original_filename}.${res.info.format}`);
+                        document.getElementById('uploadStatus').style.display = 'block';
+                        document.getElementById('uploadedCount').textContent = uploadedUrls.length;
+                        document.getElementById('urlsContainer').style.display = 'block';
+                        document.getElementById('photoUrls').value = uploadedUrls.join('\n');
+                    }
+                });
+            }
+            cloudinaryWidget.open();
+        }
+
+        function createGallery() {
+            const clientName = document.getElementById('clientName').value.trim();
+            if (!clientName || !uploadedUrls.length) return alert('⚠️ Compila nome e carica foto!');
+            const gallery = {
+                id: 'gallery_' + Date.now(), clientName,
+                photos: [...uploadedUrls], fileNames: [...uploadedFileNames],
+                createdAt: Date.now(), selection: null, selectedFileNames: null, isDownloaded: false
+            };
+            const data = loadData(); data.galleries.push(gallery); saveData(data);
+            const link = `${location.origin}${location.pathname}?gallery=${gallery.id}`;
+            document.getElementById('linkOutput').value = link;
+            document.getElementById('generatedLink').style.display = 'block';
+            uploadedUrls = []; uploadedFileNames = [];
+            document.getElementById('clientName').value = '';
+            document.getElementById('photoUrls').value = '';
+            document.getElementById('uploadStatus').style.display = 'none';
+            document.getElementById('urlsContainer').style.display = 'none';
+            renderSelections();
+            alert(`✅ Galleria creata per ${clientName}!`);
+        }
+        function copyLink() { navigator.clipboard.writeText(document.getElementById('linkOutput').value); alert('✅ Link copiato!'); }
+
+        // === RENDER SELEZIONI CON NUOVI PULSANTI ===
+        function renderSelections() {
+            const completed = loadData().galleries.filter(g => g.selection);
+            const c = document.getElementById('selectionsList');
+            if (!completed.length) { c.innerHTML = '<p style="color:var(--soft);">Nessuna selezione ricevuta</p>'; return; }
+            
+            c.innerHTML = completed.map(g => {
+                const isDone = g.isDownloaded;
+                const statusClass = isDone ? 'is-downloaded' : '';
+                const statusBtnText = isDone ? '✅ Scaricato' : '📥 Segna Scaricato';
+                const statusBtnClass = isDone ? 'btn-status downloaded' : 'btn-status';
+                
+                return `
+                <div class="selection-row ${statusClass}">
+                    <div style="flex-grow:1;">
+                        <strong>${g.clientName}</strong>
+                        <div style="font-size:13px;color:var(--soft);">📅 ${new Date(g.selectionSubmittedAt).toLocaleString()} | ✅ ${g.selection.length} foto</div>
+                    </div>
+                    <div style="display:flex;gap:5px;">
+                        <button onclick="viewSelection('${g.id}')" class="btn-small" style="background:var(--accento);">📋 Vedi</button>
+                        <button onclick="toggleDownloadStatus('${g.id}')" class="${statusBtnClass}">${statusBtnText}</button>
+                        <button onclick="deleteSelection('${g.id}')" class="btn-delete">🗑️ Elimina</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function toggleDownloadStatus(id) {
+            const data = loadData();
+            const g = data.galleries.find(x => x.id === id);
+            if (g) {
+                g.isDownloaded = !g.isDownloaded;
+                saveData(data);
+                renderSelections();
+            }
+        }
+
+        function deleteSelection(id) {
+            if(!confirm("Sei sicuro di voler eliminare questa selezione? L'azione è irreversibile.")) return;
+            const data = loadData();
+            data.galleries = data.galleries.filter(x => x.id !== id);
+            saveData(data);
+            renderSelections();
+        }
+
+        function downloadSmartScript(galleryId) {
+            const data = loadData();
+            const g = data.galleries.find(x => x.id === galleryId);
+            
+            if (!g || !g.selectedFileNames || g.selectedFileNames.length === 0) {
+                alert("Errore: Nessun nome file trovato per questa selezione.");
+                return;
+            }
+
+            const safeName = g.clientName.replace(/[^a-zA-Z0-9_]/g, '_');
+            const cleanNames = g.selectedFileNames.map(name => name.trim()).filter(n => n.length > 0);
+            const txtContent = cleanNames.join('\n');
+
+            try {
+                const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `selezione_${safeName}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+            } catch (e) { alert("Errore tecnico nel download del file."); }
+        }
+
+        function viewSelection(galleryId) {
+            const g = loadData().galleries.find(x => x.id === galleryId);
+            if (!g?.selection) return;
+            const items = g.selection.map((url, i) => `
+                <li><img src="${url}"><div><strong>Foto ${i+1}</strong><br>
+                <small style="color:var(--soft)">${g.selectedFileNames?.[i] || 'N/A'}</small></div></li>`).join('');
+
+            document.getElementById('selectionDetails').innerHTML = `
+                <p><strong>Cliente:</strong> ${g.clientName}</p>
+                <p><strong>Totale:</strong> ${g.selection.length} foto</p>
+                <ul class="selection-list">${items}</ul>
+                
+                <button onclick="downloadSmartScript('${g.id}')" class="btn-download" style="width:100%;margin-top:15px;padding:12px;">📥 Scarica Lista Nomi (.txt)</button>
+                
+                <div class="instruction-box">
+                    💡 <strong>Istruzioni:</strong> Scarica questo file .txt. Apri l'app "Gru AppCenterStudio", seleziona cartella Originali, Destinazione e infine questo file .txt alla terza finestra.
+                </div>`;
+            document.getElementById('selectionModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('selectionModal').style.display = 'none'; }
+        window.onclick = e => { if (e.target.id === 'selectionModal') closeModal(); };
+
+        // === VISTA CLIENTE ===
+        let currentGallery = null, selectedPhotos = new Set();
+
+        function showClientView(galleryId) {
+            const g = loadData().galleries.find(x => x.id === galleryId);
+            if (!g) return alert('❌ Galleria non trovata!');
+            if (g.selection) {
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('clientView').style.display = 'block';
+                document.getElementById('clientNameDisplay').textContent = g.clientName;
+                document.getElementById('message').style.display = 'block';
+                document.getElementById('message').textContent = '✅ Hai già inviato la tua selezione. Grazie!';
+                document.getElementById('gallery').innerHTML = '';
+                document.querySelector('.actions').style.display = 'none';
+                return;
+            }
+            currentGallery = g; selectedPhotos = new Set();
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('clientView').style.display = 'block';
+            document.getElementById('clientNameDisplay').textContent = g.clientName;
+            renderGallery();
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('gallery'); grid.innerHTML = '';
+            currentGallery.photos.forEach((url, i) => {
+                const card = document.createElement('div');
+                card.className = 'photo-card';
+                card.onclick = () => toggleSelection(i, card);
+                card.innerHTML = `<img src="${url}" loading="lazy">`;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleSelection(i, card) {
+            selectedPhotos.has(i) ? selectedPhotos.delete(i) : selectedPhotos.add(i);
+            card.classList.toggle('selected');
+            document.getElementById('selectedCount').textContent = selectedPhotos.size;
+        }
+
+        function submitSelection() {
+            if (!selectedPhotos.size) return alert('⚠️ Seleziona almeno una foto!');
+            if (!confirm(`✅ Confermi ${selectedPhotos.size} foto per l'album?`)) return;
+            const idxs = Array.from(selectedPhotos);
+            const urls = idxs.map(i => currentGallery.photos[i]);
+            const names = idxs.map(i => currentGallery.fileNames?.[i] || `foto_${i}.jpg`);
+            const data = loadData();
+            const g = data.galleries.find(x => x.id === currentGallery.id);
+            g.selection = urls; g.selectedFileNames = names;
+            g.selectionSubmittedAt = Date.now();
+            saveData(data);
+            document.getElementById('gallery').innerHTML = '';
+            document.querySelector('.actions').style.display = 'none';
+            document.getElementById('message').style.display = 'block';
+            document.getElementById('message').innerHTML = `✅ Grazie ${currentGallery.clientName}!<br>Hai scelto ${selectedPhotos.size} foto.<br>Il fotografo provvederà a prepararle.`;
+        }
+
+        // === BACKUP & RIPRISTINO ===
+        function doBackup() {
+            const data = loadData();
+            data.exportedAt = new Date().toISOString();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'AppCenterStudio_SelezioneAlbum_' + new Date().toISOString().slice(0,10) + '.json';
+            a.click();
+        }
+
+        function doRestore(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = ev => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (!data.galleries || !Array.isArray(data.galleries)) {
+                        alert('❌ File di backup non valido.');
+                        return;
+                    }
+                    if (!confirm(`Ripristinare ${data.galleries.length} gallerie?\n\nATTENZIONE: i dati attuali verranno sostituiti.`)) return;
+                    saveData(data);
+                    renderSelections();
+                    alert(`✅ Ripristino completato!\n\n${data.galleries.length} gallerie recuperate.`);
+                } catch (err) {
+                    alert('❌ Errore durante il ripristino: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        }
+
+        showAdminDashboard();
+    </script>
+</body>
+</html>
