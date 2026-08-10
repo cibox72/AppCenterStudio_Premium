@@ -346,7 +346,7 @@ if(b.dataset.act==='contr'){if(!p.accettato){alert('Spuntare prima "Accettato e 
 if(b.dataset.act==='del'){if(confirm('Eliminare definitivamente '+p.numero+'?')){DB.preventivi=DB.preventivi.filter(x=>x.id!==p.id);save();renderArchivio();}}});
 
 /* ================= CLIENTI ================= */
-function renderClienti(){const v=$('#view-clienti');let h='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Clienti (modificabile)</h2><button class="btn" id="btnNewCliente">+ Nuovo Cliente</button></div><div id="clienteForm" hidden style="margin-top:12px"><div class="grid">'+C_FIELDS.map(k=>'<div><label>'+k.toUpperCase()+'</label><input id="c_'+k+'></div>').join('')+'</div><p><button class="btn" id="btnSaveCliente">💾 Salva cliente</button> <button class="btn secondary" id="btnAnnCliente">Annulla</button></p></div><table style="margin-top:12px"><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr>';
+function renderClienti(){const v=$('#view-clienti');let h='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Clienti (modificabile)</h2><button class="btn" id="btnNewCliente">+ Nuovo Cliente</button></div><div id="clienteForm" hidden style="margin-top:12px"><div class="grid">'+C_FIELDS.map(k=>'<div><label>'+k.toUpperCase()+'</label><input id="c_'+k+'"></div>').join('')+'</div><p><button class="btn" id="btnSaveCliente">💾 Salva cliente</button> <button class="btn secondary" id="btnAnnCliente">Annulla</button></p></div><table style="margin-top:12px"><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr>';
 DB.clienti.forEach(c=>{h+='<tr><td>'+esc(c.nome)+'</td><td>'+esc(c.cognome)+'</td><td>'+esc(c.telefono)+'</td><td>'+esc(c.email)+'</td><td>'+esc(c.citta)+'</td><td><button class="mini" data-cmod="'+c.id+'">Modifica</button> <button class="mini" data-cdel="'+c.id+'">🗑</button> <button class="mini" data-cprev="'+c.id+'">➕ Preventivo</button></td></tr>';});
 v.innerHTML=h+'</table></div>';let editId=null;
 $('#btnNewCliente').onclick=()=>{editId=null;C_FIELDS.forEach(k=>$('#c_'+k).value='');$('#clienteForm').hidden=false;};
@@ -397,7 +397,7 @@ if(p.clienteB.nome||p.clienteB.cognome)clientBlock('CLIENTE B',p.clienteB);
 need(20);doc.setFillColor(25,25,25);doc.roundedRect(10,y,W-20,16,2,2,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
 doc.text('DATA SERVIZIO: '+fmtData(p.dataServizio),16,y+10);doc.text('TIPO DI SERVIZIO: '+(p.tipoServizio||''),W-16,y+10,{align:'right'});doc.setTextColor(0,0,0);y+=23;
 doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SERVIZI RICHIESTI',10,y);y+=5;doc.setFontSize(9);
-p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToType(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
+p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToSize(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
 y+=2;const ts=totServiziOf(p),percAmt=ts*((+p.scontoPerc||0)/100),buono=+p.sconto||0,totS=percAmt+buono,tot=totaleOf(p),tac=totAccontiOf(p);
 doc.text('Totale servizi: '+fmt(ts)+' €',W-12,y,{align:'right'});y+=5;
 if(p.scontoPerc>0){doc.text('Sconto '+p.scontoPerc+'%: -'+fmt(percAmt)+' €',W-12,y,{align:'right'});y+=5;}
@@ -412,10 +412,10 @@ doc.setFontSize(11);doc.text('SALDO RESIDUO: '+fmt(tot-tac)+' €',W-12,y,{align
 need(20);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('PIANO DI PAGAMENTO',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(9);
 let sumP=0;p.piano.forEach(r=>{need(8);sumP+=+r.importo||0;doc.text(r.voce,12,y);doc.text(fmt(r.importo)+' €',W-12,y,{align:'right'});y+=5;});
 doc.text('Non pianificato: '+fmt(tot-sumP)+' €',W-12,y,{align:'right'});y+=8;
-if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToType(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
+if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToSize(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
 need(48);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('ACCETTAZIONE E FIRMA',10,y);y+=5;
 doc.setFont('helvetica','normal');doc.setFontSize(8);
-doc.text(doc.splitTextToType('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
+doc.text(doc.splitTextToSize('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
 if(p.accettato){doc.setFont('helvetica','bold');doc.text('✔ DOCUMENTO ACCETTATO E FIRMATO DAL CLIENTE',10,y);doc.setFont('helvetica','normal');y+=6;}
 const fw=85,fh=25;doc.rect(10,y,fw,fh);doc.rect(W-10-fw,y,fw,fh);y+=fh+4;
 doc.setFontSize(8);doc.text('Firma Cliente',10,y);doc.text('Firma Studio',W-10-fw,y);y+=6;
