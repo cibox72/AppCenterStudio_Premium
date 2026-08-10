@@ -2,10 +2,11 @@
 (function(){
   const codice=new URLSearchParams(location.search).get("studio")||sessionStorage.getItem("studio");
   function blocca(msg){
-    document.body.innerHTML=`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f6f4f0;font-family:Georgia,serif;color:#2e2e38">
+    const mostra=()=>{document.body.innerHTML=`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f6f4f0;font-family:Georgia,serif;color:#2e2e38">
     <div style="background:#fff;border:1px solid #e6e2da;border-radius:14px;padding:36px;max-width:430px;text-align:center">
     <div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px">Licenza non attiva</h2>
-    <p style="color:#8a8a96">${msg}</p></div></div>`;
+    <p style="color:#8a8a96">${msg}</p></div></div>`;};
+    if(document.body)mostra();else document.addEventListener("DOMContentLoaded",mostra);
   }
   if(!codice)return blocca("Accedi da AppCenterStudio‑Premium per aprire le applicazioni.");
   sessionStorage.setItem("studio",codice);
