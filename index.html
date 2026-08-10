@@ -30,7 +30,8 @@ label{font-size:12px;color:var(--soft);display:block;margin:10px 0 4px}
 /* ===== AppCenterStudio-Premium ===== */
 const OWNER=location.hostname.split(".")[0];
 const REPO=location.pathname.split("/")[1];
-const ADMIN_PASS="58879@Stella";   // tua password amministratore
+const ADMIN_USER="admin";          // utente amministratore
+const ADMIN_PASS="58879@Stella";   // password amministratore
 const APPS=[
  {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti"},
  {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow servizi fotografici e video"},
@@ -50,7 +51,8 @@ function vistaLogin(){testata.innerHTML=brandHTML();
  <label>Password di accesso</label><input id="passStudio" type="password" placeholder="••••••••">
  <button class="btn primario" style="width:100%;margin-top:14px" onclick="entraStudio()">Entra</button>
  <details style="margin-top:22px" class="soft"><summary style="cursor:pointer;font-size:12px">Accesso amministratore</summary>
- <label>Password amministratore</label><input id="pass" type="password">
+ <label>Utente</label><input id="userAdmin" type="text" placeholder="admin">
+ <label>Password</label><input id="pass" type="password">
  <button class="btn" style="width:100%;margin-top:10px" onclick="entraAdmin()">Entra come admin</button></details></div>`}
 async function entraStudio(){await carica();
  const s=licenze.studi.find(x=>x.password===$("passStudio").value.trim());
@@ -84,7 +86,7 @@ function salvaDati(){profilo=profilo||{};
  Object.assign(profilo,{nome:pNome.value.trim(),indirizzo:pInd.value.trim(),telefono:pTel.value.trim(),email:pEmail.value.trim()});
  localStorage.setItem("acsp:"+studio.codice,JSON.stringify(profilo));vistaDash();alert("Personalizzazione salvata.")}
 function esci(){studio=null;profilo=null;vistaLogin()}
-function entraAdmin(){if($("pass").value===ADMIN_PASS)vistaAdmin();else alert("Password errata.")}
+function entraAdmin(){if($("userAdmin").value.trim()===ADMIN_USER&&$("pass").value===ADMIN_PASS)vistaAdmin();else alert("Credenziali errate.")}
 async function vistaAdmin(){await carica();
  testata.innerHTML=brandHTML()+`<span class="stato ok">admin</span> <button class="btn" onclick="vistaLogin()">Esci</button>`;
  main.innerHTML=`<div class="card"><h2>Studi clienti</h2>
