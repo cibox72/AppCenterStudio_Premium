@@ -1,0 +1,10 @@
+{
+  "studi": [
+    {
+      "nome": "Studio Test",
+      "codice": "test26",
+      "attivo": true,
+      "scadenza": "2026-09-10"
+    }
+  ]
+}
