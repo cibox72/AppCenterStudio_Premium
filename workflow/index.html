@@ -11,7 +11,7 @@
 :root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
 *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,"Segoe UI",Roboto,sans-serif}
 body{background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
-.container{max-width:1400px;margin:0 auto}
+.container{max-width:1600px;margin:0 auto}
 header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(40,40,60,.06);margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .logo{font-family:Georgia,serif;font-size:1.6em;font-weight:600;color:var(--testo)}
 .logo span{font-size:.55em;display:block;color:var(--soft);font-weight:400}
@@ -402,13 +402,6 @@ const STEP_LABEL_CLEAN = {
   "Consegna Anteprima al cliente": "Consegna Anteprima al cliente"
 };
 
-const _codiceStudio = new URLSearchParams(location.search).get("studio") || sessionStorage.getItem("studio") || "";
-let NOME_STUDIO = "";
-try {
-  const p = JSON.parse(localStorage.getItem("acsp:" + _codiceStudio) || "{}");
-  NOME_STUDIO = p.nome || "";
-} catch(e) {}
-
 let services = JSON.parse(localStorage.getItem("gl_services") || "[]");
 let editingId = null;
 
@@ -489,8 +482,7 @@ function saveService() {
 }
 
 function getArchiveByOptions(s) {
-  const nomeStudio = NOME_STUDIO || "Studio";
-  const options = [`<option value="${nomeStudio}">${nomeStudio}</option>`];
+  const options = [`<option value="Studio">Studio</option>`];
   if (s.videographer && s.videographer.trim()) {
     options.push(`<option value="${s.videographer}">${s.videographer} (collega)</option>`);
   }
@@ -637,9 +629,8 @@ function renderStepRow(s, st, section) {
   let extraHtml = "";
   if (st.extra) {
     if (st.extraType === "archivedBy") {
-      const nomeStudio = NOME_STUDIO || "Studio";
-      const currentVal = d.extra?.archivedBy || nomeStudio;
-      const isAltro = currentVal && ![nomeStudio, s.videographer].includes(currentVal);
+      const currentVal = d.extra?.archivedBy || "Studio";
+      const isAltro = currentVal && !["Studio", s.videographer].includes(currentVal);
       const displayVal = isAltro ? currentVal : "";
       extraHtml = `<div class="step-extra"><select onchange="handleArchiveByChange(${s.id}, '${st.id}', this.value, '${section}')">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateExtra(${s.id},'${st.id}','archivedBy',this.value,'${section}')">` : ''}</div>`;
     } else if (st.extraType === "cover") {
@@ -657,9 +648,8 @@ function renderComboStepRow(s, st, sectionName) {
   let extraHtml = "";
   if (st.extra) {
     if (st.extraType === "archivedBy") {
-      const nomeStudio = NOME_STUDIO || "Studio";
-      const currentVal = d.extra?.archivedBy || nomeStudio;
-      const isAltro = currentVal && ![nomeStudio, s.videographer].includes(currentVal);
+      const currentVal = d.extra?.archivedBy || "Studio";
+      const isAltro = currentVal && !["Studio", s.videographer].includes(currentVal);
       const displayVal = isAltro ? currentVal : "";
       extraHtml = `<div class="step-extra"><select onchange="handleComboArchiveByChange(${s.id}, '${sectionName}', '${st.id}', this.value)">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','archivedBy',this.value)">` : ''}</div>`;
     } else if (st.extraType === "cover") {
@@ -703,7 +693,7 @@ function toggleStep(id, stepId, checked, section) {
   st.done = checked;
   if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
   if ((stepId === "archiveVideo" && section === 'service') || (stepId === "p_archiveVideo" && section === 'preview')) {
-    if (!st.extra.archivedBy) st.extra.archivedBy = NOME_STUDIO || "Studio";
+    if (!st.extra.archivedBy) st.extra.archivedBy = "Studio";
   }
   save(); renderServices();
   document.getElementById("steps-" + id).classList.add("open");
@@ -716,7 +706,7 @@ function toggleComboStep(serviceId, sectionName, stepId, checked) {
   const st = ensureStep(s.sections[sectionName], stepId);
   st.done = checked;
   if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
-  if (stepId === "archiveVideo" && !st.extra.archivedBy) st.extra.archivedBy = NOME_STUDIO || "Studio";
+  if (stepId === "archiveVideo" && !st.extra.archivedBy) st.extra.archivedBy = "Studio";
   save(); renderServices();
   document.getElementById("steps-" + serviceId).classList.add("open");
   renderTable();
@@ -838,8 +828,8 @@ async function generatePDF(id) {
   doc.setFillColor(46, 46, 56);
   doc.rect(0, 0, 210, 40, 'F');
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24); doc.text(NOME_STUDIO || "Studio Fotografico", 15, 20);
-  doc.setFontSize(12); doc.text("AppCenterStudio Premium - Workflow Foto & Video", 15, 28);
+  doc.setFontSize(24); doc.text("AppCenterStudio Premium", 15, 20);
+  doc.setFontSize(12); doc.text("Workflow Foto & Video", 15, 28);
   doc.setTextColor(0, 0, 0); doc.setFontSize(14);
   doc.text(`Cliente: ${s.client}`, 15, 55);
   doc.text(`Tipo: ${s.type}`, 15, 63);
@@ -875,7 +865,7 @@ async function generatePDF(id) {
   }
   doc.setFontSize(10); doc.setTextColor(150, 150, 150);
   doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, 15, 285);
-  doc.save(`${(NOME_STUDIO||'Studio').replace(/\s+/g,'_')}_${s.client.replace(/\s+/g, '_')}_${s.type.replace(/\s+/g, '_')}.pdf`);
+  doc.save(`AppCenterStudio_${s.client.replace(/\s+/g, '_')}_${s.type.replace(/\s+/g, '_')}.pdf`);
 }
 
 function renderPDFStep(doc, st, d, y) {
@@ -1014,7 +1004,7 @@ function generateTablePDF() {
   doc.rect(0, 0, 297, 25, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
-  doc.text((NOME_STUDIO || "Studio") + " - Stato Lavori Clienti", 14, 16);
+  doc.text("AppCenterStudio Premium - Stato Lavori Clienti", 14, 16);
   const sorted = services.slice().sort((a, b) => {
     const orderA = TYPE_ORDER.indexOf(a.type);
     const orderB = TYPE_ORDER.indexOf(b.type);
@@ -1078,7 +1068,7 @@ function generateTablePDF() {
     doc.setTextColor(150, 150, 150);
     doc.text(`Pagina ${i} di ${pageCount} - Generato il ${new Date().toLocaleDateString('it-IT')}`, 14, doc.internal.pageSize.height - 10);
   }
-  doc.save(`${(NOME_STUDIO||'Studio').replace(/\s+/g,'_')}_Stato_Lavori_${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`AppCenterStudio_Stato_Lavori_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 function generateArchivePDF() {
@@ -1103,7 +1093,7 @@ function generateArchivePDF() {
   doc.rect(0, 0, 297, 30, 'F');
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(22);
-  doc.text((NOME_STUDIO || "Studio") + " - Archivio Clienti", 14, 14);
+  doc.text("AppCenterStudio Premium - Archivio Clienti", 14, 14);
   doc.setFontSize(11);
   doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')} - ${filtered.length} servizi`, 14, 23);
   const head = [['#', 'Cliente', 'Tipo', 'Data', 'Videografo', 'Video', 'Data Video', 'Ult. Step Anteprima', 'Data Anteprima', 'Ult. Step Servizio', 'Data Servizio', 'Stato']];
@@ -1183,15 +1173,15 @@ function generateArchivePDF() {
     doc.text(`Nota: L'ultimo step del servizio principale è sempre mostrato separatamente dall'anteprima`, 14, doc.internal.pageSize.height - 15);
     doc.text(`Pagina ${i} di ${pageCount}`, 14, doc.internal.pageSize.height - 8);
   }
-  doc.save(`${(NOME_STUDIO||'Studio').replace(/\s+/g,'_')}_Archivio_Clienti_${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`AppCenterStudio_Archivio_Clienti_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 function doBackup() {
-  const data = { version: 19, exportedAt: new Date().toISOString(), studio: NOME_STUDIO, services };
+  const data = { version: 19, exportedAt: new Date().toISOString(), services };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = (NOME_STUDIO||"Studio").replace(/\s+/g,'_') + "_Backup_" + new Date().toISOString().slice(0,10) + ".json";
+  a.download = "AppCenterStudio_Backup_" + new Date().toISOString().slice(0,10) + ".json";
   a.click();
 }
 
@@ -1238,7 +1228,6 @@ function doRestore(e) {
 
 function closeModal(id) { document.getElementById(id).classList.remove("active"); editingId = null; }
 
-// RIPARA I DATI ALL'AVVIO (così le sezioni accettano di nuovo i dati)
 services = services.map(migrateService).filter(s => s !== null);
 save();
 renderServices();
