@@ -499,7 +499,7 @@ function getArchiveByOptions(s) {
 }
 
 function countDone(stepsObj, stepsList) {
-  return stepsList.filter(st => stepsObj[st.id]?.done).length;
+  return stepsList.filter(st => (stepsObj && stepsObj[st.id] && stepsObj[st.id].done)).length;
 }
 
 function getLastMainStepInfo(s) {
@@ -632,7 +632,7 @@ function renderSteps(s) {
 }
 
 function renderStepRow(s, st, section) {
-  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : (s.steps || {});
   const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
   let extraHtml = "";
   if (st.extra) {
@@ -671,71 +671,77 @@ function renderComboStepRow(s, st, sectionName) {
   return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleComboStep(${s.id},'${sectionName}','${st.id}',this.checked)"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateComboDate(${s.id},'${sectionName}','${st.id}',this.value)">${extraHtml}</div>`;
 }
 
+function ensureStep(stepsObj, stepId) {
+  if (!stepsObj[stepId]) stepsObj[stepId] = { done: false, date: "", extra: {} };
+  if (!stepsObj[stepId].extra) stepsObj[stepId].extra = {};
+  return stepsObj[stepId];
+}
+
 function handleArchiveByChange(serviceId, stepId, value, section) {
-  const s = services.find(x => x.id === serviceId);
+  const s = services.find(x => x.id === serviceId); if (!s) return;
   if (value === "__altro__") return;
-  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
-  stepsObj[stepId].extra = stepsObj[stepId].extra || {};
-  stepsObj[stepId].extra.archivedBy = value;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  ensureStep(stepsObj, stepId).extra.archivedBy = value;
   save(); renderServices();
   document.getElementById("steps-" + serviceId).classList.add("open");
 }
 function handleComboArchiveByChange(serviceId, sectionName, stepId, value) {
-  const s = services.find(x => x.id === serviceId);
+  const s = services.find(x => x.id === serviceId); if (!s) return;
   if (value === "__altro__") return;
+  if (!s.sections) s.sections = {};
   if (!s.sections[sectionName]) s.sections[sectionName] = {};
-  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
-  s.sections[sectionName][stepId].extra = s.sections[sectionName][stepId].extra || {};
-  s.sections[sectionName][stepId].extra.archivedBy = value;
+  ensureStep(s.sections[sectionName], stepId).extra.archivedBy = value;
   save(); renderServices();
   document.getElementById("steps-" + serviceId).classList.add("open");
 }
 
 function toggleSteps(id) { document.getElementById("steps-" + id).classList.toggle("open"); }
 function toggleStep(id, stepId, checked, section) {
-  const s = services.find(x => x.id === id);
-  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
-  stepsObj[stepId].done = checked;
-  if (checked && !stepsObj[stepId].date) stepsObj[stepId].date = new Date().toISOString().slice(0,10);
+  const s = services.find(x => x.id === id); if (!s) return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  const st = ensureStep(stepsObj, stepId);
+  st.done = checked;
+  if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
   if ((stepId === "archiveVideo" && section === 'service') || (stepId === "p_archiveVideo" && section === 'preview')) {
-    if (!stepsObj[stepId].extra.archivedBy) stepsObj[stepId].extra.archivedBy = NOME_STUDIO || "Studio";
+    if (!st.extra.archivedBy) st.extra.archivedBy = NOME_STUDIO || "Studio";
   }
   save(); renderServices();
   document.getElementById("steps-" + id).classList.add("open");
   renderTable();
 }
 function toggleComboStep(serviceId, sectionName, stepId, checked) {
-  const s = services.find(x => x.id === serviceId);
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (!s.sections) s.sections = {};
   if (!s.sections[sectionName]) s.sections[sectionName] = {};
-  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
-  s.sections[sectionName][stepId].done = checked;
-  if (checked && !s.sections[sectionName][stepId].date) s.sections[sectionName][stepId].date = new Date().toISOString().slice(0,10);
-  if (stepId === "archiveVideo" && !s.sections[sectionName][stepId].extra.archivedBy) s.sections[sectionName][stepId].extra.archivedBy = NOME_STUDIO || "Studio";
+  const st = ensureStep(s.sections[sectionName], stepId);
+  st.done = checked;
+  if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
+  if (stepId === "archiveVideo" && !st.extra.archivedBy) st.extra.archivedBy = NOME_STUDIO || "Studio";
   save(); renderServices();
   document.getElementById("steps-" + serviceId).classList.add("open");
   renderTable();
 }
 function updateDate(id, stepId, val, section) {
-  const s = services.find(x => x.id === id);
-  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
-  stepsObj[stepId].date = val; save();
+  const s = services.find(x => x.id === id); if (!s) return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  ensureStep(stepsObj, stepId).date = val; save();
 }
 function updateComboDate(serviceId, sectionName, stepId, val) {
-  const s = services.find(x => x.id === serviceId);
-  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
-  s.sections[sectionName][stepId].date = val; save();
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (!s.sections) s.sections = {};
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  ensureStep(s.sections[sectionName], stepId).date = val; save();
 }
 function updateExtra(id, stepId, field, val, section) {
-  const s = services.find(x => x.id === id);
-  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : s.steps;
-  if (!stepsObj[stepId].extra) stepsObj[stepId].extra = {};
-  stepsObj[stepId].extra[field] = val; save();
+  const s = services.find(x => x.id === id); if (!s) return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  ensureStep(stepsObj, stepId).extra[field] = val; save();
 }
 function updateComboExtra(serviceId, sectionName, stepId, field, val) {
-  const s = services.find(x => x.id === serviceId);
-  if (!s.sections[sectionName][stepId]) s.sections[sectionName][stepId] = { done: false, date: "", extra: {} };
-  if (!s.sections[sectionName][stepId].extra) s.sections[sectionName][stepId].extra = {};
-  s.sections[sectionName][stepId].extra[field] = val; save();
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (!s.sections) s.sections = {};
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  ensureStep(s.sections[sectionName], stepId).extra[field] = val; save();
 }
 function deleteService(id) {
   if (!confirm("Eliminare questo servizio?")) return;
@@ -745,7 +751,7 @@ function deleteService(id) {
 function save() { localStorage.setItem("gl_services", JSON.stringify(services)); }
 
 function viewService(id) {
-  const s = services.find(x => x.id === id);
+  const s = services.find(x => x.id === id); if (!s) return;
   let html = `<div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${s.client}</div></div>
     <div class="detail-row"><div class="detail-label">Tipo Servizio</div><div class="detail-value">${s.type}</div></div>
     <div class="detail-row"><div class="detail-label">Data Evento</div><div class="detail-value">${s.date || 'Non specificata'}</div></div>
@@ -760,7 +766,7 @@ function viewService(id) {
     html += `<h3 style="margin:20px 0 10px; padding:10px; background:#c9b283; color:white; border-radius:10px;">ANTEPRIMA</h3>`;
     STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
     html += `<h3 style="margin:20px 0 10px; padding:10px; background:#6f7f8f; color:white; border-radius:10px;">SERVIZIO</h3>`;
-    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
   } else if (isComboType(s.type)) {
     const sections = getComboSections(s.type);
     sections.forEach(secName => {
@@ -781,7 +787,7 @@ function viewService(id) {
     const servicePct = Math.round((serviceDone / STEPS.length) * 100);
     html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
     html += `<h3 style="margin:20px 0 10px; padding:10px; background:#6f7f8f; color:white; border-radius:10px;">SERVIZIO</h3>`;
-    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
   }
   document.getElementById("detailTitle").textContent = `${s.client} - ${s.type}`;
   document.getElementById("detailBody").innerHTML = html;
@@ -802,7 +808,7 @@ function renderStepDetail(st, d) {
 }
 
 function editService(id) {
-  const s = services.find(x => x.id === id);
+  const s = services.find(x => x.id === id); if (!s) return;
   editingId = id;
   document.getElementById("editClient").value = s.client;
   document.getElementById("editType").value = s.type;
@@ -812,7 +818,7 @@ function editService(id) {
 }
 function saveEdit() {
   if (!editingId) return;
-  const s = services.find(x => x.id === editingId);
+  const s = services.find(x => x.id === editingId); if (!s) return;
   const oldType = s.type;
   s.client = document.getElementById("editClient").value.trim();
   s.type = document.getElementById("editType").value;
@@ -826,7 +832,7 @@ function saveEdit() {
 }
 
 async function generatePDF(id) {
-  const s = services.find(x => x.id === id);
+  const s = services.find(x => x.id === id); if (!s) return;
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.setFillColor(46, 46, 56);
@@ -848,7 +854,7 @@ async function generatePDF(id) {
     doc.setFillColor(111, 127, 143); doc.rect(15, y - 5, 180, 8, 'F');
     doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
     doc.setTextColor(0, 0, 0); y += 8;
-    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
   } else if (isComboType(s.type)) {
     const sections = getComboSections(s.type);
     sections.forEach(secName => {
@@ -865,7 +871,7 @@ async function generatePDF(id) {
     doc.setFillColor(111, 127, 143); doc.rect(15, y - 5, 180, 8, 'F');
     doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
     doc.setTextColor(0, 0, 0); y += 8;
-    STEPS.forEach(st => { const d = s.steps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
   }
   doc.setFontSize(10); doc.setTextColor(150, 150, 150);
   doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, 15, 285);
@@ -1232,6 +1238,9 @@ function doRestore(e) {
 
 function closeModal(id) { document.getElementById(id).classList.remove("active"); editingId = null; }
 
+// RIPARA I DATI ALL'AVVIO (così le sezioni accettano di nuovo i dati)
+services = services.map(migrateService).filter(s => s !== null);
+save();
 renderServices();
 </script>
 </body>
