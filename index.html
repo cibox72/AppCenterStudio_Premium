@@ -30,7 +30,7 @@ label{font-size:12px;color:var(--soft);display:block;margin:10px 0 4px}
 /* ===== AppCenterStudio-Premium ===== */
 const OWNER=location.hostname.split(".")[0];
 const REPO=location.pathname.split("/")[1];
-const HASH_ADMIN="METTI-QUI-L-HASH";   // istruzioni sotto
+const ADMIN_PASS="58879@Stella";   // tua password amministratore
 const APPS=[
  {nome:"App Uno",path:"app-1/",desc:"Descrizione app 1"},
  {nome:"App Due",path:"app-2/",desc:"Descrizione app 2"},
@@ -39,7 +39,6 @@ let licenze=null,studio=null,profilo=null,tokenGH=localStorage.getItem("gh_token
 const $=id=>document.getElementById(id);
 const oggi=()=>new Date().toISOString().slice(0,10);
 const gg=s=>Math.ceil((new Date(s.scadenza)-new Date(oggi()))/864e5);
-async function sha256(t){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
 async function carica(){licenze=await(await fetch("licenses.json?t="+Date.now(),{cache:"no-store"})).json()}
 function brandHTML(){const p=profilo||{};
  return `<div class="brand">${p.logo?`<img src="${p.logo}">`:`<div class="logo">A</div>`}
@@ -84,7 +83,7 @@ function salvaDati(){profilo=profilo||{};
  Object.assign(profilo,{nome:pNome.value.trim(),indirizzo:pInd.value.trim(),telefono:pTel.value.trim(),email:pEmail.value.trim()});
  localStorage.setItem("acsp:"+studio.codice,JSON.stringify(profilo));vistaDash();alert("Personalizzazione salvata.")}
 function esci(){studio=null;profilo=null;vistaLogin()}
-async function entraAdmin(){if(await sha256($("pass").value)===HASH_ADMIN)vistaAdmin();else alert("Password errata.")}
+function entraAdmin(){if($("pass").value===ADMIN_PASS)vistaAdmin();else alert("Password errata.")}
 async function vistaAdmin(){await carica();
  testata.innerHTML=brandHTML()+`<span class="stato ok">admin</span> <button class="btn" onclick="vistaLogin()">Esci</button>`;
  main.innerHTML=`<div class="card"><h2>Studi clienti</h2>
@@ -92,7 +91,9 @@ async function vistaAdmin(){await carica();
  <div class="grid" style="grid-template-columns:1fr 1fr">
  <div class="card"><h3>Nuovo studio (30 gg di prova)</h3>
   <label>Nome studio</label><input id="nNome" placeholder="es. Studio Rossi">
-  <label>Password da fornire allo studio</label><input id="nPass" placeholder="es. rossi-2026">
+  <label>Password per lo studio</label>
+  <div style="display:flex;gap:8px"><input id="nPass" placeholder="vuota = generata in automatico">
+  <button class="btn" onclick="nPass.value=genToken()">Genera</button></div>
   <button class="btn primario" style="width:100%;margin-top:12px" onclick="nuovoStudio()">Crea studio</button></div>
  <div class="card"><h3>Token GitHub</h3>
   <p class="soft">Serve ai pulsanti Accendi/Spegni. Crealo su GitHub con scope <em>public_repo</em>. Resta salvato solo su questo PC.</p>
@@ -102,9 +103,14 @@ function rigaStudio(s){const attivo=s.attivo&&s.scadenza>=oggi();
  return `<div class="riga"><div><strong>${s.nome}</strong><br>
  <small>password: <b>${s.password}</b> · scadenza: ${s.scadenza} · <span class="stato ${attivo?"ok":"ko"}">${attivo?"attivo":"spento/scaduto"}</span></small></div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+ <button class="btn" onclick="copia('${s.password}')">Copia</button>
  <button class="btn" onclick="cambiaPass('${s.codice}')">Password</button>
  <button class="btn" onclick="piu30('${s.codice}')">+30 gg</button>
  <button class="btn ${s.attivo?"":"primario"}" onclick="toggle('${s.codice}')">${s.attivo?"Spegni":"Accendi"}</button></div></div>`}
+function copia(t){navigator.clipboard.writeText(t).then(()=>alert("Password copiata: "+t))}
+function genToken(){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let t="ACS-";
+ for(let i=0;i<4;i++)t+=c[Math.floor(Math.random()*c.length)];t+="-";
+ for(let i=0;i<4;i++)t+=c[Math.floor(Math.random()*c.length)];return t}
 function genCodice(nome){let base=nome.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"studio";
  let cod=base,n=2;while(licenze.studi.some(s=>s.codice===cod))cod=base+"-"+n++;return cod}
 async function toggle(c){const s=licenze.studi.find(x=>x.codice===c);s.attivo=!s.attivo;await salvaLicenze();vistaAdmin()}
@@ -114,12 +120,13 @@ async function piu30(c){const s=licenze.studi.find(x=>x.codice===c);
 async function cambiaPass(c){const s=licenze.studi.find(x=>x.codice===c);
  const np=prompt("Nuova password per "+s.nome+":",s.password);if(!np||np===s.password)return;
  s.password=np;await salvaLicenze();vistaAdmin()}
-async function nuovoStudio(){const nome=nNome.value.trim(),pass=nPass.value.trim();
- if(!nome||!pass)return alert("Inserisci nome e password.");
- if(licenze.studi.some(s=>s.password===pass))return alert("Password già usata da un altro studio.");
+async function nuovoStudio(){const nome=nNome.value.trim();let pass=nPass.value.trim()||genToken();
+ if(!nome)return alert("Inserisci il nome dello studio.");
+ if(licenze.studi.some(s=>s.password===pass))return alert("Password già usata.");
  const d=new Date();d.setDate(d.getDate()+30);
  licenze.studi.push({nome,codice:genCodice(nome),password:pass,attivo:true,scadenza:d.toISOString().slice(0,10)});
- await salvaLicenze();vistaAdmin()}
+ await salvaLicenze();vistaAdmin();
+ alert("Studio creato.\nPassword da comunicare al cliente: "+pass+"\nLa trovi comunque salvata nell'elenco studi.")}
 async function salvaLicenze(){if(!tokenGH)return alert("Salva prima il token GitHub.");
  const url=`https://api.github.com/repos/${OWNER}/${REPO}/contents/licenses.json`;let sha;
  const g=await fetch(url,{headers:hGH()});if(g.ok)sha=(await g.json()).sha;
