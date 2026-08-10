@@ -4,7 +4,7 @@
       "nome": "Studio Test",
       "codice": "st-001",
       "password": "test26",
-      "attivo": true,
+      "attivo": false,
       "scadenza": "2026-09-10"
     }
   ]
