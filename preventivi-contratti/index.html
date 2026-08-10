@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AppCenterStudio Light – Preventivi & Contratti Studio Fotografico</title>
-<!-- AppCenterStudio Light v3 -->
+<title>AppCenterStudio Premium – Preventivi & Contratti Studio Fotografico</title>
+<script src="../licenza.js"></script>
+<!-- AppCenterStudio Premium v3 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7}
@@ -53,33 +54,18 @@ table{width:100%;border-collapse:collapse}
 th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:left;vertical-align:top}
 th{background:#111;color:#fff}
 .hint{font-size:12px;color:#777}
-#loginOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#000,#444);display:flex;align-items:center;justify-content:center;z-index:99}
-.loginCard{background:#fff;border-radius:16px;padding:34px;width:340px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.5)}
-.loginCard .brandName{font-size:24px}
-.loginCard input{margin:14px 0;text-align:center;letter-spacing:4px}
 footer{text-align:center;padding:20px;font-size:12px;color:#888}
 @media(max-width:800px){.grid,.highlight{grid-template-columns:1fr}.servRow{grid-template-columns:auto 1fr 90px 60px auto}}
 </style>
 </head>
 <body>
 
-<div id="loginOverlay">
-  <div class="loginCard">
-    <div class="brandName">AppCenterStudio Light</div>
-    <p class="hint">Preventivi & Contratti per studi fotografici</p>
-    <input id="pin" type="password" placeholder="PIN ADMIN" inputmode="numeric">
-    <button id="btnLogin" class="btn" style="width:100%">🔓 Entra</button>
-    <p class="hint">PIN predefinito: 1234 (modificabile in Admin)</p>
-  </div>
-</div>
-
 <header>
   <div class="brand">
-    <img src="logo.png" alt="AppCenterStudio Light" onerror="this.remove()">
-    <span class="brandName">AppCenterStudio Light</span>
+    <img src="logo.jpg" alt="AppCenterStudio Premium" onerror="this.remove()">
+    <span class="brandName">AppCenterStudio Premium</span>
   </div>
   <div id="studioNameHead"></div>
-  <button id="btnLogout" class="btn secondary" hidden>🔒 Esci</button>
 </header>
 
 <nav>
@@ -217,7 +203,6 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
       <div><label>Indirizzo</label><input id="s_indirizzo"></div>
       <div><label>Telefono</label><input id="s_telefono"></div>
       <div><label>Email</label><input id="s_email"></div>
-      <div><label>Nuovo PIN Admin</label><input id="s_pin"></div>
     </div>
     <label style="margin-top:8px">Note fisse su PDF (es. orari, sito web)</label><textarea id="s_note"></textarea>
   </div>
@@ -233,7 +218,7 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
 </section>
 
 </main>
-<footer>AppCenterStudio Light – Gestionale preventivi & contratti per studi fotografici · Tutto in Euro (€)</footer>
+<footer>AppCenterStudio Premium – Gestionale preventivi & contratti per studi fotografici · Tutto in Euro (€)</footer>
 
 <script>
 /* ================= UTILS ================= */
@@ -270,7 +255,7 @@ const DEFAULT_CATEGORIE=[
 ];
 const DEFAULT_PIANO=['Caparra alla firma','Acconto prima del servizio','Acconto alla scelta foto e copertina','Saldo prima della stampa'];
 
-function defaultDB(){return{adminPin:'1234',studio:{nome:'',indirizzo:'',telefono:'',email:'',piva:'',note:''},categorie:JSON.parse(JSON.stringify(DEFAULT_CATEGORIE)),clienti:[],preventivi:[],seq:1};}
+function defaultDB(){return{studio:{nome:'',indirizzo:'',telefono:'',email:'',piva:'',note:''},categorie:JSON.parse(JSON.stringify(DEFAULT_CATEGORIE)),clienti:[],preventivi:[],seq:1};}
 let DB=(function(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.categorie){(d.preventivi||[]).forEach(p=>{if(p.scontoPerc===undefined)p.scontoPerc=0;});return d;}}catch(e){}return defaultDB();})();
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
 
@@ -284,13 +269,6 @@ const totAccontiOf=p=>p.acconti.reduce((a,x)=>a+(+x.importo||0),0);
 const scontoTotOf=p=>totServiziOf(p)*((+p.scontoPerc||0)/100)+(+p.sconto||0);
 const totaleOf=p=>totServiziOf(p)-scontoTotOf(p);
 const saldoOf=p=>totaleOf(p)-totAccontiOf(p);
-
-/* ================= LOGIN ================= */
-$('#btnLogin').onclick=()=>{if($('#pin').value===DB.adminPin){sessionStorage.setItem('ac_admin','1');enter();}else alert('PIN errato');};
-$('#btnLogout').onclick=()=>{sessionStorage.removeItem('ac_admin');location.reload();};
-function enter(){$('#loginOverlay').style.display='none';$('#btnLogout').hidden=false;refreshHead();renderForm();renderArchivio();renderClienti();renderListini();renderStudio();}
-if(sessionStorage.getItem('ac_admin')==='1')enter();
-function refreshHead(){$('#studioNameHead').textContent=DB.studio.nome||'Gestionale per studi fotografici';}
 
 /* ================= TABS ================= */
 function switchTab(v){$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));$$('main section').forEach(s=>s.hidden=s.id!=='view-'+v);}
@@ -368,7 +346,7 @@ if(b.dataset.act==='contr'){if(!p.accettato){alert('Spuntare prima "Accettato e 
 if(b.dataset.act==='del'){if(confirm('Eliminare definitivamente '+p.numero+'?')){DB.preventivi=DB.preventivi.filter(x=>x.id!==p.id);save();renderArchivio();}}});
 
 /* ================= CLIENTI ================= */
-function renderClienti(){const v=$('#view-clienti');let h='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Clienti (modificabile)</h2><button class="btn" id="btnNewCliente">+ Nuovo Cliente</button></div><div id="clienteForm" hidden style="margin-top:12px"><div class="grid">'+C_FIELDS.map(k=>'<div><label>'+k.toUpperCase()+'</label><input id="c_'+k+'"></div>').join('')+'</div><p><button class="btn" id="btnSaveCliente">💾 Salva cliente</button> <button class="btn secondary" id="btnAnnCliente">Annulla</button></p></div><table style="margin-top:12px"><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr>';
+function renderClienti(){const v=$('#view-clienti');let h='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Clienti (modificabile)</h2><button class="btn" id="btnNewCliente">+ Nuovo Cliente</button></div><div id="clienteForm" hidden style="margin-top:12px"><div class="grid">'+C_FIELDS.map(k=>'<div><label>'+k.toUpperCase()+'</label><input id="c_'+k+'></div>').join('')+'</div><p><button class="btn" id="btnSaveCliente">💾 Salva cliente</button> <button class="btn secondary" id="btnAnnCliente">Annulla</button></p></div><table style="margin-top:12px"><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr>';
 DB.clienti.forEach(c=>{h+='<tr><td>'+esc(c.nome)+'</td><td>'+esc(c.cognome)+'</td><td>'+esc(c.telefono)+'</td><td>'+esc(c.email)+'</td><td>'+esc(c.citta)+'</td><td><button class="mini" data-cmod="'+c.id+'">Modifica</button> <button class="mini" data-cdel="'+c.id+'">🗑</button> <button class="mini" data-cprev="'+c.id+'">➕ Preventivo</button></td></tr>';});
 v.innerHTML=h+'</table></div>';let editId=null;
 $('#btnNewCliente').onclick=()=>{editId=null;C_FIELDS.forEach(k=>$('#c_'+k).value='');$('#clienteForm').hidden=false;};
@@ -390,9 +368,8 @@ box.addEventListener('input',e=>{const ci=+e.target.dataset.ci,si=e.target.datas
 box.addEventListener('click',e=>{if(e.target.dataset.delcat!==undefined){if(confirm('Eliminare categoria?')){DB.categorie.splice(+e.target.dataset.delcat,1);save();renderListini();}}else if(e.target.dataset.delserv){const a=e.target.dataset.delserv.split(':').map(Number);DB.categorie[a[0]].servizi.splice(a[1],1);save();renderListini();}else if(e.target.dataset.addserv!==undefined){DB.categorie[+e.target.dataset.addserv].servizi.push({id:uid(),nome:'Nuovo servizio',prezzo:0});save();renderListini();}});}
 
 /* ================= STUDIO & BACKUP ================= */
-function renderStudio(){['nome','indirizzo','telefono','email','piva','note'].forEach(k=>$('#s_'+k).value=DB.studio[k]||'');$('#s_pin').value=DB.adminPin;
-['nome','indirizzo','telefono','email','piva','note'].forEach(k=>{$('#s_'+k).oninput=e=>{DB.studio[k]=e.target.value;save();refreshHead();};});
-$('#s_pin').oninput=e=>{DB.adminPin=e.target.value||'1234';save();};}
+function renderStudio(){['nome','indirizzo','telefono','email','piva','note'].forEach(k=>$('#s_'+k).value=DB.studio[k]||'');
+['nome','indirizzo','telefono','email','piva','note'].forEach(k=>{$('#s_'+k).oninput=e=>{DB.studio[k]=e.target.value;save();refreshHead();};});}
 $('#btnBackup').onclick=()=>{const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='appcenter_backup_'+today()+'.json';a.click();};
 $('#fileRestore').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.categorie)throw 0;DB=Object.assign(defaultDB(),d);save();alert('Backup ripristinato!');location.reload();}catch(x){alert('File di backup non valido.');}};r.readAsText(f);};
 $('#btnResetAll').onclick=()=>{if(confirm('AZZERARE TUTTI I DATI? L\'operazione non è reversibile.')){localStorage.removeItem(KEY);location.reload();}};
@@ -405,7 +382,7 @@ doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(st.nome||'Studio Fo
 doc.setFont('helvetica','normal');doc.setFontSize(8);
 doc.text([st.indirizzo,st.telefono?'Tel. '+st.telefono:'',st.email,st.piva?'P.IVA '+st.piva:''].filter(Boolean).join('  ·  '),10,17);
 doc.text(st.note||'',10,22);
-doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('AppCenterStudio Light',W-10,11,{align:'right'});
+doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('AppCenterStudio Premium',W-10,11,{align:'right'});
 doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Preventivi & Contratti per studi fotografici',W-10,16,{align:'right'});
 y=40;doc.setTextColor(0,0,0);
 doc.setFont('helvetica','bold');doc.setFontSize(13);
@@ -420,7 +397,7 @@ if(p.clienteB.nome||p.clienteB.cognome)clientBlock('CLIENTE B',p.clienteB);
 need(20);doc.setFillColor(25,25,25);doc.roundedRect(10,y,W-20,16,2,2,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
 doc.text('DATA SERVIZIO: '+fmtData(p.dataServizio),16,y+10);doc.text('TIPO DI SERVIZIO: '+(p.tipoServizio||''),W-16,y+10,{align:'right'});doc.setTextColor(0,0,0);y+=23;
 doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SERVIZI RICHIESTI',10,y);y+=5;doc.setFontSize(9);
-p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToSize(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
+p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToType(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
 y+=2;const ts=totServiziOf(p),percAmt=ts*((+p.scontoPerc||0)/100),buono=+p.sconto||0,totS=percAmt+buono,tot=totaleOf(p),tac=totAccontiOf(p);
 doc.text('Totale servizi: '+fmt(ts)+' €',W-12,y,{align:'right'});y+=5;
 if(p.scontoPerc>0){doc.text('Sconto '+p.scontoPerc+'%: -'+fmt(percAmt)+' €',W-12,y,{align:'right'});y+=5;}
@@ -435,16 +412,25 @@ doc.setFontSize(11);doc.text('SALDO RESIDUO: '+fmt(tot-tac)+' €',W-12,y,{align
 need(20);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('PIANO DI PAGAMENTO',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(9);
 let sumP=0;p.piano.forEach(r=>{need(8);sumP+=+r.importo||0;doc.text(r.voce,12,y);doc.text(fmt(r.importo)+' €',W-12,y,{align:'right'});y+=5;});
 doc.text('Non pianificato: '+fmt(tot-sumP)+' €',W-12,y,{align:'right'});y+=8;
-if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToSize(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
+if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToType(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
 need(48);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('ACCETTAZIONE E FIRMA',10,y);y+=5;
 doc.setFont('helvetica','normal');doc.setFontSize(8);
-doc.text(doc.splitTextToSize('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
+doc.text(doc.splitTextToType('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
 if(p.accettato){doc.setFont('helvetica','bold');doc.text('✔ DOCUMENTO ACCETTATO E FIRMATO DAL CLIENTE',10,y);doc.setFont('helvetica','normal');y+=6;}
 const fw=85,fh=25;doc.rect(10,y,fw,fh);doc.rect(W-10-fw,y,fw,fh);y+=fh+4;
 doc.setFontSize(8);doc.text('Firma Cliente',10,y);doc.text('Firma Studio',W-10-fw,y);y+=6;
 const pages=doc.getNumberOfPages();
-for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7);doc.setTextColor(120);doc.text('Generato con AppCenterStudio Light',10,292);doc.text('Pag. '+i+'/'+pages,W-10,292,{align:'right'});}
+for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7);doc.setTextColor(120);doc.text('Generato con AppCenterStudio Premium',10,292);doc.text('Pag. '+i+'/'+pages,W-10,292,{align:'right'});}
 doc.save((p.stato==='contratto'?'Contratto_':'Preventivo_')+p.numero+'.pdf');}
+
+/* ================= INIZIALIZZAZIONE ================= */
+function refreshHead(){$('#studioNameHead').textContent=DB.studio.nome||'Gestionale per studi fotografici';}
+refreshHead();
+renderForm();
+renderArchivio();
+renderClienti();
+renderListini();
+renderStudio();
 </script>
 </body>
 </html>
