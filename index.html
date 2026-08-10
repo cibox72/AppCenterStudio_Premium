@@ -30,7 +30,7 @@ label{font-size:12px;color:var(--soft);display:block;margin:10px 0 4px}
 /* ===== AppCenterStudio-Premium ===== */
 const OWNER=location.hostname.split(".")[0];
 const REPO=location.pathname.split("/")[1];
-const HASH_ADMIN="METTI-QUI-L-HASH";   // vedi istruzioni dopo il codice
+const HASH_ADMIN="METTI-QUI-L-HASH";   // istruzioni sotto
 const APPS=[
  {nome:"App Uno",path:"app-1/",desc:"Descrizione app 1"},
  {nome:"App Due",path:"app-2/",desc:"Descrizione app 2"},
@@ -46,15 +46,15 @@ function brandHTML(){const p=profilo||{};
  <div><h1 style="margin:0;font-size:19px">AppCenterStudio‑Premium</h1><small class="soft">${p.nome||"Suite per studi fotografici"}</small></div></div>`}
 function vistaLogin(){testata.innerHTML=brandHTML();
  main.innerHTML=`<div class="card" style="max-width:430px;margin:48px auto">
- <h2>Accedi al tuo studio</h2><p class="soft">Inserisci il codice di accesso fornito.</p>
- <label>Codice studio</label><input id="codice" placeholder="es. test26">
+ <h2>Accedi al tuo studio</h2><p class="soft">Inserisci la password di accesso che ti è stata fornita.</p>
+ <label>Password di accesso</label><input id="passStudio" type="password" placeholder="••••••••">
  <button class="btn primario" style="width:100%;margin-top:14px" onclick="entraStudio()">Entra</button>
  <details style="margin-top:22px" class="soft"><summary style="cursor:pointer;font-size:12px">Accesso amministratore</summary>
  <label>Password amministratore</label><input id="pass" type="password">
  <button class="btn" style="width:100%;margin-top:10px" onclick="entraAdmin()">Entra come admin</button></details></div>`}
 async function entraStudio(){await carica();
- const s=licenze.studi.find(x=>x.codice===$("codice").value.trim().toLowerCase());
- if(!s)return alert("Codice non riconosciuto.");
+ const s=licenze.studi.find(x=>x.password===$("passStudio").value.trim());
+ if(!s)return alert("Password non riconosciuta.");
  studio=s;try{profilo=JSON.parse(localStorage.getItem("acsp:"+s.codice))||{}}catch(e){profilo={}}
  (!s.attivo||s.scadenza<oggi())?vistaBloccato():vistaDash()}
 function vistaBloccato(){testata.innerHTML=brandHTML();
@@ -91,26 +91,34 @@ async function vistaAdmin(){await carica();
  ${licenze.studi.map(rigaStudio).join("")||"<p class='soft'>Nessuno studio.</p>"}</div>
  <div class="grid" style="grid-template-columns:1fr 1fr">
  <div class="card"><h3>Nuovo studio (30 gg di prova)</h3>
-  <label>Nome</label><input id="nNome"><label>Codice</label><input id="nCod" placeholder="es. rossi26">
-  <button class="btn primario" style="margin-top:12px" onclick="nuovoStudio()">Crea studio</button></div>
+  <label>Nome studio</label><input id="nNome" placeholder="es. Studio Rossi">
+  <label>Password da fornire allo studio</label><input id="nPass" placeholder="es. rossi-2026">
+  <button class="btn primario" style="width:100%;margin-top:12px" onclick="nuovoStudio()">Crea studio</button></div>
  <div class="card"><h3>Token GitHub</h3>
   <p class="soft">Serve ai pulsanti Accendi/Spegni. Crealo su GitHub con scope <em>public_repo</em>. Resta salvato solo su questo PC.</p>
   <input id="tok" value="${tokenGH}" placeholder="ghp_...">
-  <button class="btn" style="margin-top:12px" onclick="tokenGH=tok.value.trim();localStorage.setItem('gh_token',tokenGH);alert('Token salvato.')">Salva token</button></div></div>`}
+  <button class="btn" style="width:100%;margin-top:12px" onclick="tokenGH=tok.value.trim();localStorage.setItem('gh_token',tokenGH);alert('Token salvato.')">Salva token</button></div></div>`}
 function rigaStudio(s){const attivo=s.attivo&&s.scadenza>=oggi();
- return `<div class="riga"><div><strong>${s.nome}</strong> <small class="soft">(${s.codice})</small><br>
- <small>Scadenza: ${s.scadenza} · <span class="stato ${attivo?"ok":"ko"}">${attivo?"attivo":"spento/scaduto"}</span></small></div>
- <div style="display:flex;gap:8px"><button class="btn" onclick="piu30('${s.codice}')">+30 gg</button>
+ return `<div class="riga"><div><strong>${s.nome}</strong><br>
+ <small>password: <b>${s.password}</b> · scadenza: ${s.scadenza} · <span class="stato ${attivo?"ok":"ko"}">${attivo?"attivo":"spento/scaduto"}</span></small></div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+ <button class="btn" onclick="cambiaPass('${s.codice}')">Password</button>
+ <button class="btn" onclick="piu30('${s.codice}')">+30 gg</button>
  <button class="btn ${s.attivo?"":"primario"}" onclick="toggle('${s.codice}')">${s.attivo?"Spegni":"Accendi"}</button></div></div>`}
+function genCodice(nome){let base=nome.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"studio";
+ let cod=base,n=2;while(licenze.studi.some(s=>s.codice===cod))cod=base+"-"+n++;return cod}
 async function toggle(c){const s=licenze.studi.find(x=>x.codice===c);s.attivo=!s.attivo;await salvaLicenze();vistaAdmin()}
 async function piu30(c){const s=licenze.studi.find(x=>x.codice===c);
  const b=s.scadenza>=oggi()?new Date(s.scadenza):new Date();b.setDate(b.getDate()+30);
  s.scadenza=b.toISOString().slice(0,10);await salvaLicenze();vistaAdmin()}
-async function nuovoStudio(){const cod=nCod.value.trim().toLowerCase(),nome=nNome.value.trim();
- if(!cod||!nome)return alert("Compila nome e codice.");
- if(licenze.studi.some(s=>s.codice===cod))return alert("Codice già usato.");
+async function cambiaPass(c){const s=licenze.studi.find(x=>x.codice===c);
+ const np=prompt("Nuova password per "+s.nome+":",s.password);if(!np||np===s.password)return;
+ s.password=np;await salvaLicenze();vistaAdmin()}
+async function nuovoStudio(){const nome=nNome.value.trim(),pass=nPass.value.trim();
+ if(!nome||!pass)return alert("Inserisci nome e password.");
+ if(licenze.studi.some(s=>s.password===pass))return alert("Password già usata da un altro studio.");
  const d=new Date();d.setDate(d.getDate()+30);
- licenze.studi.push({nome,codice:cod,attivo:true,scadenza:d.toISOString().slice(0,10)});
+ licenze.studi.push({nome,codice:genCodice(nome),password:pass,attivo:true,scadenza:d.toISOString().slice(0,10)});
  await salvaLicenze();vistaAdmin()}
 async function salvaLicenze(){if(!tokenGH)return alert("Salva prima il token GitHub.");
  const url=`https://api.github.com/repos/${OWNER}/${REPO}/contents/licenses.json`;let sha;
