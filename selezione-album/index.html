@@ -66,6 +66,7 @@
         .selection-row.is-downloaded{background:#f6f4f0;border-left-color:var(--soft);opacity:.8}
         .selection-row.is-downloaded strong{color:var(--soft);text-decoration:line-through}
         .backup-section{margin-top:30px;padding-top:20px;border-top:1px solid var(--bordo)}
+        .cloud-saved{color:var(--ok);font-size:12px;margin-top:5px;display:none}
         @media(max-width:768px){.gallery-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.photo-card img{height:150px}}
     </style>
 </head>
@@ -91,14 +92,17 @@
                     </div>
                     <div class="form-group">
                         <label>Cloud Name Cloudinary:</label>
-                        <input type="text" id="cloudName" placeholder="g3439ih4" value="g3439ih4">
-                        <small>Il tuo Cloud Name (lo trovi in Dashboard Cloudinary)</small>
+                        <input type="text" id="cloudName" placeholder="es. g3439ih4" oninput="saveCloudName()">
+                        <small>Il tuo Cloud Name (lo trovi nella Dashboard Cloudinary → Settings). <b>Viene memorizzato automaticamente</b>: la prossima volta lo trovi già compilato.</small>
+                        <p class="cloud-saved" id="cloudSaved">✅ Cloud Name memorizzato</p>
+                        <button type="button" class="btn-secondary" style="margin-top:10px" onclick="window.open('https://console.cloudinary.com/signup','_blank')">☁️ Crea account Cloudinary (gratis)</button>
                     </div>
                     <div class="upload-info">
                         <strong>📤 Come caricare le foto:</strong>
                         <ol style="margin:10px 0 0 20px;">
-                            <li>Clicca "Apri Widget Upload"</li>
-                            <li>Trascina le anteprime dal tuo computer</li>
+                            <li>Se non hai un account, clicca "Crea account Cloudinary" e registrati gratis</li>
+                            <li>Copia il tuo Cloud Name dalla dashboard e incollalo nel campo sopra</li>
+                            <li>Clicca "Apri Widget Upload" e trascina le anteprime</li>
                             <li>Attendi il caricamento</li>
                         </ol>
                     </div>
@@ -163,6 +167,7 @@
 
     <script>
         const STORAGE_KEY = 'selezioneAlbumData';
+        const CLOUD_KEY = 'selezioneAlbumCloudName';
         let uploadedUrls = [];
         let uploadedFileNames = [];
         let cloudinaryWidget = null;
@@ -173,7 +178,23 @@
         }
         function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
+        // === MEMORIZZA CLOUD NAME ===
+        function saveCloudName() {
+            const v = document.getElementById('cloudName').value.trim();
+            if (v) {
+                localStorage.setItem(CLOUD_KEY, v);
+                const msg = document.getElementById('cloudSaved');
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.display = 'none'; }, 2000);
+            }
+        }
+        function loadCloudName() {
+            const saved = localStorage.getItem(CLOUD_KEY);
+            if (saved) document.getElementById('cloudName').value = saved;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
+            loadCloudName();
             const galleryId = new URLSearchParams(window.location.search).get('gallery');
             galleryId ? showClientView(galleryId) : showAdminDashboard();
         });
@@ -187,7 +208,7 @@
         // === CLOUDINARY WIDGET ===
         function openUploadWidget() {
             const cn = document.getElementById('cloudName').value.trim();
-            if (!cn) return alert('⚠️ Inserisci Cloud Name!');
+            if (!cn) return alert('⚠️ Inserisci il Cloud Name (o crea prima un account Cloudinary con il pulsante qui sopra)!');
             if (!cloudinaryWidget) {
                 cloudinaryWidget = cloudinary.createUploadWidget({
                     cloudName: cn, uploadPreset: 'unsigned', sources: ['local'],
@@ -228,7 +249,7 @@
         }
         function copyLink() { navigator.clipboard.writeText(document.getElementById('linkOutput').value); alert('✅ Link copiato!'); }
 
-        // === RENDER SELEZIONI CON NUOVI PULSANTI ===
+        // === RENDER SELEZIONI ===
         function renderSelections() {
             const completed = loadData().galleries.filter(g => g.selection);
             const c = document.getElementById('selectionsList');
