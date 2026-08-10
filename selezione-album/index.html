@@ -88,7 +88,7 @@
                     <div class="step-box">
                         <div class="step-title"><span class="step-num">1</span>Metti le foto online</div>
                         <button type="button" class="btn-secondary" onclick="window.open('https://app.netlify.com/drop','_blank')">🌐 Apri Netlify Drop</button>
-                        <small style="display:block;margin-top:8px;color:var(--soft);">Nella pagina che si apre, <b>trascina la cartella delle foto</b>. Ti darà un link: copialo e incollalo qui sotto.</small>
+                        <small style="display:block;margin-top:8px;color:var(--soft);">Trascina la cartella delle foto nella pagina che si apre. <b>Netlify non rinomina i file</b>: restano i nomi originali. Copia il link che ti danno e incollalo qui.</small>
                         <div class="form-group" style="margin-top:10px">
                             <input type="text" id="baseUrl" placeholder="Incolla qui il link (es. https://xyz.netlify.app)" oninput="saveBaseUrl()">
                             <p class="saved-msg" id="baseSaved">✅ Link memorizzato</p>
@@ -99,7 +99,7 @@
                         <div class="step-title"><span class="step-num">2</span>Scegli la stessa cartella sul tuo computer</div>
                         <input type="file" id="folderInput" webkitdirectory multiple onchange="readFolderNames(this)" style="font-size:13px">
                         <p class="ok-count" id="folderCount"></p>
-                        <small style="color:var(--soft);">L'app legge solo i nomi dei file, non carica nulla.</small>
+                        <small style="color:var(--soft);">L'app legge i <b>nomi originali</b> (non carica nulla): saranno quelli del file .txt per Gru.</small>
                     </div>
 
                     <div class="step-box">
@@ -167,7 +167,7 @@
     <script>
         const STORAGE_KEY = 'selezioneAlbumData';
         const BASE_KEY = 'selezioneAlbumBaseUrl';
-        let folderNames = [];
+        let folderItems = [];
 
         function loadData() {
             try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { galleries: [] }; }
@@ -185,9 +185,17 @@
             }
         }
 
+        // Legge i NOMI ORIGINALI dei file (e il percorso, se ci sono sottocartelle)
         function readFolderNames(input) {
-            folderNames = [...input.files].map(f => f.name).filter(n => /\.(jpe?g|png|webp)$/i.test(n));
-            document.getElementById('folderCount').textContent = '✅ ' + folderNames.length + ' foto lette';
+            folderItems = [...input.files]
+                .filter(f => /\.(jpe?g|png|webp)$/i.test(f.name))
+                .map(f => {
+                    const rel = f.webkitRelativePath || f.name;
+                    const parts = rel.split('/');
+                    const sub = parts.length > 1 ? parts.slice(1).join('/') : rel;
+                    return { name: f.name, sub: sub };
+                });
+            document.getElementById('folderCount').textContent = '✅ ' + folderItems.length + ' foto lette — nomi originali conservati';
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -207,12 +215,12 @@
             const clientName = document.getElementById('clientName').value.trim();
             const base = document.getElementById('baseUrl').value.trim();
             if (!base) return alert('⚠️ Passo 1: incolla il link di Netlify Drop!');
-            if (!folderNames.length) return alert('⚠️ Passo 2: scegli la cartella delle foto!');
+            if (!folderItems.length) return alert('⚠️ Passo 2: scegli la cartella delle foto!');
             if (!clientName) return alert('⚠️ Passo 3: scrivi il nome del cliente!');
             const hours = Math.max(1, parseInt(document.getElementById('expireHours').value) || 24);
             const b = base.endsWith('/') ? base : base + '/';
-            const names = [...folderNames];
-            const photos = names.map(n => b + encodeURIComponent(n));
+            const names = folderItems.map(x => x.name);
+            const photos = folderItems.map(x => b + x.sub.split('/').map(encodeURIComponent).join('/'));
             const gallery = {
                 id: 'gallery_' + Date.now(), clientName,
                 photos, fileNames: names,
@@ -224,7 +232,7 @@
             document.getElementById('linkOutput').value = `${location.origin}${location.pathname}?gallery=${gallery.id}`;
             document.getElementById('linkExpiry').textContent = '⏱ Il link si spegne tra ' + hours + ' ore.';
             document.getElementById('generatedLink').style.display = 'block';
-            folderNames = [];
+            folderItems = [];
             document.getElementById('clientName').value = '';
             document.getElementById('folderCount').textContent = '';
             renderSelections();
@@ -268,7 +276,7 @@
                 const base = (g.expiresAt && g.expiresAt > Date.now()) ? g.expiresAt : Date.now();
                 g.expiresAt = base + 24 * 3600000;
                 saveData(data); renderSelections();
-                alert('✅ Prorogata di 24 ore. (Ricorda: se il sito Netlify è scaduto, ripubblica la cartella e crea una nuova galleria.)');
+                alert('✅ Prorogata di 24 ore. (Se il sito Netlify era scaduto, ripubblica la cartella e crea una nuova galleria.)');
             }
         }
 
@@ -312,7 +320,7 @@
                 <p><strong>Totale:</strong> ${g.selection.length} foto</p>
                 <ul class="selection-list">${items}</ul>
                 <button onclick="downloadSmartScript('${g.id}')" class="btn-download" style="width:100%;margin-top:15px;padding:12px;">📥 Scarica Lista Nomi (.txt)</button>
-                <div class="instruction-box">💡 <strong>Istruzioni:</strong> Scarica il file .txt e usalo nell'app "Gru" per copiare le foto scelte dagli originali.</div>`;
+                <div class="instruction-box">💡 <strong>Istruzioni per Gru:</strong> il file .txt contiene i <b>nomi originali</b> dei file scelti. Usa Gru con cartella Originali + Destinazione + questo .txt.</div>`;
             document.getElementById('selectionModal').style.display = 'flex';
         }
 
