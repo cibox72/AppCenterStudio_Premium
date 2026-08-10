@@ -32,8 +32,7 @@ const OWNER=location.hostname.split(".")[0];
 const REPO=location.pathname.split("/")[1];
 const ADMIN_PASS="58879@Stella";   // tua password amministratore
 const APPS=[
- {nome:"App Uno",path:"app-1/",desc:"Descrizione app 1"},
- {nome:"App Due",path:"app-2/",desc:"Descrizione app 2"},
+ {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti"},
 ];
 let licenze=null,studio=null,profilo=null,tokenGH=localStorage.getItem("gh_token")||"";
 const $=id=>document.getElementById(id);
