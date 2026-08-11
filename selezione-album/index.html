@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AppCenterStudio Premium - Selezione per Album</title>
-    <script src="../licenza.js"></script>
     <style>
         :root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
         *{margin:0;padding:0;box-sizing:border-box}
@@ -19,8 +18,8 @@
         .panel-content h2{color:var(--accento);margin-bottom:20px;font-family:Georgia,serif}
         .form-group{margin-bottom:18px}
         .form-group label{display:block;margin-bottom:8px;font-weight:600;color:var(--testo);font-size:13px}
-        .form-group input{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
-        .form-group input:focus{outline:2px solid var(--accento);border-color:transparent}
+        .form-group input,.form-group textarea{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
+        .form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
         .form-group small{display:block;margin-top:5px;color:var(--soft);font-size:12px}
         .btn-primary{width:100%;padding:14px;background:var(--accento);color:white;border:none;border-radius:999px;font-size:15px;font-weight:600;cursor:pointer}
         .btn-primary:hover{opacity:.9}
@@ -29,7 +28,6 @@
         .btn-small{padding:8px 14px;background:var(--ok);color:white;border:none;border-radius:999px;cursor:pointer;margin-right:5px;font-size:12px}
         .btn-download{padding:8px 14px;background:var(--accento);color:white;border:none;border-radius:999px;cursor:pointer;font-weight:bold;font-size:12px;margin-right:5px}
         .btn-status{padding:8px 14px;background:#c9b283;color:white;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
-        .btn-status.downloaded{background:var(--ok)}
         .btn-delete{padding:8px 14px;background:var(--ko);color:white;border:none;border-radius:999px;cursor:pointer;font-size:12px}
         .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
         .card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:20px;margin-bottom:20px}
@@ -53,6 +51,7 @@
         .actions{text-align:center;margin:40px 0}
         .btn-submit{padding:16px 50px;background:var(--ok);color:white;border:none;border-radius:999px;font-size:18px;font-weight:700;cursor:pointer}
         .btn-submit:hover{opacity:.9}
+        .btn-wa{padding:14px 40px;background:#25d366;color:white;border:none;border-radius:999px;font-size:16px;font-weight:700;cursor:pointer;margin:10px 5px}
         .message{padding:30px;border-radius:10px;text-align:center;font-size:16px;font-weight:600;background:#eef4f0;color:var(--ok);border:2px solid var(--ok)}
         .message.expired{background:#f6eeee;color:var(--ko);border-color:var(--ko)}
         .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(40,40,60,.5);justify-content:center;align-items:center}
@@ -63,11 +62,11 @@
         .selection-list li img{width:60px;height:60px;object-fit:cover;border-radius:8px}
         .instruction-box{margin-top:20px;padding:15px;background:#eef1f4;border-radius:8px;font-size:13px;color:var(--accento);border:1px solid var(--bordo)}
         .selection-row{background:white;padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid var(--ok);display:flex;justify-content:space-between;align-items:center;border:1px solid var(--bordo);flex-wrap:wrap;gap:10px}
-        .selection-row.is-downloaded{background:#f6f4f0;border-left-color:var(--soft);opacity:.8}
-        .selection-row.is-downloaded strong{color:var(--soft);text-decoration:line-through}
         .backup-section{margin-top:30px;padding-top:20px;border-top:1px solid var(--bordo)}
         .saved-msg{color:var(--ok);font-size:12px;margin-top:5px;display:none}
         .ok-count{color:var(--ok);font-weight:600;margin-top:6px}
+        .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;text-align:center}
         @media(max-width:768px){.gallery-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.photo-card img{height:150px}}
     </style>
 </head>
@@ -78,30 +77,27 @@
             <p class="subtitle">Selezione Foto per Album</p>
         </header>
 
-        <div id="adminDashboard" class="panel">
+        <div id="adminDashboard" class="panel" style="display:none;">
             <div class="panel-content wide">
                 <div class="dashboard-header"><h2>👋 Dashboard Admin</h2></div>
 
                 <div class="card">
                     <h3>📁 Crea Nuova Selezione per il Cliente</h3>
-
                     <div class="step-box">
                         <div class="step-title"><span class="step-num">1</span>Metti le foto online</div>
                         <button type="button" class="btn-secondary" onclick="window.open('https://app.netlify.com/drop','_blank')">🌐 Apri Netlify Drop</button>
-                        <small style="display:block;margin-top:8px;color:var(--soft);">Trascina la cartella delle foto nella pagina che si apre. <b>Netlify non rinomina i file</b>: restano i nomi originali. Copia il link che ti danno e incollalo qui.</small>
+                        <small style="display:block;margin-top:8px;color:var(--soft);">Trascina la cartella delle foto (Netlify non rinomina i file). Copia il link e incollalo qui.</small>
                         <div class="form-group" style="margin-top:10px">
                             <input type="text" id="baseUrl" placeholder="Incolla qui il link (es. https://xyz.netlify.app)" oninput="saveBaseUrl()">
                             <p class="saved-msg" id="baseSaved">✅ Link memorizzato</p>
                         </div>
                     </div>
-
                     <div class="step-box">
                         <div class="step-title"><span class="step-num">2</span>Scegli la stessa cartella sul tuo computer</div>
                         <input type="file" id="folderInput" webkitdirectory multiple onchange="readFolderNames(this)" style="font-size:13px">
                         <p class="ok-count" id="folderCount"></p>
-                        <small style="color:var(--soft);">L'app legge i <b>nomi originali</b> (non carica nulla): saranno quelli del file .txt per Gru.</small>
+                        <small style="color:var(--soft);">L'app legge i <b>nomi originali</b> (non carica nulla).</small>
                     </div>
-
                     <div class="step-box">
                         <div class="step-title"><span class="step-num">3</span>Nome cliente e durata</div>
                         <div class="form-group">
@@ -114,7 +110,6 @@
                         </div>
                         <button class="btn-primary" onclick="createGallery()">🔗 Crea Galleria e Link per il Cliente</button>
                     </div>
-
                     <div id="generatedLink" class="link-box" style="display:none;">
                         <strong>📲 Link da inviare al cliente (WhatsApp / email):</strong>
                         <input type="text" id="linkOutput" readonly>
@@ -124,13 +119,26 @@
                 </div>
 
                 <div class="card">
-                    <h3>✅ Selezioni Ricevute</h3>
-                    <div id="selectionsList"></div>
+                    <h3>🗂 Gallerie Create</h3>
+                    <div id="galleriesList"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📥 Registra Selezione Ricevuta → .txt per Gru</h3>
+                    <div class="form-group">
+                        <label>Cliente:</label>
+                        <select id="selGallery"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Incolla qui i nomi delle foto ricevuti dal cliente (WhatsApp):</label>
+                        <textarea id="selNames" rows="6" placeholder="Un nome per riga"></textarea>
+                    </div>
+                    <button class="btn-download" onclick="downloadTxtFromPaste()">📥 Scarica .txt per Gru</button>
                 </div>
 
                 <div class="card backup-section">
                     <h3>💾 Backup & Ripristino</h3>
-                    <p style="color:var(--soft);font-size:13px;margin-bottom:15px;">I dati delle gallerie sono salvati in questo browser. Scarica periodicamente un backup.</p>
+                    <p style="color:var(--soft);font-size:13px;margin-bottom:15px;">Elenco gallerie salvato in questo browser.</p>
                     <button class="btn-small" onclick="doBackup()">⬇️ Scarica Backup</button>
                     <label class="btn-small" style="cursor:pointer;display:inline-block;margin-left:8px;">⬆️ Ripristina Backup<input type="file" id="fileRestore" accept=".json" hidden onchange="doRestore(event)"></label>
                 </div>
@@ -154,267 +162,234 @@
                 <div id="message" class="message" style="display:none;"></div>
             </div>
         </div>
-
-        <div id="selectionModal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close-modal" onclick="closeModal()">&times;</span>
-                <h3>📋 Dettaglio Selezione</h3>
-                <div id="selectionDetails"></div>
-            </div>
-        </div>
     </div>
 
     <script>
+        const OWNER = location.hostname.split(".")[0];
+        const REPO = location.pathname.split("/")[1];
         const STORAGE_KEY = 'selezioneAlbumData';
         const BASE_KEY = 'selezioneAlbumBaseUrl';
         let folderItems = [];
+        let currentGallery = null, selectedPhotos = new Set();
 
-        function loadData() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { galleries: [] }; }
-            catch (e) { return { galleries: [] }; }
-        }
-        function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+        const $ = id => document.getElementById(id);
+        const param = n => new URLSearchParams(location.search).get(n);
+        const b64 = s => btoa(unescape(encodeURIComponent(s)));
 
+        function loadData() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { galleries: [] }; } catch (e) { return { galleries: [] }; } }
+        function saveData(d) { localStorage.setItem(STORAGE_KEY, JSON.stringify(d)); }
         function saveBaseUrl() {
-            const v = document.getElementById('baseUrl').value.trim();
-            if (v) {
-                localStorage.setItem(BASE_KEY, v);
-                const m = document.getElementById('baseSaved');
-                m.style.display = 'block';
-                setTimeout(() => m.style.display = 'none', 2000);
-            }
+            const v = $('baseUrl').value.trim();
+            if (v) { localStorage.setItem(BASE_KEY, v); $('baseSaved').style.display = 'block'; setTimeout(() => $('baseSaved').style.display = 'none', 2000); }
         }
-
-        // Legge i NOMI ORIGINALI dei file (e il percorso, se ci sono sottocartelle)
         function readFolderNames(input) {
-            folderItems = [...input.files]
-                .filter(f => /\.(jpe?g|png|webp)$/i.test(f.name))
-                .map(f => {
-                    const rel = f.webkitRelativePath || f.name;
-                    const parts = rel.split('/');
-                    const sub = parts.length > 1 ? parts.slice(1).join('/') : rel;
-                    return { name: f.name, sub: sub };
-                });
-            document.getElementById('folderCount').textContent = '✅ ' + folderItems.length + ' foto lette — nomi originali conservati';
+            folderItems = [...input.files].filter(f => /\.(jpe?g|png|webp)$/i.test(f.name)).map(f => {
+                const rel = f.webkitRelativePath || f.name;
+                const parts = rel.split('/');
+                return { name: f.name, sub: parts.length > 1 ? parts.slice(1).join('/') : rel };
+            });
+            $('folderCount').textContent = '✅ ' + folderItems.length + ' foto lette — nomi originali conservati';
         }
 
+        // ===== GitHub (pubblica la galleria così il cliente la vede ovunque) =====
+        function ghHeaders(tok) { return { Authorization: 'token ' + tok, Accept: 'application/vnd.github+json' }; }
+        async function ghWrite(path, obj) {
+            const tok = localStorage.getItem('gh_token');
+            if (!tok) throw new Error('Token GitHub mancante: apr il portale come admin e salvalo nel riquadro "Token GitHub".');
+            const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+            let sha;
+            const g = await fetch(url, { headers: ghHeaders(tok) });
+            if (g.ok) sha = (await g.json()).sha;
+            const r = await fetch(url, { method: 'PUT', headers: ghHeaders(tok), body: JSON.stringify({ message: 'galleria ' + path, content: b64(JSON.stringify(obj)), ...(sha ? { sha } : {}) }) });
+            if (!r.ok) throw new Error('Errore GitHub: ' + (await r.text()));
+        }
+        async function ghDelete(path) {
+            const tok = localStorage.getItem('gh_token');
+            if (!tok) throw new Error('Token GitHub mancante.');
+            const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+            const g = await fetch(url, { headers: ghHeaders(tok) });
+            if (!g.ok) return;
+            const sha = (await g.json()).sha;
+            await fetch(url, { method: 'DELETE', headers: ghHeaders(tok), body: JSON.stringify({ message: 'elimina ' + path, sha }) });
+        }
+
+        // ===== AVVIO =====
         window.addEventListener('DOMContentLoaded', () => {
-            const b = localStorage.getItem(BASE_KEY);
-            if (b) document.getElementById('baseUrl').value = b;
-            const galleryId = new URLSearchParams(window.location.search).get('gallery');
-            galleryId ? showClientView(galleryId) : showAdminDashboard();
+            const gid = param('gallery');
+            if (gid) return clientMode(gid);
+            adminGate();
         });
 
-        function showAdminDashboard() {
-            document.getElementById('adminDashboard').style.display = 'block';
-            document.getElementById('clientView').style.display = 'none';
-            renderSelections();
+        function blocca(msg) {
+            document.body.innerHTML = `<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`;
         }
 
-        function createGallery() {
-            const clientName = document.getElementById('clientName').value.trim();
-            const base = document.getElementById('baseUrl').value.trim();
+        async function adminGate() {
+            const codice = param('studio') || sessionStorage.getItem('studio');
+            if (!codice) return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
+            sessionStorage.setItem('studio', codice);
+            try {
+                const l = await (await fetch('../licenses.json?t=' + Date.now(), { cache: 'no-store' })).json();
+                const s = (l.studi || []).find(x => x.codice === codice);
+                const oggi = new Date().toISOString().slice(0, 10);
+                if (!s) return blocca('Codice studio non riconosciuto.');
+                if (!s.attivo) return blocca('Accesso sospeso. Contatta il fornitore.');
+                if (s.scadenza < oggi) return blocca('La prova è scaduta. Contatta il fornitore.');
+            } catch (e) { return blocca('Verifica licenza non riuscita. Controlla la connessione.'); }
+            const b = localStorage.getItem(BASE_KEY); if (b) $('baseUrl').value = b;
+            $('adminDashboard').style.display = 'block';
+            renderGalleries();
+        }
+
+        // ===== ADMIN =====
+        async function createGallery() {
+            const clientName = $('clientName').value.trim();
+            const base = $('baseUrl').value.trim();
             if (!base) return alert('⚠️ Passo 1: incolla il link di Netlify Drop!');
             if (!folderItems.length) return alert('⚠️ Passo 2: scegli la cartella delle foto!');
             if (!clientName) return alert('⚠️ Passo 3: scrivi il nome del cliente!');
-            const hours = Math.max(1, parseInt(document.getElementById('expireHours').value) || 24);
+            const hours = Math.max(1, parseInt($('expireHours').value) || 24);
             const b = base.endsWith('/') ? base : base + '/';
-            const names = folderItems.map(x => x.name);
-            const photos = folderItems.map(x => b + x.sub.split('/').map(encodeURIComponent).join('/'));
+            const gid = 'gallery_' + Date.now();
             const gallery = {
-                id: 'gallery_' + Date.now(), clientName,
-                photos, fileNames: names,
+                id: gid, clientName,
+                photos: folderItems.map(x => b + x.sub.split('/').map(encodeURIComponent).join('/')),
+                fileNames: folderItems.map(x => x.name),
                 createdAt: Date.now(),
-                expiresAt: Date.now() + hours * 3600000,
-                selection: null, selectedFileNames: null, isDownloaded: false
+                expiresAt: Date.now() + hours * 3600000
             };
-            const data = loadData(); data.galleries.push(gallery); saveData(data);
-            document.getElementById('linkOutput').value = `${location.origin}${location.pathname}?gallery=${gallery.id}`;
-            document.getElementById('linkExpiry').textContent = '⏱ Il link si spegne tra ' + hours + ' ore.';
-            document.getElementById('generatedLink').style.display = 'block';
-            folderItems = [];
-            document.getElementById('clientName').value = '';
-            document.getElementById('folderCount').textContent = '';
-            renderSelections();
-            alert('✅ Galleria creata per ' + clientName + '! Copia il link e invialo al cliente.');
-        }
-
-        function copyLink() { navigator.clipboard.writeText(document.getElementById('linkOutput').value); alert('✅ Link copiato!'); }
-
-        function renderSelections() {
-            const completed = loadData().galleries.filter(g => g.selection);
-            const c = document.getElementById('selectionsList');
-            if (!completed.length) { c.innerHTML = '<p style="color:var(--soft);">Nessuna selezione ricevuta</p>'; return; }
-            const now = Date.now();
-            c.innerHTML = completed.map(g => {
-                const isDone = g.isDownloaded;
-                const statusClass = isDone ? 'is-downloaded' : '';
-                const statusBtnText = isDone ? '✅ Scaricato' : '📥 Segna Scaricato';
-                const statusBtnClass = isDone ? 'btn-status downloaded' : 'btn-status';
-                let expiry = '';
-                if (g.expiresAt) expiry = now > g.expiresAt ? ' · ⏰ scaduta' : ' · ⏰ ancora ' + Math.max(1, Math.round((g.expiresAt - now) / 3600000)) + 'h';
-                return `
-                <div class="selection-row ${statusClass}">
-                    <div style="flex-grow:1;">
-                        <strong>${g.clientName}</strong>
-                        <div style="font-size:13px;color:var(--soft);">📅 ${new Date(g.selectionSubmittedAt).toLocaleString()} | ✅ ${g.selection.length} foto${expiry}</div>
-                    </div>
-                    <div style="display:flex;gap:5px;flex-wrap:wrap;">
-                        <button onclick="viewSelection('${g.id}')" class="btn-small" style="background:var(--accento);">📋 Vedi</button>
-                        <button onclick="extendExpiry('${g.id}')" class="btn-status">⏱ +24h</button>
-                        <button onclick="toggleDownloadStatus('${g.id}')" class="${statusBtnClass}">${statusBtnText}</button>
-                        <button onclick="deleteSelection('${g.id}')" class="btn-delete">🗑️ Elimina</button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function extendExpiry(id) {
-            const data = loadData();
-            const g = data.galleries.find(x => x.id === id);
-            if (g) {
-                const base = (g.expiresAt && g.expiresAt > Date.now()) ? g.expiresAt : Date.now();
-                g.expiresAt = base + 24 * 3600000;
-                saveData(data); renderSelections();
-                alert('✅ Prorogata di 24 ore. (Se il sito Netlify era scaduto, ripubblica la cartella e crea una nuova galleria.)');
-            }
-        }
-
-        function toggleDownloadStatus(id) {
-            const data = loadData();
-            const g = data.galleries.find(x => x.id === id);
-            if (g) { g.isDownloaded = !g.isDownloaded; saveData(data); renderSelections(); }
-        }
-
-        function deleteSelection(id) {
-            if (!confirm("Eliminare questa selezione? L'azione è irreversibile.")) return;
-            const data = loadData();
-            data.galleries = data.galleries.filter(x => x.id !== id);
-            saveData(data); renderSelections();
-        }
-
-        function downloadSmartScript(galleryId) {
-            const data = loadData();
-            const g = data.galleries.find(x => x.id === galleryId);
-            if (!g || !g.selectedFileNames || !g.selectedFileNames.length) { alert("Errore: nessun nome file trovato."); return; }
-            const safeName = g.clientName.replace(/[^a-zA-Z0-9_]/g, '_');
-            const txtContent = g.selectedFileNames.map(n => n.trim()).filter(n => n.length > 0).join('\n');
             try {
-                const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = `selezione_${safeName}.txt`;
-                document.body.appendChild(a); a.click();
-                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-            } catch (e) { alert("Errore tecnico nel download."); }
+                await ghWrite('selezione-album/data/' + gid + '.json', gallery);
+            } catch (e) { return alert('❌ ' + e.message); }
+            const data = loadData(); data.galleries.push({ id: gid, clientName, createdAt: Date.now(), expiresAt: gallery.expiresAt }); saveData(data);
+            $('linkOutput').value = `${location.origin}${location.pathname}?gallery=${gid}`;
+            $('linkExpiry').textContent = '⏱ Il link si spegne tra ' + hours + ' ore. ⏳ Aspetta 1 minuto prima di inviarlo (pubblicazione in corso).';
+            $('generatedLink').style.display = 'block';
+            folderItems = []; $('clientName').value = ''; $('folderCount').textContent = '';
+            renderGalleries();
+            alert('✅ Galleria pubblicata! Aspetta 1 minuto, poi copia il link e invialo al cliente.');
         }
 
-        function viewSelection(galleryId) {
-            const g = loadData().galleries.find(x => x.id === galleryId);
-            if (!g?.selection) return;
-            const items = g.selection.map((url, i) => `
-                <li><img src="${url}"><div><strong>Foto ${i + 1}</strong><br>
-                <small style="color:var(--soft)">${g.selectedFileNames?.[i] || 'N/A'}</small></div></li>`).join('');
-            document.getElementById('selectionDetails').innerHTML = `
-                <p><strong>Cliente:</strong> ${g.clientName}</p>
-                <p><strong>Totale:</strong> ${g.selection.length} foto</p>
-                <ul class="selection-list">${items}</ul>
-                <button onclick="downloadSmartScript('${g.id}')" class="btn-download" style="width:100%;margin-top:15px;padding:12px;">📥 Scarica Lista Nomi (.txt)</button>
-                <div class="instruction-box">💡 <strong>Istruzioni per Gru:</strong> il file .txt contiene i <b>nomi originali</b> dei file scelti. Usa Gru con cartella Originali + Destinazione + questo .txt.</div>`;
-            document.getElementById('selectionModal').style.display = 'flex';
+        function copyLink() { navigator.clipboard.writeText($('linkOutput').value); alert('✅ Link copiato!'); }
+
+        function renderGalleries() {
+            const list = loadData().galleries;
+            const now = Date.now();
+            $('galleriesList').innerHTML = list.length ? list.map(g => {
+                const exp = now > g.expiresAt ? ' · ⏰ scaduta' : ' · ⏰ ancora ' + Math.max(1, Math.round((g.expiresAt - now) / 3600000)) + 'h';
+                return `<div class="selection-row"><div style="flex-grow:1"><strong>${g.clientName}</strong><div style="font-size:13px;color:var(--soft)">creata il ${new Date(g.createdAt).toLocaleString()}${exp}</div></div>
+                <div style="display:flex;gap:5px;flex-wrap:wrap">
+                <button class="btn-small" onclick="copyClientLink('${g.id}')">📋 Copia link</button>
+                <button class="btn-status" onclick="extendExpiry('${g.id}')">⏱ +24h</button>
+                <button class="btn-delete" onclick="deleteGallery('${g.id}')">🗑️ Elimina</button></div></div>`;
+            }).join('') : '<p style="color:var(--soft)">Nessuna galleria creata.</p>';
+            $('selGallery').innerHTML = list.length ? list.map(g => `<option value="${g.id}">${g.clientName}</option>`).join('') : '<option value="">—</option>';
         }
 
-        function closeModal() { document.getElementById('selectionModal').style.display = 'none'; }
-        window.onclick = e => { if (e.target.id === 'selectionModal') closeModal(); };
+        function copyClientLink(id) { navigator.clipboard.writeText(`${location.origin}${location.pathname}?gallery=${id}`); alert('✅ Link copiato!'); }
 
-        let currentGallery = null, selectedPhotos = new Set();
+        async function extendExpiry(id) {
+            const data = loadData(); const m = data.galleries.find(x => x.id === id); if (!m) return;
+            const base = (m.expiresAt && m.expiresAt > Date.now()) ? m.expiresAt : Date.now();
+            m.expiresAt = base + 24 * 3600000; saveData(data);
+            try {
+                const r = await fetch('data/' + id + '.json?t=' + Date.now(), { cache: 'no-store' });
+                if (r.ok) { const g = await r.json(); g.expiresAt = m.expiresAt; await ghWrite('selezione-album/data/' + id + '.json', g); }
+            } catch (e) { alert('⚠️ Proroga locale salvata; aggiornamento online non riuscito: ' + e.message); }
+            renderGalleries(); alert('✅ Prorogata di 24 ore.');
+        }
 
-        function showClientView(galleryId) {
-            const g = loadData().galleries.find(x => x.id === galleryId);
-            if (!g) return alert('❌ Galleria non trovata!');
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('clientView').style.display = 'block';
-            document.getElementById('clientNameDisplay').textContent = g.clientName;
-            if (g.selection) {
-                document.getElementById('message').style.display = 'block';
-                document.getElementById('message').textContent = '✅ Hai già inviato la tua selezione. Grazie!';
-                document.getElementById('gallery').innerHTML = '';
-                document.querySelector('.actions').style.display = 'none';
-                return;
+        async function deleteGallery(id) {
+            if (!confirm('Eliminare la galleria? Il link cliente smetterà di funzionare.')) return;
+            try { await ghDelete('selezione-album/data/' + id + '.json'); } catch (e) { }
+            const data = loadData(); data.galleries = data.galleries.filter(x => x.id !== id); saveData(data);
+            renderGalleries();
+        }
+
+        function downloadTxtFromPaste() {
+            const id = $('selGallery').value;
+            const data = loadData(); const m = data.galleries.find(x => x.id === id);
+            const names = $('selNames').value.split('\n').map(s => s.trim()).filter(s => s.length);
+            if (!names.length) return alert('⚠️ Incolla prima i nomi delle foto!');
+            const safe = (m ? m.clientName : 'cliente').replace(/[^a-zA-Z0-9_]/g, '_');
+            const blob = new Blob([names.join('\n')], { type: 'text/plain;charset=utf-8' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `selezione_${safe}.txt`;
+            document.body.appendChild(a); a.click(); setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
+        }
+
+        // ===== CLIENTE (nessun lucchetto: legge la galleria pubblicata) =====
+        async function clientMode(gid) {
+            $('clientView').style.display = 'block';
+            let g;
+            try {
+                const r = await fetch('data/' + gid + '.json?t=' + Date.now(), { cache: 'no-store' });
+                if (!r.ok) throw 0;
+                g = await r.json();
+            } catch (e) {
+                return clientMsg('❌ Galleria non trovata o in preparazione.<br>Se il fotografo l\'ha appena creata, riprova tra 1 minuto.', true);
             }
-            if (g.expiresAt && Date.now() > g.expiresAt) {
-                document.getElementById('message').className = 'message expired';
-                document.getElementById('message').style.display = 'block';
-                document.getElementById('message').innerHTML = '⏰ Il tempo per la selezione è scaduto.<br>Contatta il tuo fotografo.';
-                document.getElementById('gallery').innerHTML = '';
-                document.querySelector('.actions').style.display = 'none';
-                return;
-            }
-            currentGallery = g; selectedPhotos = new Set();
+            currentGallery = g;
+            $('clientNameDisplay').textContent = g.clientName;
+            if (localStorage.getItem('sel_done_' + gid)) return clientMsg('✅ Hai già inviato la tua selezione. Grazie!');
+            if (g.expiresAt && Date.now() > g.expiresAt) return clientMsg('⏰ Il tempo per la selezione è scaduto.<br>Contatta il tuo fotografo.', true);
+            selectedPhotos = new Set();
             renderGallery();
         }
 
+        function clientMsg(html, expired) {
+            const m = $('message');
+            m.className = 'message' + (expired ? ' expired' : '');
+            m.innerHTML = html; m.style.display = 'block';
+            $('gallery').innerHTML = '';
+            document.querySelector('.actions').style.display = 'none';
+        }
+
         function renderGallery() {
-            const grid = document.getElementById('gallery'); grid.innerHTML = '';
+            const grid = $('gallery'); grid.innerHTML = '';
             currentGallery.photos.forEach((url, i) => {
                 const card = document.createElement('div');
                 card.className = 'photo-card';
-                card.onclick = () => toggleSelection(i, card);
+                card.onclick = () => { selectedPhotos.has(i) ? selectedPhotos.delete(i) : selectedPhotos.add(i); card.classList.toggle('selected'); $('selectedCount').textContent = selectedPhotos.size; };
                 card.innerHTML = `<img src="${url}" loading="lazy">`;
                 grid.appendChild(card);
             });
-        }
-
-        function toggleSelection(i, card) {
-            selectedPhotos.has(i) ? selectedPhotos.delete(i) : selectedPhotos.add(i);
-            card.classList.toggle('selected');
-            document.getElementById('selectedCount').textContent = selectedPhotos.size;
         }
 
         function submitSelection() {
             if (!selectedPhotos.size) return alert('⚠️ Seleziona almeno una foto!');
             if (!confirm(`✅ Confermi ${selectedPhotos.size} foto per l'album?`)) return;
             const idxs = Array.from(selectedPhotos);
-            const urls = idxs.map(i => currentGallery.photos[i]);
             const names = idxs.map(i => currentGallery.fileNames?.[i] || `foto_${i}.jpg`);
-            const data = loadData();
-            const g = data.galleries.find(x => x.id === currentGallery.id);
-            g.selection = urls; g.selectedFileNames = names; g.selectionSubmittedAt = Date.now();
-            saveData(data);
-            document.getElementById('gallery').innerHTML = '';
+            localStorage.setItem('sel_done_' + currentGallery.id, '1');
+            const text = `Ciao, sono ${currentGallery.clientName}. Ho scelto ${names.length} foto per l'album:\n` + names.join('\n');
+            $('gallery').innerHTML = '';
             document.querySelector('.actions').style.display = 'none';
-            document.getElementById('message').style.display = 'block';
-            document.getElementById('message').innerHTML = `✅ Grazie ${currentGallery.clientName}!<br>Hai scelto ${selectedPhotos.size} foto.<br>Il fotografo provvederà a prepararle.`;
+            const m = $('message'); m.className = 'message'; m.style.display = 'block';
+            m.innerHTML = `✅ Grazie ${currentGallery.clientName}!<br>Hai scelto ${names.length} foto.<br><br>
+            <button class="btn-wa" onclick="window.open('https://wa.me/?text=${encodeURIComponent(text)}','_blank')">📲 Invia la scelta su WhatsApp</button><br>
+            <button class="btn-secondary" onclick="navigator.clipboard.writeText(${JSON.stringify(names.join('\n'))}).then(()=>alert('✅ Elenco copiato!'))">📋 Copia elenco nomi</button>
+            <p style="margin-top:12px;color:var(--soft);font-size:13px">Premi uno dei due pulsanti per mandare l'elenco al fotografo.</p>`;
         }
 
+        // ===== BACKUP =====
         function doBackup() {
-            const data = loadData();
-            data.exportedAt = new Date().toISOString();
+            const data = loadData(); data.exportedAt = new Date().toISOString();
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'AppCenterStudio_SelezioneAlbum_' + new Date().toISOString().slice(0, 10) + '.json';
-            a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'AppCenterStudio_SelezioneAlbum_' + new Date().toISOString().slice(0, 10) + '.json'; a.click();
         }
-
         function doRestore(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+            const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = ev => {
                 try {
                     const data = JSON.parse(ev.target.result);
-                    if (!data.galleries || !Array.isArray(data.galleries)) { alert('❌ File di backup non valido.'); return; }
-                    if (!confirm(`Ripristinare ${data.galleries.length} gallerie?\nI dati attuali verranno sostituiti.`)) return;
-                    saveData(data); renderSelections();
-                    alert(`✅ Ripristino completato! ${data.galleries.length} gallerie recuperate.`);
-                } catch (err) { alert('❌ Errore nel ripristino: ' + err.message); }
+                    if (!data.galleries || !Array.isArray(data.galleries)) return alert('❌ File non valido.');
+                    if (!confirm(`Ripristinare ${data.galleries.length} gallerie?`)) return;
+                    saveData(data); renderGalleries(); alert('✅ Ripristino completato!');
+                } catch (err) { alert('❌ Errore: ' + err.message); }
             };
-            reader.readAsText(file);
-            e.target.value = '';
+            reader.readAsText(file); e.target.value = '';
         }
-
-        showAdminDashboard();
     </script>
 </body>
 </html>
