@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCenterStudio Premium - Gallery</title>
+<style>
+:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
+.container{max-width:1200px;margin:0 auto}
+.app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 1px 3px rgba(40,40,60,.06)}
+.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px;color:var(--testo)}
+.subtitle{font-size:16px;color:var(--soft)}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:10px}
+.dashboard-header h2{color:var(--accento);font-family:Georgia,serif}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:0 1px 3px rgba(40,40,60,.06)}
+.card h2{color:var(--accento);margin-bottom:18px;font-family:Georgia,serif;font-size:18px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;color:var(--testo);font-size:13px}
+.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
+.form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary:hover{opacity:.9}
+.btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
+.btn-secondary:hover{border-color:var(--accento)}
+.btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
+.btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-edit{padding:8px 14px;background:var(--accento);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
+.btn-wa{padding:10px 20px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;margin:5px 0;width:100%}
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:18px}
+.client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:10px;font-size:17px}
+.client-info{font-size:13px;color:var(--testo);line-height:1.6}
+.client-info p{margin:3px 0}
+.client-notes{margin-top:10px;padding:10px;background:#f6f1e7;border-radius:8px;font-size:12px;color:#7a6540}
+.button-group{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap}
+.link-box{background:#eef4f0;padding:12px;border-radius:8px;margin-top:12px;border-left:3px solid var(--ok)}
+.link-box strong{display:block;font-size:12px;color:var(--ok);margin-bottom:6px}
+.link-box input{width:100%;padding:7px;border:1px solid var(--bordo);border-radius:6px;font-family:monospace;font-size:11px;margin-bottom:6px}
+.modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(40,40,60,.5);align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal-content{background:var(--carta);border-radius:14px;padding:28px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-content h2{font-family:Georgia,serif;color:var(--accento);margin-bottom:18px}
+.close-modal{position:absolute;top:14px;right:18px;font-size:28px;cursor:pointer;color:var(--soft);background:none;border:none}
+.detail-row{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--bordo)}
+.detail-row:last-child{border-bottom:none}
+.detail-label{font-size:12px;color:var(--soft);font-weight:600;margin-bottom:3px}
+.detail-value{font-size:14px;color:var(--testo)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--soft)}
+.empty-state .icon{font-size:48px;margin-bottom:12px}
+.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;text-align:center}
+.search-box{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;margin-bottom:18px}
+.wa-preview{background:#f6f1e7;padding:12px;border-radius:8px;font-family:monospace;font-size:11px;color:#7a6540;margin-top:8px;white-space:pre-wrap;max-height:120px;overflow-y:auto}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Gallery Photo — Consegna MEGA al Cliente</p></header>
+
+<div id="dashboard" class="panel" style="display:none;">
+<div class="dashboard-header">
+<h2>👋 Dashboard Gallery</h2>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn-secondary" onclick="createBackup()">💾 Backup</button>
+<button class="btn-secondary" onclick="openRestoreModal()">🔄 Ripristina</button>
+</div>
+</div>
+
+<div class="card"><h2>📁 Aggiungi Nuovo Cliente Gallery</h2>
+<form id="clientForm" onsubmit="handleClientForm(event)">
+<div class="form-row">
+<div class="form-group"><label>Nome Cliente *</label><input type="text" id="clientName" required></div>
+<div class="form-group"><label>Username (per login cliente) *</label><input type="text" id="clientUsername" required placeholder="es. mario.rossi"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Password (per login cliente) *</label><input type="text" id="clientPassword" required placeholder="es. foto2024"></div>
+<div class="form-group"><label>Link MEGA (cartella foto) *</label><input type="text" id="megaLink" required placeholder="https://mega.nz/folder/..."></div>
+</div>
+<div class="form-group"><label>Note (opzionale)</label><textarea id="clientNotes" rows="3" placeholder="Es. matrimonio 15/06/2024, 800 foto"></textarea></div>
+<button type="submit" class="btn-primary">➕ Aggiungi Cliente</button>
+</form></div>
+
+<div class="card"><h2>🗂 Clienti Gallery <span id="clientsCount" style="color:var(--soft);font-size:14px;font-weight:400"></span></h2>
+<input type="text" id="clientSearch" class="search-box" placeholder="🔍 Cerca per nome, username o ID..." oninput="loadClients()">
+<div id="clientsList" class="clients-grid"></div></div>
+</div>
+
+<!-- Modale dettagli -->
+<div id="detailModal" class="modal"><div class="modal-content">
+<button class="close-modal" onclick="closeModal('detailModal')">&times;</button>
+<h2>📋 Dettagli Cliente</h2>
+<div id="detailContent"></div></div></div>
+
+<!-- Modale ripristino -->
+<div id="restoreModal" class="modal"><div class="modal-content">
+<button class="close-modal" onclick="closeModal('restoreModal')">&times;</button>
+<h2>🔄 Ripristina Backup</h2>
+<div class="form-group"><label>Seleziona file backup (.json):</label><input type="file" id="backupFile" accept=".json"></div>
+<div style="display:flex;gap:8px;margin-top:16px">
+<button class="btn-secondary" onclick="closeModal('restoreModal')">Annulla</button>
+<button class="btn-primary" onclick="handleRestore()">Ripristina</button>
+</div></div></div>
+</div>
+
+<script>
+const OWNER=location.hostname.split(".")[0],REPO=location.pathname.split("/")[1];
+const STORAGE_KEY='galleryClients';
+let allClients=[];
+let editingClientId=null;
+const $=id=>document.getElementById(id);
+const param=n=>new URLSearchParams(location.search).get(n);
+const b64=s=>btoa(unescape(encodeURIComponent(s)));
+
+function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
+function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
+
+window.addEventListener('DOMContentLoaded',()=>{const gid=param('gallery');if(gid)return clientMode(gid);adminGate()});
+
+function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+
+async function adminGate(){
+  const codice=param('studio')||sessionStorage.getItem('studio');
+  if(!codice)return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
+  sessionStorage.setItem('studio',codice);
+  try{
+    const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+    const s=(l.studi||[]).find(x=>x.codice===codice);
+    const oggi=new Date().toISOString().slice(0,10);
+    if(!s)return blocca('Codice studio non riconosciuto.');
+    if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
+    if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
+  }catch(e){return blocca('Verifica licenza non riuscita.')}
+  $('dashboard').style.display='block';
+  allClients=loadData();
+  loadClients();
+}
+
+// ===== CLIENT MODE (link cliente) =====
+async function clientMode(gid){
+  const data=loadData();
+  const c=data.find(x=>x.id===gid);
+  if(!c){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Link non valido</h2><p style="color:var(--soft)">Contatta lo studio per il link corretto.</p></div></div>`;return}
+  document.body.innerHTML=`
+  <div class="lock-wrap"><div class="lock-card">
+    <h2 style="font-family:Georgia,serif;margin-bottom:6px">🔐 Accesso Galleria</h2>
+    <p style="color:var(--soft);margin-bottom:18px">Benvenuto <b>${escapeHtml(c.name)}</b>. Inserisci le credenziali.</p>
+    <form onsubmit="clientLogin(event,'${c.id}')">
+      <div class="form-group"><label>Username</label><input type="text" id="clU" value="${escapeHtml(c.username)}" required></div>
+      <div class="form-group"><label>Password</label><input type="password" id="clP" required></div>
+      <button type="submit" class="btn-primary" style="width:100%">Accedi</button>
+      <p id="clErr" style="color:var(--ko);margin-top:10px;font-size:13px"></p>
+    </form></div></div>`;
+}
+function clientLogin(e,id){
+  e.preventDefault();
+  const data=loadData();const c=data.find(x=>x.id===id);
+  const u=$('clU').value.trim(),p=$('clP').value;
+  if(c&&c.username===u&&c.password===p){window.open(c.megaLink,'_blank');document.querySelector('.lock-card').innerHTML=`<div style="font-size:34px">✅</div><h2 style="font-family:Georgia,serif;margin:10px 0">Grazie ${escapeHtml(c.name)}</h2><p style="color:var(--soft)">La cartella MEGA si è aperta in una nuova scheda.<br>Puoi chiudere questa pagina.</p>`}
+  else $('clErr').textContent='❌ Credenziali errate.';
+}
+
+// ===== ADMIN =====
+function handleClientForm(e){e.preventDefault();editingClientId?updateClient():addClient()}
+function addClient(){
+  const name=$('clientName').value.trim();
+  const username=$('clientUsername').value.trim();
+  const password=$('clientPassword').value.trim();
+  const mega=$('megaLink').value.trim();
+  const notes=$('clientNotes').value.trim();
+  if(!name||!username||!password||!mega)return alert('⚠️ Compila tutti i campi obbligatori.');
+  allClients.push({id:'client_'+Date.now()+'_'+Math.floor(Math.random()*900000+100000),name,username,password,megaLink:mega,notes,createdAt:Date.now()});
+  saveData(allClients);
+  $('clientForm').reset();loadClients();
+  alert('✅ Cliente aggiunto.');
+}
+function updateClient(){
+  const i=allClients.findIndex(c=>c.id===editingClientId);if(i===-1)return;
+  allClients[i]={...allClients[i],name:$('clientName').value.trim(),username:$('clientUsername').value.trim(),password:$('clientPassword').value.trim(),megaLink:$('megaLink').value.trim(),notes:$('clientNotes').value.trim()};
+  saveData(allClients);editingClientId=null;
+  $('clientForm').reset();loadClients();alert('✅ Cliente aggiornato.');
+}
+function deleteClient(id){
+  const c=allClients.find(x=>x.id===id);if(!c)return;
+  if(!confirm(`Eliminare ${c.name}?\n\nQuesta azione non può essere annullata.`))return;
+  allClients=allClients.filter(x=>x.id!==id);saveData(allClients);loadClients();
+}
+function editClient(id){
+  const c=allClients.find(x=>x.id===id);if(!c)return;
+  editingClientId=id;
+  $('clientName').value=c.name;$('clientUsername').value=c.username;
+  $('clientPassword').value=c.password;$('megaLink').value=c.megaLink;$('clientNotes').value=c.notes||'';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function loadClients(){
+  const term=($('clientSearch').value||'').toLowerCase();
+  const list=allClients.filter(c=>!term||c.name.toLowerCase().includes(term)||c.username.toLowerCase().includes(term)||c.id.toLowerCase().includes(term)).sort((a,b)=>b.createdAt-a.createdAt);
+  $('clientsCount').textContent=`· ${allClients.length} totali`;
+  if(!list.length){$('clientsList').innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="icon">📭</div><p>Nessun cliente${term?' trovato':'.'}</p></div>`;return}
+  $('clientsList').innerHTML=list.map(c=>`
+    <div class="client-card">
+      <h3>${escapeHtml(c.name)}</h3>
+      <div class="client-info">
+        <p><strong>👤</strong> ${escapeHtml(c.username)}</p>
+        <p><strong>🔒</strong> ${escapeHtml(c.password)}</p>
+      </div>
+      ${c.notes?`<div class="client-notes">📝 ${escapeHtml(c.notes)}</div>`:''}
+      <div class="link-box">
+        <strong>📲 Link da inviare al cliente:</strong>
+        <input type="text" value="${getClientUrl(c.id)}" readonly id="lk-${c.id}">
+        <button class="btn-wa" onclick="sendWA('${c.id}')">📲 Invia su WhatsApp</button>
+        <div class="wa-preview" id="wa-${c.id}" style="display:none"></div>
+        <button class="btn-small" style="margin-top:6px" onclick="copyLink('${c.id}')">📋 Copia link</button>
+      </div>
+      <div class="button-group">
+        <button class="btn-edit" onclick="editClient('${c.id}')">✏️ Modifica</button>
+        <button class="btn-delete" onclick="deleteClient('${c.id}')">🗑️ Elimina</button>
+      </div>
+    </div>`).join('');
+}
+
+function getClientUrl(id){return `${location.origin}${location.pathname}?gallery=${id}`}
+function copyLink(id){navigator.clipboard.writeText(getClientUrl(id)).then(()=>alert('✅ Link copiato!'))}
+function sendWA(id){
+  const c=allClients.find(x=>x.id===id);if(!c)return;
+  const text=`Ciao ${c.name}, ecco il link della tua galleria privata:\n\n${getClientUrl(id)}\n\nCredenziali di accesso:\n• Username: ${c.username}\n• Password: ${c.password}\n\nConserva questo messaggio: ne avrai bisogno ogni volta che vuoi accedere alle tue foto.`;
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+}
+
+function openRestoreModal(){$('restoreModal').classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+function handleRestore(){
+  const f=$('backupFile').files[0];if(!f)return alert('⚠️ Seleziona un file.');
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      const list=data.clients||data;if(!Array.isArray(list))throw new Error('File non valido');
+      if(!confirm(`Ripristinare ${list.length} clienti?\nI dati attuali (${allClients.length}) verranno sostituiti.`))return;
+      allClients=list;saveData(allClients);loadClients();closeModal('restoreModal');alert('✅ Ripristino completato.');
+    }catch(err){alert('❌ Errore: '+err.message)}
+  };r.readAsText(f);
+}
+function createBackup(){
+  if(!allClients.length)return alert('Archivio vuoto.');
+  const blob=new Blob([JSON.stringify({version:'3.0',clients:allClients,timestamp:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='gallery-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function escapeHtml(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+</script>
+</body>
+</html>
