@@ -6,6 +6,12 @@
       "password": "test26",
       "attivo": true,
       "scadenza": "2026-09-10"
+    },
+    {
+      "codice": "st-002",
+      "nome": "G&LStudio",
+      "scadenza": "2026-09-10",
+      "attivo": true
     }
   ]
 }
