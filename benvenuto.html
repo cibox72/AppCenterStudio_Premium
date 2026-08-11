@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCenterStudio Premium — Benvenuto</title>
+<style>
+:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
+.container{max-width:860px;margin:0 auto}
+.app-header{text-align:center;margin-bottom:26px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:6px}
+.subtitle{color:var(--soft)}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:20px}
+.card h2{color:var(--accento);font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
+.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
+.form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
+.btn-primary{padding:12px 24px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-wa{padding:12px 24px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.app-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:16px;cursor:pointer;text-align:center;transition:transform .2s}
+.app-card:hover{transform:translateY(-3px);border-color:var(--accento)}
+.app-card .ico{font-size:26px;margin-bottom:6px}
+.app-card h3{font-family:Georgia,serif;font-size:15px}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:10px}
+.badge.on{background:#e5efe9;color:var(--ok)}
+.badge.off{background:#f3e8e8;color:var(--ko)}
+details{background:#faf9f7;border:1px solid var(--bordo);border-radius:10px;padding:14px;font-size:13px;line-height:1.8}
+summary{cursor:pointer;font-weight:700;color:var(--accento)}
+.lock-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:34px;max-width:430px;width:100%;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Il sistema digitale per il tuo studio fotografico</p></header>
+<div id="content"></div>
+</div>
+<script>
+const FORNITORE_WA='391234567890'; // ⚠️ METTI QUI IL TUO NUMERO WhatsApp (formato internazionale senza +)
+const APPS=[
+ {nome:"Preventivi & Contratti",path:"preventivi-contratti/",ico:"📄"},
+ {nome:"Workflow Foto & Video",path:"workflow/",ico:"🎬"},
+ {nome:"Selezione per Album",path:"selezione-album/",ico:"🖼"},
+ {nome:"Gallery",path:"gallery/",ico:"📁"}
+];
+const param=n=>new URLSearchParams(location.search).get(n);
+window.addEventListener('DOMContentLoaded',async()=>{
+ const code=param('studio');
+ if(!code)return err('Link non valido','Chiedi al tuo fornitore il link di attivazione.');
+ let s=null;
+ try{const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();s=(l.studi||[]).find(x=>x.codice===code);}catch(e){}
+ if(!s)return err('Link non valido','Questo codice studio non esiste. Contatta il fornitore.');
+ const oggi=new Date().toISOString().slice(0,10);
+ const attivo=s.attivo&&s.scadenza>=oggi;
+ document.getElementById('content').innerHTML=`
+ <div class="card">
+  <span class="badge ${attivo?'on':'off'}">${attivo?'✅ LICENZA ATTIVA':'⛔ LICENZA SCADUTA O SOSPESA'}</span>
+  <h2>Benvenuto, ${esc(s.nome)}!</h2>
+  <p style="color:var(--soft);font-size:14px">Codice studio: <b style="font-family:monospace">${s.codice}</b> · Scadenza licenza: <b>${s.scadenza}</b></p>
+ </div>
+ <div class="card">
+  <h2>1️⃣ Inserisci i dati del tuo studio</h2>
+  <p style="color:var(--soft);font-size:13px;margin-bottom:14px">Servono al fornitore per configurare la tua installazione.</p>
+  <form onsubmit="inviaDati(event,'${esc(s.nome)}')">
+   <div class="form-group"><label>Nome dello studio *</label><input id="dNome" value="${esc(s.nome)}" required></div>
+   <div class="form-group"><label>Referente *</label><input id="dRef" required placeholder="Nome e cognome"></div>
+   <div class="form-group"><label>WhatsApp *</label><input id="dWa" required placeholder="Es. 39123456789"></div>
+   <div class="form-group"><label>Email</label><input id="dMail" type="email" placeholder="studio@email.it"></div>
+   <div class="form-group"><label>Città</label><input id="dCity"></div>
+   <div class="form-group"><label>Note</label><textarea id="dNote" rows="2" placeholder="Es. uso soprattutto per matrimoni"></textarea></div>
+   <button class="btn-wa" type="submit">📲 Invia i dati al fornitore</button>
+  </form>
+ </div>
+ <div class="card">
+  <h2>2️⃣ Le tue applicazioni</h2>
+  <div class="app-grid">${APPS.map(a=>`<div class="app-card" onclick="location.href='${a.path}?studio=${s.codice}'"><div class="ico">${a.ico}</div><h3>${a.nome}</h3></div>`).join('')}</div>
+ </div>
+ <div class="card">
+  <h2>3️⃣ Installazione Netlify (per Selezione per Album)</h2>
+  <details><summary>📖 Apri la guida passo‑passo</summary>
+   <ol style="padding-left:20px;margin-top:10px">
+    <li>Crea un account gratis su <b>app.netlify.com/signup</b> e conferma l'email.</li>
+    <li>Nella pagina "Add your project" trascina la cartella delle foto nel riquadro "Upload your project files".</li>
+    <li>Clicca sul nome del sito creato → "Project configuration" → "Visitor access" → scegli <b>Public</b> → Save.</li>
+    <li>Copia l'indirizzo del sito (es. https://nome‑sito.netlify.app).</li>
+    <li>Apri "Selezione per Album" e incolla quel link nel Passo 1.</li>
+   </ol>
+   <p style="margin-top:10px">✅ Il sito non scade e resta online finché non lo cancelli. Se preferisci, il fornitore può fare questa installazione per te.</p>
+  </details>
+ </div>`;
+});
+function inviaDati(e,nome){
+ e.preventDefault();
+ const t=`🆕 ATTIVAZIONE STUDIO AppCenterStudio\n• Studio: ${document.getElementById('dNome').value}\n• Referente: ${document.getElementById('dRef').value}\n• WhatsApp: ${document.getElementById('dWa').value}\n• Email: ${document.getElementById('dMail').value||'—'}\n• Città: ${document.getElementById('dCity').value||'—'}\n• Note: ${document.getElementById('dNote').value||'—'}`;
+ window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
+}
+function err(t,s){document.getElementById('content').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="font-family:Georgia,serif;margin:10px 0 6px">${t}</h2><p style="color:var(--soft)">${s}</p></div></div>`}
+function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+</script>
+</body>
+</html>
