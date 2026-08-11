@@ -76,9 +76,22 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 </div>
 
 <div class="card">
-<h2>🔑 Token GitHub</h2>
-<div class="form-group"><input type="password" id="tokInput" placeholder="Incolla qui il token"></div>
+<h2>💾 Backup Globale (tutte le app)</h2>
+<p style="color:var(--soft);font-size:13px;margin-bottom:14px">Salva o ripristina in un colpo solo i dati di <b>tutte</b> le app (Gallery, Selezione Album, Preventivi, Workflow, token).</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn-primary" onclick="backupGlobale()">⬇️ Scarica Backup Globale</button>
+<label class="btn-secondary" style="cursor:pointer">⬆️ Ripristina Backup Globale<input type="file" id="fileGlobal" accept=".json" hidden onchange="restoreGlobale(event)"></label>
+</div>
+<p style="color:var(--soft);font-size:12px;margin-top:10px">Conserva il file in un posto sicuro (es. chiavetta o Drive). Usalo per trasferire tutto su un computer nuovo.</p>
+</div>
+
+<div class="card">
+<h2>🔑 Token GitHub <span style="font-size:12px;color:var(--ko)">⚠️ NON TOCCARE — è la chiave del sistema</span></h2>
+<div class="form-group"><input type="password" id="tokInput" placeholder="Nessun token salvato" readonly></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
 <button class="btn-primary" onclick="saveToken()">💾 Salva token</button>
+<button class="btn-secondary" onclick="unlockToken()">🔓 Sblocca per modifica</button>
+</div>
 <p id="tokMsg" class="msg"></p>
 </div>
 </div>
@@ -99,8 +112,7 @@ function login(){
  else $('loginErr').textContent='❌ Credenziali errate.';
 }
 function logout(){sessionStorage.removeItem('portal_admin');location.reload();}
-function saveToken(){localStorage.setItem('gh_token',$('tokInput').value.trim());$('tokMsg').className='msg ok';$('tokMsg').textContent='✅ Token salvato in questo browser.';}
-window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('portal_admin')==='1')showDash();const t=localStorage.getItem('gh_token');if(t)$('tokInput').value=t;});
+window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('portal_admin')==='1')showDash();const t=localStorage.getItem('gh_token');if(t){$('tokInput').value=t;$('tokMsg').className='msg ok';$('tokMsg').textContent='✅ Token attivo — non toccare.';}});
 async function showDash(){
  $('loginCard').style.display='none';$('dash').style.display='block';
  await loadLic();render();
@@ -159,6 +171,41 @@ async function writeLic(msg){
  if(g.ok)sha=(await g.json()).sha;
  const r=await fetch(url,{method:'PUT',headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'},body:JSON.stringify({message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(LIC,null,2)))),...(sha?{sha}:{})})});
  if(!r.ok)alert('❌ Errore GitHub: '+(await r.text()));
+}
+function saveToken(){
+ const t=$('tokInput').value.trim();
+ if(!t)return alert('⚠️ Il campo è vuoto: incolla prima il token, poi premi Salva.');
+ if(!confirm('Vuoi davvero salvare questo token GitHub?\n\nIl token attuale verrà sostituito.\n(I clienti e gli archivi NON vengono toccati.)'))return;
+ localStorage.setItem('gh_token',t);
+ $('tokInput').readOnly=true;
+ $('tokMsg').className='msg ok';$('tokMsg').textContent='✅ Token salvato e protetto.';
+}
+function unlockToken(){
+ if(!confirm('⚠️ Stai per sbloccare il campo token.\nModificalo solo se sai cosa stai facendo.'))return;
+ $('tokInput').readOnly=false;$('tokInput').focus();
+ $('tokMsg').className='msg ko';$('tokMsg').textContent='🔓 Campo sbloccato: incolla il nuovo token e premi Salva.';
+}
+function backupGlobale(){
+ const data={};
+ for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+ alert('✅ Backup globale scaricato: contiene i dati di tutte le app.');
+}
+function restoreGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+   const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+   if(typeof d!=='object')throw new Error('File non valido.');
+   const n=Object.keys(d).length;
+   if(!confirm(`Ripristinare il backup globale (${n} voci)?\nI dati attuali di TUTTE le app verranno sostituiti.`))return;
+   Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+   alert('✅ Backup globale ripristinato. La pagina si ricarica.');
+   location.reload();
+ }catch(err){alert('❌ Errore: '+err.message)}};
+ r.readAsText(f);e.target.value='';
 }
 </script>
 </body>
