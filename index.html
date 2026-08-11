@@ -3,204 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppCenterStudio Premium - Gallery</title>
+<title>AppCenterStudio Premium — Portale</title>
 <style>
 :root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
-.container{max-width:1200px;margin:0 auto}
-.app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px}
-.subtitle{font-size:16px;color:var(--soft)}
-.dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:10px}
-.dashboard-header h2{color:var(--accento);font-family:Georgia,serif}
+.container{max-width:1100px;margin:0 auto}
+.app-header{text-align:center;margin-bottom:30px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header h1{font-family:Georgia,serif;font-size:30px;margin-bottom:6px}
+.subtitle{color:var(--soft)}
 .card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
-.card h2{color:var(--accento);margin-bottom:18px;font-family:Georgia,serif;font-size:18px}
-.form-group{margin-bottom:16px}
+.card h2{color:var(--accento);font-family:Georgia,serif;font-size:18px;margin-bottom:16px}
+.form-group{margin-bottom:14px}
 .form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
-.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
-.form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.form-group input{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff}
+.form-group input:focus{outline:2px solid var(--accento);border-color:transparent}
+.form-row{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}}
 .btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
 .btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
-.btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
-.btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-edit{padding:8px 14px;background:var(--accento);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
-.btn-wa{padding:10px 20px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;margin:6px 0;width:100%}
-.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:18px}
-.client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:10px;font-size:17px}
-.client-info{font-size:13px;line-height:1.7}
-.client-notes{margin-top:10px;padding:10px;background:#f6f1e7;border-radius:8px;font-size:12px;color:#7a6540}
-.button-group{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
-.link-box{background:#eef4f0;padding:12px;border-radius:8px;margin-top:12px;border-left:3px solid var(--ok)}
-.link-box strong{display:block;font-size:12px;color:var(--ok);margin-bottom:6px}
-.link-box input{width:100%;padding:7px;border:1px solid var(--bordo);border-radius:6px;font-family:monospace;font-size:11px}
-.modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(40,40,60,.5);align-items:center;justify-content:center;padding:20px}
-.modal.open{display:flex}
-.modal-content{background:var(--carta);border-radius:14px;padding:28px;max-width:560px;width:100%;position:relative}
-.modal-content h2{font-family:Georgia,serif;color:var(--accento);margin-bottom:18px}
-.close-modal{position:absolute;top:12px;right:16px;font-size:28px;cursor:pointer;color:var(--soft);background:none;border:none}
-.empty-state{text-align:center;padding:40px 20px;color:var(--soft);grid-column:1/-1}
-.empty-state .icon{font-size:48px;margin-bottom:12px}
-.search-box{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;margin-bottom:18px}
-.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
+.btn-on{padding:7px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-off{padding:7px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.app-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:18px;cursor:pointer;transition:transform .2s}
+.app-card:hover{transform:translateY(-3px);border-color:var(--accento)}
+.app-card .ico{font-size:26px;margin-bottom:8px}
+.app-card h3{font-family:Georgia,serif;font-size:16px;margin-bottom:4px}
+.app-card p{font-size:12px;color:var(--soft)}
+.studio-row{background:#faf9f7;border:1px solid var(--bordo);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.studio-row .info{font-size:13px}
+.studio-row .code{font-family:monospace;color:var(--accento);font-weight:700}
+.badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.badge.on{background:#e5efe9;color:var(--ok)}
+.badge.off{background:#f3e8e8;color:var(--ko)}
+.sel-row{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.sel-row select{padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:14px}
+.msg{font-size:12px;margin-top:6px}
+.msg.ok{color:var(--ok)}.msg.ko{color:var(--ko)}
+.lock-wrap{min-height:80vh;display:flex;align-items:center;justify-content:center}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:34px;max-width:400px;width:100%}
 </style>
 </head>
 <body>
 <div class="container">
-<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Gallery Photo — Consegna MEGA al Cliente</p></header>
+<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Portale dello Studio</p></header>
 
-<div id="dashboard" style="display:none;">
-<div class="dashboard-header"><h2>👋 Dashboard Gallery</h2>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-secondary" onclick="createBackup()">💾 Backup</button>
-<button class="btn-secondary" onclick="openRestoreModal()">🔄 Ripristina</button>
-</div></div>
-
-<div class="card"><h2>📁 Aggiungi Nuovo Cliente Gallery</h2>
-<form id="clientForm" onsubmit="handleClientForm(event)">
-<div class="form-row">
-<div class="form-group"><label>Nome Cliente *</label><input type="text" id="clientName" required></div>
-<div class="form-group"><label>Username cliente *</label><input type="text" id="clientUsername" required placeholder="es. mario.rossi"></div>
-</div>
-<div class="form-row">
-<div class="form-group"><label>Password cliente *</label><input type="text" id="clientPassword" required placeholder="es. foto2024"></div>
-<div class="form-group"><label>Link MEGA (cartella foto) *</label><input type="text" id="megaLink" required placeholder="https://mega.nz/folder/..."></div>
-</div>
-<div class="form-group"><label>Note (opzionale)</label><textarea id="clientNotes" rows="3"></textarea></div>
-<button type="submit" class="btn-primary">➕ Aggiungi Cliente</button>
-</form></div>
-
-<div class="card"><h2>🗂 Clienti Gallery <span id="clientsCount" style="color:var(--soft);font-size:14px"></span></h2>
-<input type="text" id="clientSearch" class="search-box" placeholder="🔍 Cerca per nome, username o ID..." oninput="loadClients()">
-<div id="clientsList" class="clients-grid"></div></div>
+<div id="loginCard" class="card" style="max-width:430px;margin:0 auto;">
+<h2>🔐 Accesso Amministratore</h2>
+<div class="form-group"><label>Utente</label><input type="text" id="user"></div>
+<div class="form-group"><label>Password</label><input type="password" id="pass"></div>
+<button class="btn-primary" style="width:100%" onclick="login()">Entra</button>
+<p id="loginErr" class="msg ko"></p>
 </div>
 
-<div id="restoreModal" class="modal"><div class="modal-content">
-<button class="close-modal" onclick="closeModal('restoreModal')">&times;</button>
-<h2>🔄 Ripristina Backup</h2>
-<div class="form-group"><label>Seleziona file backup (.json):</label><input type="file" id="backupFile" accept=".json"></div>
-<div style="display:flex;gap:8px;margin-top:16px">
-<button class="btn-secondary" onclick="closeModal('restoreModal')">Annulla</button>
-<button class="btn-primary" onclick="handleRestore()">Ripristina</button>
-</div></div></div>
+<div id="dash" style="display:none">
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+<h2 style="margin:0">📱 Le tue applicazioni</h2>
+<button class="btn-secondary" onclick="logout()">Esci</button></div>
+<div class="sel-row"><label style="font-size:13px;font-weight:600">Studio attivo:</label><select id="studioSel" onchange="localStorage.setItem('studio_attivo',this.value)"></select></div>
+<div class="app-grid" id="appGrid"></div>
+</div>
+
+<div class="card">
+<h2>🏢 Studi & Licenze (telecomando)</h2>
+<div id="studiList"></div>
+<div class="form-row" style="margin-top:14px">
+<div class="form-group" style="margin:0"><label>Nome nuovo studio</label><input type="text" id="newNome" placeholder="Es. Studio Verdi"></div>
+<div class="form-group" style="margin:0"><label>Giorni di prova</label><input type="number" id="newDays" value="30" min="1"></div>
+<button class="btn-primary" onclick="createStudio()">➕ Crea</button>
+</div>
+<p id="studiMsg" class="msg"></p>
+</div>
+
+<div class="card">
+<h2>🔑 Token GitHub</h2>
+<div class="form-group"><input type="password" id="tokInput" placeholder="Incolla qui il token"></div>
+<button class="btn-primary" onclick="saveToken()">💾 Salva token</button>
+<p id="tokMsg" class="msg"></p>
+</div>
+</div>
 </div>
 
 <script>
-const STORAGE_KEY='galleryClients';
-let allClients=[],editingClientId=null;
+const OWNER=location.hostname.split(".")[0],REPO=location.pathname.split("/")[1];
+const APPS=[
+ {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti",ico:"📄"},
+ {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow dei servizi",ico:"🎬"},
+ {nome:"Selezione per Album",path:"selezione-album/",desc:"Invio foto per selezione cliente",ico:"🖼"},
+ {nome:"Gallery",path:"gallery/",desc:"Consegna gallerie MEGA ai clienti",ico:"📁"}
+];
+let LIC={studi:[]};
 const $=id=>document.getElementById(id);
-const param=n=>new URLSearchParams(location.search).get(n);
-function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
-function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
-window.addEventListener('DOMContentLoaded',()=>{const gid=param('gallery');gid?clientMode(gid):adminGate()});
-function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
-async function adminGate(){
-  const codice=param('studio')||sessionStorage.getItem('studio');
-  if(!codice)return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
-  sessionStorage.setItem('studio',codice);
-  try{
-    const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-    const s=(l.studi||[]).find(x=>x.codice===codice);
-    const oggi=new Date().toISOString().slice(0,10);
-    if(!s)return blocca('Codice studio non riconosciuto.');
-    if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
-    if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
-  }catch(e){return blocca('Verifica licenza non riuscita.')}
-  $('dashboard').style.display='block';
-  allClients=loadData();loadClients();
+function login(){
+ if($('user').value.trim()==='admin'&&$('pass').value==='58879@Stella'){sessionStorage.setItem('portal_admin','1');showDash();}
+ else $('loginErr').textContent='❌ Credenziali errate.';
 }
-async function clientMode(gid){
-  const c=loadData().find(x=>x.id===gid);
-  if(!c){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Link non valido</h2><p style="color:var(--soft)">Contatta lo studio per il link corretto.</p></div></div>`;return}
-  document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card">
-  <h2 style="font-family:Georgia,serif;margin-bottom:6px">🔐 Accesso Galleria</h2>
-  <p style="color:var(--soft);margin-bottom:18px">Benvenuto <b>${escapeHtml(c.name)}</b>. Inserisci le credenziali.</p>
-  <form onsubmit="clientLogin(event,'${c.id}')">
-  <div class="form-group"><label>Username</label><input type="text" id="clU" value="${escapeHtml(c.username)}" required></div>
-  <div class="form-group"><label>Password</label><input type="password" id="clP" required></div>
-  <button type="submit" class="btn-primary" style="width:100%">Accedi alla Gallery</button>
-  <p id="clErr" style="color:var(--ko);margin-top:10px;font-size:13px"></p></form></div></div>`;
+function logout(){sessionStorage.removeItem('portal_admin');location.reload();}
+function saveToken(){localStorage.setItem('gh_token',$('tokInput').value.trim());$('tokMsg').className='msg ok';$('tokMsg').textContent='✅ Token salvato in questo browser.';}
+window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('portal_admin')==='1')showDash();const t=localStorage.getItem('gh_token');if(t)$('tokInput').value=t;});
+async function showDash(){
+ $('loginCard').style.display='none';$('dash').style.display='block';
+ await loadLic();render();
 }
-function clientLogin(e,id){
-  e.preventDefault();
-  const c=loadData().find(x=>x.id===id);
-  const u=$('clU').value.trim(),p=$('clP').value;
-  if(c&&c.username===u&&c.password===p){window.open(c.megaLink,'_blank');document.querySelector('.lock-card').innerHTML=`<div style="font-size:34px">✅</div><h2 style="font-family:Georgia,serif;margin:10px 0">Grazie ${escapeHtml(c.name)}</h2><p style="color:var(--soft)">La cartella MEGA si è aperta in una nuova scheda.<br>Puoi chiudere questa pagina.</p>`}
-  else $('clErr').textContent='❌ Credenziali errate.';
+async function loadLic(){
+ try{LIC=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){LIC={studi:[]};}
+ if(!LIC.studi)LIC.studi=[];
 }
-function handleClientForm(e){e.preventDefault();editingClientId?updateClient():addClient()}
-function addClient(){
-  const name=$('clientName').value.trim(),username=$('clientUsername').value.trim(),password=$('clientPassword').value.trim(),mega=$('megaLink').value.trim(),notes=$('clientNotes').value.trim();
-  if(!name||!username||!password||!mega)return alert('⚠️ Compila tutti i campi obbligatori.');
-  allClients.push({id:'client_'+Date.now()+'_'+Math.floor(Math.random()*900000+100000),name,username,password,megaLink:mega,notes,createdAt:Date.now()});
-  saveData(allClients);$('clientForm').reset();loadClients();alert('✅ Cliente aggiunto.');
+function render(){
+ const sel=$('studioSel');
+ sel.innerHTML=LIC.studi.length?LIC.studi.map(s=>`<option value="${s.codice}">${s.nome} (${s.codice})</option>`).join(''):'<option value="">— nessuno —</option>';
+ const saved=localStorage.getItem('studio_attivo');
+ if(saved&&LIC.studi.find(s=>s.codice===saved))sel.value=saved;
+ $('appGrid').innerHTML=APPS.map(a=>`<div class="app-card" onclick="openApp('${a.path}')"><div class="ico">${a.ico}</div><h3>${a.nome}</h3><p>${a.desc}</p></div>`).join('');
+ const oggi=new Date().toISOString().slice(0,10);
+ $('studiList').innerHTML=LIC.studi.length?LIC.studi.map(s=>{
+   const on=s.attivo&&s.scadenza>=oggi;
+   return `<div class="studio-row"><div class="info"><span class="code">${s.codice}</span> · ${s.nome}<br><small style="color:var(--soft)">scadenza: ${s.scadenza}</small></div>
+   <div style="display:flex;gap:6px;align-items:center"><span class="badge ${on?'on':'off'}">${on?'ATTIVO':'SPENTO'}</span>
+   <button class="${s.attivo?'btn-off':'btn-on'}" onclick="toggle('${s.codice}')">${s.attivo?' Spegni':' Accendi'}</button></div></div>`;
+ }).join(''):'<p style="color:var(--soft);font-size:13px">Nessuno studio: creane uno qui sotto.</p>';
 }
-function updateClient(){
-  const i=allClients.findIndex(c=>c.id===editingClientId);if(i===-1)return;
-  allClients[i]={...allClients[i],name:$('clientName').value.trim(),username:$('clientUsername').value.trim(),password:$('clientPassword').value.trim(),megaLink:$('megaLink').value.trim(),notes:$('clientNotes').value.trim()};
-  saveData(allClients);editingClientId=null;$('clientForm').reset();loadClients();alert('✅ Cliente aggiornato.');
+function openApp(path){
+ const code=$('studioSel').value;
+ if(!code)return alert('⚠️ Crea prima uno studio (riquadro "Studi & Licenze").');
+ localStorage.setItem('studio_attivo',code);
+ location.href=path+'?studio='+code;
 }
-function deleteClient(id){
-  const c=allClients.find(x=>x.id===id);if(!c)return;
-  if(!confirm(`Eliminare ${c.name}?\nQuesta azione non può essere annullata.`))return;
-  allClients=allClients.filter(x=>x.id!==id);saveData(allClients);loadClients();
+async function toggle(codice){
+ const s=LIC.studi.find(x=>x.codice===codice);if(!s)return;
+ s.attivo=!s.attivo;
+ await writeLic('aggiorna licenza '+codice);
+ await loadLic();render();
 }
-function editClient(id){
-  const c=allClients.find(x=>x.id===id);if(!c)return;
-  editingClientId=id;
-  $('clientName').value=c.name;$('clientUsername').value=c.username;$('clientPassword').value=c.password;$('megaLink').value=c.megaLink;$('clientNotes').value=c.notes||'';
-  window.scrollTo({top:0,behavior:'smooth'});
+async function createStudio(){
+ const nome=$('newNome').value.trim();if(!nome)return alert('⚠️ Scrivi il nome dello studio.');
+ const days=Math.max(1,parseInt($('newDays').value)||30);
+ let max=0;LIC.studi.forEach(s=>{const n=parseInt((s.codice||'').replace(/\D/g,''))||0;if(n>max)max=n;});
+ const codice='st-'+String(max+1).padStart(3,'0');
+ const scad=new Date(Date.now()+days*86400000).toISOString().slice(0,10);
+ LIC.studi.push({codice,nome,scadenza:scad,attivo:true});
+ await writeLic('nuovo studio '+codice);
+ $('newNome').value='';
+ await loadLic();render();
+ $('studiMsg').className='msg ok';$('studiMsg').textContent='✅ Studio '+codice+' creato (scade il '+scad+').';
 }
-function loadClients(){
-  const term=($('clientSearch').value||'').toLowerCase();
-  const list=allClients.filter(c=>!term||c.name.toLowerCase().includes(term)||c.username.toLowerCase().includes(term)||c.id.toLowerCase().includes(term)).sort((a,b)=>b.createdAt-a.createdAt);
-  $('clientsCount').textContent='· '+allClients.length+' totali';
-  if(!list.length){$('clientsList').innerHTML=`<div class="empty-state"><div class="icon">📭</div><p>Nessun cliente${term?' trovato':'.'}</p></div>`;return}
-  $('clientsList').innerHTML=list.map(c=>`
-  <div class="client-card">
-    <h3>${escapeHtml(c.name)}</h3>
-    <div class="client-info"><p><strong>👤</strong> ${escapeHtml(c.username)} · <strong>🔒</strong> ${escapeHtml(c.password)}</p></div>
-    ${c.notes?`<div class="client-notes">📝 ${escapeHtml(c.notes)}</div>`:''}
-    <div class="link-box"><strong>📲 Link da inviare al cliente:</strong>
-    <input type="text" value="${getClientUrl(c.id)}" readonly>
-    <button class="btn-wa" onclick="sendWA('${c.id}')">📲 Invia su WhatsApp</button>
-    <button class="btn-small" onclick="copyLink('${c.id}')">📋 Copia link</button></div>
-    <div class="button-group">
-    <button class="btn-edit" onclick="editClient('${c.id}')">✏️ Modifica</button>
-    <button class="btn-delete" onclick="deleteClient('${c.id}')">🗑️ Elimina</button></div>
-  </div>`).join('');
+async function writeLic(msg){
+ const tok=localStorage.getItem('gh_token');
+ if(!tok)return alert('❌ Salva prima il token GitHub nel riquadro in basso.');
+ const url=`https://api.github.com/repos/${OWNER}/${REPO}/contents/licenses.json`;
+ let sha;const g=await fetch(url,{headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'}});
+ if(g.ok)sha=(await g.json()).sha;
+ const r=await fetch(url,{method:'PUT',headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'},body:JSON.stringify({message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(LIC,null,2)))),...(sha?{sha}:{})})});
+ if(!r.ok)alert('❌ Errore GitHub: '+(await r.text()));
 }
-function getClientUrl(id){return `${location.origin}${location.pathname}?gallery=${id}`}
-function copyLink(id){navigator.clipboard.writeText(getClientUrl(id)).then(()=>alert('✅ Link copiato!'))}
-function sendWA(id){
-  const c=allClients.find(x=>x.id===id);if(!c)return;
-  const text=`Ciao ${c.name}, ecco la tua galleria privata:\n\n${getClientUrl(id)}\n\nCredenziali di accesso:\n• Username: ${c.username}\n• Password: ${c.password}\n\nConserva questo messaggio per accedere alle tue foto.`;
-  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
-}
-function openRestoreModal(){$('restoreModal').classList.add('open')}
-function closeModal(id){$(id).classList.remove('open')}
-function handleRestore(){
-  const f=$('backupFile').files[0];if(!f)return alert('⚠️ Seleziona un file.');
-  const r=new FileReader();
-  r.onload=ev=>{try{
-    const data=JSON.parse(ev.target.result);
-    const list=data.clients||data;if(!Array.isArray(list))throw new Error('File non valido');
-    if(!confirm(`Ripristinare ${list.length} clienti?\nI dati attuali (${allClients.length}) verranno sostituiti.`))return;
-    allClients=list;saveData(allClients);loadClients();closeModal('restoreModal');alert('✅ Ripristino completato.');
-  }catch(err){alert('❌ Errore: '+err.message)}};
-  r.readAsText(f);
-}
-function createBackup(){
-  if(!allClients.length)return alert('Archivio vuoto.');
-  const blob=new Blob([JSON.stringify({version:'3.0',clients:allClients,timestamp:new Date().toISOString()},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='gallery-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
-}
-function escapeHtml(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
 </body>
 </html>
