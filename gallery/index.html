@@ -96,7 +96,11 @@ const $=id=>document.getElementById(id);
 const param=n=>new URLSearchParams(location.search).get(n);
 function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
 function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
-window.addEventListener('DOMContentLoaded',()=>{const gid=param('gallery');gid?clientMode(gid):adminGate()});
+window.addEventListener('DOMContentLoaded',()=>{
+  const tok=param('token');
+  if(tok)return clientFromToken(tok);
+  adminGate();
+});
 function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
 async function adminGate(){
   const codice=param('studio')||sessionStorage.getItem('studio');
@@ -113,25 +117,39 @@ async function adminGate(){
   $('dashboard').style.display='block';
   allClients=loadData();loadClients();
 }
-async function clientMode(gid){
-  const c=loadData().find(x=>x.id===gid);
-  if(!c){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Link non valido</h2><p style="color:var(--soft)">Contatta lo studio per il link corretto.</p></div></div>`;return}
+// ===== LINK CLIENTE CON TOKEN (funziona su qualsiasi dispositivo) =====
+function makeToken(c){
+  return btoa(unescape(encodeURIComponent(JSON.stringify({u:c.username,p:c.password,m:c.megaLink,n:c.name}))))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+}
+function decodeToken(t){
+  try{
+    const s=t.replace(/-/g,'+').replace(/_/g,'/');
+    const p=s+'='.repeat((4-s.length%4)%4);
+    return JSON.parse(decodeURIComponent(escape(atob(p))));
+  }catch(e){return null}
+}
+function clientFromToken(tok){
+  const d=decodeToken(tok);
+  if(!d||!d.u||!d.p||!d.m){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Link non valido</h2><p style="color:var(--soft)">Contatta lo studio per il link corretto.</p></div></div>`;return}
   document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card">
   <h2 style="font-family:Georgia,serif;margin-bottom:6px">🔐 Accesso Galleria</h2>
-  <p style="color:var(--soft);margin-bottom:18px">Benvenuto <b>${escapeHtml(c.name)}</b>. Inserisci le credenziali.</p>
-  <form onsubmit="clientLogin(event,'${c.id}')">
-  <div class="form-group"><label>Username</label><input type="text" id="clU" value="${escapeHtml(c.username)}" required></div>
+  <p style="color:var(--soft);margin-bottom:18px">Benvenuto <b>${escapeHtml(d.n)}</b>. Inserisci le credenziali.</p>
+  <form onsubmit="clientLogin(event)">
+  <div class="form-group"><label>Username</label><input type="text" id="clU" value="${escapeHtml(d.u)}" required></div>
   <div class="form-group"><label>Password</label><input type="password" id="clP" required></div>
   <button type="submit" class="btn-primary" style="width:100%">Accedi alla Gallery</button>
   <p id="clErr" style="color:var(--ko);margin-top:10px;font-size:13px"></p></form></div></div>`;
+  window.clientData=d;
 }
-function clientLogin(e,id){
+function clientLogin(e){
   e.preventDefault();
-  const c=loadData().find(x=>x.id===id);
+  const d=window.clientData;
   const u=$('clU').value.trim(),p=$('clP').value;
-  if(c&&c.username===u&&c.password===p){window.open(c.megaLink,'_blank');document.querySelector('.lock-card').innerHTML=`<div style="font-size:34px">✅</div><h2 style="font-family:Georgia,serif;margin:10px 0">Grazie ${escapeHtml(c.name)}</h2><p style="color:var(--soft)">La cartella MEGA si è aperta in una nuova scheda.<br>Puoi chiudere questa pagina.</p>`}
+  if(d&&d.u===u&&d.p===p){window.open(d.m,'_blank');document.querySelector('.lock-card').innerHTML=`<div style="font-size:34px">✅</div><h2 style="font-family:Georgia,serif;margin:10px 0">Grazie ${escapeHtml(d.n)}</h2><p style="color:var(--soft)">La cartella MEGA si è aperta in una nuova scheda.<br>Puoi chiudere questa pagina.</p>`}
   else $('clErr').textContent='❌ Credenziali errate.';
 }
+// ===== ADMIN =====
 function handleClientForm(e){e.preventDefault();editingClientId?updateClient():addClient()}
 function addClient(){
   const name=$('clientName').value.trim(),username=$('clientUsername').value.trim(),password=$('clientPassword').value.trim(),mega=$('megaLink').value.trim(),notes=$('clientNotes').value.trim();
@@ -165,8 +183,8 @@ function loadClients(){
     <h3>${escapeHtml(c.name)}</h3>
     <div class="client-info"><p><strong>👤</strong> ${escapeHtml(c.username)} · <strong>🔒</strong> ${escapeHtml(c.password)}</p></div>
     ${c.notes?`<div class="client-notes">📝 ${escapeHtml(c.notes)}</div>`:''}
-    <div class="link-box"><strong>📲 Link da inviare al cliente:</strong>
-    <input type="text" value="${getClientUrl(c.id)}" readonly>
+    <div class="link-box"><strong>📲 Link da inviare al cliente (funziona su ogni dispositivo):</strong>
+    <input type="text" value="${getClientUrl(c)}" readonly>
     <button class="btn-wa" onclick="sendWA('${c.id}')">📲 Invia su WhatsApp</button>
     <button class="btn-small" onclick="copyLink('${c.id}')">📋 Copia link</button></div>
     <div class="button-group">
@@ -174,11 +192,11 @@ function loadClients(){
     <button class="btn-delete" onclick="deleteClient('${c.id}')">🗑️ Elimina</button></div>
   </div>`).join('');
 }
-function getClientUrl(id){return `${location.origin}${location.pathname}?gallery=${id}`}
-function copyLink(id){navigator.clipboard.writeText(getClientUrl(id)).then(()=>alert('✅ Link copiato!'))}
+function getClientUrl(c){return `${location.origin}${location.pathname}?token=${makeToken(c)}`}
+function copyLink(id){const c=allClients.find(x=>x.id===id);if(!c)return;navigator.clipboard.writeText(getClientUrl(c)).then(()=>alert('✅ Link copiato!'))}
 function sendWA(id){
   const c=allClients.find(x=>x.id===id);if(!c)return;
-  const text=`Ciao ${c.name}, ecco la tua galleria privata:\n\n${getClientUrl(id)}\n\nCredenziali di accesso:\n• Username: ${c.username}\n• Password: ${c.password}\n\nConserva questo messaggio per accedere alle tue foto.`;
+  const text=`Ciao ${c.name}, ecco la tua galleria privata:\n\n${getClientUrl(c)}\n\nCredenziali di accesso:\n• Username: ${c.username}\n• Password: ${c.password}\n\nConserva questo messaggio per accedere alle tue foto.`;
   window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
 }
 function openRestoreModal(){$('restoreModal').classList.add('open')}
