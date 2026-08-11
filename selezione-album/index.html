@@ -54,13 +54,6 @@
         .btn-wa{padding:14px 40px;background:#25d366;color:white;border:none;border-radius:999px;font-size:16px;font-weight:700;cursor:pointer;margin:10px 5px}
         .message{padding:30px;border-radius:10px;text-align:center;font-size:16px;font-weight:600;background:#eef4f0;color:var(--ok);border:2px solid var(--ok)}
         .message.expired{background:#f6eeee;color:var(--ko);border-color:var(--ko)}
-        .modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(40,40,60,.5);justify-content:center;align-items:center}
-        .modal-content{background:white;padding:30px;border-radius:14px;width:90%;max-width:600px;max-height:80vh;overflow-y:auto;position:relative}
-        .close-modal{position:absolute;top:15px;right:20px;font-size:28px;cursor:pointer;color:var(--soft)}
-        .selection-list{list-style:none;margin-top:15px}
-        .selection-list li{padding:10px;border-bottom:1px solid var(--bordo);display:flex;align-items:center;gap:15px}
-        .selection-list li img{width:60px;height:60px;object-fit:cover;border-radius:8px}
-        .instruction-box{margin-top:20px;padding:15px;background:#eef1f4;border-radius:8px;font-size:13px;color:var(--accento);border:1px solid var(--bordo)}
         .selection-row{background:white;padding:15px;border-radius:10px;margin-bottom:10px;border-left:4px solid var(--ok);display:flex;justify-content:space-between;align-items:center;border:1px solid var(--bordo);flex-wrap:wrap;gap:10px}
         .backup-section{margin-top:30px;padding-top:20px;border-top:1px solid var(--bordo)}
         .saved-msg{color:var(--ok);font-size:12px;margin-top:5px;display:none}
@@ -115,6 +108,20 @@
                         <input type="text" id="linkOutput" readonly>
                         <p id="linkExpiry" style="margin-top:8px;color:var(--soft);font-size:12px"></p>
                         <button class="btn-small" onclick="copyLink()">📋 Copia Link</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔔 Notifica quando il cliente sceglie</h3>
+                    <p style="color:var(--soft);font-size:13px">Una volta sola: 1) apri <button class="btn-secondary" style="padding:4px 10px" onclick="window.open('https://ntfy.sh','_blank')">ntfy.sh</button> · 2) scrivi nella barra il topic qui sotto e premi <b>Subscribe</b> · 3) consenti le notifiche. Da quel momento ogni selezione ti arriva come notifica sul dispositivo dove hai fatto Subscribe.</p>
+                    <div class="form-group" style="margin-top:10px">
+                        <label>Tuo topic notifiche:</label>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap">
+                            <input id="ntfyTopic" placeholder="es. acsp-selezioni-x7k2" style="flex:1;min-width:200px">
+                            <button class="btn-secondary" onclick="genTopic()">🎲 Genera</button>
+                            <button class="btn-small" onclick="saveTopic()">Salva</button>
+                        </div>
+                        <small>Il topic viene inserito nelle gallerie che crei: il cliente non lo vede.</small>
                     </div>
                 </div>
 
@@ -191,7 +198,17 @@
             $('folderCount').textContent = '✅ ' + folderItems.length + ' foto lette — nomi originali conservati';
         }
 
-        // ===== GitHub (pubblica la galleria così il cliente la vede ovunque) =====
+        function genTopic() {
+            const c = 'abcdefghjkmnpqrstuvwxyz23456789'; let t = 'acsp-selezioni-';
+            for (let i = 0; i < 6; i++) t += c[Math.floor(Math.random() * c.length)];
+            $('ntfyTopic').value = t;
+        }
+        function saveTopic() {
+            localStorage.setItem('ntfyTopic', $('ntfyTopic').value.trim());
+            alert('✅ Topic salvato: verrà inserito nelle prossime gallerie.');
+        }
+
+        // ===== GitHub =====
         function ghHeaders(tok) { return { Authorization: 'token ' + tok, Accept: 'application/vnd.github+json' }; }
         async function ghWrite(path, obj) {
             const tok = localStorage.getItem('gh_token');
@@ -237,6 +254,7 @@
                 if (s.scadenza < oggi) return blocca('La prova è scaduta. Contatta il fornitore.');
             } catch (e) { return blocca('Verifica licenza non riuscita. Controlla la connessione.'); }
             const b = localStorage.getItem(BASE_KEY); if (b) $('baseUrl').value = b;
+            const t = localStorage.getItem('ntfyTopic'); if (t) $('ntfyTopic').value = t;
             $('adminDashboard').style.display = 'block';
             renderGalleries();
         }
@@ -256,7 +274,8 @@
                 photos: folderItems.map(x => b + x.sub.split('/').map(encodeURIComponent).join('/')),
                 fileNames: folderItems.map(x => x.name),
                 createdAt: Date.now(),
-                expiresAt: Date.now() + hours * 3600000
+                expiresAt: Date.now() + hours * 3600000,
+                ntfy: localStorage.getItem('ntfyTopic') || ''
             };
             try {
                 await ghWrite('selezione-album/data/' + gid + '.json', gallery);
@@ -317,7 +336,7 @@
             document.body.appendChild(a); a.click(); setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(a.href); }, 100);
         }
 
-        // ===== CLIENTE (nessun lucchetto: legge la galleria pubblicata) =====
+        // ===== CLIENTE =====
         async function clientMode(gid) {
             $('clientView').style.display = 'block';
             let g;
@@ -361,6 +380,11 @@
             const idxs = Array.from(selectedPhotos);
             const names = idxs.map(i => currentGallery.fileNames?.[i] || `foto_${i}.jpg`);
             localStorage.setItem('sel_done_' + currentGallery.id, '1');
+            // 🔔 notifica automatica al fotografo
+            if (currentGallery.ntfy) {
+                const msg = `✅ SELEZIONE RICEVUTA — ${currentGallery.clientName}\n${names.length} foto scelte:\n` + names.join('\n');
+                try { navigator.sendBeacon('https://ntfy.sh/' + currentGallery.ntfy, msg.slice(0, 4000)); } catch (e) { }
+            }
             const text = `Ciao, sono ${currentGallery.clientName}. Ho scelto ${names.length} foto per l'album:\n` + names.join('\n');
             $('gallery').innerHTML = '';
             document.querySelector('.actions').style.display = 'none';
