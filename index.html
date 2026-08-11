@@ -1,143 +1,206 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AppCenterStudio-Premium</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCenterStudio Premium - Gallery</title>
 <style>
-:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;
---accento-chiaro:#eef1f4;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
-*{box-sizing:border-box}body{margin:0;font:15px/1.55 -apple-system,"Segoe UI",sans-serif;background:var(--sfondo);color:var(--testo)}
-h1,h2,h3{font-family:Georgia,serif;font-weight:600;margin:.2em 0}
-.wrap{max-width:980px;margin:0 auto;padding:28px 20px 60px}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--bordo);padding-bottom:14px;margin-bottom:22px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand img{width:44px;height:44px;border-radius:10px;object-fit:cover}
-.logo{width:44px;height:44px;border-radius:10px;background:var(--accento);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:20px}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;box-shadow:0 1px 3px rgba(40,40,60,.06)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:16px}
-.btn{border:1px solid var(--bordo);background:var(--carta);color:var(--testo);padding:9px 16px;border-radius:999px;cursor:pointer;font-size:13px}
-.btn:hover{border-color:var(--accento);color:var(--accento)}
-.btn.primario{background:var(--accento);border-color:var(--accento);color:#fff}
-input{padding:9px 12px;border:1px solid var(--bordo);border-radius:10px;background:#fff;font-size:14px;width:100%}
-label{font-size:12px;color:var(--soft);display:block;margin:10px 0 4px}
-.stato{padding:3px 10px;border-radius:999px;font-size:12px}.stato.ok{background:#eef4f0;color:var(--ok)}.stato.ko{background:#f6eeee;color:var(--ko)}
-.riga{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--bordo)}
-.soft{color:var(--soft)}small{font-size:12px}
-</style></head>
+:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
+.container{max-width:1200px;margin:0 auto}
+.app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px}
+.subtitle{font-size:16px;color:var(--soft)}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:10px}
+.dashboard-header h2{color:var(--accento);font-family:Georgia,serif}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
+.card h2{color:var(--accento);margin-bottom:18px;font-family:Georgia,serif;font-size:18px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
+.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
+.form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
+.btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
+.btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-edit{padding:8px 14px;background:var(--accento);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
+.btn-wa{padding:10px 20px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;margin:6px 0;width:100%}
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:18px}
+.client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:10px;font-size:17px}
+.client-info{font-size:13px;line-height:1.7}
+.client-notes{margin-top:10px;padding:10px;background:#f6f1e7;border-radius:8px;font-size:12px;color:#7a6540}
+.button-group{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.link-box{background:#eef4f0;padding:12px;border-radius:8px;margin-top:12px;border-left:3px solid var(--ok)}
+.link-box strong{display:block;font-size:12px;color:var(--ok);margin-bottom:6px}
+.link-box input{width:100%;padding:7px;border:1px solid var(--bordo);border-radius:6px;font-family:monospace;font-size:11px}
+.modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(40,40,60,.5);align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}
+.modal-content{background:var(--carta);border-radius:14px;padding:28px;max-width:560px;width:100%;position:relative}
+.modal-content h2{font-family:Georgia,serif;color:var(--accento);margin-bottom:18px}
+.close-modal{position:absolute;top:12px;right:16px;font-size:28px;cursor:pointer;color:var(--soft);background:none;border:none}
+.empty-state{text-align:center;padding:40px 20px;color:var(--soft);grid-column:1/-1}
+.empty-state .icon{font-size:48px;margin-bottom:12px}
+.search-box{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;margin-bottom:18px}
+.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
+</style>
+</head>
 <body>
-<div class="wrap"><header id="testata"></header><main id="main"></main></div>
+<div class="container">
+<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Gallery Photo — Consegna MEGA al Cliente</p></header>
+
+<div id="dashboard" style="display:none;">
+<div class="dashboard-header"><h2>👋 Dashboard Gallery</h2>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn-secondary" onclick="createBackup()">💾 Backup</button>
+<button class="btn-secondary" onclick="openRestoreModal()">🔄 Ripristina</button>
+</div></div>
+
+<div class="card"><h2>📁 Aggiungi Nuovo Cliente Gallery</h2>
+<form id="clientForm" onsubmit="handleClientForm(event)">
+<div class="form-row">
+<div class="form-group"><label>Nome Cliente *</label><input type="text" id="clientName" required></div>
+<div class="form-group"><label>Username cliente *</label><input type="text" id="clientUsername" required placeholder="es. mario.rossi"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Password cliente *</label><input type="text" id="clientPassword" required placeholder="es. foto2024"></div>
+<div class="form-group"><label>Link MEGA (cartella foto) *</label><input type="text" id="megaLink" required placeholder="https://mega.nz/folder/..."></div>
+</div>
+<div class="form-group"><label>Note (opzionale)</label><textarea id="clientNotes" rows="3"></textarea></div>
+<button type="submit" class="btn-primary">➕ Aggiungi Cliente</button>
+</form></div>
+
+<div class="card"><h2>🗂 Clienti Gallery <span id="clientsCount" style="color:var(--soft);font-size:14px"></span></h2>
+<input type="text" id="clientSearch" class="search-box" placeholder="🔍 Cerca per nome, username o ID..." oninput="loadClients()">
+<div id="clientsList" class="clients-grid"></div></div>
+</div>
+
+<div id="restoreModal" class="modal"><div class="modal-content">
+<button class="close-modal" onclick="closeModal('restoreModal')">&times;</button>
+<h2>🔄 Ripristina Backup</h2>
+<div class="form-group"><label>Seleziona file backup (.json):</label><input type="file" id="backupFile" accept=".json"></div>
+<div style="display:flex;gap:8px;margin-top:16px">
+<button class="btn-secondary" onclick="closeModal('restoreModal')">Annulla</button>
+<button class="btn-primary" onclick="handleRestore()">Ripristina</button>
+</div></div></div>
+</div>
+
 <script>
-/* ===== AppCenterStudio-Premium ===== */
-const OWNER=location.hostname.split(".")[0];
-const REPO=location.pathname.split("/")[1];
-const ADMIN_USER="admin";          // utente amministratore
-const ADMIN_PASS="58879@Stella";   // password amministratore
-const APPS=[
- {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti"},
- {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow servizi fotografici e video"},
- {nome:"Selezione per Album",path:"selezione-album/",desc:"Invio foto per selezione cliente"},
-];
-let licenze=null,studio=null,profilo=null,tokenGH=localStorage.getItem("gh_token")||"";
+const STORAGE_KEY='galleryClients';
+let allClients=[],editingClientId=null;
 const $=id=>document.getElementById(id);
-const oggi=()=>new Date().toISOString().slice(0,10);
-const gg=s=>Math.ceil((new Date(s.scadenza)-new Date(oggi()))/864e5);
-async function carica(){licenze=await(await fetch("licenses.json?t="+Date.now(),{cache:"no-store"})).json()}
-function brandHTML(){const p=profilo||{};
- return `<div class="brand">${p.logo?`<img src="${p.logo}">`:`<div class="logo">A</div>`}
- <div><h1 style="margin:0;font-size:19px">AppCenterStudio‑Premium</h1><small class="soft">${p.nome||"Suite per studi fotografici"}</small></div></div>`}
-function vistaLogin(){testata.innerHTML=brandHTML();
- main.innerHTML=`<div class="card" style="max-width:430px;margin:48px auto">
- <h2>Accedi al tuo studio</h2><p class="soft">Inserisci la password di accesso che ti è stata fornita.</p>
- <label>Password di accesso</label><input id="passStudio" type="password" placeholder="••••••••">
- <button class="btn primario" style="width:100%;margin-top:14px" onclick="entraStudio()">Entra</button>
- <details style="margin-top:22px" class="soft"><summary style="cursor:pointer;font-size:12px">Accesso amministratore</summary>
- <label>Utente</label><input id="userAdmin" type="text" placeholder="admin">
- <label>Password</label><input id="pass" type="password">
- <button class="btn" style="width:100%;margin-top:10px" onclick="entraAdmin()">Entra come admin</button></details></div>`}
-async function entraStudio(){await carica();
- const s=licenze.studi.find(x=>x.password===$("passStudio").value.trim());
- if(!s)return alert("Password non riconosciuta.");
- studio=s;try{profilo=JSON.parse(localStorage.getItem("acsp:"+s.codice))||{}}catch(e){profilo={}}
- (!s.attivo||s.scadenza<oggi())?vistaBloccato():vistaDash()}
-function vistaBloccato(){testata.innerHTML=brandHTML();
- main.innerHTML=`<div class="card" style="max-width:460px;margin:48px auto;text-align:center">
- <div style="font-size:34px">🔒</div><h2>Licenza non attiva</h2>
- <p class="soft">${studio.attivo?"La prova di 30 giorni è scaduta.":"L'accesso è stato sospeso."}<br>Contattaci per il rinnovo.</p></div>`}
-function vistaDash(){testata.innerHTML=brandHTML()+`<button class="btn" onclick="esci()">Esci</button>`;
- const p=profilo||{};
- main.innerHTML=`<div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
- <div class="card"><h2>Il tuo studio</h2><p class="soft">Personalizza il portale con i tuoi dati e la tua immagine.</p>
-  <label>Nome studio</label><input id="pNome" value="${p.nome||""}" placeholder="es. Studio Rossi">
-  <label>Indirizzo</label><input id="pInd" value="${p.indirizzo||""}">
-  <label>Telefono</label><input id="pTel" value="${p.telefono||""}">
-  <label>Email</label><input id="pEmail" value="${p.email||""}">
-  <label>Logo / immagine dello studio</label><input type="file" id="pImg" accept="image/*" onchange="leggiImmagine(this)">
-  <div id="anteprima" style="margin-top:10px">${p.logo?`<img src="${p.logo}" style="width:64px;height:64px;object-fit:cover;border-radius:12px">`:""}</div>
-  <button class="btn primario" style="margin-top:14px" onclick="salvaDati()">Salva personalizzazione</button></div>
- <div><div class="card"><h2>Le tue applicazioni</h2>
-  <p class="soft">Prova attiva fino al <strong>${studio.scadenza}</strong> · ${gg(studio)} giorni rimanenti.</p></div>
-  <div class="grid">${APPS.map(a=>`<div class="card"><h3>${a.nome}</h3><p class="soft">${a.desc}</p>
-   <a class="btn primario" style="text-decoration:none" target="_blank" href="${a.path}?studio=${studio.codice}">Apri</a></div>`).join("")}</div></div></div>`}
-function leggiImmagine(inp){const f=inp.files[0];if(!f)return;
- if(f.size>1500000)return alert("Immagine troppo pesante: usa un file sotto 1,5 MB.");
- const r=new FileReader();r.onload=()=>{profilo=profilo||{};profilo.logo=r.result;
- anteprima.innerHTML=`<img src="${r.result}" style="width:64px;height:64px;object-fit:cover;border-radius:12px">`};r.readAsDataURL(f)}
-function salvaDati(){profilo=profilo||{};
- Object.assign(profilo,{nome:pNome.value.trim(),indirizzo:pInd.value.trim(),telefono:pTel.value.trim(),email:pEmail.value.trim()});
- localStorage.setItem("acsp:"+studio.codice,JSON.stringify(profilo));vistaDash();alert("Personalizzazione salvata.")}
-function esci(){studio=null;profilo=null;vistaLogin()}
-function entraAdmin(){if($("userAdmin").value.trim()===ADMIN_USER&&$("pass").value===ADMIN_PASS)vistaAdmin();else alert("Credenziali errate.")}
-async function vistaAdmin(){await carica();
- testata.innerHTML=brandHTML()+`<span class="stato ok">admin</span> <button class="btn" onclick="vistaLogin()">Esci</button>`;
- main.innerHTML=`<div class="card"><h2>Studi clienti</h2>
- ${licenze.studi.map(rigaStudio).join("")||"<p class='soft'>Nessuno studio.</p>"}</div>
- <div class="grid" style="grid-template-columns:1fr 1fr">
- <div class="card"><h3>Nuovo studio (30 gg di prova)</h3>
-  <label>Nome studio</label><input id="nNome" placeholder="es. Studio Rossi">
-  <label>Password per lo studio</label>
-  <div style="display:flex;gap:8px"><input id="nPass" placeholder="vuota = generata in automatico">
-  <button class="btn" onclick="nPass.value=genToken()">Genera</button></div>
-  <button class="btn primario" style="width:100%;margin-top:12px" onclick="nuovoStudio()">Crea studio</button></div>
- <div class="card"><h3>Token GitHub</h3>
-  <p class="soft">Serve ai pulsanti Accendi/Spegni. Crealo su GitHub con scope <em>public_repo</em>. Resta salvato solo su questo PC.</p>
-  <input id="tok" value="${tokenGH}" placeholder="ghp_...">
-  <button class="btn" style="width:100%;margin-top:12px" onclick="tokenGH=tok.value.trim();localStorage.setItem('gh_token',tokenGH);alert('Token salvato.')">Salva token</button></div></div>`}
-function rigaStudio(s){const attivo=s.attivo&&s.scadenza>=oggi();
- return `<div class="riga"><div><strong>${s.nome}</strong><br>
- <small>password: <b>${s.password}</b> · scadenza: ${s.scadenza} · <span class="stato ${attivo?"ok":"ko"}">${attivo?"attivo":"spento/scaduto"}</span></small></div>
- <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
- <button class="btn" onclick="copia('${s.password}')">Copia</button>
- <button class="btn" onclick="cambiaPass('${s.codice}')">Password</button>
- <button class="btn" onclick="piu30('${s.codice}')">+30 gg</button>
- <button class="btn ${s.attivo?"":"primario"}" onclick="toggle('${s.codice}')">${s.attivo?"Spegni":"Accendi"}</button></div></div>`}
-function copia(t){navigator.clipboard.writeText(t).then(()=>alert("Password copiata: "+t))}
-function genToken(){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let t="ACS-";
- for(let i=0;i<4;i++)t+=c[Math.floor(Math.random()*c.length)];t+="-";
- for(let i=0;i<4;i++)t+=c[Math.floor(Math.random()*c.length)];return t}
-function genCodice(nome){let base=nome.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||"studio";
- let cod=base,n=2;while(licenze.studi.some(s=>s.codice===cod))cod=base+"-"+n++;return cod}
-async function toggle(c){const s=licenze.studi.find(x=>x.codice===c);s.attivo=!s.attivo;await salvaLicenze();vistaAdmin()}
-async function piu30(c){const s=licenze.studi.find(x=>x.codice===c);
- const b=s.scadenza>=oggi()?new Date(s.scadenza):new Date();b.setDate(b.getDate()+30);
- s.scadenza=b.toISOString().slice(0,10);await salvaLicenze();vistaAdmin()}
-async function cambiaPass(c){const s=licenze.studi.find(x=>x.codice===c);
- const np=prompt("Nuova password per "+s.nome+":",s.password);if(!np||np===s.password)return;
- s.password=np;await salvaLicenze();vistaAdmin()}
-async function nuovoStudio(){const nome=nNome.value.trim();let pass=nPass.value.trim()||genToken();
- if(!nome)return alert("Inserisci il nome dello studio.");
- if(licenze.studi.some(s=>s.password===pass))return alert("Password già usata.");
- const d=new Date();d.setDate(d.getDate()+30);
- licenze.studi.push({nome,codice:genCodice(nome),password:pass,attivo:true,scadenza:d.toISOString().slice(0,10)});
- await salvaLicenze();vistaAdmin();
- alert("Studio creato.\nPassword da comunicare al cliente: "+pass+"\nLa trovi comunque salvata nell'elenco studi.")}
-async function salvaLicenze(){if(!tokenGH)return alert("Salva prima il token GitHub.");
- const url=`https://api.github.com/repos/${OWNER}/${REPO}/contents/licenses.json`;let sha;
- const g=await fetch(url,{headers:hGH()});if(g.ok)sha=(await g.json()).sha;
- const r=await fetch(url,{method:"PUT",headers:hGH(),body:JSON.stringify({message:"aggiorna licenze",content:b64(JSON.stringify(licenze,null,2)),...(sha?{sha}:{})})});
- if(!r.ok)return alert("Errore GitHub: "+(await r.text()))}
-function hGH(){return{Authorization:"token "+tokenGH,Accept:"application/vnd.github+json"}}
-function b64(s){return btoa(unescape(encodeURIComponent(s)))}
-vistaLogin();
+const param=n=>new URLSearchParams(location.search).get(n);
+function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
+function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
+window.addEventListener('DOMContentLoaded',()=>{const gid=param('gallery');gid?clientMode(gid):adminGate()});
+function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+async function adminGate(){
+  const codice=param('studio')||sessionStorage.getItem('studio');
+  if(!codice)return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
+  sessionStorage.setItem('studio',codice);
+  try{
+    const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+    const s=(l.studi||[]).find(x=>x.codice===codice);
+    const oggi=new Date().toISOString().slice(0,10);
+    if(!s)return blocca('Codice studio non riconosciuto.');
+    if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
+    if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
+  }catch(e){return blocca('Verifica licenza non riuscita.')}
+  $('dashboard').style.display='block';
+  allClients=loadData();loadClients();
+}
+async function clientMode(gid){
+  const c=loadData().find(x=>x.id===gid);
+  if(!c){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Link non valido</h2><p style="color:var(--soft)">Contatta lo studio per il link corretto.</p></div></div>`;return}
+  document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card">
+  <h2 style="font-family:Georgia,serif;margin-bottom:6px">🔐 Accesso Galleria</h2>
+  <p style="color:var(--soft);margin-bottom:18px">Benvenuto <b>${escapeHtml(c.name)}</b>. Inserisci le credenziali.</p>
+  <form onsubmit="clientLogin(event,'${c.id}')">
+  <div class="form-group"><label>Username</label><input type="text" id="clU" value="${escapeHtml(c.username)}" required></div>
+  <div class="form-group"><label>Password</label><input type="password" id="clP" required></div>
+  <button type="submit" class="btn-primary" style="width:100%">Accedi alla Gallery</button>
+  <p id="clErr" style="color:var(--ko);margin-top:10px;font-size:13px"></p></form></div></div>`;
+}
+function clientLogin(e,id){
+  e.preventDefault();
+  const c=loadData().find(x=>x.id===id);
+  const u=$('clU').value.trim(),p=$('clP').value;
+  if(c&&c.username===u&&c.password===p){window.open(c.megaLink,'_blank');document.querySelector('.lock-card').innerHTML=`<div style="font-size:34px">✅</div><h2 style="font-family:Georgia,serif;margin:10px 0">Grazie ${escapeHtml(c.name)}</h2><p style="color:var(--soft)">La cartella MEGA si è aperta in una nuova scheda.<br>Puoi chiudere questa pagina.</p>`}
+  else $('clErr').textContent='❌ Credenziali errate.';
+}
+function handleClientForm(e){e.preventDefault();editingClientId?updateClient():addClient()}
+function addClient(){
+  const name=$('clientName').value.trim(),username=$('clientUsername').value.trim(),password=$('clientPassword').value.trim(),mega=$('megaLink').value.trim(),notes=$('clientNotes').value.trim();
+  if(!name||!username||!password||!mega)return alert('⚠️ Compila tutti i campi obbligatori.');
+  allClients.push({id:'client_'+Date.now()+'_'+Math.floor(Math.random()*900000+100000),name,username,password,megaLink:mega,notes,createdAt:Date.now()});
+  saveData(allClients);$('clientForm').reset();loadClients();alert('✅ Cliente aggiunto.');
+}
+function updateClient(){
+  const i=allClients.findIndex(c=>c.id===editingClientId);if(i===-1)return;
+  allClients[i]={...allClients[i],name:$('clientName').value.trim(),username:$('clientUsername').value.trim(),password:$('clientPassword').value.trim(),megaLink:$('megaLink').value.trim(),notes:$('clientNotes').value.trim()};
+  saveData(allClients);editingClientId=null;$('clientForm').reset();loadClients();alert('✅ Cliente aggiornato.');
+}
+function deleteClient(id){
+  const c=allClients.find(x=>x.id===id);if(!c)return;
+  if(!confirm(`Eliminare ${c.name}?\nQuesta azione non può essere annullata.`))return;
+  allClients=allClients.filter(x=>x.id!==id);saveData(allClients);loadClients();
+}
+function editClient(id){
+  const c=allClients.find(x=>x.id===id);if(!c)return;
+  editingClientId=id;
+  $('clientName').value=c.name;$('clientUsername').value=c.username;$('clientPassword').value=c.password;$('megaLink').value=c.megaLink;$('clientNotes').value=c.notes||'';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function loadClients(){
+  const term=($('clientSearch').value||'').toLowerCase();
+  const list=allClients.filter(c=>!term||c.name.toLowerCase().includes(term)||c.username.toLowerCase().includes(term)||c.id.toLowerCase().includes(term)).sort((a,b)=>b.createdAt-a.createdAt);
+  $('clientsCount').textContent='· '+allClients.length+' totali';
+  if(!list.length){$('clientsList').innerHTML=`<div class="empty-state"><div class="icon">📭</div><p>Nessun cliente${term?' trovato':'.'}</p></div>`;return}
+  $('clientsList').innerHTML=list.map(c=>`
+  <div class="client-card">
+    <h3>${escapeHtml(c.name)}</h3>
+    <div class="client-info"><p><strong>👤</strong> ${escapeHtml(c.username)} · <strong>🔒</strong> ${escapeHtml(c.password)}</p></div>
+    ${c.notes?`<div class="client-notes">📝 ${escapeHtml(c.notes)}</div>`:''}
+    <div class="link-box"><strong>📲 Link da inviare al cliente:</strong>
+    <input type="text" value="${getClientUrl(c.id)}" readonly>
+    <button class="btn-wa" onclick="sendWA('${c.id}')">📲 Invia su WhatsApp</button>
+    <button class="btn-small" onclick="copyLink('${c.id}')">📋 Copia link</button></div>
+    <div class="button-group">
+    <button class="btn-edit" onclick="editClient('${c.id}')">✏️ Modifica</button>
+    <button class="btn-delete" onclick="deleteClient('${c.id}')">🗑️ Elimina</button></div>
+  </div>`).join('');
+}
+function getClientUrl(id){return `${location.origin}${location.pathname}?gallery=${id}`}
+function copyLink(id){navigator.clipboard.writeText(getClientUrl(id)).then(()=>alert('✅ Link copiato!'))}
+function sendWA(id){
+  const c=allClients.find(x=>x.id===id);if(!c)return;
+  const text=`Ciao ${c.name}, ecco la tua galleria privata:\n\n${getClientUrl(id)}\n\nCredenziali di accesso:\n• Username: ${c.username}\n• Password: ${c.password}\n\nConserva questo messaggio per accedere alle tue foto.`;
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
+}
+function openRestoreModal(){$('restoreModal').classList.add('open')}
+function closeModal(id){$(id).classList.remove('open')}
+function handleRestore(){
+  const f=$('backupFile').files[0];if(!f)return alert('⚠️ Seleziona un file.');
+  const r=new FileReader();
+  r.onload=ev=>{try{
+    const data=JSON.parse(ev.target.result);
+    const list=data.clients||data;if(!Array.isArray(list))throw new Error('File non valido');
+    if(!confirm(`Ripristinare ${list.length} clienti?\nI dati attuali (${allClients.length}) verranno sostituiti.`))return;
+    allClients=list;saveData(allClients);loadClients();closeModal('restoreModal');alert('✅ Ripristino completato.');
+  }catch(err){alert('❌ Errore: '+err.message)}};
+  r.readAsText(f);
+}
+function createBackup(){
+  if(!allClients.length)return alert('Archivio vuoto.');
+  const blob=new Blob([JSON.stringify({version:'3.0',clients:allClients,timestamp:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='gallery-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function escapeHtml(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
 </body>
 </html>
