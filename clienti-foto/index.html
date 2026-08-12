@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCenterStudio Premium - Clienti & Foto</title>
+<style>
+:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
+.container{max-width:1100px;margin:0 auto}
+.app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px}
+.subtitle{font-size:16px;color:var(--soft)}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
+.card h2{color:var(--accento);margin-bottom:18px;font-family:Georgia,serif;font-size:18px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
+.form-group input{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
+.form-group input:focus{outline:2px solid var(--accento);border-color:transparent}
+.form-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}}
+.btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
+.btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-netlify{padding:10px 20px;background:#00ad9f;color:#fff;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;text-decoration:none;display:inline-block;margin:5px 5px 5px 0}
+.client-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
+.client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:16px}
+.client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:8px;font-size:17px}
+.code-badge{display:inline-block;padding:5px 12px;background:var(--accento);color:#fff;border-radius:999px;font-family:monospace;font-weight:700;font-size:13px;margin:6px 0}
+.info-box{background:#eef4f0;border-left:4px solid var(--ok);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.7}
+.info-box strong{color:var(--ok)}
+.empty{text-align:center;color:var(--soft);padding:30px;grid-column:1/-1}
+.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Clienti & Foto — Gestione codici e cartelle Netlify</p></header>
+
+<div id="dashboard" style="display:none">
+<div class="card">
+<h2>🌐 1. Preparazione Netlify (fai una volta sola)</h2>
+<div class="info-box">
+<b>Per far funzionare tutte le app serve un sito Netlify permanente.</b><br>
+1. Clicca sotto per creare l'account gratis (se non l'hai già fatto).<br>
+2. Poi trascina una cartella vuota sul Netlify Drop per creare il sito (gli servirà un nome tipo <i>studio-tuo.netlify.app</i>).<br>
+3. Copia il link del sito creato e incollalo qui sotto → Salva.
+</div>
+<a href="https://app.netlify.com/drop" target="_blank" class="btn-netlify">🌐 Apri Netlify Drop</a>
+<div class="form-group" style="margin-top:14px"><label>Link del tuo sito Netlify:</label>
+<input type="text" id="netlifyBase" placeholder="Es. https://studio-tuo.netlify.app" oninput="saveNetlify()">
+<p id="netlifyMsg" style="font-size:12px;color:var(--ok);margin-top:4px;display:none">✅ Memorizzato</p></div>
+</div>
+
+<div class="card">
+<h2>➕ 2. Aggiungi Nuovo Cliente</h2>
+<div class="info-box">Inserisci nome e cognome → il sistema genera un <b>codice univoco</b> (es. <i>rossi-001</i>) che userai in tutte le app.</div>
+<form onsubmit="addClient(event)">
+<div class="form-row">
+<div class="form-group"><label>Nome *</label><input type="text" id="cNome" required placeholder="Es. Mario"></div>
+<div class="form-group"><label>Cognome *</label><input type="text" id="cCognome" required placeholder="Es. Rossi"></div>
+<button type="submit" class="btn-primary">➕ Crea Cliente</button>
+</div>
+<div class="form-group" style="margin-top:10px"><label>Note (opzionale)</label><input type="text" id="cNote" placeholder="Es. matrimonio 15/06/2025"></div>
+</form>
+</div>
+
+<div class="card">
+<h2>👥 3. Elenco Clienti</h2>
+<div class="info-box">Per caricare le foto di un cliente: clicca <b>📤 Carica foto</b> → trascina la cartella sul Netlify Drop → il sito le metterà in <i>sito-tuo.netlify.app/codice-cliente/</i>.</div>
+<div id="clientList" class="client-list"></div>
+</div>
+</div>
+</div>
+
+<script>
+const STORAGE='clientiFotoData';
+const $=id=>document.getElementById(id);
+const param=n=>new URLSearchParams(location.search).get(n);
+let data={netlify:'',clients:[]};
+function load(){try{data=JSON.parse(localStorage.getItem(STORAGE))||{netlify:'',clients:[]}}catch(e){}}
+function save(){localStorage.setItem(STORAGE,JSON.stringify(data))}
+function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+window.addEventListener('DOMContentLoaded',async()=>{
+ const codice=param('studio')||sessionStorage.getItem('studio');
+ if(!codice)return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
+ sessionStorage.setItem('studio',codice);
+ try{
+  const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+  const s=(l.studi||[]).find(x=>x.codice===codice);
+  const oggi=new Date().toISOString().slice(0,10);
+  if(!s)return blocca('Codice studio non riconosciuto.');
+  if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
+  if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
+ }catch(e){return blocca('Verifica licenza non riuscita.');}
+ load();$('dashboard').style.display='block';
+ $('netlifyBase').value=data.netlify||'';
+ render();
+});
+function saveNetlify(){
+ data.netlify=$('netlifyBase').value.trim().replace(/\/$/,'');
+ save();$('netlifyMsg').style.display='block';
+ setTimeout(()=>$('netlifyMsg').style.display='none',2000);
+}
+function genCode(nome,cognome){
+ const slug=(cognome+'-'+nome).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+ let n=1;let code=slug+'-'+String(n).padStart(3,'0');
+ while(data.clients.some(c=>c.codice===code)){n++;code=slug+'-'+String(n).padStart(3,'0');}
+ return code;
+}
+function addClient(e){
+ e.preventDefault();
+ const nome=$('cNome').value.trim();
+ const cognome=$('cCognome').value.trim();
+ const note=$('cNote').value.trim();
+ if(!nome||!cognome)return;
+ const codice=genCode(nome,cognome);
+ data.clients.push({codice,nome,cognome,note,createdAt:Date.now()});
+ save();$('cNome').value='';$('cCognome').value='';$('cNote').value='';
+ render();
+ alert('✅ Cliente creato!\n\nCodice: '+codice+'\n\nProssimo passo: carica le sue foto su Netlify.');
+}
+function deleteClient(codice){
+ const c=data.clients.find(x=>x.codice===codice);
+ if(!c)return;
+ if(!confirm(`Eliminare ${c.nome} ${c.cognome} (${codice})?\n\nQuesta azione non può essere annullata.`))return;
+ data.clients=data.clients.filter(x=>x.codice!==codice);
+ save();render();
+}
+function copyCode(codice,btn){
+ navigator.clipboard.writeText(codice).then(()=>{
+  const t=btn.textContent;btn.textContent='✅ Copiato!';
+  setTimeout(()=>btn.textContent=t,1500);
+ });
+}
+function openNetlifyForClient(codice){
+ if(!data.netlify)return alert('⚠️ Prima inserisci il link del tuo sito Netlify nel passo 1.');
+ const url=data.netlify;
+ navigator.clipboard.writeText(codice).then(()=>alert('✅ Codice copiato: '+codice+'\n\nQuando Netlify Drop si apre:\n1. Trascina la cartella delle foto\n2. Quando ti chiede il nome del sito, NON cambiarlo\n3. Le foto andranno dentro una sottocartella che creeremo al prossimo passo.'));
+ window.open(url,'_blank');
+}
+function render(){
+ const list=$('clientList');
+ if(!data.clients.length){list.innerHTML='<div class="empty">📭 Nessun cliente. Creane uno sopra.</div>';return;}
+ list.innerHTML=data.clients.slice().reverse().map(c=>`
+  <div class="client-card">
+   <h3>${escape(c.nome)} ${escape(c.cognome)}</h3>
+   <div class="code-badge">${c.codice}</div>
+   ${c.note?`<p style="font-size:13px;color:var(--soft);margin:6px 0">📝 ${escape(c.note)}</p>`:''}
+   <p style="font-size:12px;color:var(--soft);margin:8px 0">📅 ${new Date(c.createdAt).toLocaleDateString('it-IT')}</p>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+    <button class="btn-small" onclick="copyCode('${c.codice}',this)">📋 Copia codice</button>
+    <button class="btn-secondary" onclick="openNetlifyForClient('${c.codice}')">📤 Carica foto</button>
+    <button class="btn-delete" onclick="deleteClient('${c.codice}')">🗑️</button>
+   </div>
+  </div>`).join('');
+}
+function escape(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+</script>
+</body>
+</html>
