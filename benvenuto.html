@@ -40,7 +40,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accento)}
 </head>
 <body>
 <div class="container">
-<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Il sistema digitale per il tuo studio fotografico</p></header>
+<header class="app-header"><img src="logo.png" alt="logo" style="height:64px;border-radius:14px;margin-bottom:10px"><h1>AppCenterStudio Premium</h1><p class="subtitle">Il sistema digitale per il tuo studio fotografico</p></header>
 <div id="content"></div>
 </div>
 <script>
@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
  <div class="card">
   <h2>1️⃣ Inserisci i dati del tuo studio</h2>
   <p style="color:var(--soft);font-size:13px;margin-bottom:14px">Servono al fornitore per configurare la tua installazione.</p>
-  <form onsubmit="inviaDati(event,'${esc(s.nome)}')">
+  <form onsubmit="inviaDati(event)">
    <div class="form-group"><label>Nome dello studio *</label><input id="dNome" value="${esc(s.nome)}" required></div>
    <div class="form-group"><label>Referente *</label><input id="dRef" required placeholder="Nome e cognome"></div>
    <div class="form-group"><label>WhatsApp *</label><input id="dWa" required placeholder="Es. 39123456789"></div>
@@ -107,7 +107,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   </details>
  </div>`;
 });
-function inviaDati(e,nome){
+function inviaDati(e){
  e.preventDefault();
  const t=`🆕 ATTIVAZIONE STUDIO AppCenterStudio\n• Studio: ${document.getElementById('dNome').value}\n• Referente: ${document.getElementById('dRef').value}\n• WhatsApp: ${document.getElementById('dWa').value}\n• Email: ${document.getElementById('dMail').value||'—'}\n• Città: ${document.getElementById('dCity').value||'—'}\n• Note: ${document.getElementById('dNote').value||'—'}`;
  window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
