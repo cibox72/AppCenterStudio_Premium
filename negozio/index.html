@@ -366,7 +366,7 @@ return;
 }
 const baseLink=new URL('../negozio/?n=',window.location.href).href;
 container.innerHTML=clientiFotoData.clients.map(c=>{
-const const link=baseLink+encodeURIComponent((localStorage.getItem('netlify_sitename')||'')+'/'+(c.codice||c.nome));
+const link=baseLink+encodeURIComponent((localStorage.getItem('netlify_sitename')||'')+'/'+(c.codice||c.nome));
 return `
 <div class="client-link">
 <b>${c.nome} ${c.cognome||''}</b> (${c.codice||''})
