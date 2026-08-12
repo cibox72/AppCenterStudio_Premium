@@ -5,88 +5,101 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AppCenterStudio Premium - Clienti & Foto</title>
 <style>
-:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
 .container{max-width:1100px;margin:0 auto}
-.app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px}
-.subtitle{font-size:16px;color:var(--soft)}
+.app-header{text-align:center;margin-bottom:26px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
+.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:6px}
+.subtitle{font-size:15px;color:var(--soft)}
 .card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
-.card h2{color:var(--accento);margin-bottom:18px;font-family:Georgia,serif;font-size:18px}
+.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:16px}
+.topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
 .form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
-.form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
+.form-group input:focus,.form-group textarea:focus{outline:2px solid #111;border-color:transparent}
 .form-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
 @media(max-width:640px){.form-row{grid-template-columns:1fr}}
-.btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
-.btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-netlify{padding:10px 20px;background:#00ad9f;color:#fff;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;text-decoration:none;display:inline-block;margin:5px 8px 5px 0}
+.btn-primary{padding:11px 22px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary:hover{background:#333}
+.btn-secondary{padding:10px 18px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
+.btn-secondary:hover{background:#111;color:#fff}
+.btn-small{padding:8px 14px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-delete{padding:8px 14px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-delete:hover{background:#111;color:#fff}
+.btn-netlify{padding:10px 20px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;text-decoration:none;display:inline-block;margin:5px 8px 5px 0}
 .client-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
-.client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:16px}
-.client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:8px;font-size:17px}
-.code-badge{display:inline-block;padding:5px 12px;background:var(--accento);color:#fff;border-radius:999px;font-family:monospace;font-weight:700;font-size:13px;margin:6px 0}
-.info-box{background:#eef4f0;border-left:4px solid var(--ok);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.7}
-.info-box strong{color:var(--ok)}
+.client-card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:16px}
+.client-card h3{font-family:Georgia,serif;margin-bottom:8px;font-size:17px}
+.code-badge{display:inline-block;padding:5px 12px;background:#111;color:#fff;border-radius:999px;font-family:monospace;font-weight:700;font-size:13px;margin:6px 0}
+.info-box{background:#f5f5f5;border-left:4px solid #111;padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.7}
 .empty{text-align:center;color:var(--soft);padding:30px;grid-column:1/-1}
 .status{margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;display:none}
-.status.ok{display:block;background:#e5efe9;color:var(--ok);font-weight:600}
+.status.ok{display:block;background:#eee;color:#111;font-weight:600}
 .status.work{display:block;background:#f6f1e7;color:#7a6540}
-.status.ko{display:block;background:#f3e8e8;color:var(--ko);font-weight:600}
+.status.ko{display:block;background:#f3e8e8;color:#a33;font-weight:600}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
 </style>
 </head>
 <body>
 <div class="container">
-<header class="app-header"><img src="../logo.png" alt="logo" style="height:64px;border-radius:14px;margin-bottom:10px"><h1>AppCenterStudio Premium</h1><p class="subtitle">Clienti & Foto — Codici, Netlify e Gallery</p></header>
+<div class="topbar">
+ <div style="display:flex;gap:8px">
+  <button class="btn-secondary" onclick="history.back()">← Indietro</button>
+  <button class="btn-secondary" onclick="location.href='../index.html'">Home</button>
+ </div>
+ <div style="display:flex;gap:8px">
+  <button class="btn-primary" onclick="backupGlobale()">Backup Globale</button>
+  <label class="btn-secondary" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
+ </div>
+</div>
+<header class="app-header"><img src="../logo.png" alt="logo"><h1>Clienti & Foto</h1><p class="subtitle">Codici cliente, Netlify e Gallery</p></header>
 
 <div id="dashboard" style="display:none">
-
 <div class="card">
-<h2>🌐 1. Collegamento Netlify (una volta sola)</h2>
-<div class="info-box"><strong>Come funziona:</strong> crea l'account Netlify, genera il token, collega il tuo sito. Da qui in poi carichi foto e pubblichi gallery direttamente da questa pagina.</div>
-<a class="btn-netlify" href="https://app.netlify.com/signup" target="_blank">1️⃣ Crea account Netlify</a>
-<a class="btn-netlify" href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank">2️⃣ Crea il token Netlify</a>
+<h2>1. Collegamento Netlify (una volta sola)</h2>
+<div class="info-box">Crea l'account Netlify, genera il token, collega il tuo sito. Da qui in poi carichi foto e pubblichi gallery direttamente da questa pagina.</div>
+<a class="btn-netlify" href="https://app.netlify.com/signup" target="_blank">1) Crea account Netlify</a>
+<a class="btn-netlify" href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank">2) Crea il token Netlify</a>
 <div class="form-group" style="margin-top:14px"><label>Token Netlify (segreto)</label>
-<div style="display:flex;gap:8px"><input type="password" id="nlToken" placeholder="Incolla qui il token"><button class="btn-primary" onclick="saveToken()">💾 Salva</button></div></div>
+<div style="display:flex;gap:8px"><input type="password" id="nlToken" placeholder="Incolla qui il token"><button class="btn-primary" onclick="saveToken()">Salva</button></div></div>
 <div class="form-group"><label>Link del tuo sito Netlify</label>
-<div style="display:flex;gap:8px"><input type="text" id="nlSite" placeholder="Es. https://studio-tuo.netlify.app"><button class="btn-primary" onclick="verifySite()">🔗 Collega</button></div></div>
+<div style="display:flex;gap:8px"><input type="text" id="nlSite" placeholder="Es. https://studio-tuo.netlify.app"><button class="btn-primary" onclick="verifySite()">Collega</button></div></div>
 <div id="nlStatus" class="status"></div>
 </div>
 
 <div class="card">
-<h2>🎨 2. Identità dello studio (logo + messaggio Gallery)</h2>
-<div class="info-box">Questi dati compaiono nella Gallery dei tuoi clienti: logo, nome e messaggio di benvenuto. Premi "Pubblica" dopo averli compilati.</div>
+<h2>2. Identità dello studio (logo + messaggio Gallery)</h2>
+<div class="info-box">Questi dati compaiono nella Gallery e nella Selezione dei tuoi clienti: logo, nome e messaggio di benvenuto.</div>
 <div class="form-row">
 <div class="form-group"><label>Nome dello studio *</label><input type="text" id="idNome" placeholder="Es. Studio Rossi"></div>
 <div class="form-group"><label>WhatsApp per i clienti</label><input type="text" id="idWa" placeholder="Es. 393447507656"></div>
 </div>
-<div class="form-group"><label>Messaggio di benvenuto Gallery</label><textarea id="idMsg" rows="2">Grazie per averci scelto! Le vostre foto vi aspettano 💛</textarea></div>
+<div class="form-group"><label>Messaggio di benvenuto</label><textarea id="idMsg" rows="2">Grazie per averci scelto! Le vostre foto vi aspettano.</textarea></div>
 <div class="form-group"><label>Logo dello studio (opzionale, png/jpg)</label><input type="file" id="idLogo" accept="image/png,image/jpeg"></div>
-<button class="btn-primary" onclick="publishIdentity()">📡 Pubblica identità su Netlify</button>
+<button class="btn-primary" onclick="publishIdentity()">Pubblica identità su Netlify</button>
 <div id="idStatus" class="status"></div>
 </div>
 
 <div class="card">
-<h2>➕ 3. Aggiungi Nuovo Cliente</h2>
-<div class="info-box">Inserisci nome e cognome → il sistema genera un <strong>codice univoco</strong> (es. <i>rossi-mario-001</i>) che userai in tutte le app.</div>
+<h2>3. Aggiungi Nuovo Cliente</h2>
+<div class="info-box">Inserisci nome e cognome: il sistema genera un <b>codice univoco</b> (es. rossi-mario-001) usato da tutte le app.</div>
 <form onsubmit="addClient(event)">
 <div class="form-row">
 <div class="form-group"><label>Nome *</label><input type="text" id="cNome" required placeholder="Es. Mario"></div>
 <div class="form-group"><label>Cognome *</label><input type="text" id="cCognome" required placeholder="Es. Rossi"></div>
-<button type="submit" class="btn-primary">➕ Crea Cliente</button>
+<button type="submit" class="btn-primary">Crea Cliente</button>
 </div>
 <div class="form-group" style="margin-top:10px"><label>Note (opzionale)</label><input type="text" id="cNote" placeholder="Es. matrimonio 15/06/2025"></div>
 </form>
 </div>
 
 <div class="card">
-<h2>👥 4. Elenco Clienti & Caricamento Foto</h2>
-<div class="info-box"><strong>📤 Carica foto:</strong> scegli la cartella → l'app la pubblica su Netlify in <i>tuosito/CODICE/</i>. Poi premi <strong>📁 Link Gallery</strong> e mandalo al cliente: aprirà le foto con swipe, download, logo e messaggio dello studio.</div>
+<h2>4. Elenco Clienti & Caricamento Foto</h2>
+<div class="info-box"><b>Carica foto:</b> scegli la cartella → l'app la pubblica su Netlify in <i>tuosito/CODICE/</i>. Poi premi <b>Link Gallery</b> e mandalo al cliente.</div>
 <div id="clientList" class="client-list"></div>
 <div id="uploadStatus" class="status"></div>
 </div>
@@ -119,25 +132,25 @@ window.addEventListener('DOMContentLoaded',async()=>{
  load();$('dashboard').style.display='block';
  $('nlToken').value=localStorage.getItem('netlify_token')||'';
  $('nlSite').value=localStorage.getItem('netlify_siteurl')||'';
- if(localStorage.getItem('netlify_site'))setStatus('nlStatus','ok','✅ Sito collegato: '+localStorage.getItem('netlify_siteurl'));
+ if(localStorage.getItem('netlify_site'))setStatus('nlStatus','ok','Sito collegato: '+localStorage.getItem('netlify_siteurl'));
  try{const id=JSON.parse(localStorage.getItem('studioIdent')||'null');if(id){$('idNome').value=id.nome||'';$('idMsg').value=id.messaggio||'';$('idWa').value=id.whatsapp||'';}}catch(e){}
  render();
 });
 function setStatus(id,tipo,msg){const el=$(id);el.className='status '+tipo;el.textContent=msg;}
 function saveToken(){
  const t=$('nlToken').value.trim();
- if(!t)return alert('⚠️ Incolla prima il token.');
+ if(!t)return alert('Incolla prima il token.');
  if(!confirm('Salvare questo token Netlify?\nIl precedente verrà sostituito.'))return;
  localStorage.setItem('netlify_token',t);
- setStatus('nlStatus','ok','✅ Token salvato. Ora inserisci il link del sito e premi Collega.');
+ setStatus('nlStatus','ok','Token salvato. Ora inserisci il link del sito e premi Collega.');
 }
 async function verifySite(){
  const url=$('nlSite').value.trim().replace(/\/$/,'');
  const m=url.match(/^https?:\/\/([a-z0-9-]+)\.netlify\.app/i);
- if(!m)return alert('⚠️ Inserisci un link valido tipo https://nome.netlify.app');
+ if(!m)return alert('Inserisci un link valido tipo https://nome.netlify.app');
  const tok=localStorage.getItem('netlify_token');
- if(!tok)return alert('⚠️ Prima salva il token Netlify.');
- setStatus('nlStatus','work','⏳ Verifica del sito...');
+ if(!tok)return alert('Prima salva il token Netlify.');
+ setStatus('nlStatus','work','Verifica del sito...');
  try{
   const r=await fetch('https://api.netlify.com/api/v1/sites/'+m[1],{headers:{Authorization:'Bearer '+tok}});
   if(!r.ok)throw new Error('Errore '+r.status+' (controlla token e nome sito)');
@@ -145,8 +158,8 @@ async function verifySite(){
   localStorage.setItem('netlify_site',j.id);
   localStorage.setItem('netlify_sitename',m[1]);
   localStorage.setItem('netlify_siteurl','https://'+m[1]+'.netlify.app');
-  setStatus('nlStatus','ok','✅ Sito collegato: https://'+m[1]+'.netlify.app');
- }catch(e){setStatus('nlStatus','ko','❌ '+e.message);}
+  setStatus('nlStatus','ok','Sito collegato: https://'+m[1]+'.netlify.app');
+ }catch(e){setStatus('nlStatus','ko','Errore: '+e.message);}
 }
 async function sha1(buf){const h=await crypto.subtle.digest('SHA-1',buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')}
 function encPath(p){return p.split('/').map(encodeURIComponent).join('/')}
@@ -160,7 +173,7 @@ async function netlifyDeploy(entries,onProg){
  if(sr.ok){const sj=await sr.json();
   if(sj.published_deploy&&sj.published_deploy.id){
    const dr=await fetch('https://api.netlify.com/api/v1/deploys/'+sj.published_deploy.id,{headers:{Authorization:'Bearer '+tok}});
-   if(dr.ok){const dj=await dr.json();(dj.files||[]).forEach(f=>{merged[f.path]=f.sha;});}
+   if(dr.ok){const dj=await r2j(dr);(dj.files||[]).forEach(f=>{merged[f.path]=f.sha;});}
   }}
  entries.forEach(x=>{merged[x.path]=x.sha;});
  const pr=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:merged})});
@@ -183,11 +196,12 @@ async function netlifyDeploy(entries,onProg){
  }
  return dep;
 }
+function r2j(r){return r.json()}
 async function publishIdentity(){
  const nome=$('idNome').value.trim();
- if(!nome)return alert('⚠️ Scrivi il nome dello studio.');
+ if(!nome)return alert('Scrivi il nome dello studio.');
  try{
-  setStatus('idStatus','work','⏳ Pubblicazione identità...');
+  setStatus('idStatus','work','Pubblicazione identità...');
   const ident={nome,messaggio:$('idMsg').value.trim(),whatsapp:$('idWa').value.trim(),logo:''};
   const entries=[{path:'/studio.json',buf:enc(JSON.stringify(ident))},{path:'/_headers',buf:enc(HEADERS)}];
   const lf=$('idLogo').files[0];
@@ -199,8 +213,8 @@ async function publishIdentity(){
   }
   await netlifyDeploy(entries);
   localStorage.setItem('studioIdent',JSON.stringify(ident));
-  setStatus('idStatus','ok','✅ Identità pubblicata: logo e messaggio compariranno nelle Gallery dei clienti.');
- }catch(e){setStatus('idStatus','ko','❌ '+e.message);}
+  setStatus('idStatus','ok','Identità pubblicata: logo e messaggio compariranno nelle Gallery dei clienti.');
+ }catch(e){setStatus('idStatus','ko','Errore: '+e.message);}
 }
 function genCode(nome,cognome){
  const slug=(cognome+'-'+nome).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
@@ -216,7 +230,7 @@ function addClient(e){
  data.clients.push({codice,nome,cognome,note,photos:0,lastUpload:null,createdAt:Date.now()});
  save();$('cNome').value='';$('cCognome').value='';$('cNote').value='';
  render();
- alert('✅ Cliente creato!\n\nCodice: '+codice+'\n\nOra premi "📤 Carica foto" sulla sua scheda.');
+ alert('Cliente creato!\n\nCodice: '+codice+'\n\nOra premi "Carica foto" sulla sua scheda.');
 }
 function deleteClient(codice){
  const c=data.clients.find(x=>x.codice===codice);if(!c)return;
@@ -224,30 +238,30 @@ function deleteClient(codice){
  data.clients=data.clients.filter(x=>x.codice!==codice);save();render();
 }
 function copyCode(codice,btn){
- navigator.clipboard.writeText(codice).then(()=>{const t=btn.textContent;btn.textContent='✅ Copiato!';setTimeout(()=>btn.textContent=t,1500);});
+ navigator.clipboard.writeText(codice).then(()=>{const t=btn.textContent;btn.textContent='Copiato!';setTimeout(()=>btn.textContent=t,1500);});
 }
 function copyGalleryLink(codice,btn){
  const site=localStorage.getItem('netlify_sitename');
- if(!site)return alert('⚠️ Prima collega il sito Netlify nel passo 1.');
+ if(!site)return alert('Prima collega il sito Netlify nel passo 1.');
  const url=new URL('../gallery/?g='+encodeURIComponent(site+'/'+codice),location.href).href;
- navigator.clipboard.writeText(url).then(()=>{const t=btn.textContent;btn.textContent='✅ Link copiato!';setTimeout(()=>btn.textContent=t,1500);});
+ navigator.clipboard.writeText(url).then(()=>{const t=btn.textContent;btn.textContent='Link copiato!';setTimeout(()=>btn.textContent=t,1500);});
 }
 function openFolder(code){
  const url=(localStorage.getItem('netlify_siteurl')||'')+'/'+code+'/';
  window.open(url,'_blank');
 }
 function startUpload(code){
- if(!localStorage.getItem('netlify_site'))return alert('⚠️ Prima collega il sito Netlify nel passo 1.');
+ if(!localStorage.getItem('netlify_site'))return alert('Prima collega il sito Netlify nel passo 1.');
  currentUploadCode=code;$('folderInput').click();
 }
 async function handleUpload(e){
  const files=[...e.target.files].filter(f=>/\.(jpe?g|png|webp)$/i.test(f.name));
  e.target.value='';
- if(!files.length)return alert('⚠️ Nessuna foto valida nella cartella (jpg, png, webp).');
+ if(!files.length)return alert('Nessuna foto valida nella cartella (jpg, png, webp).');
  const code=currentUploadCode;
  const c=data.clients.find(x=>x.codice===code);if(!c)return;
  try{
-  setStatus('uploadStatus','work','⏳ Preparo '+files.length+' foto...');
+  setStatus('uploadStatus','work','Preparo '+files.length+' foto...');
   const entries=[];
   for(const f of files){
    const rel=f.webkitRelativePath?f.webkitRelativePath.split('/').slice(1).join('/'):f.name;
@@ -257,29 +271,49 @@ async function handleUpload(e){
   const manifest={codice:code,nome:c.nome,cognome:c.cognome,note:c.note||'',createdAt:c.createdAt,uploadedAt:new Date().toISOString(),photos:entries.map(x=>x.path.replace('/'+code+'/',''))};
   entries.push({path:'/'+code+'/manifest.json',buf:enc(JSON.stringify(manifest))});
   entries.push({path:'/_headers',buf:enc(HEADERS)});
-  await netlifyDeploy(entries,(i,tot)=>setStatus('uploadStatus','work','⏳ Carico '+(i+1)+'/'+tot+' ...'));
+  await netlifyDeploy(entries,(i,tot)=>setStatus('uploadStatus','work','Carico '+(i+1)+'/'+tot+' ...'));
   c.photos=manifest.photos.length;c.lastUpload=new Date().toISOString();
   save();render();
-  setStatus('uploadStatus','ok','✅ '+manifest.photos.length+' foto pubblicate su '+localStorage.getItem('netlify_siteurl')+'/'+code+'/ — ora premi "📁 Link Gallery" e mandalo al cliente.');
- }catch(err){setStatus('uploadStatus','ko','❌ '+err.message);}
+  setStatus('uploadStatus','ok',manifest.photos.length+' foto pubblicate su '+localStorage.getItem('netlify_siteurl')+'/'+code+'/ — ora premi "Link Gallery" e mandalo al cliente.');
+ }catch(err){setStatus('uploadStatus','ko','Errore: '+err.message);}
 }
 function render(){
  const list=$('clientList');
- if(!data.clients.length){list.innerHTML='<div class="empty">📭 Nessun cliente. Creane uno sopra.</div>';return;}
+ if(!data.clients.length){list.innerHTML='<div class="empty">Nessun cliente. Creane uno sopra.</div>';return;}
  list.innerHTML=data.clients.slice().reverse().map(c=>`
   <div class="client-card">
    <h3>${escape(c.nome)} ${escape(c.cognome)}</h3>
    <div class="code-badge">${c.codice}</div>
-   ${c.note?`<p style="font-size:13px;color:var(--soft);margin:6px 0">📝 ${escape(c.note)}</p>`:''}
-   <p style="font-size:12px;color:var(--soft);margin:8px 0">📸 ${c.photos||0} foto${c.lastUpload?' · ultimo caricamento '+new Date(c.lastUpload).toLocaleDateString('it-IT'):''}</p>
+   ${c.note?`<p style="font-size:13px;color:var(--soft);margin:6px 0">${escape(c.note)}</p>`:''}
+   <p style="font-size:12px;color:var(--soft);margin:8px 0">${c.photos||0} foto${c.lastUpload?' · ultimo caricamento '+new Date(c.lastUpload).toLocaleDateString('it-IT'):''}</p>
    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
-    <button class="btn-small" onclick="copyCode('${c.codice}',this)">📋 Copia codice</button>
-    <button class="btn-secondary" onclick="startUpload('${c.codice}')">📤 Carica foto</button>
-    <button class="btn-secondary" onclick="copyGalleryLink('${c.codice}',this)">📁 Link Gallery</button>
-    <button class="btn-secondary" onclick="openFolder('${c.codice}')">🔗 Apri cartella</button>
-    <button class="btn-delete" onclick="deleteClient('${c.codice}')">🗑️</button>
+    <button class="btn-small" onclick="copyCode('${c.codice}',this)">Copia codice</button>
+    <button class="btn-secondary" onclick="startUpload('${c.codice}')">Carica foto</button>
+    <button class="btn-secondary" onclick="copyGalleryLink('${c.codice}',this)">Link Gallery</button>
+    <button class="btn-secondary" onclick="openFolder('${c.codice}')">Apri cartella</button>
+    <button class="btn-delete" onclick="deleteClient('${c.codice}')">Elimina</button>
    </div>
   </div>`).join('');
+}
+function backupGlobale(){
+ const d={};
+ for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+ alert('Backup globale scaricato.');
+}
+function restoreGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm(`Ripristinare il backup globale (${Object.keys(d).length} voci)?\nI dati attuali di TUTTE le app verranno sostituiti.`))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
+ }catch(err){alert('Errore: '+err.message)}};
+ r.readAsText(f);e.target.value='';
 }
 function escape(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
