@@ -20,6 +20,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
 .btn-primary{padding:12px 24px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
 .btn-wa{padding:12px 24px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.btn-paypal{padding:14px 28px;background:#0070ba;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
 .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
 .app-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:16px;cursor:pointer;text-align:center;transition:transform .2s}
 .app-card:hover{transform:translateY(-3px);border-color:var(--accento)}
@@ -32,6 +33,9 @@ details{background:#faf9f7;border:1px solid var(--bordo);border-radius:10px;padd
 summary{cursor:pointer;font-weight:700;color:var(--accento)}
 .lock-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
 .lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:34px;max-width:430px;width:100%;text-align:center}
+.paypal-box{background:#e3f2fd;border:2px solid #0070ba;border-radius:12px;padding:20px;margin:16px 0;text-align:center}
+.paypal-box h3{color:#0070ba;margin-bottom:10px}
+.paypal-box p{font-size:13px;color:var(--soft);margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -40,12 +44,14 @@ summary{cursor:pointer;font-weight:700;color:var(--accento)}
 <div id="content"></div>
 </div>
 <script>
-const FORNITORE_WA='391234567890'; // ⚠️ METTI QUI IL TUO NUMERO WhatsApp (formato internazionale senza +)
+const FORNITORE_WA='393206337370';
+const PAYPAL_EMAIL='appcenterstudiopremium@gmail.com';
 const APPS=[
  {nome:"Preventivi & Contratti",path:"preventivi-contratti/",ico:"📄"},
  {nome:"Workflow Foto & Video",path:"workflow/",ico:"🎬"},
  {nome:"Selezione per Album",path:"selezione-album/",ico:"🖼"},
- {nome:"Gallery",path:"gallery/",ico:"📁"}
+ {nome:"Gallery",path:"gallery/",ico:"📁"},
+ {nome:"Clienti & Foto",path:"clienti-foto/",ico:"👥"}
 ];
 const param=n=>new URLSearchParams(location.search).get(n);
 window.addEventListener('DOMContentLoaded',async()=>{
@@ -75,19 +81,27 @@ window.addEventListener('DOMContentLoaded',async()=>{
    <button class="btn-wa" type="submit">📲 Invia i dati al fornitore</button>
   </form>
  </div>
+ ${!attivo?`<div class="card">
+  <div class="paypal-box">
+   <h3>💳 Rinnova la tua licenza</h3>
+   <p>La tua licenza è scaduta. Paga l'abbonamento annuale per riattivarla subito.</p>
+   <button class="btn-paypal" onclick="pagaAbbonamento()">💳 Paga €199 con PayPal</button>
+   <p style="font-size:12px;color:var(--soft);margin-top:8px">Pagamento sicuro con PayPal · Ricevuta immediata</p>
+  </div>
+ </div>`:''}
  <div class="card">
   <h2>2️⃣ Le tue applicazioni</h2>
   <div class="app-grid">${APPS.map(a=>`<div class="app-card" onclick="location.href='${a.path}?studio=${s.codice}'"><div class="ico">${a.ico}</div><h3>${a.nome}</h3></div>`).join('')}</div>
  </div>
  <div class="card">
-  <h2>3️⃣ Installazione Netlify (per Selezione per Album)</h2>
+  <h2>3️⃣ Installazione Netlify (per caricare le foto)</h2>
   <details><summary>📖 Apri la guida passo‑passo</summary>
    <ol style="padding-left:20px;margin-top:10px">
     <li>Crea un account gratis su <b>app.netlify.com/signup</b> e conferma l'email.</li>
-    <li>Nella pagina "Add your project" trascina la cartella delle foto nel riquadro "Upload your project files".</li>
-    <li>Clicca sul nome del sito creato → "Project configuration" → "Visitor access" → scegli <b>Public</b> → Save.</li>
-    <li>Copia l'indirizzo del sito (es. https://nome‑sito.netlify.app).</li>
-    <li>Apri "Selezione per Album" e incolla quel link nel Passo 1.</li>
+    <li>Vai su <b>app.netlify.com/user/applications#personal-access-tokens</b> e crea un token (tienilo segreto).</li>
+    <li>Crea il tuo sito: vai su <b>app.netlify.com/drop</b> e trascina una cartella vuota → copia il link del sito.</li>
+    <li>Apri l'app "Clienti & Foto" e incolla token + link del sito.</li>
+    <li>Ora puoi caricare le foto dei clienti direttamente dall'app.</li>
    </ol>
    <p style="margin-top:10px">✅ Il sito non scade e resta online finché non lo cancelli. Se preferisci, il fornitore può fare questa installazione per te.</p>
   </details>
@@ -97,6 +111,10 @@ function inviaDati(e,nome){
  e.preventDefault();
  const t=`🆕 ATTIVAZIONE STUDIO AppCenterStudio\n• Studio: ${document.getElementById('dNome').value}\n• Referente: ${document.getElementById('dRef').value}\n• WhatsApp: ${document.getElementById('dWa').value}\n• Email: ${document.getElementById('dMail').value||'—'}\n• Città: ${document.getElementById('dCity').value||'—'}\n• Note: ${document.getElementById('dNote').value||'—'}`;
  window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
+}
+function pagaAbbonamento(){
+ const url='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(PAYPAL_EMAIL)+'&currency_code=EUR&amount=199.00&item_name=Abbonamento+Annuale+AppCenterStudio+Premium&return='+encodeURIComponent(location.href);
+ window.open(url,'_blank');
 }
 function err(t,s){document.getElementById('content').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="font-family:Georgia,serif;margin:10px 0 6px">${t}</h2><p style="color:var(--soft)">${s}</p></div></div>`}
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
