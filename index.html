@@ -82,7 +82,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 
 <div class="card">
 <h2>Backup Globale (tutte le app)</h2>
-<p style="color:var(--soft);font-size:13px;margin-bottom:14px">Salva o ripristina in un colpo solo i dati di <b>tutte</b> le app (Gallery, Selezione Album, Preventivi, Workflow, Clienti & Foto, token).</p>
+<p style="color:var(--soft);font-size:13px;margin-bottom:14px">Salva o ripristina in un colpo solo i dati di <b>tutte</b> le app (Gallery, Selezione Album, Preventivi, Workflow, Clienti & Foto, Negozio, token).</p>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
 <button class="btn-primary" onclick="backupGlobale()">Scarica Backup Globale</button>
 <label class="btn-secondary" style="cursor:pointer">Ripristina Backup Globale<input type="file" id="fileGlobal" accept=".json" hidden onchange="restoreGlobale(event)"></label>
@@ -109,7 +109,8 @@ const APPS=[
  {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow dei servizi",num:"02"},
  {nome:"Selezione per Album",path:"selezione-album/",desc:"Il cliente sceglie le foto con il cuore",num:"03"},
  {nome:"Gallery",path:"gallery/",desc:"Consegna foto online su Netlify",num:"04"},
- {nome:"Clienti & Foto",path:"clienti-foto/",desc:"Codici cliente e cartelle Netlify",num:"05"}
+ {nome:"Clienti & Foto",path:"clienti-foto/",desc:"Codici cliente e cartelle Netlify",num:"05"},
+ {nome:"Negozio Online",path:"negozio/",desc:"Stampe e prodotti dalle foto del cliente",num:"06"}
 ];
 let LIC={studi:[]};
 const $=id=>document.getElementById(id);
