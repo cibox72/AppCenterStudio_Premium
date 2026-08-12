@@ -133,7 +133,8 @@ function render(){
    return `<div class="studio-row"><div class="info"><span class="code">${s.codice}</span> · ${s.nome}<br><small style="color:var(--soft)">scadenza: ${s.scadenza}</small></div>
    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="badge ${on?'on':'off'}">${on?'ATTIVO':'SPENTO'}</span>
    <button class="btn-link" onclick="copyClientLink('${s.codice}')">📋 Link cliente</button>
-   <button class="${s.attivo?'btn-off':'btn-on'}" onclick="toggle('${s.codice}')">${s.attivo?'🔴 Spegni':'🟢 Accendi'}</button></div></div>`;
+   <button class="${s.attivo?'btn-off':'btn-on'}" onclick="toggle('${s.codice}')">${s.attivo?'🔴 Spegni':'🟢 Accendi'}</button>
+   <button class="btn-off" onclick="deleteStudio('${s.codice}')">🗑️ Elimina</button></div></div>`;
  }).join(''):'<p style="color:var(--soft);font-size:13px">Nessuno studio: creane uno qui sotto.</p>';
 }
 function openApp(path){
@@ -150,6 +151,14 @@ async function toggle(codice){
  s.attivo=!s.attivo;
  await writeLic('aggiorna licenza '+codice);
  await loadLic();render();
+}
+async function deleteStudio(codice){
+ const s=LIC.studi.find(x=>x.codice===codice);if(!s)return;
+ if(!confirm(`⚠️ ELIMINARE lo studio "${s.nome}" (${s.codice})?\n\n• I suoi link cliente smetteranno di funzionare.\n• L'azione NON può essere annullata.\n\nVuoi continuare?`))return;
+ LIC.studi=LIC.studi.filter(x=>x.codice!==codice);
+ await writeLic('elimina studio '+codice);
+ await loadLic();render();
+ alert('✅ Studio eliminato.');
 }
 async function createStudio(){
  const nome=$('newNome').value.trim();if(!nome)return alert('⚠️ Scrivi il nome dello studio.');
