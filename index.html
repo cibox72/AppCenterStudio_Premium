@@ -77,7 +77,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 
 <div class="card">
 <h2>💾 Backup Globale (tutte le app)</h2>
-<p style="color:var(--soft);font-size:13px;margin-bottom:14px">Salva o ripristina in un colpo solo i dati di <b>tutte</b> le app (Gallery, Selezione Album, Preventivi, Workflow, token).</p>
+<p style="color:var(--soft);font-size:13px;margin-bottom:14px">Salva o ripristina in un colpo solo i dati di <b>tutte</b> le app (Gallery, Selezione Album, Preventivi, Workflow, Clienti & Foto, token).</p>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
 <button class="btn-primary" onclick="backupGlobale()">⬇️ Scarica Backup Globale</button>
 <label class="btn-secondary" style="cursor:pointer">⬆️ Ripristina Backup Globale<input type="file" id="fileGlobal" accept=".json" hidden onchange="restoreGlobale(event)"></label>
@@ -103,7 +103,8 @@ const APPS=[
  {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti",ico:"📄"},
  {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow dei servizi",ico:"🎬"},
  {nome:"Selezione per Album",path:"selezione-album/",desc:"Invio foto per selezione cliente",ico:"🖼"},
- {nome:"Gallery",path:"gallery/",desc:"Consegna gallerie MEGA ai clienti",ico:"📁"}
+ {nome:"Gallery",path:"gallery/",desc:"Consegna gallerie MEGA ai clienti",ico:"📁"},
+ {nome:"Clienti & Foto",path:"clienti-foto/",desc:"Codici cliente e cartelle Netlify",ico:"👥"}
 ];
 let LIC={studi:[]};
 const $=id=>document.getElementById(id);
