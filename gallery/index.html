@@ -4,22 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AppCenterStudio Premium - Gallery</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;color:var(--testo)}
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.app-header{text-align:center;margin-bottom:26px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
+.app-header h1{font-family:Georgia,serif;font-size:28px}
+.subtitle{color:var(--soft)}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
+.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+.topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
+.btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-primary:hover{background:#333}
+.btn-secondary{padding:10px 18px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
+.btn-secondary:hover{background:#111;color:#fff}
+.btn-link{padding:7px 14px;background:#fff;color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-link:hover{border-color:#111}
+.g-row{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.g-row .info{font-size:13px;line-height:1.7}
+.g-row .code{font-family:monospace;font-weight:700}
+.chip{display:inline-block;padding:2px 10px;border:1px solid #ccc;border-radius:999px;font-size:11px;color:#555;margin:2px}
+.warn{color:var(--soft);font-size:13px}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
-.card h2{color:var(--accento);margin-bottom:14px;font-family:Georgia,serif;font-size:18px}
-.info-box{background:#eef4f0;border-left:4px solid var(--ok);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.7}
-.btn-primary{padding:12px 24px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
-.btn-wa{padding:14px 28px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin-top:12px}
 /* ===== VISTA CLIENTE ===== */
-.g-head{background:#fff;border-bottom:1px solid var(--bordo);padding:14px 16px;text-align:center}
-.g-head img{height:52px;border-radius:50%;object-fit:cover;margin-bottom:6px}
-.g-head h1{font-family:Georgia,serif;font-size:19px;color:var(--accento)}
-.g-head p{font-size:13px;color:var(--soft);margin-top:4px}
 .viewer{position:fixed;inset:0;background:#14141a;display:flex;flex-direction:column}
 .v-top{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;color:#eee;background:rgba(0,0,0,.55)}
 .v-top .studio{font-family:Georgia,serif;font-size:15px}
@@ -30,12 +41,13 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .v-bar{display:flex;justify-content:center;gap:14px;padding:12px;background:rgba(0,0,0,.55)}
 .v-btn{width:52px;height:52px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:22px;cursor:pointer}
 .v-btn:active{background:rgba(255,255,255,.3)}
-.v-btn.dl{background:var(--ok);font-size:20px}
+.v-btn.dl{background:#fff;color:#111;font-size:20px}
 .thanks{position:fixed;inset:0;background:var(--sfondo);display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
 .thanks .box{background:#fff;border:1px solid var(--bordo);border-radius:16px;padding:36px 26px;max-width:460px;width:100%}
-.thanks img{height:64px;border-radius:50%;object-fit:cover;margin-bottom:10px}
-.thanks h1{font-family:Georgia,serif;font-size:26px;color:var(--accento);margin-bottom:10px}
+.thanks img{height:64px;border-radius:50%;object-fit:cover;margin-bottom:10px;filter:grayscale(100%)}
+.thanks h1{font-family:Georgia,serif;font-size:26px;margin-bottom:10px}
 .thanks p{color:var(--soft);font-size:15px;line-height:1.6}
+.btn-wa{padding:14px 28px;background:#111;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin-top:12px}
 </style>
 </head>
 <body>
@@ -48,7 +60,6 @@ window.addEventListener('DOMContentLoaded',()=>{
  if(g)return clientMode(g);
  adminGate();
 });
-/* ===== ADMIN (solo indirizzo) ===== */
 function blocca(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
 async function adminGate(){
  const codice=param('studio')||sessionStorage.getItem('studio');
@@ -62,11 +73,127 @@ async function adminGate(){
   if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
   if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
  }catch(e){return blocca('Verifica licenza non riuscita.');}
- document.getElementById('root').innerHTML=`<div class="lock-wrap"><div style="max-width:640px;width:100%">
- <div class="card"><h2>📁 Gallery — consegna automatica su Netlify</h2>
- <div class="info-box">Le gallery ora vivono sul tuo sito Netlify, insieme alle foto dei clienti.<br><br>Per creare una gallery:<br>1. apri <b>Clienti &amp; Foto</b>;<br>2. carica le foto del cliente;<br>3. premi <b>📁 Link Gallery</b> e mandalo al cliente.<br><br>Il cliente aprirà le foto con swipe, download, logo e messaggio del tuo studio — da telefono, tablet o PC.</div>
- <a class="btn-primary" href="../clienti-foto/?studio=${codice}">👥 Apri Clienti &amp; Foto</a>
- </div></div></div>`;
+ renderAdmin(codice);
+}
+/* ===== ADMIN: ARCHIVIO GALLERY ===== */
+function renderAdmin(codice){
+ document.getElementById('root').innerHTML=`
+ <div class="container">
+  <div class="topbar">
+   <div style="display:flex;gap:8px">
+    <button class="btn-secondary" onclick="history.back()">← Indietro</button>
+    <button class="btn-secondary" onclick="location.href='../index.html'">Home</button>
+   </div>
+   <div style="display:flex;gap:8px">
+    <button class="btn-primary" onclick="backupGlobale()">Backup Globale</button>
+    <label class="btn-secondary" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
+   </div>
+  </div>
+  <header class="app-header"><img src="../logo.png" alt="logo"><h1>Gallery</h1><p class="subtitle">Archivio gallerie clienti su Netlify</p></header>
+  <div class="card">
+   <h2>Archivio Gallery</h2>
+   <div id="archivio"><p class="warn">Caricamento…</p></div>
+  </div>
+ </div>`;
+ loadArchivio(codice);
+}
+function leggiClienti(){try{return JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]}}catch(e){return{clients:[]}}}
+async function loadArchivio(codice){
+ const data=leggiClienti();
+ const site=localStorage.getItem('netlify_sitename');
+ const box=$('archivio');
+ if(!data.clients.length){
+  box.innerHTML=`<p class="warn">Nessuna gallery ancora.</p><button class="btn-primary" style="margin-top:10px" onclick="location.href='../clienti-foto/?studio=${codice}'">Vai a Clienti & Foto</button>`;
+  return;
+ }
+ if(!site){box.innerHTML='<p class="warn">Collega prima il sito Netlify nell\'app Clienti & Foto.</p>';return;}
+ box.innerHTML=data.clients.slice().reverse().map(c=>`
+  <div class="g-row">
+   <div class="info"><b>${esc(c.nome)} ${esc(c.cognome)}</b> · <span class="code">${c.codice}</span><br>
+   <span id="fold-${c.codice}"><span class="chip">cartelle: …</span></span></div>
+   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+    <button class="btn-link" onclick="apriGallery('${c.codice}')">Apri Gallery</button>
+    <button class="btn-link" onclick="copiaLink('${c.codice}',this)">Copia link</button>
+    <button class="btn-link" onclick="stampaPDF('${c.codice}')">PDF per stampa</button>
+    <button class="btn-link" onclick="location.href='../clienti-foto/?studio=${codice}'">Gestisci foto</button>
+   </div>
+  </div>`).join('');
+ for(const c of data.clients){
+  try{
+   const m=await(await fetch(`https://${site}.netlify.app/${c.codice}/manifest.json?t=${Date.now()}`,{cache:'no-store'})).json();
+   const folders=[...new Set((m.photos||[]).map(p=>p.includes('/')?p.split('/')[0]:'root'))];
+   $('fold-'+c.codice).innerHTML=`<span class="chip">${(m.photos||[]).length} foto</span>`+folders.map(f=>`<span class="chip">📁 ${esc(f)}</span>`).join('');
+  }catch(e){$('fold-'+c.codice).innerHTML='<span class="chip">nessuna foto pubblicata</span>';}
+ }
+}
+function linkGallery(codice){
+ const site=localStorage.getItem('netlify_sitename');
+ return new URL('../gallery/?g='+encodeURIComponent(site+'/'+codice),location.href).href;
+}
+function apriGallery(codice){window.open(linkGallery(codice),'_blank')}
+function copiaLink(codice,btn){
+ navigator.clipboard.writeText(linkGallery(codice)).then(()=>{const t=btn.textContent;btn.textContent='Copiato!';setTimeout(()=>btn.textContent=t,1500);});
+}
+/* ===== PDF PER STAMPA ===== */
+function imgToJpeg(url){return new Promise((res,rej)=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{try{const c=document.createElement('canvas');const s=Math.min(1,900/img.width);c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.82));}catch(e){rej(e)}};img.onerror=rej;img.src=url;});}
+async function stampaPDF(codice){
+ const site=localStorage.getItem('netlify_sitename');
+ const data=leggiClienti();
+ const c=data.clients.find(x=>x.codice===codice);if(!c)return;
+ let ident={};try{ident=JSON.parse(localStorage.getItem('studioIdent'))||{}}catch(e){}
+ alert('Generazione PDF in corso… può richiedere qualche minuto con molte foto.');
+ try{
+  const m=await(await fetch(`https://${site}.netlify.app/${codice}/manifest.json?t=${Date.now()}`,{cache:'no-store'})).json();
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF('p','mm','a4');
+  doc.setFillColor(17,17,17);doc.rect(0,0,210,40,'F');
+  doc.setTextColor(255);doc.setFontSize(20);doc.setFont('helvetica','bold');
+  doc.text(ident.nome||'Studio Fotografico',105,16,{align:'center'});
+  doc.setFontSize(11);doc.setFont('helvetica','normal');
+  doc.text('Gallery fotografica — '+c.nome+' '+c.cognome,105,25,{align:'center'});
+  doc.text('Codice '+codice+' · '+new Date().toLocaleDateString('it-IT')+' · '+((m.photos||[]).length)+' foto',105,32,{align:'center'});
+  const X=[15,107],W=88,H=58,CAP=6;
+  let x=0,y=50,n=0;
+  for(const p of (m.photos||[])){
+   const url=`https://${site}.netlify.app/${codice}/`+p.split('/').map(encodeURIComponent).join('/');
+   try{
+    const d=await imgToJpeg(url);
+    doc.addImage(d,'JPEG',X[x],y,W,H,'','FAST');
+   }catch(e){
+    doc.setDrawColor(150);doc.rect(X[x],y,W,H);
+    doc.setTextColor(120);doc.setFontSize(9);doc.text('foto non disponibile',X[x]+W/2,y+H/2,{align:'center'});
+   }
+   doc.setTextColor(60);doc.setFontSize(8);
+   doc.text(p.split('/').pop(),X[x],y+H+CAP);
+   n++;
+   x++;
+   if(x>1){x=0;y+=H+CAP+6;}
+   if(y>230&&n<(m.photos||[]).length){doc.addPage();y=15;x=0;}
+  }
+  doc.save('GALLERY_'+codice+'.pdf');
+  alert('PDF scaricato: GALLERY_'+codice+'.pdf');
+ }catch(e){alert('Errore PDF: '+e.message);}
+}
+/* ===== BACKUP GLOBALE ===== */
+function backupGlobale(){
+ const data={};
+ for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+ alert('Backup globale scaricato.');
+}
+function restoreGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm(`Ripristinare il backup globale (${Object.keys(d).length} voci)?\nI dati attuali di TUTTE le app verranno sostituiti.`))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
+ }catch(err){alert('Errore: '+err.message)}};
+ r.readAsText(f);e.target.value='';
 }
 /* ===== VISTA CLIENTE ===== */
 function errPage(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Galleria non disponibile</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
@@ -86,14 +213,13 @@ let PH=[],BASE='',IDX=0,STUDIO=null,touchX=null;
 function photoUrl(i){return BASE+'/'+PH[i].split('/').map(encodeURIComponent).join('/')}
 function renderViewer(base,manifest,studio){
  BASE=base;PH=manifest.photos;STUDIO=studio||{};IDX=0;
- const logo=STUDIO.logo?'https://'+base.split('/')[2]+'/'+STUDIO.logo:'';
  document.getElementById('root').innerHTML=`
  <div class="viewer">
   <div class="v-top"><span class="studio">${esc(STUDIO.nome||'Gallery')}</span><span class="count" id="cnt"></span></div>
-  <div class="v-stage" id="stage"><img id="ph" alt="Foto"><div class="v-hint" id="hint">👈 scorri per sfogliare 👉</div></div>
+  <div class="v-stage" id="stage"><img id="ph" alt="Foto"><div class="v-hint" id="hint">← scorri per sfogliare →</div></div>
   <div class="v-bar">
    <button class="v-btn" onclick="prev()">‹</button>
-   <button class="v-btn dl" onclick="scarica()" title="Scarica foto">⬇️</button>
+   <button class="v-btn dl" onclick="scarica()" title="Scarica foto">↓</button>
    <button class="v-btn" onclick="next()">›</button>
   </div>
  </div>`;
@@ -115,7 +241,7 @@ function show(i){
  img.onload=()=>{img.style.opacity=1;};
  img.src=photoUrl(i);
  $('cnt').textContent=(i+1)+' / '+PH.length;
- if(i===0&&PH.length>1)$('hint').style.display='block';else if($('hint'))$('hint').style.display='none';
+ if($('hint'))$('hint').style.display=(i===0&&PH.length>1)?'block':'none';
  if(i+1<PH.length){const p=new Image();p.src=photoUrl(i+1);}
 }
 function next(){show(IDX+1)}
@@ -135,15 +261,15 @@ async function scarica(){
 }
 function thanks(){
  const logo=STUDIO.logo?'https://'+BASE.split('/')[2]+'/'+STUDIO.logo:'';
- const wa=STUDIO.whatsapp?`https://wa.me/${STUDIO.whatsapp}?text=`+encodeURIComponent('Ciao! Ho visto le mie foto, grazie! 😍'):'';
+ const wa=STUDIO.whatsapp?`https://wa.me/${STUDIO.whatsapp}?text=`+encodeURIComponent('Ciao! Ho visto le mie foto, grazie!'):'';
  document.getElementById('root').innerHTML=`
  <div class="thanks"><div class="box">
   ${logo?`<img src="${logo}" alt="logo">`:''}
-  <h1>Grazie per averci scelto! 💛</h1>
+  <h1>Grazie per averci scelto!</h1>
   <p>${esc(STUDIO.messaggio||'Le vostre foto, con amore.')}</p>
   <p style="margin-top:14px;font-size:13px">— ${esc(STUDIO.nome||'Lo Studio')}</p>
-  ${wa?`<a class="btn-wa" href="${wa}" target="_blank">💬 Scrivici su WhatsApp</a>`:''}
-  <br><button class="btn-primary" style="margin-top:14px" onclick="show(0)">🔄 Rivedi le foto</button>
+  ${wa?`<a class="btn-wa" href="${wa}" target="_blank">Scrivici su WhatsApp</a>`:''}
+  <br><button class="btn-primary" style="margin-top:14px" onclick="show(0)">Rivedi le foto</button>
  </div></div>`;
 }
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
