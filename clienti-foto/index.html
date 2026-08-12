@@ -99,7 +99,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 
 <div class="card">
 <h2>4. Elenco Clienti & Caricamento Foto</h2>
-<div class="info-box"><b>Carica foto:</b> scegli la cartella → l'app la pubblica su Netlify in <i>tuosito/CODICE/</i>. Poi premi <b>Link Gallery</b> e mandalo al cliente.</div>
+<div class="info-box"><b>Carica foto:</b> scegli la cartella → l'app la pubblica su Netlify in <i>tuosito/CODICE/</i> (insieme al modulo nascosto che riceve selezioni e ordini). Poi premi <b>Link Gallery</b> e mandalo al cliente.</div>
 <div id="clientList" class="client-list"></div>
 <div id="uploadStatus" class="status"></div>
 </div>
@@ -111,6 +111,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 <script>
 const STORAGE='clientiFotoData';
 const HEADERS='/*\n  Access-Control-Allow-Origin: *';
+const FORMS_HTML='<!DOCTYPE html><html><head><title>forms</title></head><body><form name="selezioni" netlify><input type="hidden" name="tipo"><input type="hidden" name="codice"><input type="hidden" name="cliente"><textarea name="dati"></textarea></form></body></html>';
 const $=id=>document.getElementById(id);
 const param=n=>new URLSearchParams(location.search).get(n);
 let data={clients:[]},currentUploadCode=null;
@@ -173,7 +174,7 @@ async function netlifyDeploy(entries,onProg){
  if(sr.ok){const sj=await sr.json();
   if(sj.published_deploy&&sj.published_deploy.id){
    const dr=await fetch('https://api.netlify.com/api/v1/deploys/'+sj.published_deploy.id,{headers:{Authorization:'Bearer '+tok}});
-   if(dr.ok){const dj=await r2j(dr);(dj.files||[]).forEach(f=>{merged[f.path]=f.sha;});}
+   if(dr.ok){const dj=await dr.json();(dj.files||[]).forEach(f=>{merged[f.path]=f.sha;});}
   }}
  entries.forEach(x=>{merged[x.path]=x.sha;});
  const pr=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:merged})});
@@ -196,14 +197,13 @@ async function netlifyDeploy(entries,onProg){
  }
  return dep;
 }
-function r2j(r){return r.json()}
 async function publishIdentity(){
  const nome=$('idNome').value.trim();
  if(!nome)return alert('Scrivi il nome dello studio.');
  try{
   setStatus('idStatus','work','Pubblicazione identità...');
   const ident={nome,messaggio:$('idMsg').value.trim(),whatsapp:$('idWa').value.trim(),logo:''};
-  const entries=[{path:'/studio.json',buf:enc(JSON.stringify(ident))},{path:'/_headers',buf:enc(HEADERS)}];
+  const entries=[{path:'/studio.json',buf:enc(JSON.stringify(ident))},{path:'/_headers',buf:enc(HEADERS)},{path:'/forms.html',buf:enc(FORMS_HTML)}];
   const lf=$('idLogo').files[0];
   if(lf){
    const ext=(lf.name.split('.').pop()||'png').toLowerCase();
@@ -271,6 +271,7 @@ async function handleUpload(e){
   const manifest={codice:code,nome:c.nome,cognome:c.cognome,note:c.note||'',createdAt:c.createdAt,uploadedAt:new Date().toISOString(),photos:entries.map(x=>x.path.replace('/'+code+'/',''))};
   entries.push({path:'/'+code+'/manifest.json',buf:enc(JSON.stringify(manifest))});
   entries.push({path:'/_headers',buf:enc(HEADERS)});
+  entries.push({path:'/forms.html',buf:enc(FORMS_HTML)});
   await netlifyDeploy(entries,(i,tot)=>setStatus('uploadStatus','work','Carico '+(i+1)+'/'+tot+' ...'));
   c.photos=manifest.photos.length;c.lastUpload=new Date().toISOString();
   save();render();
