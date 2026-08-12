@@ -2,223 +2,151 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AppCenterStudio Premium - Gallery</title>
 <style>
 :root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
-.container{max-width:1200px;margin:0 auto}
-.app-header{text-align:center;margin-bottom:30px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:8px}
-.subtitle{font-size:16px;color:var(--soft)}
-.dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;flex-wrap:wrap;gap:10px}
-.dashboard-header h2{color:var(--accento);font-family:Georgia,serif}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
-.card h2{color:var(--accento);margin-bottom:18px;font-family:Georgia,serif;font-size:18px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
-.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
-.form-group input:focus,.form-group textarea:focus{outline:2px solid var(--accento);border-color:transparent}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:600px){.form-row{grid-template-columns:1fr}}
-.btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
-.btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
-.btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-edit{padding:8px 14px;background:var(--accento);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px;margin-right:5px}
-.btn-wa{padding:10px 20px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;margin:6px 0;width:100%}
-.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-.client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:18px}
-.client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:10px;font-size:17px}
-.client-info{font-size:13px;line-height:1.7}
-.client-notes{margin-top:10px;padding:10px;background:#f6f1e7;border-radius:8px;font-size:12px;color:#7a6540}
-.button-group{margin-top:12px;display:flex;gap:6px;flex-wrap:wrap}
-.link-box{background:#eef4f0;padding:12px;border-radius:8px;margin-top:12px;border-left:3px solid var(--ok)}
-.link-box strong{display:block;font-size:12px;color:var(--ok);margin-bottom:6px}
-.link-box input{width:100%;padding:7px;border:1px solid var(--bordo);border-radius:6px;font-family:monospace;font-size:11px}
-.modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(40,40,60,.5);align-items:center;justify-content:center;padding:20px}
-.modal.open{display:flex}
-.modal-content{background:var(--carta);border-radius:14px;padding:28px;max-width:560px;width:100%;position:relative}
-.modal-content h2{font-family:Georgia,serif;color:var(--accento);margin-bottom:18px}
-.close-modal{position:absolute;top:12px;right:16px;font-size:28px;cursor:pointer;color:var(--soft);background:none;border:none}
-.empty-state{text-align:center;padding:40px 20px;color:var(--soft);grid-column:1/-1}
-.empty-state .icon{font-size:48px;margin-bottom:12px}
-.search-box{width:100%;padding:12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;margin-bottom:18px}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;color:var(--testo)}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
+.card h2{color:var(--accento);margin-bottom:14px;font-family:Georgia,serif;font-size:18px}
+.info-box{background:#eef4f0;border-left:4px solid var(--ok);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.7}
+.btn-primary{padding:12px 24px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-wa{padding:14px 28px;background:#25d366;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin-top:12px}
+/* ===== VISTA CLIENTE ===== */
+.g-head{background:#fff;border-bottom:1px solid var(--bordo);padding:14px 16px;text-align:center}
+.g-head img{height:52px;border-radius:50%;object-fit:cover;margin-bottom:6px}
+.g-head h1{font-family:Georgia,serif;font-size:19px;color:var(--accento)}
+.g-head p{font-size:13px;color:var(--soft);margin-top:4px}
+.viewer{position:fixed;inset:0;background:#14141a;display:flex;flex-direction:column}
+.v-top{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;color:#eee;background:rgba(0,0,0,.55)}
+.v-top .studio{font-family:Georgia,serif;font-size:15px}
+.v-top .count{font-family:monospace;font-size:13px;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:999px}
+.v-stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;touch-action:pan-y}
+.v-stage img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;transition:opacity .25s}
+.v-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.5);padding:8px 18px;border-radius:999px;font-size:13px;pointer-events:none}
+.v-bar{display:flex;justify-content:center;gap:14px;padding:12px;background:rgba(0,0,0,.55)}
+.v-btn{width:52px;height:52px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:22px;cursor:pointer}
+.v-btn:active{background:rgba(255,255,255,.3)}
+.v-btn.dl{background:var(--ok);font-size:20px}
+.thanks{position:fixed;inset:0;background:var(--sfondo);display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+.thanks .box{background:#fff;border:1px solid var(--bordo);border-radius:16px;padding:36px 26px;max-width:460px;width:100%}
+.thanks img{height:64px;border-radius:50%;object-fit:cover;margin-bottom:10px}
+.thanks h1{font-family:Georgia,serif;font-size:26px;color:var(--accento);margin-bottom:10px}
+.thanks p{color:var(--soft);font-size:15px;line-height:1.6}
 </style>
 </head>
 <body>
-<div class="container">
-<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Gallery Photo — Consegna MEGA al Cliente</p></header>
-
-<div id="dashboard" style="display:none;">
-<div class="dashboard-header"><h2>👋 Dashboard Gallery</h2>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-secondary" onclick="createBackup()">💾 Backup</button>
-<button class="btn-secondary" onclick="openRestoreModal()">🔄 Ripristina</button>
-</div></div>
-
-<div class="card"><h2>📁 Aggiungi Nuovo Cliente Gallery</h2>
-<form id="clientForm" onsubmit="handleClientForm(event)">
-<div class="form-row">
-<div class="form-group"><label>Nome Cliente *</label><input type="text" id="clientName" required></div>
-<div class="form-group"><label>Username cliente *</label><input type="text" id="clientUsername" required placeholder="es. mario.rossi"></div>
-</div>
-<div class="form-row">
-<div class="form-group"><label>Password cliente *</label><input type="text" id="clientPassword" required placeholder="es. foto2024"></div>
-<div class="form-group"><label>Link MEGA (cartella foto) *</label><input type="text" id="megaLink" required placeholder="https://mega.nz/folder/..."></div>
-</div>
-<div class="form-group"><label>Note (opzionale)</label><textarea id="clientNotes" rows="3"></textarea></div>
-<button type="submit" class="btn-primary">➕ Aggiungi Cliente</button>
-</form></div>
-
-<div class="card"><h2>🗂 Clienti Gallery <span id="clientsCount" style="color:var(--soft);font-size:14px"></span></h2>
-<input type="text" id="clientSearch" class="search-box" placeholder="🔍 Cerca per nome, username o ID..." oninput="loadClients()">
-<div id="clientsList" class="clients-grid"></div></div>
-</div>
-
-<div id="restoreModal" class="modal"><div class="modal-content">
-<button class="close-modal" onclick="closeModal('restoreModal')">&times;</button>
-<h2>🔄 Ripristina Backup</h2>
-<div class="form-group"><label>Seleziona file backup (.json):</label><input type="file" id="backupFile" accept=".json"></div>
-<div style="display:flex;gap:8px;margin-top:16px">
-<button class="btn-secondary" onclick="closeModal('restoreModal')">Annulla</button>
-<button class="btn-primary" onclick="handleRestore()">Ripristina</button>
-</div></div></div>
-</div>
-
+<div id="root"></div>
 <script>
-const STORAGE_KEY='galleryClients';
-let allClients=[],editingClientId=null;
 const $=id=>document.getElementById(id);
 const param=n=>new URLSearchParams(location.search).get(n);
-function loadData(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch(e){return[]}}
-function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
 window.addEventListener('DOMContentLoaded',()=>{
-  const tok=param('token');
-  if(tok)return clientFromToken(tok);
-  adminGate();
+ const g=param('g');
+ if(g)return clientMode(g);
+ adminGate();
 });
-function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+/* ===== ADMIN (solo indirizzo) ===== */
+function blocca(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
 async function adminGate(){
-  const codice=param('studio')||sessionStorage.getItem('studio');
-  if(!codice)return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
-  sessionStorage.setItem('studio',codice);
-  try{
-    const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-    const s=(l.studi||[]).find(x=>x.codice===codice);
-    const oggi=new Date().toISOString().slice(0,10);
-    if(!s)return blocca('Codice studio non riconosciuto.');
-    if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
-    if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
-  }catch(e){return blocca('Verifica licenza non riuscita.')}
-  $('dashboard').style.display='block';
-  allClients=loadData();loadClients();
+ const codice=param('studio')||sessionStorage.getItem('studio');
+ if(!codice)return blocca('Accedi da AppCenterStudio‑Premium per aprire le applicazioni.');
+ sessionStorage.setItem('studio',codice);
+ try{
+  const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+  const s=(l.studi||[]).find(x=>x.codice===codice);
+  const oggi=new Date().toISOString().slice(0,10);
+  if(!s)return blocca('Codice studio non riconosciuto.');
+  if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
+  if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
+ }catch(e){return blocca('Verifica licenza non riuscita.');}
+ document.getElementById('root').innerHTML=`<div class="lock-wrap"><div style="max-width:640px;width:100%">
+ <div class="card"><h2>📁 Gallery — consegna automatica su Netlify</h2>
+ <div class="info-box">Le gallery ora vivono sul tuo sito Netlify, insieme alle foto dei clienti.<br><br>Per creare una gallery:<br>1. apri <b>Clienti &amp; Foto</b>;<br>2. carica le foto del cliente;<br>3. premi <b>📁 Link Gallery</b> e mandalo al cliente.<br><br>Il cliente aprirà le foto con swipe, download, logo e messaggio del tuo studio — da telefono, tablet o PC.</div>
+ <a class="btn-primary" href="../clienti-foto/?studio=${codice}">👥 Apri Clienti &amp; Foto</a>
+ </div></div></div>`;
 }
-// ===== LINK CLIENTE CON TOKEN (funziona su qualsiasi dispositivo) =====
-function makeToken(c){
-  return btoa(unescape(encodeURIComponent(JSON.stringify({u:c.username,p:c.password,m:c.megaLink,n:c.name}))))
-    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
+/* ===== VISTA CLIENTE ===== */
+function errPage(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Galleria non disponibile</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+async function clientMode(g){
+ const parts=decodeURIComponent(g).split('/');
+ if(parts.length<2)return errPage('Link non valido. Contatta lo studio.');
+ const site=parts[0],code=parts.slice(1).join('/');
+ const base='https://'+site+'.netlify.app/'+code;
+ let manifest=null,studio=null;
+ try{manifest=await(await fetch(base+'/manifest.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){}
+ if(!manifest||!manifest.photos||!manifest.photos.length)return errPage('Nessuna foto pubblicata. Contatta lo studio.');
+ try{studio=await(await fetch('https://'+site+'.netlify.app/studio.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){}
+ document.title=(studio&&studio.nome?studio.nome:'Gallery')+' — '+(manifest.nome||'')+' '+(manifest.cognome||'');
+ renderViewer(base,manifest,studio);
 }
-function decodeToken(t){
-  try{
-    const s=t.replace(/-/g,'+').replace(/_/g,'/');
-    const p=s+'='.repeat((4-s.length%4)%4);
-    return JSON.parse(decodeURIComponent(escape(atob(p))));
-  }catch(e){return null}
+let PH=[],BASE='',IDX=0,STUDIO=null,touchX=null;
+function photoUrl(i){return BASE+'/'+PH[i].split('/').map(encodeURIComponent).join('/')}
+function renderViewer(base,manifest,studio){
+ BASE=base;PH=manifest.photos;STUDIO=studio||{};IDX=0;
+ const logo=STUDIO.logo?'https://'+base.split('/')[2]+'/'+STUDIO.logo:'';
+ document.getElementById('root').innerHTML=`
+ <div class="viewer">
+  <div class="v-top"><span class="studio">${esc(STUDIO.nome||'Gallery')}</span><span class="count" id="cnt"></span></div>
+  <div class="v-stage" id="stage"><img id="ph" alt="Foto"><div class="v-hint" id="hint">👈 scorri per sfogliare 👉</div></div>
+  <div class="v-bar">
+   <button class="v-btn" onclick="prev()">‹</button>
+   <button class="v-btn dl" onclick="scarica()" title="Scarica foto">⬇️</button>
+   <button class="v-btn" onclick="next()">›</button>
+  </div>
+ </div>`;
+ const st=$('stage');
+ st.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX;},{passive:true});
+ st.addEventListener('touchend',e=>{
+  if(touchX===null)return;
+  const dx=e.changedTouches[0].clientX-touchX;touchX=null;
+  if(dx<-40)next();else if(dx>40)prev();
+ },{passive:true});
+ document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
+ show(0);
 }
-function clientFromToken(tok){
-  const d=decodeToken(tok);
-  if(!d||!d.u||!d.p||!d.m){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Link non valido</h2><p style="color:var(--soft)">Contatta lo studio per il link corretto.</p></div></div>`;return}
-  document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card">
-  <h2 style="font-family:Georgia,serif;margin-bottom:6px">🔐 Accesso Galleria</h2>
-  <p style="color:var(--soft);margin-bottom:18px">Benvenuto <b>${escapeHtml(d.n)}</b>. Inserisci le credenziali.</p>
-  <form onsubmit="clientLogin(event)">
-  <div class="form-group"><label>Username</label><input type="text" id="clU" value="${escapeHtml(d.u)}" required></div>
-  <div class="form-group"><label>Password</label><input type="password" id="clP" required></div>
-  <button type="submit" class="btn-primary" style="width:100%">Accedi alla Gallery</button>
-  <p id="clErr" style="color:var(--ko);margin-top:10px;font-size:13px"></p></form></div></div>`;
-  window.clientData=d;
+function show(i){
+ if(i>=PH.length)return thanks();
+ IDX=i;
+ const img=$('ph');
+ img.style.opacity=.3;
+ img.onload=()=>{img.style.opacity=1;};
+ img.src=photoUrl(i);
+ $('cnt').textContent=(i+1)+' / '+PH.length;
+ if(i===0&&PH.length>1)$('hint').style.display='block';else if($('hint'))$('hint').style.display='none';
+ if(i+1<PH.length){const p=new Image();p.src=photoUrl(i+1);}
 }
-function clientLogin(e){
-  e.preventDefault();
-  const d=window.clientData;
-  const u=$('clU').value.trim(),p=$('clP').value;
-  if(d&&d.u===u&&d.p===p){window.open(d.m,'_blank');document.querySelector('.lock-card').innerHTML=`<div style="font-size:34px">✅</div><h2 style="font-family:Georgia,serif;margin:10px 0">Grazie ${escapeHtml(d.n)}</h2><p style="color:var(--soft)">La cartella MEGA si è aperta in una nuova scheda.<br>Puoi chiudere questa pagina.</p>`}
-  else $('clErr').textContent='❌ Credenziali errate.';
+function next(){show(IDX+1)}
+function prev(){if(IDX>0)show(IDX-1)}
+async function scarica(){
+ const url=photoUrl(IDX);
+ const name=PH[IDX].split('/').pop();
+ try{
+  const r=await fetch(url);
+  const b=await r.blob();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download=name;
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+ }catch(e){window.open(url,'_blank');}
 }
-// ===== ADMIN =====
-function handleClientForm(e){e.preventDefault();editingClientId?updateClient():addClient()}
-function addClient(){
-  const name=$('clientName').value.trim(),username=$('clientUsername').value.trim(),password=$('clientPassword').value.trim(),mega=$('megaLink').value.trim(),notes=$('clientNotes').value.trim();
-  if(!name||!username||!password||!mega)return alert('⚠️ Compila tutti i campi obbligatori.');
-  allClients.push({id:'client_'+Date.now()+'_'+Math.floor(Math.random()*900000+100000),name,username,password,megaLink:mega,notes,createdAt:Date.now()});
-  saveData(allClients);$('clientForm').reset();loadClients();alert('✅ Cliente aggiunto.');
+function thanks(){
+ const logo=STUDIO.logo?'https://'+BASE.split('/')[2]+'/'+STUDIO.logo:'';
+ const wa=STUDIO.whatsapp?`https://wa.me/${STUDIO.whatsapp}?text=`+encodeURIComponent('Ciao! Ho visto le mie foto, grazie! 😍'):'';
+ document.getElementById('root').innerHTML=`
+ <div class="thanks"><div class="box">
+  ${logo?`<img src="${logo}" alt="logo">`:''}
+  <h1>Grazie per averci scelto! 💛</h1>
+  <p>${esc(STUDIO.messaggio||'Le vostre foto, con amore.')}</p>
+  <p style="margin-top:14px;font-size:13px">— ${esc(STUDIO.nome||'Lo Studio')}</p>
+  ${wa?`<a class="btn-wa" href="${wa}" target="_blank">💬 Scrivici su WhatsApp</a>`:''}
+  <br><button class="btn-primary" style="margin-top:14px" onclick="show(0)">🔄 Rivedi le foto</button>
+ </div></div>`;
 }
-function updateClient(){
-  const i=allClients.findIndex(c=>c.id===editingClientId);if(i===-1)return;
-  allClients[i]={...allClients[i],name:$('clientName').value.trim(),username:$('clientUsername').value.trim(),password:$('clientPassword').value.trim(),megaLink:$('megaLink').value.trim(),notes:$('clientNotes').value.trim()};
-  saveData(allClients);editingClientId=null;$('clientForm').reset();loadClients();alert('✅ Cliente aggiornato.');
-}
-function deleteClient(id){
-  const c=allClients.find(x=>x.id===id);if(!c)return;
-  if(!confirm(`Eliminare ${c.name}?\nQuesta azione non può essere annullata.`))return;
-  allClients=allClients.filter(x=>x.id!==id);saveData(allClients);loadClients();
-}
-function editClient(id){
-  const c=allClients.find(x=>x.id===id);if(!c)return;
-  editingClientId=id;
-  $('clientName').value=c.name;$('clientUsername').value=c.username;$('clientPassword').value=c.password;$('megaLink').value=c.megaLink;$('clientNotes').value=c.notes||'';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function loadClients(){
-  const term=($('clientSearch').value||'').toLowerCase();
-  const list=allClients.filter(c=>!term||c.name.toLowerCase().includes(term)||c.username.toLowerCase().includes(term)||c.id.toLowerCase().includes(term)).sort((a,b)=>b.createdAt-a.createdAt);
-  $('clientsCount').textContent='· '+allClients.length+' totali';
-  if(!list.length){$('clientsList').innerHTML=`<div class="empty-state"><div class="icon">📭</div><p>Nessun cliente${term?' trovato':'.'}</p></div>`;return}
-  $('clientsList').innerHTML=list.map(c=>`
-  <div class="client-card">
-    <h3>${escapeHtml(c.name)}</h3>
-    <div class="client-info"><p><strong>👤</strong> ${escapeHtml(c.username)} · <strong>🔒</strong> ${escapeHtml(c.password)}</p></div>
-    ${c.notes?`<div class="client-notes">📝 ${escapeHtml(c.notes)}</div>`:''}
-    <div class="link-box"><strong>📲 Link da inviare al cliente (funziona su ogni dispositivo):</strong>
-    <input type="text" value="${getClientUrl(c)}" readonly>
-    <button class="btn-wa" onclick="sendWA('${c.id}')">📲 Invia su WhatsApp</button>
-    <button class="btn-small" onclick="copyLink('${c.id}')">📋 Copia link</button></div>
-    <div class="button-group">
-    <button class="btn-edit" onclick="editClient('${c.id}')">✏️ Modifica</button>
-    <button class="btn-delete" onclick="deleteClient('${c.id}')">🗑️ Elimina</button></div>
-  </div>`).join('');
-}
-function getClientUrl(c){return `${location.origin}${location.pathname}?token=${makeToken(c)}`}
-function copyLink(id){const c=allClients.find(x=>x.id===id);if(!c)return;navigator.clipboard.writeText(getClientUrl(c)).then(()=>alert('✅ Link copiato!'))}
-function sendWA(id){
-  const c=allClients.find(x=>x.id===id);if(!c)return;
-  const text=`Ciao ${c.name}, ecco la tua galleria privata:\n\n${getClientUrl(c)}\n\nCredenziali di accesso:\n• Username: ${c.username}\n• Password: ${c.password}\n\nConserva questo messaggio per accedere alle tue foto.`;
-  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
-}
-function openRestoreModal(){$('restoreModal').classList.add('open')}
-function closeModal(id){$(id).classList.remove('open')}
-function handleRestore(){
-  const f=$('backupFile').files[0];if(!f)return alert('⚠️ Seleziona un file.');
-  const r=new FileReader();
-  r.onload=ev=>{try{
-    const data=JSON.parse(ev.target.result);
-    const list=data.clients||data;if(!Array.isArray(list))throw new Error('File non valido');
-    if(!confirm(`Ripristinare ${list.length} clienti?\nI dati attuali (${allClients.length}) verranno sostituiti.`))return;
-    allClients=list;saveData(allClients);loadClients();closeModal('restoreModal');alert('✅ Ripristino completato.');
-  }catch(err){alert('❌ Errore: '+err.message)}};
-  r.readAsText(f);
-}
-function createBackup(){
-  if(!allClients.length)return alert('Archivio vuoto.');
-  const blob=new Blob([JSON.stringify({version:'3.0',clients:allClients,timestamp:new Date().toISOString()},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='gallery-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
-}
-function escapeHtml(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
 </body>
 </html>
