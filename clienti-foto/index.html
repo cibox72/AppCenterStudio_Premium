@@ -24,7 +24,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
 .btn-small{padding:8px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
 .btn-delete{padding:8px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-netlify{padding:10px 20px;background:#00ad9f;color:#fff;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;text-decoration:none;display:inline-block;margin:5px 5px 5px 0}
+.btn-netlify{padding:10px 20px;background:#00ad9f;color:#fff;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;text-decoration:none;display:inline-block;margin:5px 8px 5px 0}
 .client-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
 .client-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:16px}
 .client-card h3{font-family:Georgia,serif;color:var(--accento);margin-bottom:8px;font-size:17px}
@@ -32,32 +32,35 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .info-box{background:#eef4f0;border-left:4px solid var(--ok);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;line-height:1.7}
 .info-box strong{color:var(--ok)}
 .empty{text-align:center;color:var(--soft);padding:30px;grid-column:1/-1}
+.status{margin-top:12px;padding:12px 16px;border-radius:10px;font-size:13px;display:none}
+.status.ok{display:block;background:#e5efe9;color:var(--ok);font-weight:600}
+.status.work{display:block;background:#f6f1e7;color:#7a6540}
+.status.ko{display:block;background:#f3e8e8;color:var(--ko);font-weight:600}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
 </style>
 </head>
 <body>
 <div class="container">
-<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Clienti & Foto — Gestione codici e cartelle Netlify</p></header>
+<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Clienti & Foto — Codici cliente e caricamento Netlify</p></header>
 
 <div id="dashboard" style="display:none">
+
 <div class="card">
-<h2>🌐 1. Preparazione Netlify (fai una volta sola)</h2>
-<div class="info-box">
-<b>Per far funzionare tutte le app serve un sito Netlify permanente.</b><br>
-1. Clicca sotto per creare l'account gratis (se non l'hai già fatto).<br>
-2. Poi trascina una cartella vuota sul Netlify Drop per creare il sito (gli servirà un nome tipo <i>studio-tuo.netlify.app</i>).<br>
-3. Copia il link del sito creato e incollalo qui sotto → Salva.
-</div>
-<a href="https://app.netlify.com/drop" target="_blank" class="btn-netlify">🌐 Apri Netlify Drop</a>
-<div class="form-group" style="margin-top:14px"><label>Link del tuo sito Netlify:</label>
-<input type="text" id="netlifyBase" placeholder="Es. https://studio-tuo.netlify.app" oninput="saveNetlify()">
-<p id="netlifyMsg" style="font-size:12px;color:var(--ok);margin-top:4px;display:none">✅ Memorizzato</p></div>
+<h2>🌐 1. Collegamento Netlify (una volta sola)</h2>
+<div class="info-box"><strong>Come funziona:</strong> crea l'account Netlify, genera il token (è la "chiave" per caricare le foto dall'app), poi collega il tuo sito. Da qui in poi caricherai le foto dei clienti direttamente da questa pagina.</div>
+<a class="btn-netlify" href="https://app.netlify.com/signup" target="_blank">1️⃣ Crea account Netlify</a>
+<a class="btn-netlify" href="https://app.netlify.com/user/applications#personal-access-tokens" target="_blank">2️⃣ Crea il token Netlify</a>
+<div class="form-group" style="margin-top:14px"><label>Token Netlify (segreto, come quello GitHub)</label>
+<div style="display:flex;gap:8px"><input type="password" id="nlToken" placeholder="Incolla qui il token"><button class="btn-primary" onclick="saveToken()">💾 Salva</button></div></div>
+<div class="form-group"><label>Link del tuo sito Netlify</label>
+<div style="display:flex;gap:8px"><input type="text" id="nlSite" placeholder="Es. https://studio-tuo.netlify.app"><button class="btn-primary" onclick="verifySite()">🔗 Collega</button></div></div>
+<div id="nlStatus" class="status"></div>
 </div>
 
 <div class="card">
 <h2>➕ 2. Aggiungi Nuovo Cliente</h2>
-<div class="info-box">Inserisci nome e cognome → il sistema genera un <b>codice univoco</b> (es. <i>rossi-001</i>) che userai in tutte le app.</div>
+<div class="info-box">Inserisci nome e cognome → il sistema genera un <strong>codice univoco</strong> (es. <i>rossi-mario-001</i>) che userai in tutte le app.</div>
 <form onsubmit="addClient(event)">
 <div class="form-row">
 <div class="form-group"><label>Nome *</label><input type="text" id="cNome" required placeholder="Es. Mario"></div>
@@ -69,19 +72,22 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 </div>
 
 <div class="card">
-<h2>👥 3. Elenco Clienti</h2>
-<div class="info-box">Per caricare le foto di un cliente: clicca <b>📤 Carica foto</b> → trascina la cartella sul Netlify Drop → il sito le metterà in <i>sito-tuo.netlify.app/codice-cliente/</i>.</div>
+<h2>👥 3. Elenco Clienti & Caricamento Foto</h2>
+<div class="info-box"><strong>📤 Carica foto:</strong> scegli la cartella delle foto del cliente → l'app le carica da sola su Netlify dentro <i>tuosito.netlify.app/CODICE/</i> (le sottocartelle diventano gli album). Tutte le app ritroveranno le foto con lo stesso codice.</div>
 <div id="clientList" class="client-list"></div>
+<div id="uploadStatus" class="status"></div>
 </div>
 </div>
+
+<input type="file" id="folderInput" webkitdirectory multiple style="display:none" onchange="handleUpload(event)">
 </div>
 
 <script>
 const STORAGE='clientiFotoData';
 const $=id=>document.getElementById(id);
 const param=n=>new URLSearchParams(location.search).get(n);
-let data={netlify:'',clients:[]};
-function load(){try{data=JSON.parse(localStorage.getItem(STORAGE))||{netlify:'',clients:[]}}catch(e){}}
+let data={clients:[]},currentUploadCode=null;
+function load(){try{data=JSON.parse(localStorage.getItem(STORAGE))||{clients:[]}}catch(e){data={clients:[]}}}
 function save(){localStorage.setItem(STORAGE,JSON.stringify(data))}
 function blocca(msg){document.body.innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">🔒</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
 window.addEventListener('DOMContentLoaded',async()=>{
@@ -97,50 +103,125 @@ window.addEventListener('DOMContentLoaded',async()=>{
   if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
  }catch(e){return blocca('Verifica licenza non riuscita.');}
  load();$('dashboard').style.display='block';
- $('netlifyBase').value=data.netlify||'';
+ $('nlToken').value=localStorage.getItem('netlify_token')||'';
+ $('nlSite').value=localStorage.getItem('netlify_siteurl')||'';
+ if(localStorage.getItem('netlify_site'))setStatus('nlStatus','ok','✅ Sito collegato: '+localStorage.getItem('netlify_site'));
  render();
 });
-function saveNetlify(){
- data.netlify=$('netlifyBase').value.trim().replace(/\/$/,'');
- save();$('netlifyMsg').style.display='block';
- setTimeout(()=>$('netlifyMsg').style.display='none',2000);
+function setStatus(id,tipo,msg){const el=$(id);el.className='status '+tipo;el.textContent=msg;}
+function saveToken(){
+ const t=$('nlToken').value.trim();
+ if(!t)return alert('⚠️ Incolla prima il token.');
+ if(!confirm('Salvare questo token Netlify?\nIl precedente verrà sostituito.'))return;
+ localStorage.setItem('netlify_token',t);
+ setStatus('nlStatus','ok','✅ Token salvato. Ora inserisci il link del sito e premi Collega.');
+}
+async function verifySite(){
+ const url=$('nlSite').value.trim().replace(/\/$/,'');
+ const m=url.match(/^https?:\/\/([a-z0-9-]+)\.netlify\.app/i);
+ if(!m)return alert('⚠️ Inserisci un link valido tipo https://nome.netlify.app');
+ const tok=localStorage.getItem('netlify_token');
+ if(!tok)return alert('⚠️ Prima salva il token Netlify.');
+ setStatus('nlStatus','work','⏳ Verifica del sito...');
+ try{
+  const r=await fetch('https://api.netlify.com/api/v1/sites/'+m[1],{headers:{Authorization:'Bearer '+tok}});
+  if(!r.ok)throw new Error('Errore '+r.status+' (controlla token e nome sito)');
+  const j=await r.json();
+  localStorage.setItem('netlify_site',j.id);
+  localStorage.setItem('netlify_sitename',m[1]);
+  localStorage.setItem('netlify_siteurl','https://'+m[1]+'.netlify.app');
+  setStatus('nlStatus','ok','✅ Sito collegato: https://'+m[1]+'.netlify.app — ora puoi caricare le foto dei clienti.');
+ }catch(e){setStatus('nlStatus','ko','❌ '+e.message);}
 }
 function genCode(nome,cognome){
  const slug=(cognome+'-'+nome).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
- let n=1;let code=slug+'-'+String(n).padStart(3,'0');
+ let n=1,code=slug+'-'+String(n).padStart(3,'0');
  while(data.clients.some(c=>c.codice===code)){n++;code=slug+'-'+String(n).padStart(3,'0');}
  return code;
 }
 function addClient(e){
  e.preventDefault();
- const nome=$('cNome').value.trim();
- const cognome=$('cCognome').value.trim();
- const note=$('cNote').value.trim();
+ const nome=$('cNome').value.trim(),cognome=$('cCognome').value.trim(),note=$('cNote').value.trim();
  if(!nome||!cognome)return;
  const codice=genCode(nome,cognome);
- data.clients.push({codice,nome,cognome,note,createdAt:Date.now()});
+ data.clients.push({codice,nome,cognome,note,photos:0,lastUpload:null,createdAt:Date.now()});
  save();$('cNome').value='';$('cCognome').value='';$('cNote').value='';
  render();
- alert('✅ Cliente creato!\n\nCodice: '+codice+'\n\nProssimo passo: carica le sue foto su Netlify.');
+ alert('✅ Cliente creato!\n\nCodice: '+codice+'\n\nOra premi "📤 Carica foto" sulla sua scheda.');
 }
 function deleteClient(codice){
- const c=data.clients.find(x=>x.codice===codice);
- if(!c)return;
- if(!confirm(`Eliminare ${c.nome} ${c.cognome} (${codice})?\n\nQuesta azione non può essere annullata.`))return;
- data.clients=data.clients.filter(x=>x.codice!==codice);
- save();render();
+ const c=data.clients.find(x=>x.codice===codice);if(!c)return;
+ if(!confirm(`Eliminare ${c.nome} ${c.cognome} (${codice})?\n\nLe foto già caricate su Netlify restano online finché non le cancelli da Netlify.\nQuesta azione non può essere annullata.`))return;
+ data.clients=data.clients.filter(x=>x.codice!==codice);save();render();
 }
 function copyCode(codice,btn){
- navigator.clipboard.writeText(codice).then(()=>{
-  const t=btn.textContent;btn.textContent='✅ Copiato!';
-  setTimeout(()=>btn.textContent=t,1500);
- });
+ navigator.clipboard.writeText(codice).then(()=>{const t=btn.textContent;btn.textContent='✅ Copiato!';setTimeout(()=>btn.textContent=t,1500);});
 }
-function openNetlifyForClient(codice){
- if(!data.netlify)return alert('⚠️ Prima inserisci il link del tuo sito Netlify nel passo 1.');
- const url=data.netlify;
- navigator.clipboard.writeText(codice).then(()=>alert('✅ Codice copiato: '+codice+'\n\nQuando Netlify Drop si apre:\n1. Trascina la cartella delle foto\n2. Quando ti chiede il nome del sito, NON cambiarlo\n3. Le foto andranno dentro una sottocartella che creeremo al prossimo passo.'));
+function openFolder(code){
+ const c=data.clients.find(x=>x.codice===code);if(!c)return;
+ const url=(localStorage.getItem('netlify_siteurl')||'')+'/'+code+'/';
+ navigator.clipboard.writeText(url);
  window.open(url,'_blank');
+}
+function startUpload(code){
+ if(!localStorage.getItem('netlify_site'))return alert('⚠️ Prima collega il sito Netlify nel passo 1.');
+ currentUploadCode=code;$('folderInput').click();
+}
+async function sha1(buf){const h=await crypto.subtle.digest('SHA-1',buf);return [...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+function encPath(p){return p.split('/').map(encodeURIComponent).join('/')}
+async function handleUpload(e){
+ const files=[...e.target.files].filter(f=>/\.(jpe?g|png|webp)$/i.test(f.name));
+ e.target.value='';
+ if(!files.length)return alert('⚠️ Nessuna foto valida nella cartella (jpg, png, webp).');
+ const code=currentUploadCode;
+ const c=data.clients.find(x=>x.codice===code);if(!c)return;
+ const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
+ if(!tok||!siteId)return alert('⚠️ Collega prima token e sito nel passo 1.');
+ try{
+  setStatus('uploadStatus','work','⏳ Preparo '+files.length+' foto...');
+  const entries=[];
+  for(const f of files){
+    const rel=f.webkitRelativePath?f.webkitRelativePath.split('/').slice(1).join('/'):f.name;
+    if(!rel)continue;
+    const buf=await f.arrayBuffer();
+    entries.push({path:'/'+code+'/'+rel,buf,sha:await sha1(buf)});
+  }
+  const manifest={codice:code,nome:c.nome,cognome:c.cognome,note:c.note||'',createdAt:c.createdAt,uploadedAt:new Date().toISOString(),photos:entries.map(x=>x.path.replace('/'+code+'/',''))};
+  const mBuf=new TextEncoder().encode(JSON.stringify(manifest));
+  entries.push({path:'/'+code+'/manifest.json',buf:mBuf,sha:await sha1(mBuf)});
+  setStatus('uploadStatus','work','⏳ Leggo il sito attuale...');
+  const merged={};
+  const sr=await fetch('https://api.netlify.com/api/v1/sites/'+siteId,{headers:{Authorization:'Bearer '+tok}});
+  if(sr.ok){const sj=await sr.json();
+    if(sj.published_deploy&&sj.published_deploy.id){
+      const dr=await fetch('https://api.netlify.com/api/v1/deploys/'+sj.published_deploy.id,{headers:{Authorization:'Bearer '+tok}});
+      if(dr.ok){const dj=await dr.json();(dj.files||[]).forEach(f=>{merged[f.path]=f.sha;});}
+    }}
+  entries.forEach(x=>{merged[x.path]=x.sha;});
+  setStatus('uploadStatus','work','⏳ Creo il caricamento...');
+  const pr=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:merged})});
+  if(!pr.ok)throw new Error('Errore deploy '+pr.status);
+  const dep=await pr.json();
+  const req=new Set(dep.required||[]);
+  const toUpload=entries.filter(x=>req.has(x.sha));
+  let done=0;
+  for(const x of toUpload){
+    setStatus('uploadStatus','work','⏳ Carico '+(done+1)+'/'+toUpload.length+' ...');
+    const ur=await fetch('https://api.netlify.com/api/v1/deploys/'+dep.id+'/files'+encPath(x.path),{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:x.buf});
+    if(!ur.ok)throw new Error('Errore upload '+ur.status);
+    done++;
+  }
+  setStatus('uploadStatus','work','⏳ Pubblicazione...');
+  for(let i=0;i<20;i++){
+    const st=await fetch('https://api.netlify.com/api/v1/deploys/'+dep.id,{headers:{Authorization:'Bearer '+tok}});
+    const stj=await st.json();
+    if(stj.state==='ready')break;
+    await new Promise(r=>setTimeout(r,1500));
+  }
+  c.photos=manifest.photos.length;c.lastUpload=new Date().toISOString();
+  save();render();
+  setStatus('uploadStatus','ok','✅ '+manifest.photos.length+' foto pubblicate su '+localStorage.getItem('netlify_siteurl')+'/'+code+'/ — ora apri Selezione Album, Gallery o Negozio con questo codice.');
+ }catch(err){setStatus('uploadStatus','ko','❌ '+err.message);}
 }
 function render(){
  const list=$('clientList');
@@ -150,10 +231,11 @@ function render(){
    <h3>${escape(c.nome)} ${escape(c.cognome)}</h3>
    <div class="code-badge">${c.codice}</div>
    ${c.note?`<p style="font-size:13px;color:var(--soft);margin:6px 0">📝 ${escape(c.note)}</p>`:''}
-   <p style="font-size:12px;color:var(--soft);margin:8px 0">📅 ${new Date(c.createdAt).toLocaleDateString('it-IT')}</p>
+   <p style="font-size:12px;color:var(--soft);margin:8px 0">📸 ${c.photos||0} foto${c.lastUpload?' · ultimo caricamento '+new Date(c.lastUpload).toLocaleDateString('it-IT'):''}</p>
    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
     <button class="btn-small" onclick="copyCode('${c.codice}',this)">📋 Copia codice</button>
-    <button class="btn-secondary" onclick="openNetlifyForClient('${c.codice}')">📤 Carica foto</button>
+    <button class="btn-secondary" onclick="startUpload('${c.codice}')">📤 Carica foto</button>
+    <button class="btn-secondary" onclick="openFolder('${c.codice}')">🔗 Apri cartella</button>
     <button class="btn-delete" onclick="deleteClient('${c.codice}')">🗑️</button>
    </div>
   </div>`).join('');
