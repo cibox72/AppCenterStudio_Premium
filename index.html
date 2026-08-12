@@ -5,50 +5,55 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AppCenterStudio Premium — Portale</title>
 <style>
-:root{--sfondo:#f6f4f0;--carta:#fff;--testo:#2e2e38;--soft:#8a8a96;--accento:#6f7f8f;--bordo:#e6e2da;--ok:#7d9b8a;--ko:#b98a8a}
+:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
 .container{max-width:1100px;margin:0 auto}
 .app-header{text-align:center;margin-bottom:30px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-.app-header h1{font-family:Georgia,serif;font-size:30px;margin-bottom:6px}
+.app-header img{filter:grayscale(100%)}
+.app-header h1{font-family:Georgia,serif;font-size:30px;margin-bottom:6px;color:var(--testo)}
 .subtitle{color:var(--soft)}
 .card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
-.card h2{color:var(--accento);font-family:Georgia,serif;font-size:18px;margin-bottom:16px}
+.card h2{color:var(--testo);font-family:Georgia,serif;font-size:18px;margin-bottom:16px}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
 .form-group input{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff}
-.form-group input:focus{outline:2px solid var(--accento);border-color:transparent}
+.form-group input:focus{outline:2px solid #111;border-color:transparent}
 .form-row{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end}
 @media(max-width:640px){.form-row{grid-template-columns:1fr}}
-.btn-primary{padding:11px 22px;background:var(--accento);color:#fff;border:none;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
-.btn-secondary{padding:10px 18px;background:#fff;color:var(--testo);border:1px solid var(--bordo);border-radius:999px;cursor:pointer;font-size:13px}
-.btn-on{padding:7px 14px;background:var(--ok);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-off{padding:7px 14px;background:var(--ko);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-link{padding:7px 14px;background:var(--accento);color:#fff;border:none;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-primary{padding:11px 22px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-primary:hover{background:#333}
+.btn-secondary{padding:10px 18px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
+.btn-secondary:hover{background:#111;color:#fff}
+.btn-on{padding:7px 14px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-off{padding:7px 14px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-link{padding:7px 14px;background:#fff;color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-link:hover{border-color:#111}
 .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
-.app-card{background:#faf9f7;border:1px solid var(--bordo);border-radius:12px;padding:18px;cursor:pointer;transition:transform .2s}
-.app-card:hover{transform:translateY(-3px);border-color:var(--accento)}
-.app-card .ico{font-size:26px;margin-bottom:8px}
-.app-card h3{font-family:Georgia,serif;font-size:16px;margin-bottom:4px}
+.app-card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:18px;cursor:pointer;transition:transform .2s}
+.app-card:hover{transform:translateY(-3px);border-color:#111}
+.app-card .num{font-family:monospace;font-size:12px;color:#bbb;letter-spacing:2px;margin-bottom:10px}
+.app-card h3{font-family:Georgia,serif;font-size:16px;margin-bottom:4px;color:var(--testo)}
 .app-card p{font-size:12px;color:var(--soft)}
-.studio-row{background:#faf9f7;border:1px solid var(--bordo);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.studio-row{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .studio-row .info{font-size:13px}
-.studio-row .code{font-family:monospace;color:var(--accento);font-weight:700}
+.studio-row .code{font-family:monospace;color:#111;font-weight:700}
 .badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
-.badge.on{background:#e5efe9;color:var(--ok)}
-.badge.off{background:#f3e8e8;color:var(--ko)}
+.badge.on{background:#111;color:#fff}
+.badge.off{background:#fff;color:#888;border:1px solid #ccc}
 .sel-row{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.sel-row select{padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:14px}
+.sel-row select{padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff}
 .msg{font-size:12px;margin-top:6px}
-.msg.ok{color:var(--ok)}.msg.ko{color:var(--ko)}
+.msg.ok{color:#111}.msg.ko{color:#111}
+.warn{font-size:12px;color:#888}
 </style>
 </head>
 <body>
 <div class="container">
-<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Portale dello Studio</p></header>
+<header class="app-header"><img src="logo.png" alt="logo" style="height:64px;border-radius:14px;margin-bottom:10px"><h1>AppCenterStudio Premium</h1><p class="subtitle">Portale dello Studio</p></header>
 
 <div id="loginCard" class="card" style="max-width:430px;margin:0 auto;">
-<h2>🔐 Accesso Amministratore</h2>
+<h2>Accesso Amministratore</h2>
 <div class="form-group"><label>Utente</label><input type="text" id="user" name="utente_admin" autocomplete="off"></div>
 <div class="form-group"><label>Password</label><input type="password" id="pass" name="pass_admin" autocomplete="new-password"></div>
 <button class="btn-primary" style="width:100%" onclick="login()">Entra</button>
@@ -58,39 +63,39 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 <div id="dash" style="display:none">
 <div class="card">
 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
-<h2 style="margin:0">📱 Le tue applicazioni</h2>
+<h2 style="margin:0">Le tue applicazioni</h2>
 <button class="btn-secondary" onclick="logout()">Esci</button></div>
 <div class="sel-row"><label style="font-size:13px;font-weight:600">Studio attivo:</label><select id="studioSel" onchange="localStorage.setItem('studio_attivo',this.value)"></select></div>
 <div class="app-grid" id="appGrid"></div>
 </div>
 
 <div class="card">
-<h2>🏢 Studi & Licenze (telecomando)</h2>
+<h2>Studi & Licenze (telecomando)</h2>
 <div id="studiList"></div>
 <div class="form-row" style="margin-top:14px">
 <div class="form-group" style="margin:0"><label>Nome nuovo studio</label><input type="text" id="newNome" placeholder="Es. Studio Verdi"></div>
 <div class="form-group" style="margin:0"><label>Giorni di prova</label><input type="number" id="newDays" value="30" min="1"></div>
-<button class="btn-primary" onclick="createStudio()">➕ Crea</button>
+<button class="btn-primary" onclick="createStudio()">Crea</button>
 </div>
 <p id="studiMsg" class="msg"></p>
 </div>
 
 <div class="card">
-<h2>💾 Backup Globale (tutte le app)</h2>
+<h2>Backup Globale (tutte le app)</h2>
 <p style="color:var(--soft);font-size:13px;margin-bottom:14px">Salva o ripristina in un colpo solo i dati di <b>tutte</b> le app (Gallery, Selezione Album, Preventivi, Workflow, Clienti & Foto, token).</p>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-primary" onclick="backupGlobale()">⬇️ Scarica Backup Globale</button>
-<label class="btn-secondary" style="cursor:pointer">⬆️ Ripristina Backup Globale<input type="file" id="fileGlobal" accept=".json" hidden onchange="restoreGlobale(event)"></label>
+<button class="btn-primary" onclick="backupGlobale()">Scarica Backup Globale</button>
+<label class="btn-secondary" style="cursor:pointer">Ripristina Backup Globale<input type="file" id="fileGlobal" accept=".json" hidden onchange="restoreGlobale(event)"></label>
 </div>
-<p style="color:var(--soft);font-size:12px;margin-top:10px">Conserva il file in un posto sicuro (es. chiavetta o Drive). Usalo per trasferire tutto su un computer nuovo.</p>
+<p class="warn" style="margin-top:10px">Conserva il file in un posto sicuro (es. chiavetta o Drive). Usalo per trasferire tutto su un computer nuovo.</p>
 </div>
 
 <div class="card">
-<h2>🔑 Token GitHub <span style="font-size:12px;color:var(--ko)">⚠️ NON TOCCARE — è la chiave del sistema</span></h2>
+<h2>Token GitHub <span class="warn">— NON TOCCARE: è la chiave del sistema</span></h2>
 <div class="form-group"><input type="password" id="tokInput" placeholder="Nessun token salvato" readonly></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-primary" onclick="saveToken()">💾 Salva token</button>
-<button class="btn-secondary" onclick="unlockToken()">🔓 Sblocca per modifica</button>
+<button class="btn-primary" onclick="saveToken()">Salva token</button>
+<button class="btn-secondary" onclick="unlockToken()">Sblocca per modifica</button>
 </div>
 <p id="tokMsg" class="msg"></p>
 </div>
@@ -100,20 +105,20 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 <script>
 const OWNER=location.hostname.split(".")[0],REPO=location.pathname.split("/")[1];
 const APPS=[
- {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti",ico:"📄"},
- {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow dei servizi",ico:"🎬"},
- {nome:"Selezione per Album",path:"selezione-album/",desc:"Invio foto per selezione cliente",ico:"🖼"},
- {nome:"Gallery",path:"gallery/",desc:"Consegna gallerie MEGA ai clienti",ico:"📁"},
- {nome:"Clienti & Foto",path:"clienti-foto/",desc:"Codici cliente e cartelle Netlify",ico:"👥"}
+ {nome:"Preventivi & Contratti",path:"preventivi-contratti/",desc:"Preventivi, contratti e archivio clienti",num:"01"},
+ {nome:"Workflow Foto & Video",path:"workflow/",desc:"Gestione workflow dei servizi",num:"02"},
+ {nome:"Selezione per Album",path:"selezione-album/",desc:"Il cliente sceglie le foto con il cuore",num:"03"},
+ {nome:"Gallery",path:"gallery/",desc:"Consegna foto online su Netlify",num:"04"},
+ {nome:"Clienti & Foto",path:"clienti-foto/",desc:"Codici cliente e cartelle Netlify",num:"05"}
 ];
 let LIC={studi:[]};
 const $=id=>document.getElementById(id);
 function login(){
  if($('user').value.trim()==='admin'&&$('pass').value==='58879@Stella'){sessionStorage.setItem('portal_admin','1');showDash();}
- else $('loginErr').textContent='❌ Credenziali errate.';
+ else $('loginErr').textContent='Credenziali errate.';
 }
 function logout(){sessionStorage.removeItem('portal_admin');location.reload();}
-window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('portal_admin')==='1')showDash();const t=localStorage.getItem('gh_token');if(t){$('tokInput').value=t;$('tokMsg').className='msg ok';$('tokMsg').textContent='✅ Token attivo — non toccare.';}});
+window.addEventListener('DOMContentLoaded',()=>{if(sessionStorage.getItem('portal_admin')==='1')showDash();const t=localStorage.getItem('gh_token');if(t){$('tokInput').value=t;$('tokMsg').className='msg ok';$('tokMsg').textContent='Token attivo — non toccare.';}});
 async function showDash(){
  $('loginCard').style.display='none';$('dash').style.display='block';
  await loadLic();render();
@@ -127,25 +132,25 @@ function render(){
  sel.innerHTML=LIC.studi.length?LIC.studi.map(s=>`<option value="${s.codice}">${s.nome} (${s.codice})</option>`).join(''):'<option value="">— nessuno —</option>';
  const saved=localStorage.getItem('studio_attivo');
  if(saved&&LIC.studi.find(s=>s.codice===saved))sel.value=saved;
- $('appGrid').innerHTML=APPS.map(a=>`<div class="app-card" onclick="openApp('${a.path}')"><div class="ico">${a.ico}</div><h3>${a.nome}</h3><p>${a.desc}</p></div>`).join('');
+ $('appGrid').innerHTML=APPS.map(a=>`<div class="app-card" onclick="openApp('${a.path}')"><div class="num">${a.num}</div><h3>${a.nome}</h3><p>${a.desc}</p></div>`).join('');
  const oggi=new Date().toISOString().slice(0,10);
  $('studiList').innerHTML=LIC.studi.length?LIC.studi.map(s=>{
    const on=s.attivo&&s.scadenza>=oggi;
    return `<div class="studio-row"><div class="info"><span class="code">${s.codice}</span> · ${s.nome}<br><small style="color:var(--soft)">scadenza: ${s.scadenza}</small></div>
    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="badge ${on?'on':'off'}">${on?'ATTIVO':'SPENTO'}</span>
-   <button class="btn-link" onclick="copyClientLink('${s.codice}')">📋 Link cliente</button>
-   <button class="${s.attivo?'btn-off':'btn-on'}" onclick="toggle('${s.codice}')">${s.attivo?'🔴 Spegni':'🟢 Accendi'}</button>
-   <button class="btn-off" onclick="deleteStudio('${s.codice}')">🗑️ Elimina</button></div></div>`;
+   <button class="btn-link" onclick="copyClientLink('${s.codice}')">Link cliente</button>
+   <button class="${s.attivo?'btn-off':'btn-on'}" onclick="toggle('${s.codice}')">${s.attivo?'Spegni':'Accendi'}</button>
+   <button class="btn-off" onclick="deleteStudio('${s.codice}')">Elimina</button></div></div>`;
  }).join(''):'<p style="color:var(--soft);font-size:13px">Nessuno studio: creane uno qui sotto.</p>';
 }
 function openApp(path){
  const code=$('studioSel').value;
- if(!code)return alert('⚠️ Crea prima uno studio (riquadro "Studi & Licenze").');
+ if(!code)return alert('Crea prima uno studio (riquadro "Studi & Licenze").');
  localStorage.setItem('studio_attivo',code);
  location.href=path+'?studio='+code;
 }
 function copyClientLink(c){
- navigator.clipboard.writeText(new URL('benvenuto.html?studio='+c,location.href).href).then(()=>alert('✅ Link cliente copiato!\nMandalo su WhatsApp al fotografo.'));
+ navigator.clipboard.writeText(new URL('benvenuto.html?studio='+c,location.href).href).then(()=>alert('Link cliente copiato!\nMandalo su WhatsApp al fotografo.'));
 }
 async function toggle(codice){
  const s=LIC.studi.find(x=>x.codice===codice);if(!s)return;
@@ -155,14 +160,14 @@ async function toggle(codice){
 }
 async function deleteStudio(codice){
  const s=LIC.studi.find(x=>x.codice===codice);if(!s)return;
- if(!confirm(`⚠️ ELIMINARE lo studio "${s.nome}" (${s.codice})?\n\n• I suoi link cliente smetteranno di funzionare.\n• L'azione NON può essere annullata.\n\nVuoi continuare?`))return;
+ if(!confirm(`ELIMINARE lo studio "${s.nome}" (${s.codice})?\n\n• I suoi link cliente smetteranno di funzionare.\n• L'azione NON può essere annullata.\n\nVuoi continuare?`))return;
  LIC.studi=LIC.studi.filter(x=>x.codice!==codice);
  await writeLic('elimina studio '+codice);
  await loadLic();render();
- alert('✅ Studio eliminato.');
+ alert('Studio eliminato.');
 }
 async function createStudio(){
- const nome=$('newNome').value.trim();if(!nome)return alert('⚠️ Scrivi il nome dello studio.');
+ const nome=$('newNome').value.trim();if(!nome)return alert('Scrivi il nome dello studio.');
  const days=Math.max(1,parseInt($('newDays').value)||30);
  let max=0;LIC.studi.forEach(s=>{const n=parseInt((s.codice||'').replace(/\D/g,''))||0;if(n>max)max=n;});
  const codice='st-'+String(max+1).padStart(3,'0');
@@ -171,29 +176,29 @@ async function createStudio(){
  await writeLic('nuovo studio '+codice);
  $('newNome').value='';
  await loadLic();render();
- $('studiMsg').className='msg ok';$('studiMsg').textContent='✅ Studio '+codice+' creato (scade il '+scad+').';
+ $('studiMsg').className='msg ok';$('studiMsg').textContent='Studio '+codice+' creato (scade il '+scad+').';
 }
 async function writeLic(msg){
  const tok=localStorage.getItem('gh_token');
- if(!tok)return alert('❌ Salva prima il token GitHub nel riquadro in basso.');
+ if(!tok)return alert('Salva prima il token GitHub nel riquadro in basso.');
  const url=`https://api.github.com/repos/${OWNER}/${REPO}/contents/licenses.json`;
  let sha;const g=await fetch(url,{headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'}});
  if(g.ok)sha=(await g.json()).sha;
  const r=await fetch(url,{method:'PUT',headers:{Authorization:'token '+tok,Accept:'application/vnd.github+json'},body:JSON.stringify({message:msg,content:btoa(unescape(encodeURIComponent(JSON.stringify(LIC,null,2)))),...(sha?{sha}:{})})});
- if(!r.ok)alert('❌ Errore GitHub: '+(await r.text()));
+ if(!r.ok)alert('Errore GitHub: '+(await r.text()));
 }
 function saveToken(){
  const t=$('tokInput').value.trim();
- if(!t)return alert('⚠️ Il campo è vuoto: incolla prima il token, poi premi Salva.');
+ if(!t)return alert('Il campo è vuoto: incolla prima il token, poi premi Salva.');
  if(!confirm('Vuoi davvero salvare questo token GitHub?\n\nIl token attuale verrà sostituito.\n(I clienti e gli archivi NON vengono toccati.)'))return;
  localStorage.setItem('gh_token',t);
  $('tokInput').readOnly=true;
- $('tokMsg').className='msg ok';$('tokMsg').textContent='✅ Token salvato e protetto.';
+ $('tokMsg').className='msg ok';$('tokMsg').textContent='Token salvato e protetto.';
 }
 function unlockToken(){
- if(!confirm('⚠️ Stai per sbloccare il campo token.\nModificalo solo se sai cosa stai facendo.'))return;
+ if(!confirm('Stai per sbloccare il campo token.\nModificalo solo se sai cosa stai facendo.'))return;
  $('tokInput').readOnly=false;$('tokInput').focus();
- $('tokMsg').className='msg ko';$('tokMsg').textContent='🔓 Campo sbloccato: incolla il nuovo token e premi Salva.';
+ $('tokMsg').className='msg ko';$('tokMsg').textContent='Campo sbloccato: incolla il nuovo token e premi Salva.';
 }
 function backupGlobale(){
  const data={};
@@ -201,7 +206,7 @@ function backupGlobale(){
  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
  a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
- alert('✅ Backup globale scaricato: contiene i dati di tutte le app.');
+ alert('Backup globale scaricato: contiene i dati di tutte le app.');
 }
 function restoreGlobale(e){
  const f=e.target.files[0];if(!f)return;
@@ -212,9 +217,9 @@ function restoreGlobale(e){
    const n=Object.keys(d).length;
    if(!confirm(`Ripristinare il backup globale (${n} voci)?\nI dati attuali di TUTTE le app verranno sostituiti.`))return;
    Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-   alert('✅ Backup globale ripristinato. La pagina si ricarica.');
+   alert('Backup globale ripristinato. La pagina si ricarica.');
    location.reload();
- }catch(err){alert('❌ Errore: '+err.message)}};
+ }catch(err){alert('Errore: '+err.message)}};
  r.readAsText(f);e.target.value='';
 }
 </script>
