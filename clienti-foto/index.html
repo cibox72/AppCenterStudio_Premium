@@ -42,7 +42,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 </head>
 <body>
 <div class="container">
-<header class="app-header"><h1>AppCenterStudio Premium</h1><p class="subtitle">Clienti & Foto — Codici, Netlify e Gallery</p></header>
+<header class="app-header"><img src="../logo.png" alt="logo" style="height:64px;border-radius:14px;margin-bottom:10px"><h1>AppCenterStudio Premium</h1><p class="subtitle">Clienti & Foto — Codici, Netlify e Gallery</p></header>
 
 <div id="dashboard" style="display:none">
 
@@ -193,7 +193,7 @@ async function publishIdentity(){
   const lf=$('idLogo').files[0];
   if(lf){
    const ext=(lf.name.split('.').pop()||'png').toLowerCase();
-   ident.logo='logo.'+(ext==='jpg'?'jpg':ext);
+   ident.logo='logo.'+(ext==='jpeg'?'jpg':ext);
    entries[0].buf=enc(JSON.stringify(ident));
    entries.push({path:'/'+ident.logo,buf:await lf.arrayBuffer()});
   }
