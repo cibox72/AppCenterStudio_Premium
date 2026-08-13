@@ -3,7 +3,7 @@
     {
       "codice": "st-001",
       "nome": "G&LStudio",
-      "attivo": true,
+      "attivo": false,
       "scadenza": "2026-09-12"
     }
   ]
