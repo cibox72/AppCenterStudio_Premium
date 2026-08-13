@@ -35,6 +35,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:#fbfbfb;c
 .bl{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
 .bl-danger{padding:7px 13px;background:#fff;border:1px solid #a33;color:#a33;border-radius:999px;cursor:pointer;font-size:12px}
 .bl-danger:hover{background:#a33;color:#fff}
+.bl-toggle{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
+.bl-toggle:hover{background:#111;color:#fff}
 </style>
 </head>
 <body>
@@ -110,6 +112,17 @@ const sc=new Date();sc.setDate(sc.getDate()+giorni);
 studi.push({codice,nome,attivo:true,scadenza:sc.toISOString().slice(0,10)});
 try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice);renderStudi();}catch(e){alert('Errore: '+e.message);}
 }
+async function toggleStudio(codice){
+try{
+const l=await leggiLicenze();
+const studi=(l.studi||[]).map(s=>{
+if(s.codice===codice)return {...s,attivo:!s.attivo};
+return s;
+});
+await ghPut('licenses.json',JSON.stringify({studi},null,2));
+renderStudi();
+}catch(e){alert('Errore: '+e.message);}
+}
 async function eliminaStudio(codice){
 if(!confirm('Eliminare lo studio '+codice+'?'))return;
 if(!confirm('CONFERMA DEFINITIVA: Lo studio '+codice+' verrà rimosso permanentemente. Questa azione è irreversibile. Procedere?'))return;
@@ -130,6 +143,7 @@ box.innerHTML=studi.map(s=>`<div class="row">
 <div><span class="code">${s.codice}</span> — <b>${s.nome}</b><br><small style="color:var(--s)">scadenza ${s.scadenza} · ${s.attivo?'attivo':'sospeso'}</small></div>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
 <button class="bl" onclick="scegliStudio('${s.codice}')">Entra</button>
+<button class="bl-toggle" onclick="toggleStudio('${s.codice}')">${s.attivo?'Sospendi':'Attiva'}</button>
 <button class="bl" onclick="copiaTxt('${BASE}benvenuto.html?studio=${s.codice}')">Link benvenuto</button>
 <button class="bl-danger" onclick="eliminaStudio('${s.codice}')">Elimina</button>
 </div></div>`).join('');
