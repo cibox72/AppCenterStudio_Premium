@@ -1,3 +1,4 @@
+<!-- PARTE 1/4 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -27,6 +28,7 @@ summary { cursor:pointer; font-weight:bold; }
 .client-row h3 { font-size:15px; margin-bottom:6px; }
 .hidden { display:none !important; }
 .status { font-size:13px; color:#555; margin:8px 0; font-style:italic; }
+.logoPreview { max-height:80px; max-width:200px; border:1px solid #e0e0e0; padding:5px; margin-top:10px; background:#fff; }
 </style>
 </head>
 <body>
@@ -72,9 +74,10 @@ summary { cursor:pointer; font-weight:bold; }
     <label>WhatsApp</label><input type="text" id="idWhatsapp" placeholder="393447507656">
     <label>Messaggio di benvenuto</label><textarea id="idMessaggio" rows="3"></textarea>
     <label>Logo (file immagine)</label><input type="file" id="idLogo" accept="image/*">
+    <div id="logoPreviewBox"></div>
     <button class="btn" onclick="salvaIdentita()">Salva e pubblica</button>
   </div>
-
+<!-- PARTE 2/4 -->
   <div class="card">
     <h2>Nuovo cliente</h2>
     <label>Nome</label><input type="text" id="ncNome">
@@ -256,7 +259,7 @@ async function autoSetup() {
   await pubblicaBase();
   aggiornaStatoNetlify();
 }
-
+<!-- PARTE 3/4 -->
 async function pubblicaBase() {
   const headers = '/*\n  Access-Control-Allow-Origin: *\n  Access-Control-Allow-Methods: GET, POST, OPTIONS\n  Access-Control-Allow-Headers: Content-Type\n*/\n';
   const forms = '<!DOCTYPE html><html><body><form name="selezioni" netlify><input name="tipo"><input name="codice"><input name="cliente"><textarea name="dati"></textarea></form></body></html>';
@@ -275,25 +278,43 @@ async function salvaIdentita() {
   studioIdent = {
     nome: document.getElementById('idNome').value,
     whatsapp: document.getElementById('idWhatsapp').value,
-    messaggio: document.getElementById('idMessaggio').value
+    messaggio: document.getElementById('idMessaggio').value,
+    logoData: studioIdent.logoData || ''
   };
   const logoFile = document.getElementById('idLogo').files[0];
   const newFiles={}, contents={}, shaToPath={};
+  
   if (logoFile) {
-    const ab = await logoFile.arrayBuffer();
+    const dataURL = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(logoFile);
+    });
+    studioIdent.logoData = dataURL;
+    
+    const bin = atob(dataURL.split(',')[1]);
+    const ab = new ArrayBuffer(bin.length);
+    const u8 = new Uint8Array(ab);
+    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
     const lh = await sha1ArrayBuffer(ab);
-    const ext = (logoFile.name.split('.').pop()||'png').toLowerCase();
-    const lp = '/logo.' + ext;
-    newFiles[lp]=lh; contents[lh]=ab; shaToPath[lh]=lp;
-    studioIdent.logo = lp;
+    newFiles['/logo.png']=lh; contents[lh]=ab; shaToPath[lh]='/logo.png';
+    studioIdent.logo = '/logo.png';
   }
+  
   localStorage.setItem('studioIdent', JSON.stringify(studioIdent));
   const s = JSON.stringify(studioIdent, null, 2);
   const sh = await sha1(s);
   newFiles['/studio.json']=sh; contents[sh]=s; shaToPath[sh]='/studio.json';
+  
+  renderLogoPreview();
+  
   const token = localStorage.getItem('netlify_token');
   const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) return alert('Identità salvata in locale (sito non configurato)');
+  if (!token || !siteId) {
+    alert('Identità salvata in locale (sito non configurato)');
+    return;
+  }
   await deployWithMerge(newFiles, contents, shaToPath);
   alert('Identità salvata e pubblicata');
 }
@@ -359,7 +380,7 @@ async function caricaFoto() {
   progress.textContent = 'Completato';
   renderArchivio();
 }
-
+<!-- PARTE 4/4 -->
 function renderArchivio() {
   const box = document.getElementById('archivioLista');
   const siteName = localStorage.getItem('netlify_sitename') || '';
@@ -390,7 +411,7 @@ function eliminaCliente(codice) {
 }
 
 function backupGlobale() {
-  const keys = ['clientiFotoData','studioIdent','netlify_site','netlify_sitename','netlify_siteurl','ordiniRicevuti','negozioConfig','selezioniRicevute'];
+  const keys = ['clientiFotoData','studioIdent','netlify_site','netlify_sitename','netlify_siteurl','ordiniRicevuti','negozioConfig','selezioniRicevute','netlify_token'];
   const dump = {timestamp:new Date().toISOString()};
   keys.forEach(k => dump[k] = localStorage.getItem(k));
   const blob = new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
@@ -421,10 +442,20 @@ function ripristinoGlobale() {
   input.click();
 }
 
+function renderLogoPreview() {
+  const box = document.getElementById('logoPreviewBox');
+  if (studioIdent.logoData) {
+    box.innerHTML = '<img class="logoPreview" src="' + studioIdent.logoData + '" alt="Logo">';
+  } else {
+    box.innerHTML = '';
+  }
+}
+
 function caricaIdentitaUI() {
   document.getElementById('idNome').value = studioIdent.nome || '';
   document.getElementById('idWhatsapp').value = studioIdent.whatsapp || '393447507656';
   document.getElementById('idMessaggio').value = studioIdent.messaggio || '';
+  renderLogoPreview();
 }
 caricaIdentitaUI();
 </script>
