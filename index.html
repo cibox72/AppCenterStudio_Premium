@@ -33,6 +33,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:#fbfbfb;c
 .lw{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .lc{background:#fff;border:1px solid var(--b);border-radius:14px;padding:34px;max-width:400px;width:100%;text-align:center}
 .bl{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
+.bl-danger{padding:7px 13px;background:#fff;border:1px solid #a33;color:#a33;border-radius:999px;cursor:pointer;font-size:12px}
+.bl-danger:hover{background:#a33;color:#fff}
 </style>
 </head>
 <body>
@@ -44,7 +46,7 @@ const $=id=>document.getElementById(id);
 window.addEventListener('DOMContentLoaded',()=>{sessionStorage.getItem('admin')?renderDash():renderLogin();});
 function renderLogin(){
 $('root').innerHTML=`<div class="lw"><div class="lc">
-<img src="logo.png" style="height:50px;filter:grayscale(100%);border-radius:12px;margin-bottom:10px" alt="">
+<img src="logo.jpg" style="height:50px;filter:grayscale(100%);border-radius:12px;margin-bottom:10px" alt="">
 <h1 style="font-family:Georgia,serif;font-size:22px">AppCenterStudio Premium</h1>
 <p style="color:var(--s);margin-bottom:16px">Accesso fornitore</p>
 <div class="fg"><label>Utente</label><input id="lu" autocomplete="username"></div>
@@ -73,7 +75,7 @@ $('root').innerHTML=`<div class="wrap">
 <label class="bs" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
 <button class="bs" onclick="sessionStorage.clear();renderLogin();">Esci</button>
 </div>
-<div class="hd"><img src="logo.png" alt="logo"><h1>AppCenterStudio Premium</h1><p>Suite gestionale per studi fotografici</p></div>
+<div class="hd"><img src="logo.jpg" alt="logo"><h1>AppCenterStudio Premium</h1><p>Suite gestionale per studi fotografici</p></div>
 <div class="card">
 <h2>Token GitHub</h2>
 <div class="ib">Serve per creare studi e scrivere licenses.json. Lo trovi su GitHub → Settings → Developer settings → Personal access tokens.</div>
@@ -108,6 +110,18 @@ const sc=new Date();sc.setDate(sc.getDate()+giorni);
 studi.push({codice,nome,attivo:true,scadenza:sc.toISOString().slice(0,10)});
 try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice);renderStudi();}catch(e){alert('Errore: '+e.message);}
 }
+async function eliminaStudio(codice){
+if(!confirm('Eliminare lo studio '+codice+'?'))return;
+if(!confirm('CONFERMA DEFINITIVA: Lo studio '+codice+' verrà rimosso permanentemente. Questa azione è irreversibile. Procedere?'))return;
+try{
+const l=await leggiLicenze();
+const studi=(l.studi||[]).filter(s=>s.codice!==codice);
+await ghPut('licenses.json',JSON.stringify({studi},null,2));
+alert('Studio '+codice+' eliminato.');
+renderStudi();
+if(sessionStorage.getItem('studio')===codice){sessionStorage.removeItem('studio');renderApps();}
+}catch(e){alert('Errore: '+e.message);}
+}
 async function renderStudi(){
 const l=await leggiLicenze();const studi=l.studi||[];
 const box=$('studiList');
@@ -117,6 +131,7 @@ box.innerHTML=studi.map(s=>`<div class="row">
 <div style="display:flex;gap:6px;flex-wrap:wrap">
 <button class="bl" onclick="scegliStudio('${s.codice}')">Entra</button>
 <button class="bl" onclick="copiaTxt('${BASE}benvenuto.html?studio=${s.codice}')">Link benvenuto</button>
+<button class="bl-danger" onclick="eliminaStudio('${s.codice}')">Elimina</button>
 </div></div>`).join('');
 }
 function scegliStudio(c){sessionStorage.setItem('studio',c);$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';renderApps();}
