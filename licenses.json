@@ -5,6 +5,12 @@
       "nome": "G&LStudio",
       "attivo": true,
       "scadenza": "2026-09-12"
+    },
+    {
+      "codice": "st-002",
+      "nome": "G&LStudio",
+      "attivo": true,
+      "scadenza": "2026-09-12"
     }
   ]
 }
