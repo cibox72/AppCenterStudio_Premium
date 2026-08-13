@@ -330,7 +330,7 @@ function aggiungiCliente() {
   const usati = clientiFotoData.clients.map(c=>c.codice);
   let n = 1, codice = base + '-001';
   while (usati.includes(codice)) { n++; codice = base + '-' + String(n).padStart(3,'0'); }
-  clientiFotoData.clients.push({codice, nome, cognome, note: document.getElementById('ncNote').value, photos: []});
+  clientiFotoData.clients.push({codice, nome, cognome, note: document.getElementById('ncNote').value, photos: [], folders: [], latestFolder: ''});
   localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
   document.getElementById('ncNome').value=''; document.getElementById('ncCognome').value=''; document.getElementById('ncNote').value='';
   renderClienti(); renderArchivio();
@@ -357,6 +357,8 @@ async function caricaFoto() {
   const progress = document.getElementById('cfProgress');
   const newFiles={}, contents={}, shaToPath={};
   const photoSet = new Set(cliente.photos || []);
+  const folderSet = new Set(cliente.folders || []);
+  let latest = cliente.latestFolder || '';
   let i = 0;
   for (const f of files) {
     if (!f.type.startsWith('image/')) continue;
@@ -364,12 +366,17 @@ async function caricaFoto() {
     const ab = await f.arrayBuffer();
     const sha = await sha1ArrayBuffer(ab);
     const rel = f.webkitRelativePath || f.name;
+    const folder = rel.includes('/') ? rel.split('/')[0] : 'root';
     const path = '/' + codice + '/' + rel;
     newFiles[path]=sha; contents[sha]=ab; shaToPath[sha]=path;
     photoSet.add(rel);
+    folderSet.add(folder);
+    latest = folder;
   }
   cliente.photos = Array.from(photoSet);
-  const manifest = {codice, nome: cliente.nome, cognome: cliente.cognome, photos: cliente.photos};
+  cliente.folders = Array.from(folderSet);
+  cliente.latestFolder = latest;
+  const manifest = {codice, nome: cliente.nome, cognome: cliente.cognome, photos: cliente.photos, folders: cliente.folders, latestFolder: cliente.latestFolder};
   const manStr = JSON.stringify(manifest, null, 2);
   const manSha = await sha1(manStr);
   const manPath = '/' + codice + '/manifest.json';
@@ -388,7 +395,7 @@ function renderArchivio() {
   box.innerHTML = clientiFotoData.clients.map(c => {
     const token = siteName + '/' + c.codice;
     return `<div class="client-row"><h3>${c.nome} ${c.cognome} <span class="badge">${c.codice}</span></h3>
-    <small>${(c.photos||[]).length} foto</small>
+    <small>${(c.photos||[]).length} foto · ${(c.folders||[]).length} cartelle</small>
     <div style="margin-top:8px;">
       <button class="btn" onclick="copyLink('../gallery/?g=${encodeURIComponent(token)}')">Gallery</button>
       <button class="btn" onclick="copyLink('../selezione-album/?s=${encodeURIComponent(token)}')">Selezione</button>
