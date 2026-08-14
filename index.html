@@ -44,6 +44,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:#fbfbfb;c
 <script>
 const OWNER='cibox72',REPO='AppCenterStudio_Premium';
 const BASE='https://'+OWNER+'.github.io/'+REPO+'/';
+const PAYPAL_EMAIL='appcenterstudiopremium@gmail.com';
 const $=id=>document.getElementById(id);
 window.addEventListener('DOMContentLoaded',()=>{sessionStorage.getItem('admin')?renderDash():renderLogin();});
 function renderLogin(){
@@ -62,6 +63,7 @@ if($('lu').value.trim()==='admin'&&$('lp').value==='58879@Stella'){sessionStorag
 else $('lerr').textContent='Credenziali non valide.';
 }
 async function leggiLicenze(){try{const r=await fetch(BASE+'licenses.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{studi:[]}}}
+async function leggiOfferte(){try{const r=await fetch(BASE+'offers.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{offerte:[]}}}
 async function ghPut(path,content){
 const tok=localStorage.getItem('gh_token');
 if(!tok)throw new Error('Token GitHub mancante: inseriscilo nella card "Token GitHub".');
@@ -95,13 +97,27 @@ $('root').innerHTML=`<div class="wrap">
 <div id="studiList" style="margin-top:14px"></div>
 </div>
 <div class="card">
+<h2>Offerte agli studi</h2>
+<div class="ib">Crea offerte personalizzate con prezzo e durata. Lo studio riceve un link e paga con PayPal. Dopo il pagamento, estendi la licenza manualmente.</div>
+<div class="fr">
+<div class="fg"><label>Studio</label><select id="ofStudio"></select></div>
+<div class="fg"><label>Prezzo (€)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div>
+</div>
+<div class="fr">
+<div class="fg"><label>Durata (mesi)</label><input id="ofDurata" type="number" value="12" min="1"></div>
+<div class="fg"><label>Descrizione</label><input id="ofDesc" placeholder="Es. Pacchetto matrimoni 2026"></div>
+</div>
+<button class="bp" onclick="creaOfferta()">Crea offerta</button>
+<div id="offerteList" style="margin-top:14px"></div>
+</div>
+<div class="card">
 <h2>Applicazioni</h2>
 <div class="ib" id="studioSel">Seleziona prima uno studio qui sopra: i link delle app si attivano con il suo codice.</div>
 <div class="grid" id="appGrid"></div>
 </div>
 </div>`;
 $('ghTok').value=localStorage.getItem('gh_token')||'';
-renderStudi();renderApps();
+renderStudi();renderOfferte();renderApps();
 }
 async function creaStudio(){
 const nome=$('stNome').value.trim();if(!nome)return alert('Nome studio obbligatorio.');
@@ -111,7 +127,7 @@ let n=studi.length+1,codice='st-'+String(n).padStart(3,'0');
 while(studi.find(s=>s.codice===codice)){n++;codice='st-'+String(n).padStart(3,'0');}
 const sc=new Date();sc.setDate(sc.getDate()+giorni);
 studi.push({codice,nome,attivo:true,scadenza:sc.toISOString().slice(0,10)});
-try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice);renderStudi();}catch(e){alert('Errore: '+e.message);}
+try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice);renderStudi();renderOfferte();}catch(e){alert('Errore: '+e.message);}
 }
 async function toggleStudio(codice){
 try{
@@ -134,6 +150,10 @@ await ghPut('licenses.json',JSON.stringify({studi},null,2));
 alert('Studio '+codice+' eliminato.');
 renderStudi();
 if(sessionStorage.getItem('studio')===codice){sessionStorage.removeItem('studio');renderApps();}
+const o=await leggiOfferte();
+const offerte=(o.offerte||[]).filter(x=>x.codice!==codice);
+await ghPut('offers.json',JSON.stringify({offerte},null,2));
+renderOfferte();
 }catch(e){alert('Errore: '+e.message);}
 }
 async function renderStudi(){
@@ -148,6 +168,54 @@ box.innerHTML=studi.map(s=>`<div class="row">
 <button class="bl" onclick="copiaTxt('${BASE}benvenuto.html?studio=${s.codice}')">Link benvenuto</button>
 <button class="bl-danger" onclick="eliminaStudio('${s.codice}')">Elimina</button>
 </div></div>`).join('');
+const sel=$('ofStudio');if(sel)sel.innerHTML='<option value="">-- Scegli studio --</option>'+studi.map(s=>'<option value="'+s.codice+'">'+s.nome+' ('+s.codice+')</option>').join('');
+}
+async function creaOfferta(){
+const codice=$('ofStudio').value;if(!codice)return alert('Seleziona uno studio.');
+const prezzo=parseFloat($('ofPrezzo').value);if(!prezzo||prezzo<=0)return alert('Prezzo non valido.');
+const durata=parseInt($('ofDurata').value);if(!durata||durata<1)return alert('Durata non valida.');
+const desc=$('ofDesc').value.trim();
+const o=await leggiOfferte();const offerte=o.offerte||[];
+offerte.push({codice,prezzo,durata,descrizione:desc,attiva:true,creata:new Date().toISOString().slice(0,10)});
+try{await ghPut('offers.json',JSON.stringify({offerte},null,2));alert('Offerta creata.');renderOfferte();}catch(e){alert('Errore: '+e.message);}
+}
+async function rimuoviOfferta(idx){
+if(!confirm('Rimuovere questa offerta?'))return;
+const o=await leggiOfferte();
+o.offerte.splice(idx,1);
+try{await ghPut('offers.json',JSON.stringify(o,null,2));renderOfferte();}catch(e){alert('Errore: '+e.message);}
+}
+async function estendiScadenza(idx){
+const o=await leggiOfferte();const of=o.offerte[idx];
+if(!of)return;
+const giorni=parseInt(prompt('Quanti mesi aggiungere alla scadenza? (es. 12)',String(of.durata)));
+if(!giorni||giorni<1)return;
+const l=await leggiLicenze();const s=l.studi.find(x=>x.codice===of.codice);
+if(!s)return alert('Studio non trovato.');
+const oggi=new Date();
+const sc=new Date(s.scadenza>oggi.toISOString().slice(0,10)?s.scadenza:oggi.toISOString().slice(0,10));
+sc.setMonth(sc.getMonth()+giorni);
+s.scadenza=sc.toISOString().slice(0,10);
+s.attivo=true;
+try{await ghPut('licenses.json',JSON.stringify(l,null,2));alert('Scadenza estesa a '+s.scadenza);renderStudi();}catch(e){alert('Errore: '+e.message);}
+}
+async function renderOfferte(){
+const o=await leggiOfferte();const offerte=o.offerte||[];
+const box=$('offerteList');
+if(!offerte.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuna offerta creata.</p>';return;}
+const l=await leggiLicenze();const studi=l.studi||[];
+box.innerHTML=offerte.map((of,i)=>{
+const s=studi.find(x=>x.codice===of.codice);
+const nome=s?s.nome:'Studio eliminato';
+const link=BASE+'benvenuto.html?studio='+of.codice+'&offerta=1';
+return`<div class="row">
+<div><b>${nome}</b> (${of.codice})<br><small style="color:var(--s)">${of.descrizione||'Nessuna descrizione'} · <b>€${of.prezzo}</b> · ${of.durata} mesi · creata ${of.creata}</small></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="bl" onclick="copiaTxt('${link}')">Copia link</button>
+<button class="bl-toggle" onclick="estendiScadenza(${i})">Estendi licenza</button>
+<button class="bl-danger" onclick="rimuoviOfferta(${i})">Rimuovi</button>
+</div></div>`;
+}).join('');
 }
 function scegliStudio(c){sessionStorage.setItem('studio',c);$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';renderApps();}
 function renderApps(){
