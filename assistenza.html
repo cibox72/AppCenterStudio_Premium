@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistenza Online - AppCenterStudio Premium</title>
+<script src="licenza.js"></script>
+<style>
+:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0;--admin:#f5f5f5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
+.container{max-width:900px;margin:0 auto}
+.header{text-align:center;margin-bottom:26px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.header h1{font-family:Georgia,serif;font-size:26px;margin-bottom:6px}
+.header p{color:var(--soft);font-size:14px}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:20px}
+.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
+.form-group input:focus,.form-group textarea:focus{outline:2px solid #111;border-color:transparent}
+.btn{padding:12px 24px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer}
+.btn:hover{background:#333}
+.btn-sec{padding:10px 20px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px}
+.btn-sec:hover{background:#111;color:#fff}
+.btn-full{width:100%;margin-top:10px}
+.chat-box{background:#f9f9f9;border:1px solid var(--bordo);border-radius:12px;padding:16px;max-height:400px;overflow-y:auto;margin-bottom:16px}
+.msg{margin-bottom:14px;padding:12px;border-radius:10px;max-width:80%}
+.msg.studio{background:#fff;border:1px solid var(--bordo);margin-left:auto}
+.msg.admin{background:#111;color:#fff;margin-right:auto}
+.msg .time{font-size:11px;opacity:.7;margin-bottom:4px}
+.msg .text{font-size:14px;line-height:1.5}
+.nota{background:#f5f5f5;border-left:4px solid #111;padding:12px;border-radius:8px;font-size:13px;line-height:1.6;margin-bottom:16px}
+.nota b{font-family:Georgia,serif}
+.anydesk-box{background:#111;color:#fff;padding:20px;border-radius:12px;margin-top:20px}
+.anydesk-box h3{font-family:Georgia,serif;margin-bottom:12px}
+.anydesk-box p{font-size:13px;line-height:1.6;margin-bottom:12px}
+.anydesk-box input{background:#fff;color:#111;border:none;padding:10px;border-radius:8px;font-size:14px;width:100%;margin-bottom:10px}
+.anydesk-box .btn{background:#fff;color:#111}
+.anydesk-box .btn:hover{background:#ddd}
+.studio-list{list-style:none;padding:0}
+.studio-item{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:14px;margin-bottom:12px}
+.studio-item h3{font-family:Georgia,serif;font-size:15px;margin-bottom:8px}
+.studio-item .info{font-size:13px;color:var(--soft);margin-bottom:8px}
+.studio-item .msgs{font-size:12px;color:var(--soft);margin-bottom:10px}
+.lock-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:34px;max-width:430px;width:100%;text-align:center}
+.lock-card h2{font-family:Georgia,serif;margin:10px 0 6px}
+.lock-card p{color:var(--soft)}
+.topbar{display:flex;gap:6px;justify-content:flex-end;margin-bottom:16px}
+.pill{background:#fff;color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.pill:hover{background:#111;color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<button class="pill" onclick="history.back()">← Indietro</button>
+<button class="pill" onclick="location.href='benvenuto.html?studio='+(new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'')">Home</button>
+</div>
+<header class="header">
+<h1>Assistenza Online</h1>
+<p>Chat e supporto remoto per studi fotografici</p>
+</header>
+<div id="content"></div>
+</div>
+<script>
+const FORNITORE_WA='393447507656';
+const ADMIN_PASS='58879@Stella';
+const OWNER='cibox72';
+const REPO='AppCenterStudio_Premium';
+const param=n=>new URLSearchParams(location.search).get(n);
+const isAdmin=param('admin')==='true';
+const studioCode=param('studio')||sessionStorage.getItem('studio');
+
+window.addEventListener('DOMContentLoaded',()=>{
+ if(isAdmin)return renderAdmin();
+ if(!studioCode)return renderError('Link non valido','Apri questa pagina dal link che trovi nella home dello studio.');
+ renderStudio();
+});
+
+function renderError(t,s){
+ document.getElementById('content').innerHTML=`<div class="lock-wrap"><div class="lock-card"><h2>${t}</h2><p>${s}</p></div></div>`;
+}
+
+function renderStudio(){
+ const c=document.getElementById('content');
+ c.innerHTML=`
+ <div class="card">
+  <h2>Chat con il fornitore</h2>
+  <div class="nota"><b>Come funziona:</b> scrivi il tuo messaggio qui sotto. Il fornitore lo riceve e ti risponde. Le risposte appaiono automaticamente ogni 10 secondi.</div>
+  <div class="chat-box" id="chatBox"><p style="color:var(--soft);font-size:13px;text-align:center">Nessun messaggio. Scrivi il primo qui sotto.</p></div>
+  <div class="form-group"><label>Tuo messaggio</label><textarea id="msgInput" rows="3" placeholder="Scrivi qui la tua domanda o richiesta di assistenza..."></textarea></div>
+  <button class="btn btn-full" onclick="inviaMessaggio()">Invia messaggio</button>
+ </div>
+ <div class="card">
+  <div class="anydesk-box">
+   <h3>Assistenza remota con AnyDesk</h3>
+   <p>Se il fornitore deve collegarsi al tuo computer per assisterti, scarica e installa AnyDesk, poi incolla qui sotto il tuo codice AnyDesk (9 cifre).</p>
+   <button class="btn" onclick="window.open('https://anydesk.com/it/downloads','_blank')">Scarica AnyDesk</button>
+   <div style="margin-top:16px">
+    <label style="display:block;margin-bottom:6px;font-size:13px">Il tuo codice AnyDesk</label>
+    <input type="text" id="anydeskCode" placeholder="Es. 123 456 789" maxlength="12">
+    <button class="btn" onclick="salvaAnydesk()">Invia codice al fornitore</button>
+   </div>
+  </div>
+ </div>`;
+ caricaMessaggi();
+ setInterval(caricaMessaggi,10000);
+}
+
+async function inviaMessaggio(){
+ const txt=document.getElementById('msgInput').value.trim();
+ if(!txt)return alert('Scrivi un messaggio prima di inviare.');
+ const d=new Date();
+ const payload={
+  studio:studioCode,
+  testo:txt,
+  data:d.toISOString(),
+  tipo:'messaggio'
+ };
+ try{
+  const r=await fetch('https://formsubmit.co/ajax/assistenza',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(!r.ok)throw new Error('Errore invio');
+  document.getElementById('msgInput').value='';
+  salvaLocale({da:studioCode,testo:txt,data:d.toISOString(),tipo:'studio'});
+  alert('Messaggio inviato. Il fornitore ti risponderà a breve.');
+  caricaMessaggi();
+ }catch(e){alert('Errore durante l\'invio. Riprova.');}
+}
+
+function salvaLocale(msg){
+ const key='chat_'+studioCode;
+ let msgs=[];
+ try{msgs=JSON.parse(localStorage.getItem(key))||[];}catch(e){}
+ msgs.push(msg);
+ localStorage.setItem(key,JSON.stringify(msgs));
+ renderChat(msgs);
+}
+
+async function caricaMessaggi(){
+ try{
+  const r=await fetch('https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/main/assistenza/'+studioCode+'.json?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)return;
+  const data=await r.json();
+  if(Array.isArray(data.messaggi))renderChat(data.messaggi);
+ }catch(e){
+  const key='chat_'+studioCode;
+  try{const msgs=JSON.parse(localStorage.getItem(key))||[];renderChat(msgs);}catch(e2){}
+ }
+}
+
+function renderChat(msgs){
+ const box=document.getElementById('chatBox');
+ if(!msgs||!msgs.length){box.innerHTML='<p style="color:var(--soft);font-size:13px;text-align:center">Nessun messaggio.</p>';return;}
+ box.innerHTML=msgs.map(m=>{
+  const d=new Date(m.data);
+  const time=d.toLocaleString('it-IT');
+  const cls=m.tipo==='admin'?'admin':'studio';
+  const da=m.tipo==='admin'?'Fornitore':'Tu';
+  return`<div class="msg ${cls}"><div class="time">${da} · ${time}</div><div class="text">${esc(m.testo)}</div></div>`;
+ }).join('');
+ box.scrollTop=box.scrollHeight;
+}
+
+async function salvaAnydesk(){
+ const code=document.getElementById('anydeskCode').value.trim().replace(/\s/g,'');
+ if(!code||code.length<9)return alert('Inserisci un codice AnyDesk valido (9 cifre).');
+ const payload={
+  studio:studioCode,
+  anydesk:code,
+  data:new Date().toISOString(),
+  tipo:'anydesk'
+ };
+ try{
+  await fetch('https://formsubmit.co/ajax/assistenza',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  alert('Codice AnyDesk inviato al fornitore.');
+ }catch(e){alert('Errore durante l\'invio del codice.');}
+}
+
+function renderAdmin(){
+ if(!checkAdmin())return;
+ const c=document.getElementById('content');
+ c.innerHTML=`
+ <div class="card">
+  <h2>Pannello Assistenza - Amministratore</h2>
+  <div class="nota"><b>Come funziona:</b> qui vedi i messaggi e i codici AnyDesk ricevuti dagli studi. Clicca su uno studio per rispondere o lanciare AnyDesk.</div>
+  <button class="btn" onclick="caricaTuttiMessaggi()">Aggiorna messaggi</button>
+  <ul class="studio-list" id="studiList" style="margin-top:16px"><li><p style="color:var(--soft)">Clicca "Aggiorna messaggi" per caricare l'elenco.</p></li></ul>
+ </div>`;
+ caricaTuttiMessaggi();
+}
+
+function checkAdmin(){
+ const p=prompt('Password amministratore:');
+ if(p===ADMIN_PASS)return true;
+ alert('Password errata.');location.href='index.html';return false;
+}
+
+async function caricaTuttiMessaggi(){
+ const list=document.getElementById('studiList');
+ list.innerHTML='<li><p style="color:var(--soft)">Caricamento...</p></li>';
+ try{
+  const r=await fetch('https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/main/licenses.json?t='+Date.now(),{cache:'no-store'});
+  const lic=await r.json();
+  const studi=lic.studi||[];
+  if(!studi.length){list.innerHTML='<li><p style="color:var(--soft)">Nessuno studio registrato.</p></li>';return;}
+  list.innerHTML='';
+  for(const s of studi){
+   const item=document.createElement('li');
+   item.className='studio-item';
+   item.innerHTML=`<h3>${esc(s.nome)} (${s.codice})</h3><div class="info">Scadenza: ${s.scadenza} · ${s.attivo?'Attivo':'Sospeso'}</div><div class="msgs" id="msgs_${s.codice}">Caricamento messaggi...</div><button class="btn-sec" onclick="apriChat('${s.codice}','${esc(s.nome)}')">Apri chat</button>`;
+   list.appendChild(item);
+   caricaMessaggiStudio(s.codice);
+  }
+ }catch(e){list.innerHTML='<li><p style="color:#a33">Errore caricamento studi: '+e.message+'</p></li>';}
+}
+
+async function caricaMessaggiStudio(codice){
+ const el=document.getElementById('msgs_'+codice);
+ try{
+  const r=await fetch('https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/main/assistenza/'+codice+'.json?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok){el.innerHTML='<span style="color:var(--soft)">Nessun messaggio.</span>';return;}
+  const data=await r.json();
+  const msgs=data.messaggi||[];
+  if(!msgs.length){el.innerHTML='<span style="color:var(--soft)">Nessun messaggio.</span>';return;}
+  const ultimi=msgs.slice(-3);
+  el.innerHTML=ultimi.map(m=>{
+   const d=new Date(m.data);
+   return`<div style="margin-bottom:6px;font-size:12px"><b>${m.tipo==='admin'?'Tu':codice}:</b> ${esc(m.testo.slice(0,60))}${m.testo.length>60?'...':''}</div>`;
+  }).join('');
+ }catch(e){el.innerHTML='<span style="color:var(--soft)">Nessun messaggio.</span>';}
+}
+
+function apriChat(codice,nome){
+ const key='chat_modal_'+codice;
+ const modal=document.createElement('div');
+ modal.id='modal_'+codice;
+ modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+ modal.innerHTML=`<div style="background:#fff;border-radius:14px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;padding:24px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-family:Georgia,serif;font-size:20px">Chat con ${esc(nome)}</h2><button class="btn-sec" onclick="document.getElementById('modal_${codice}').remove()">Chiudi</button></div><div class="chat-box" id="chatBox_${codice}" style="max-height:300px"></div><div class="form-group"><label>Rispondi</label><textarea id="reply_${codice}" rows="3" placeholder="Scrivi la tua risposta..."></textarea></div><button class="btn btn-full" onclick="inviaRisposta('${codice}')">Invia risposta</button></div>`;
+ document.body.appendChild(modal);
+ caricaChatModal(codice);
+}
+
+async function caricaChatModal(codice){
+ try{
+  const r=await fetch('https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/main/assistenza/'+codice+'.json?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)return;
+  const data=await r.json();
+  renderChatModal(codice,data.messaggi||[]);
+ }catch(e){}
+}
+
+function renderChatModal(codice,msgs){
+ const box=document.getElementById('chatBox_'+codice);
+ if(!msgs||!msgs.length){box.innerHTML='<p style="color:var(--soft);font-size:13px;text-align:center">Nessun messaggio.</p>';return;}
+ box.innerHTML=msgs.map(m=>{
+  const d=new Date(m.data);
+  const time=d.toLocaleString('it-IT');
+  const cls=m.tipo==='admin'?'admin':'studio';
+  const da=m.tipo==='admin'?'Tu':codice;
+  return`<div class="msg ${cls}"><div class="time">${da} · ${time}</div><div class="text">${esc(m.testo)}</div></div>`;
+ }).join('');
+ box.scrollTop=box.scrollHeight;
+}
+
+async function inviaRisposta(codice){
+ const txt=document.getElementById('reply_'+codice).value.trim();
+ if(!txt)return alert('Scrivi una risposta prima di inviare.');
+ const tok=localStorage.getItem('gh_token');
+ if(!tok)return alert('Token GitHub mancante. Inseriscilo nel portale admin.');
+ const d=new Date();
+ const msg={da:'admin',testo:txt,data:d.toISOString(),tipo:'admin'};
+ const path='assistenza/'+codice+'.json';
+ try{
+  const r=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'}});
+  let sha=null,esistente=[];
+  if(r.ok){const j=await r.json();sha=j.sha;esistente=JSON.parse(decodeURIComponent(escape(atob(j.content)))).messaggi||[];}
+  esistente.push(msg);
+  const content=JSON.stringify({messaggi:esistente},null,2);
+  const p=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({message:'aggiorna assistenza '+codice,content:btoa(unescape(encodeURIComponent(content))),sha:sha||undefined})});
+  if(!p.ok)throw new Error('Errore GitHub');
+  document.getElementById('reply_'+codice).value='';
+  alert('Risposta inviata.');
+  caricaChatModal(codice);
+ }catch(e){alert('Errore: '+e.message);}
+}
+
+function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+</script>
+</body>
+</html>
