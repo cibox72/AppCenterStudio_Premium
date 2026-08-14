@@ -39,6 +39,8 @@ summary { cursor:pointer; font-weight:bold; }
   <button class="btn btn-secondary" onclick="ripristinoGlobale()">Ripristino Globale</button>
   <button class="btn" id="btnPubblicaComune">Pubblica archivio comune</button>
   <button class="btn" id="btnScaricaComune">Scarica e unisci archivio</button>
+  <button class="btn" id="btnPubblicaGlobale" style="background:#004d40">Pubblica backup globale</button>
+  <button class="btn" id="btnScaricaGlobale" style="background:#004d40">Scarica e unisci globale</button>
   <span id="licenzaStatus" style="margin-left:auto;align-self:center;font-size:13px;"></span>
 </div>
 
@@ -255,7 +257,6 @@ async function leggiFileNetlify(path) {
   return await r.json();
 }
 
-/* ===== RENDE IL SITO NETLIFY PUBBLICO ===== */
 async function rendiSitoPubblico() {
   const token = localStorage.getItem('netlify_token');
   const siteId = localStorage.getItem('netlify_site');
@@ -276,7 +277,70 @@ async function rendiSitoPubblico() {
   }
 }
 
-/* ===== ARCHIVIO COMUNE ===== */
+/* ===== FUNZIONI DI UNIONE (merge) ===== */
+function mergeClientsList(localArr, remoteArr) {
+  const map = {};
+  (localArr || []).forEach(c => { if (c.codice) map[c.codice] = c; });
+  let added = 0;
+  (remoteArr || []).forEach(r => {
+    if (!r.codice) return;
+    if (!map[r.codice]) { map[r.codice] = r; added++; }
+    else {
+      const l = map[r.codice];
+      const ps = new Set(l.photos || []); (r.photos || []).forEach(p => ps.add(p));
+      const fs = new Set(l.folders || []); (r.folders || []).forEach(f => fs.add(f));
+      l.photos = Array.from(ps); l.folders = Array.from(fs);
+      if (r.latestFolder) l.latestFolder = r.latestFolder;
+      if (r.note && !l.note) l.note = r.note;
+    }
+  });
+  return { list: Object.values(map), added: added };
+}
+function mergePreventiviDB(localDB, remoteDB) {
+  const out = localDB || { categorie: undefined, preventivi: [], clienti: [], seq: 1 };
+  out.preventivi = out.preventivi || [];
+  out.clienti = out.clienti || [];
+  const pmap = {}; out.preventivi.forEach(p => { pmap[p.id] = p; });
+  let addedP = 0, updP = 0;
+  ((remoteDB && remoteDB.preventivi) || []).forEach(r => {
+    if (!r.id) return;
+    if (!pmap[r.id]) { pmap[r.id] = r; addedP++; }
+    else if ((r.dataCreazione || '') > (pmap[r.id].dataCreazione || '')) { pmap[r.id] = r; updP++; }
+  });
+  out.preventivi = Object.values(pmap);
+  const cmap = {}; out.clienti.forEach(c => { cmap[c.id || (c.nome + '|' + c.cognome)] = c; });
+  let addedC = 0;
+  ((remoteDB && remoteDB.clienti) || []).forEach(r => {
+    const k = r.id || (r.nome + '|' + r.cognome);
+    if (!cmap[k]) { cmap[k] = r; addedC++; }
+  });
+  out.clienti = Object.values(cmap);
+  out.seq = Math.max(out.seq || 1, (remoteDB && remoteDB.seq) || 1);
+  return { db: out, addedP: addedP, updP: updP, addedC: addedC };
+}
+function mergeServicesList(localArr, remoteArr) {
+  const map = {}; (localArr || []).forEach(s => { map[s.id] = s; });
+  let added = 0, upd = 0;
+  (remoteArr || []).forEach(r => {
+    if (!r.id) return;
+    if (!map[r.id]) { map[r.id] = r; added++; }
+    else if ((r.createdAt || '') > (map[r.id].createdAt || '')) { map[r.id] = r; upd++; }
+  });
+  return { list: Object.values(map), added: added, upd: upd };
+}
+function mergeById(localArr, remoteArr) {
+  const map = {}; (localArr || []).forEach(x => { map[x.id] = x; });
+  let added = 0;
+  (remoteArr || []).forEach(r => { if (r.id && !map[r.id]) { map[r.id] = r; added++; } });
+  return { list: Object.values(map), added: added };
+}
+function mergeObj(local, remote) {
+  const out = Object.assign({}, remote || {});
+  Object.keys(local || {}).forEach(k => { if (local[k] !== '' && local[k] != null) out[k] = local[k]; });
+  return out;
+}
+
+/* ===== ARCHIVIO COMUNE (solo clienti) ===== */
 async function pubblicaArchivioComune() {
   try {
     const data = {
@@ -290,44 +354,71 @@ async function pubblicaArchivioComune() {
     alert('Errore pubblicazione: ' + e.message);
   }
 }
-
 async function scaricaEUnisciArchivio() {
   try {
     const data = await leggiFileNetlify('/archivio-comune-clienti.json');
     if (!data || !data.clients) throw new Error('Archivio comune vuoto o non trovato.');
     if (!confirm('Unire ' + data.clients.length + ' clienti dall\'archivio comune ai ' + (clientiFotoData.clients||[]).length + ' locali?\nI clienti con lo stesso codice verranno uniti (foto e cartelle sommate).')) return;
-    const map = {};
-    (clientiFotoData.clients || []).forEach(c => { map[c.codice] = c; });
-    let added = 0, merged = 0;
-    (data.clients || []).forEach(remote => {
-      if (!remote.codice) return;
-      if (!map[remote.codice]) {
-        map[remote.codice] = remote;
-        added++;
-      } else {
-        const local = map[remote.codice];
-        const photoSet = new Set(local.photos || []);
-        (remote.photos || []).forEach(p => photoSet.add(p));
-        const folderSet = new Set(local.folders || []);
-        (remote.folders || []).forEach(f => folderSet.add(f));
-        local.photos = Array.from(photoSet);
-        local.folders = Array.from(folderSet);
-        if (remote.latestFolder) local.latestFolder = remote.latestFolder;
-        if (remote.note) local.note = remote.note;
-        merged++;
-      }
-    });
-    clientiFotoData.clients = Object.values(map);
+    const m = mergeClientsList(clientiFotoData.clients, data.clients);
+    clientiFotoData.clients = m.list;
     localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
     refreshStatus();
-    alert('Unione completata: ' + added + ' clienti aggiunti, ' + merged + ' clienti uniti (foto sommate).');
+    alert('Unione completata: ' + m.added + ' clienti aggiunti, foto sommate per i clienti già presenti.');
   } catch(e) {
     alert('Errore download/unione: ' + e.message);
   }
 }
 
+/* ===== BACKUP GLOBALE CLOUD (tutte le app) ===== */
+const GLOBAL_KEYS = ['clientiFotoData','appcenter_db_v1','gl_services','selezioniRicevute','ordiniRicevuti','studioIdent','negozioConfig'];
+async function pubblicaBackupGlobale() {
+  try {
+    const data = {};
+    GLOBAL_KEYS.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v) { try { data[k] = JSON.parse(v); } catch(e) {} }
+    });
+    data.exportedAt = new Date().toISOString();
+    await deployFileNetlify('/backup-globale-comune.json', JSON.stringify(data, null, 2), false);
+    alert('Backup globale pubblicato su Netlify.\nContiene: clienti+foto, preventivi, workflow, selezioni, ordini, identità e configurazione negozio.');
+  } catch(e) {
+    alert('Errore pubblicazione: ' + e.message);
+  }
+}
+async function scaricaEUnisciGlobale() {
+  try {
+    const remote = await leggiFileNetlify('/backup-globale-comune.json');
+    if (!remote) throw new Error('Backup globale non trovato sul sito Netlify.');
+    if (!confirm('Scaricare e UNIRE il backup globale cloud ai dati di questo PC?\nNiente viene cancellato: i dati vengono sommati (clienti, preventivi, workflow, selezioni, ordini).')) return;
+    const report = [];
+    const mc = mergeClientsList((clientiFotoData || {}).clients, (remote.clientiFotoData || {}).clients);
+    localStorage.setItem('clientiFotoData', JSON.stringify({ clients: mc.list }));
+    report.push('Clienti & Foto: ' + mc.added + ' aggiunti');
+    const mp = mergePreventiviDB(JSON.parse(localStorage.getItem('appcenter_db_v1') || 'null'), remote.appcenter_db_v1);
+    localStorage.setItem('appcenter_db_v1', JSON.stringify(mp.db));
+    report.push('Preventivi: ' + mp.addedP + ' aggiunti, ' + mp.updP + ' aggiornati, ' + mp.addedC + ' clienti');
+    const ms = mergeServicesList(JSON.parse(localStorage.getItem('gl_services') || '[]'), remote.gl_services);
+    localStorage.setItem('gl_services', JSON.stringify(ms.list));
+    report.push('Workflow: ' + ms.added + ' aggiunti, ' + ms.upd + ' aggiornati');
+    const msel = mergeById(JSON.parse(localStorage.getItem('selezioniRicevute') || '[]'), remote.selezioniRicevute);
+    localStorage.setItem('selezioniRicevute', JSON.stringify(msel.list));
+    report.push('Selezioni: ' + msel.added + ' aggiunte');
+    const mord = mergeById(JSON.parse(localStorage.getItem('ordiniRicevuti') || '[]'), remote.ordiniRicevuti);
+    localStorage.setItem('ordiniRicevuti', JSON.stringify(mord.list));
+    report.push('Ordini: ' + mord.added + ' aggiunti');
+    localStorage.setItem('studioIdent', JSON.stringify(mergeObj(JSON.parse(localStorage.getItem('studioIdent') || '{}'), remote.studioIdent)));
+    localStorage.setItem('negozioConfig', JSON.stringify(mergeObj(JSON.parse(localStorage.getItem('negozioConfig') || '{}'), remote.negozioConfig)));
+    alert('Unione globale completata:\n' + report.join('\n') + '\n\nLa pagina si ricarica per applicare tutto.');
+    location.reload();
+  } catch(e) {
+    alert('Errore download/unione globale: ' + e.message);
+  }
+}
+
 document.getElementById('btnPubblicaComune').onclick = pubblicaArchivioComune;
 document.getElementById('btnScaricaComune').onclick = scaricaEUnisciArchivio;
+document.getElementById('btnPubblicaGlobale').onclick = pubblicaBackupGlobale;
+document.getElementById('btnScaricaGlobale').onclick = scaricaEUnisciGlobale;
 
 function aggiornaStatoNetlify() {
   const token = localStorage.getItem('netlify_token');
