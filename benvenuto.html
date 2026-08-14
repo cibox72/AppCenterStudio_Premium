@@ -40,6 +40,14 @@ summary{cursor:pointer;font-weight:700}
 .paypal-box{background:#f5f5f5;border:2px solid #111;border-radius:12px;padding:20px;margin:16px 0;text-align:center}
 .paypal-box h3{margin-bottom:10px}
 .paypal-box p{font-size:13px;color:var(--soft);margin-bottom:12px}
+.offerta-box{background:#111;color:#fff;border:3px solid #111;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center}
+.offerta-box h2{color:#fff;font-size:20px;margin-bottom:8px}
+.off-desc{font-size:14px;color:#ddd;margin-bottom:14px}
+.off-price{font-family:Georgia,serif;font-size:34px;font-weight:700;margin-bottom:4px}
+.off-price span{font-size:15px;font-weight:400;color:#bbb}
+.off-after{font-size:12px;color:#bbb;margin-top:14px;margin-bottom:10px}
+.off-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.off-actions .btn-sec{background:#fff}
 .logoPrev{max-height:64px;border:1px solid var(--bordo);border-radius:10px;padding:4px;background:#fff;margin-top:10px;filter:grayscale(100%)}
 .nota-info{background:#f5f5f5;border:1px solid var(--bordo);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;color:var(--testo)}
 </style>
@@ -61,6 +69,7 @@ const APPS=[
  {nome:"Negozio Online",path:"negozio/",num:"06"},
  {nome:"Assistenza Online",path:"assistenza.html",num:"07"}
 ];
+let STUDIO_CORRENTE=null,OFFERTA_CORRENTE=null;
 const param=n=>new URLSearchParams(location.search).get(n);
 window.addEventListener('DOMContentLoaded',async()=>{
  const code=param('studio');
@@ -68,8 +77,10 @@ window.addEventListener('DOMContentLoaded',async()=>{
  let s=null;
  try{const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();s=(l.studi||[]).find(x=>x.codice===code);}catch(e){}
  if(!s)return err('Link non valido','Questo codice studio non esiste. Contatta il fornitore.');
+ STUDIO_CORRENTE=s;
  const oggi=new Date().toISOString().slice(0,10);
  const attivo=s.attivo&&s.scadenza>=oggi;
+ OFFERTA_CORRENTE=await caricaOfferta(code);
  sessionStorage.setItem('studio',code);
  document.getElementById('content').innerHTML=`
  <div class="card">
@@ -77,6 +88,18 @@ window.addEventListener('DOMContentLoaded',async()=>{
   <h2>Benvenuto, ${esc(s.nome)}!</h2>
   <p style="color:var(--soft);font-size:14px">Codice studio: <b style="font-family:monospace">${s.codice}</b> · Scadenza licenza: <b>${s.scadenza}</b></p>
  </div>
+ ${OFFERTA_CORRENTE?`
+ <div class="offerta-box">
+  <h2>Hai un'offerta da riscattare</h2>
+  <p class="off-desc">${esc(OFFERTA_CORRENTE.descrizione)||'Offerta riservata al tuo studio'}</p>
+  <div class="off-price">€${OFFERTA_CORRENTE.prezzo} <span>/ ${OFFERTA_CORRENTE.durata} mesi</span></div>
+  <button class="btn-paypal" onclick="pagaOfferta()">Paga ora con PayPal</button>
+  <p class="off-after">Dopo il pagamento, manda la ricevuta al fornitore per attivare la licenza:</p>
+  <div class="off-actions">
+   <a class="btn-sec" href="assistenza.html?studio=${s.codice}">Manda ricevuta via Assistenza</a>
+   <button class="btn-sec" onclick="mandaRicevutaWA()">Manda ricevuta via WhatsApp</button>
+  </div>
+ </div>`:''}
  <div class="card">
   <h2>1) Inserisci i dati del tuo studio</h2>
   <p style="color:var(--soft);font-size:13px;margin-bottom:14px">Servono al fornitore per configurare la tua installazione.</p>
@@ -105,12 +128,10 @@ window.addEventListener('DOMContentLoaded',async()=>{
   <button class="btn-sec" id="s2_nologo" type="button" style="margin-left:8px">Rimuovi logo</button>
   <div id="s2_logoPrev"></div>
  </div>
- ${!attivo?`<div class="card">
+ ${!attivo&&!OFFERTA_CORRENTE?`<div class="card">
   <div class="paypal-box">
    <h3>Rinnova la tua licenza</h3>
-   <p>La tua licenza è scaduta. Paga l'abbonamento annuale per riattivarla subito.</p>
-   <button class="btn-paypal" onclick="pagaAbbonamento()">Paga €199 con PayPal</button>
-   <p style="font-size:12px;color:var(--soft);margin-top:8px">Pagamento sicuro con PayPal · Ricevuta immediata</p>
+   <p>La tua licenza è scaduta. Contatta il fornitore per ricevere un'offerta di rinnovo personalizzata.</p>
   </div>
  </div>`:''}
  <div class="card">
@@ -123,6 +144,24 @@ window.addEventListener('DOMContentLoaded',async()=>{
  </div>`;
  initStudioSection();
 });
+async function caricaOfferta(code){
+ try{
+  const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();
+  return (o.offerte||[]).find(x=>x.codice===code&&x.attiva)||null;
+ }catch(e){return null;}
+}
+function pagaOfferta(){
+ if(!OFFERTA_CORRENTE)return;
+ const of=OFFERTA_CORRENTE;
+ const url='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(PAYPAL_EMAIL)+'&currency_code=EUR&amount='+of.prezzo.toFixed(2)+'&item_name='+encodeURIComponent((of.descrizione||'AppCenterStudio Premium')+' - '+of.durata+' mesi')+'&return='+encodeURIComponent(location.href);
+ window.open(url,'_blank');
+}
+function mandaRicevutaWA(){
+ if(!OFFERTA_CORRENTE||!STUDIO_CORRENTE)return;
+ const of=OFFERTA_CORRENTE;
+ const t=`CONFERMA PAGAMENTO AppCenterStudio\n• Studio: ${STUDIO_CORRENTE.nome} (${STUDIO_CORRENTE.codice})\n• Offerta: ${of.descrizione||'Rinnovo licenza'} - €${of.prezzo} / ${of.durata} mesi\n• Transazione PayPal: [inserisci qui il numero transazione]\n• Data: ${new Date().toLocaleDateString('it-IT')}`;
+ window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
+}
 function initStudioSection(){
  const d=dbGet();const st=d.studio;
  ['nome','piva','indirizzo','telefono','email','note'].forEach(k=>{
@@ -141,7 +180,6 @@ function initStudioSection(){
  });
  document.getElementById('s2_nologo').addEventListener('click',()=>{st.logoData='';dbSave(d);prev();});
 }
-/* Archivio condiviso con l'app Preventivi & Contratti (chiave appcenter_db_v1) */
 const DB_KEY='appcenter_db_v1';
 const DEFAULT_CATEGORIE=[
  {id:'cat1',nome:'Matrimonio',servizi:[
@@ -199,10 +237,6 @@ function inviaDati(e){
  e.preventDefault();
  const t=`ATTIVAZIONE STUDIO AppCenterStudio\n• Studio: ${document.getElementById('dNome').value}\n• Referente: ${document.getElementById('dRef').value}\n• WhatsApp: ${document.getElementById('dWa').value}\n• Email: ${document.getElementById('dMail').value||'—'}\n• Città: ${document.getElementById('dCity').value||'—'}\n• Note: ${document.getElementById('dNote').value||'—'}`;
  window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
-}
-function pagaAbbonamento(){
- const url='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(PAYPAL_EMAIL)+'&currency_code=EUR&amount=199.00&item_name=Abbonamento+Annuale+AppCenterStudio+Premium&return='+encodeURIComponent(location.href);
- window.open(url,'_blank');
 }
 function err(t,s){document.getElementById('content').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="font-family:Georgia,serif;margin:10px 0 6px">${t}</h2><p style="color:var(--soft)">${s}</p></div></div>`}
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
