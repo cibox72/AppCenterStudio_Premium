@@ -66,6 +66,14 @@ summary { cursor:pointer; font-weight:bold; }
       <label>Site ID</label>
       <input type="text" id="manualSiteId" placeholder="..." onchange="localStorage.setItem('netlify_site',this.value)">
     </details>
+    <details>
+      <summary>Collegamento rapido per lo studio</summary>
+      <p class="status">Admin: genera il codice e invialo allo studio. Studio: incolla il codice ricevuto e premi Collega.</p>
+      <button class="btn btn-secondary" onclick="generaCodiceCollegamento()">Genera codice collegamento (admin)</button>
+      <label>Codice ricevuto (per lo studio)</label>
+      <input type="text" id="codiceCollegamento" placeholder="Incolla qui il codice ACS-...">
+      <button class="btn" onclick="applicaCodiceCollegamento()">Collega</button>
+    </details>
   </div>
 
   <div class="card">
@@ -274,6 +282,34 @@ async function pubblicaBase() {
   await deployWithMerge(newFiles, contents, shaToPath);
 }
 
+function generaCodiceCollegamento() {
+  const token = localStorage.getItem('netlify_token');
+  const site = localStorage.getItem('netlify_site');
+  const sitename = localStorage.getItem('netlify_sitename');
+  const siteurl = localStorage.getItem('netlify_siteurl');
+  if (!token || !site) { alert('Collega prima Netlify (Attiva o modalità manuale).'); return; }
+  const obj = { token, site, sitename, siteurl };
+  const code = 'ACS-' + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+  navigator.clipboard.writeText(code).then(()=>alert('Codice collegamento copiato. Invialo allo studio.'));
+}
+
+function applicaCodiceCollegamento() {
+  const code = document.getElementById('codiceCollegamento').value.trim();
+  if (!code) return alert('Incolla il codice ricevuto.');
+  try {
+    let json = code;
+    if (code.startsWith('ACS-')) json = code.slice(4);
+    const obj = JSON.parse(decodeURIComponent(escape(atob(json))));
+    if (obj.token) localStorage.setItem('netlify_token', obj.token);
+    if (obj.site) localStorage.setItem('netlify_site', obj.site);
+    if (obj.sitename) localStorage.setItem('netlify_sitename', obj.sitename);
+    if (obj.siteurl) localStorage.setItem('netlify_siteurl', obj.siteurl);
+    document.getElementById('codiceCollegamento').value = '';
+    alert('Collegamento completato. Ora puoi caricare le foto.');
+    refreshStatus();
+  } catch(e) { alert('Codice non valido.'); }
+}
+
 async function salvaIdentita() {
   studioIdent = {
     nome: document.getElementById('idNome').value,
@@ -283,7 +319,6 @@ async function salvaIdentita() {
   };
   const logoFile = document.getElementById('idLogo').files[0];
   const newFiles={}, contents={}, shaToPath={};
-  
   if (logoFile) {
     const dataURL = await new Promise((resolve, reject) => {
       const r = new FileReader();
@@ -292,7 +327,6 @@ async function salvaIdentita() {
       r.readAsDataURL(logoFile);
     });
     studioIdent.logoData = dataURL;
-    
     const bin = atob(dataURL.split(',')[1]);
     const ab = new ArrayBuffer(bin.length);
     const u8 = new Uint8Array(ab);
@@ -301,20 +335,14 @@ async function salvaIdentita() {
     newFiles['/logo.png']=lh; contents[lh]=ab; shaToPath[lh]='/logo.png';
     studioIdent.logo = '/logo.png';
   }
-  
   localStorage.setItem('studioIdent', JSON.stringify(studioIdent));
   const s = JSON.stringify(studioIdent, null, 2);
   const sh = await sha1(s);
   newFiles['/studio.json']=sh; contents[sh]=s; shaToPath[sh]='/studio.json';
-  
   renderLogoPreview();
-  
   const token = localStorage.getItem('netlify_token');
   const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) {
-    alert('Identità salvata in locale (sito non configurato)');
-    return;
-  }
+  if (!token || !siteId) { alert('Identità salvata in locale (sito non configurato)'); return; }
   await deployWithMerge(newFiles, contents, shaToPath);
   alert('Identità salvata e pubblicata');
 }
