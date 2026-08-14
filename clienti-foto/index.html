@@ -37,6 +37,8 @@ summary { cursor:pointer; font-weight:bold; }
   <button class="btn btn-secondary" onclick="location.href='../'">Home</button>
   <button class="btn btn-secondary" onclick="backupGlobale()">Backup Globale</button>
   <button class="btn btn-secondary" onclick="ripristinoGlobale()">Ripristino Globale</button>
+  <button class="btn" id="btnPubblicaComune">Pubblica archivio comune</button>
+  <button class="btn" id="btnScaricaComune">Scarica e unisci archivio</button>
   <span id="licenzaStatus" style="margin-left:auto;align-self:center;font-size:13px;"></span>
 </div>
 
@@ -214,7 +216,46 @@ async function deployWithMerge(newFiles, contents, shaToPath, progress) {
   return dep;
 }
 
-/* ===== NUOVA FUNZIONE: rende il sito Netlify pubblico (toglie eventuale password) ===== */
+async function deployFileNetlify(path, content, isBinary) {
+  const token = localStorage.getItem('netlify_token');
+  const siteId = localStorage.getItem('netlify_site');
+  if (!token || !siteId) throw new Error('Netlify non configurato: collega prima il sito.');
+  const resp = await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files', {
+    headers:{'Authorization':'Bearer '+token}
+  });
+  const existing = resp.ok ? await resp.json() : [];
+  const files = {};
+  existing.forEach(f => { files[f.path] = f; });
+  let ab, hash;
+  if (isBinary) { ab = content; hash = await sha1ArrayBuffer(ab); }
+  else { const bin = new TextEncoder().encode(content); ab = bin.buffer; hash = await sha1(bin); }
+  files[path] = { path: path, hash: hash };
+  const dep = await (await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys', {
+    method:'POST',
+    headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body: JSON.stringify({files: files})
+  })).json();
+  if (dep.required && dep.required.includes(path)) {
+    await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path, {
+      method:'PUT',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/octet-stream'},
+      body: ab
+    });
+  }
+}
+
+async function leggiFileNetlify(path) {
+  const token = localStorage.getItem('netlify_token');
+  const siteId = localStorage.getItem('netlify_site');
+  if (!token || !siteId) throw new Error('Netlify non configurato.');
+  const siteUrl = localStorage.getItem('netlify_siteurl');
+  if (!siteUrl) throw new Error('Site URL mancante.');
+  const r = await fetch(siteUrl + path + '?t=' + Date.now(), { cache: 'no-store' });
+  if (!r.ok) return null;
+  return await r.json();
+}
+
+/* ===== RENDE IL SITO NETLIFY PUBBLICO ===== */
 async function rendiSitoPubblico() {
   const token = localStorage.getItem('netlify_token');
   const siteId = localStorage.getItem('netlify_site');
@@ -234,6 +275,59 @@ async function rendiSitoPubblico() {
     return false;
   }
 }
+
+/* ===== ARCHIVIO COMUNE ===== */
+async function pubblicaArchivioComune() {
+  try {
+    const data = {
+      clients: clientiFotoData.clients || [],
+      studioIdent: studioIdent,
+      exportedAt: new Date().toISOString()
+    };
+    await deployFileNetlify('/archivio-comune-clienti.json', JSON.stringify(data, null, 2), false);
+    alert('Archivio comune pubblicato su Netlify. Gli altri PC dello studio possono ora scaricarlo.');
+  } catch(e) {
+    alert('Errore pubblicazione: ' + e.message);
+  }
+}
+
+async function scaricaEUnisciArchivio() {
+  try {
+    const data = await leggiFileNetlify('/archivio-comune-clienti.json');
+    if (!data || !data.clients) throw new Error('Archivio comune vuoto o non trovato.');
+    if (!confirm('Unire ' + data.clients.length + ' clienti dall\'archivio comune ai ' + (clientiFotoData.clients||[]).length + ' locali?\nI clienti con lo stesso codice verranno uniti (foto e cartelle sommate).')) return;
+    const map = {};
+    (clientiFotoData.clients || []).forEach(c => { map[c.codice] = c; });
+    let added = 0, merged = 0;
+    (data.clients || []).forEach(remote => {
+      if (!remote.codice) return;
+      if (!map[remote.codice]) {
+        map[remote.codice] = remote;
+        added++;
+      } else {
+        const local = map[remote.codice];
+        const photoSet = new Set(local.photos || []);
+        (remote.photos || []).forEach(p => photoSet.add(p));
+        const folderSet = new Set(local.folders || []);
+        (remote.folders || []).forEach(f => folderSet.add(f));
+        local.photos = Array.from(photoSet);
+        local.folders = Array.from(folderSet);
+        if (remote.latestFolder) local.latestFolder = remote.latestFolder;
+        if (remote.note) local.note = remote.note;
+        merged++;
+      }
+    });
+    clientiFotoData.clients = Object.values(map);
+    localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
+    refreshStatus();
+    alert('Unione completata: ' + added + ' clienti aggiunti, ' + merged + ' clienti uniti (foto sommate).');
+  } catch(e) {
+    alert('Errore download/unione: ' + e.message);
+  }
+}
+
+document.getElementById('btnPubblicaComune').onclick = pubblicaArchivioComune;
+document.getElementById('btnScaricaComune').onclick = scaricaEUnisciArchivio;
 
 function aggiornaStatoNetlify() {
   const token = localStorage.getItem('netlify_token');
@@ -284,7 +378,6 @@ async function autoSetup() {
   localStorage.setItem('netlify_site', site.id);
   localStorage.setItem('netlify_sitename', site.name);
   localStorage.setItem('netlify_siteurl', site.ssl_url || site.url);
-  /* Rendi il sito pubblico automaticamente (toglie eventuali password/protezioni) */
   await rendiSitoPubblico();
   await pubblicaBase();
   aggiornaStatoNetlify();
@@ -327,7 +420,6 @@ async function applicaCodiceCollegamento() {
     if (obj.sitename) localStorage.setItem('netlify_sitename', obj.sitename);
     if (obj.siteurl) localStorage.setItem('netlify_siteurl', obj.siteurl);
     document.getElementById('codiceCollegamento').value = '';
-    /* Rendi il sito pubblico automaticamente (toglie eventuali password/protezioni) */
     await rendiSitoPubblico();
     alert('Collegamento completato. Sito impostato come pubblico. Ora puoi caricare le foto.');
     refreshStatus();
