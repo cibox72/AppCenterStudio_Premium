@@ -2,125 +2,65 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppCenterStudio Premium — Workflow Foto & Video</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AppCenterStudio Premium – Preventivi & Contratti Studio Fotografico</title>
 <script src="../licenza.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
-:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#666;--accento:#111;--bordo:#e0e0e0;--ok:#111;--ko:#666}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,'Segoe UI',Roboto,sans-serif}
-body{background:var(--sfondo);min-height:100vh;padding:0;color:var(--testo)}
-.container{max-width:1600px;margin:0 auto;padding:20px}
+:root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--nero);min-height:100vh}
 .topbar{display:flex;gap:6px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
 .topbar .pill{background:#fff;color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .topbar .pill:hover{background:#111;color:#fff}
-header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.logo{font-family:Georgia,serif;font-size:1.6em;font-weight:600;color:var(--testo)}
-.logo span{font-size:.55em;display:block;color:var(--soft);font-weight:400}
-.actions button{margin-left:8px;padding:9px 16px;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;color:#fff}
-.actions button:hover{opacity:.9}
-.btn-new,.btn-archive,.btn-table,.btn-backup,.btn-restore{background:#111;color:#fff}
-.btn-new:hover,.btn-archive:hover,.btn-table:hover,.btn-backup:hover,.btn-restore:hover{background:#fff;color:#111;border:1px solid #111}
-.new-service{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:none}
-.new-service.open{display:block}
-.new-service h2{color:var(--testo);font-family:Georgia,serif;margin-bottom:14px}
-.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.form-row input,.form-row select{flex:1;min-width:200px;padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
-.form-row input:focus,.form-row select:focus{outline:2px solid #111}
-.form-actions{display:flex;gap:10px;justify-content:flex-end}
-.form-actions button{padding:9px 18px;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
-.btn-save{background:#111;color:#fff}
-.btn-cancel{background:#fff;color:#111;border:1px solid #bbb}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:10px}
-.client-info{flex:1;min-width:200px}
-.client-name{font-size:1.15em;font-weight:700;color:var(--testo);font-family:Georgia,serif}
-.client-date{font-size:.85em;color:var(--soft);margin-top:3px}
-.videographer-info{font-size:.85em;color:var(--soft);margin-top:3px;font-weight:500;font-style:italic}
-.service-badge{padding:5px 14px;border-radius:999px;font-size:.78em;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:.03em;background:#111}
-.progress-bar{background:#e0e0e0;height:10px;border-radius:5px;margin-top:12px;overflow:hidden}
-.progress-fill{height:100%;background:#111;transition:width .4s}
-.progress-text{font-size:.85em;color:var(--soft);margin-top:5px}
-.progress-row{display:flex;gap:15px;flex-wrap:wrap;margin-top:8px}
-.progress-row>div{flex:1;min-width:180px}
-.progress-label{font-size:.75em;color:var(--soft);margin-bottom:3px;font-weight:600;text-transform:uppercase}
-.steps{margin-top:16px;display:none;padding-top:14px}
-.steps.open{display:block}
-.section-title{font-size:1em;font-weight:700;padding:9px 14px;margin:10px 0;border-radius:10px;color:#fff;background:#111;font-family:Georgia,serif}
-.section-title.preview{background:#444}
-.section-title.maternity{background:#333}
-.section-title.newborn{background:#666}
-.section-title.family{background:#999;color:#111}
-.step{display:flex;align-items:center;padding:10px;margin:6px 0;background:#faf9f7;border:1px solid var(--bordo);border-radius:10px;gap:12px;flex-wrap:wrap}
-.step.done{background:#fff;border:2px solid #111}
-.step input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:#111;flex-shrink:0}
-.step-label{flex:1;font-weight:500;min-width:200px}
-.step input[type=date]{padding:5px 8px;border:1px solid var(--bordo);border-radius:6px;font-size:.9em;font-family:inherit}
-.step input[type=text]{padding:5px 8px;border:1px solid var(--bordo);border-radius:6px;font-size:.9em;width:180px;font-family:inherit}
-.step select{padding:5px 8px;border:1px solid var(--bordo);border-radius:6px;font-size:.9em;background:#fff;cursor:pointer;font-family:inherit}
-.step.done .step-label{text-decoration:line-through;color:var(--soft)}
-.step-extra{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;width:100%;padding-left:32px}
-.step-extra input,.step-extra select{flex:1;min-width:150px;font-family:inherit}
-.card-footer{margin-top:14px;display:flex;justify-content:flex-end;gap:8px;padding-top:14px;border-top:1px solid var(--bordo);flex-wrap:wrap}
-.btn-view,.btn-edit,.btn-pdf,.btn-del{padding:8px 14px;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:12px;color:#fff;font-family:inherit}
-.btn-view{background:#111}
-.btn-edit{background:#555}
-.btn-pdf{background:#777}
-.btn-del{background:#fff;color:#111;border:1px solid #111}
-.empty{text-align:center;padding:50px 20px;color:var(--soft);font-size:1.1em;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:1000;justify-content:center;align-items:center;padding:20px}
-.modal.active{display:flex}
-.modal-content{background:#fff;border-radius:14px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid #e0e0e0}
-.modal-header{background:#111;color:#fff;padding:20px 24px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center}
-.modal-header h2{font-size:1.25em;font-family:Georgia,serif}
-.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.2em}
-.modal-body{padding:22px}
-.detail-row{margin-bottom:12px;padding:12px;background:#fbfbfb;border:1px solid #e0e0e0;border-radius:10px}
-.detail-label{font-weight:600;color:#111;margin-bottom:5px;font-size:.9em}
-.detail-value{color:#444;font-size:1em}
-.step-detail{padding:10px;margin:6px 0;background:#fff;border-radius:8px;border-left:4px solid #e0e0e0}
-.step-detail.completed{border-left-color:#111;background:#f0f0f0}
-.step-detail .step-name{font-weight:600;margin-bottom:5px}
-.step-detail .step-date{color:#666;font-size:.9em}
-.step-detail .step-extra-info{color:#888;font-size:.85em;margin-top:3px}
-.archive-header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
-.archive-header h2{font-family:Georgia,serif}
-.search-box{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit}
-.filter-select{padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit;background:#fff}
-.table-container{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto}
-.table-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:12px}
-.table-header h2{color:#111;font-size:1.2em;font-family:Georgia,serif}
-.table-toolbar{display:flex;gap:10px;flex-wrap:wrap}
-.workflow-table{width:100%;border-collapse:collapse;font-size:.95em}
-.workflow-table thead{background:#111;color:#fff;position:sticky;top:0;z-index:10}
-.workflow-table th{padding:11px 14px;text-align:left;font-weight:600;border:1px solid rgba(255,255,255,.15);font-size:.88em;white-space:nowrap}
-.workflow-table th.center{text-align:center}
-.workflow-table td{padding:11px 14px;border-bottom:1px solid #e0e0e0;vertical-align:middle}
-.workflow-table tbody tr:nth-child(even){background:#fbfbfb}
-.workflow-table tbody tr:nth-child(odd){background:#fff}
-.workflow-table tbody tr:hover{background:#f0f0f0!important}
-.td-client{font-weight:700;color:#111;font-size:1.02em}
-.td-type{text-align:center}
-.td-center{text-align:center}
-.td-laststep{font-weight:600;color:#111}
-.td-laststep.empty{color:#999;font-weight:400;font-style:italic}
-.badge-cell{display:inline-block;padding:4px 12px;border-radius:999px;color:#fff;font-size:.8em;font-weight:600;background:#111}
-.pct-badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.85em;font-weight:700;color:#fff;min-width:50px;text-align:center}
-.pct-100{background:#111}
-.pct-high{background:#444}
-.pct-mid{background:#777}
-.pct-low{background:#aaa;color:#111}
-.pct-zero{background:#e0e0e0;color:#666}
-.cell-actions{display:flex;gap:6px;justify-content:center;flex-wrap:nowrap}
-.cell-actions button{padding:5px 10px;border:none;border-radius:999px;cursor:pointer;font-size:.85em;font-weight:600;color:#fff;font-family:inherit}
-.cell-actions button:hover{opacity:.8}
-.mini-view{background:#111}
-.mini-edit{background:#555}
-.mini-pdf{background:#777}
-.mini-del{background:#fff;color:#111;border:1px solid #111}
-.section-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7em;font-weight:600;color:#fff;margin-left:6px;vertical-align:middle;background:#444}
-@media(max-width:600px){.logo{font-size:1.3em}.actions button{margin:4px;padding:8px 12px;font-size:.85em}.modal-content{margin:10px}}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{height:34px;background:#fff;border-radius:8px;padding:2px 6px}
+.brandName{font-weight:800;font-size:19px;letter-spacing:.5px;font-family:Georgia,serif}
+#studioNameHead{font-size:13px;opacity:.85}
+button{font-family:inherit}
+.btn{background:#111;color:#fff;border:none;padding:10px 18px;border-radius:999px;font-weight:600;cursor:pointer;font-size:13px}
+.btn:hover{opacity:.88}
+.btn.secondary{background:#fff;color:#111;border:1px solid #bbb}
+.mini{border:1px solid #ccc;background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px}
+.mini:hover{background:#eee}
+nav{display:flex;gap:6px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.tab{border:1px solid var(--bordo);background:linear-gradient(180deg,#fff,#eee);padding:9px 14px;border-radius:999px;cursor:pointer;font-weight:600;color:#222;font-size:13px}
+.tab.active{background:#111;color:#fff;border-color:#000}
+main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
+.card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.card.inner{background:var(--chiaro)}
+h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
+h3{margin:14px 0 6px;font-size:14px;color:#222;text-transform:uppercase;letter-spacing:.5px;font-family:Georgia,serif}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:11px;color:#666;display:block;margin-bottom:3px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bordo);border-radius:8px;background:#fff;font-size:13px;font-family:inherit}
+input:focus,textarea:focus{outline:2px solid #000}
+input[readonly]{background:#f0f0f0;font-weight:700}
+textarea{min-height:70px}
+.highlight{background:linear-gradient(90deg,#000,#3a3a3a);color:#fff;padding:16px;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.highlight label{color:#bbb}
+.highlight input{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);color:#fff;font-weight:700}
+.rowBetween{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:#111;color:#fff;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.servRow{display:grid;grid-template-columns:auto 1fr 110px 70px auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed #e0e0e0}
+.servRow span{font-size:13px}
+.locRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:10px}
+.locRow input{margin:0}
+.totCard{background:linear-gradient(90deg,#fff,#f0f0f0)}
+.totCard .riga{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
+.totCard .big{font-size:20px;font-weight:800;border-top:2px solid #000;margin-top:6px;padding-top:8px}
+.totCard .saldo{color:#000;background:#e8e8e8;border-radius:8px;padding:6px 10px}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600}
+.chk input{width:auto;transform:scale(1.3)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 30px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:left;vertical-align:top}
+th{background:#111;color:#fff}
+.hint{font-size:12px;color:#777}
+footer{text-align:center;padding:20px;font-size:12px;color:#888}
+.logoPreview{max-height:60px;max-width:160px;border:1px solid var(--bordo);border-radius:6px;background:#fff;padding:4px;margin-top:8px}
+@media(max-width:800px){.grid,.highlight{grid-template-columns:1fr}.servRow{grid-template-columns:auto 1fr 90px 60px auto}}
 </style>
 </head>
 <body>
@@ -132,335 +72,216 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
   <button class="pill" id="tbPubblicaComune" style="background:#111;color:#fff;border-color:#111">Pubblica archivio comune</button>
   <button class="pill" id="tbScaricaComune" style="background:#111;color:#fff;border-color:#111">Scarica e unisci archivio</button>
 </div>
-<div id="app" class="app">
-  <div class="container">
-    <header>
-      <div class="logo">AppCenterStudio Premium<span>Workflow Foto & Video</span></div>
-      <div class="actions">
-        <button class="btn-new" onclick="toggleNewService()">Nuovo Servizio</button>
-        <button class="btn-archive" onclick="showArchive()">Archivio</button>
-        <button class="btn-table" onclick="showTable()">Tabella Clienti</button>
-        <button class="btn-backup" onclick="doBackup()">Backup Locale</button>
-        <button class="btn-restore" onclick="document.getElementById('restoreFile').click()">Ripristina Locale</button>
-      </div>
-    </header>
-    <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="doRestore(event)">
-    <div id="newService" class="new-service">
-      <h2>Nuovo Servizio</h2>
-      <div class="form-row">
-        <input type="text" id="inputClient" placeholder="Nome cliente (es. Rossi - Bianchi)">
-        <select id="inputType">
-          <option value="">-- Tipo di servizio --</option>
-          <optgroup label="Anteprima">
-            <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
-            <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
-            <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
-          </optgroup>
-          <optgroup label="Famiglia & Neonati">
-            <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
-            <option value="Maternity + New Born">Maternity + New Born</option>
-            <option value="Maternity + Family">Maternity + Family</option>
-            <option value="New Born + Family">New Born + Family</option>
-            <option value="Maternity">Maternity</option>
-            <option value="New Born">New Born</option>
-            <option value="Family">Family</option>
-          </optgroup>
-          <optgroup label="Cerimonie">
-            <option value="Matrimonio">Matrimonio</option>
-            <option value="Battesimo">Battesimo</option>
-            <option value="Comunione">Comunione</option>
-            <option value="Cresima">Cresima</option>
-          </optgroup>
-          <optgroup label="Feste & Celebrazioni">
-            <option value="1° Compleanno">1° Compleanno</option>
-            <option value="18° Compleanno">18° Compleanno</option>
-            <option value="Compleanno">Compleanno</option>
-            <option value="Anniversario">Anniversario</option>
-          </optgroup>
-          <optgroup label="Altro">
-            <option value="Evento">Evento</option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="form-row">
-        <input type="date" id="inputDate">
-        <input type="text" id="inputVideographer" placeholder="Videografo/Collega (nome)">
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel" onclick="toggleNewService()">Annulla</button>
-        <button class="btn-save" onclick="saveService()">Salva</button>
-      </div>
-    </div>
-    <div id="archiveView" style="display:none;">
-      <div class="archive-header">
-        <h2>Archivio Servizi</h2>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <input type="text" class="search-box" id="searchBox" placeholder="Cerca cliente..." oninput="filterServices()">
-          <select class="filter-select" id="filterType" onchange="filterServices()">
-            <option value="">Tutti i tipi</option>
-            <optgroup label="Anteprima"><option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option><option value="Anteprima + Battesimo">Anteprima + Battesimo</option><option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option></optgroup>
-            <optgroup label="Famiglia & Neonati"><option value="Maternity + New Born + Family">Maternity + New Born + Family</option><option value="Maternity + New Born">Maternity + New Born</option><option value="Maternity + Family">Maternity + Family</option><option value="New Born + Family">New Born + Family</option><option value="Maternity">Maternity</option><option value="New Born">New Born</option><option value="Family">Family</option></optgroup>
-            <optgroup label="Cerimonie"><option value="Matrimonio">Matrimonio</option><option value="Battesimo">Battesimo</option><option value="Comunione">Comunione</option><option value="Cresima">Cresima</option></optgroup>
-            <optgroup label="Feste & Celebrazioni"><option value="1° Compleanno">1° Compleanno</option><option value="18° Compleanno">18° Compleanno</option><option value="Compleanno">Compleanno</option><option value="Anniversario">Anniversario</option></optgroup>
-            <optgroup label="Altro"><option value="Evento">Evento</option></optgroup>
-          </select>
-          <button class="btn-pdf" onclick="generateArchivePDF()" style="padding:10px 18px;border-radius:999px;background:#111;color:#fff;border:none;cursor:pointer;">PDF Archivio</button>
-          <button class="btn-cancel" onclick="showMain()">Torna alla Home</button>
-        </div>
-      </div>
-      <div id="archiveList"></div>
-    </div>
-    <div id="tableView" style="display:none;">
-      <div class="table-container">
-        <div class="table-header">
-          <h2>Tabella Clienti — Stato Lavori</h2>
-          <div class="table-toolbar">
-            <input type="text" class="search-box" id="tableSearch" placeholder="Cerca cliente..." oninput="renderTable()" style="min-width:200px;">
-            <button class="btn-pdf" onclick="generateTablePDF()" style="padding:10px 18px;border-radius:999px;background:#111;color:#fff;border:none;cursor:pointer;">PDF Tabella</button>
-            <button class="btn-cancel" onclick="showMain()">Torna alla Home</button>
-          </div>
-        </div>
-        <div style="overflow-x:auto;">
-          <table class="workflow-table" id="workflowTable"></table>
-        </div>
-      </div>
-    </div>
-    <div id="servicesList"></div>
+<header>
+  <div class="brand">
+    <img id="studioLogoHead" src="logo.jpg" alt="AppCenterStudio Premium" onerror="this.remove()">
+    <span class="brandName">AppCenterStudio Premium</span>
   </div>
-</div>
-<div id="detailModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="detailTitle">Dettagli Servizio</h2>
-      <button class="modal-close" onclick="closeModal('detailModal')">×</button>
+  <div id="studioNameHead"></div>
+</header>
+<nav>
+  <button class="tab active" data-view="preventivo">+ Nuovo Preventivo</button>
+  <button class="tab" data-view="archivio">Preventivi & Contratti</button>
+  <button class="tab" data-view="clienti">Archivio Clienti</button>
+  <button class="tab" data-view="listini">Listini & Categorie</button>
+  <button class="tab" data-view="studio">Studio & Backup</button>
+</nav>
+<main>
+<section id="view-preventivo">
+  <div class="card">
+    <div class="rowBetween">
+      <h2 style="margin:0">Preventivo / Contratto</h2>
+      <span id="pBadge" class="badge">Nuovo preventivo</span>
     </div>
-    <div class="modal-body" id="detailBody"></div>
-  </div>
-</div>
-<div id="editModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Modifica Servizio</h2>
-      <button class="modal-close" onclick="closeModal('editModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <input type="text" id="editClient" placeholder="Nome cliente">
-        <select id="editType">
-          <optgroup label="Anteprima">
-            <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
-            <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
-            <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
-          </optgroup>
-          <optgroup label="Famiglia & Neonati">
-            <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
-            <option value="Maternity + New Born">Maternity + New Born</option>
-            <option value="Maternity + Family">Maternity + Family</option>
-            <option value="New Born + Family">New Born + Family</option>
-            <option value="Maternity">Maternity</option>
-            <option value="New Born">New Born</option>
-            <option value="Family">Family</option>
-          </optgroup>
-          <optgroup label="Cerimonie">
-            <option value="Matrimonio">Matrimonio</option>
-            <option value="Battesimo">Battesimo</option>
-            <option value="Comunione">Comunione</option>
-            <option value="Cresima">Cresima</option>
-          </optgroup>
-          <optgroup label="Feste & Celebrazioni">
-            <option value="1° Compleanno">1° Compleanno</option>
-            <option value="18° Compleanno">18° Compleanno</option>
-            <option value="Compleanno">Compleanno</option>
-            <option value="Anniversario">Anniversario</option>
-          </optgroup>
-          <optgroup label="Altro">
-            <option value="Evento">Evento</option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="form-row">
-        <input type="date" id="editDate">
-        <input type="text" id="editVideographer" placeholder="Videografo/Collega">
-      </div>
-      <div class="form-actions">
-        <button class="btn-cancel" onclick="closeModal('editModal')">Annulla</button>
-        <button class="btn-save" onclick="saveEdit()">Salva Modifiche</button>
-      </div>
+    <div class="grid" style="margin-top:12px">
+      <div><label>Numero (assegnato al salvataggio)</label><input id="p_numero" readonly></div>
+      <div><label>Data emissione</label><input id="p_dataCreazione" type="date"></div>
     </div>
   </div>
-</div>
+  <div class="card">
+    <h2>Anagrafica Cliente A</h2>
+    <div class="grid">
+      <div><label>Nome</label><input id="a_nome"></div>
+      <div><label>Cognome</label><input id="a_cognome"></div>
+      <div><label>Telefono</label><input id="a_telefono"></div>
+      <div><label>Email</label><input id="a_email"></div>
+      <div><label>Via / Piazza e n. civico</label><input id="a_via"></div>
+      <div><label>Città</label><input id="a_citta"></div>
+      <div><label>CAP</label><input id="a_cap"></div>
+      <div><label>Provincia</label><input id="a_prov"></div>
+    </div>
+    <p><button class="btn secondary" id="btnMapA">Vedi luogo su Google Maps</button></p>
+  </div>
+  <div class="card">
+    <h2>Anagrafica Cliente B (secondo intestatario)</h2>
+    <div class="grid">
+      <div><label>Nome</label><input id="b_nome"></div>
+      <div><label>Cognome</label><input id="b_cognome"></div>
+      <div><label>Telefono</label><input id="b_telefono"></div>
+      <div><label>Email</label><input id="b_email"></div>
+      <div><label>Via / Piazza e n. civico</label><input id="b_via"></div>
+      <div><label>Città</label><input id="b_citta"></div>
+      <div><label>CAP</label><input id="b_cap"></div>
+      <div><label>Provincia</label><input id="b_prov"></div>
+    </div>
+    <p><button class="btn secondary" id="btnMapB">Vedi luogo su Google Maps</button></p>
+  </div>
+  <div class="highlight">
+    <div><label>DATA DEL SERVIZIO (in evidenza)</label><input type="date" id="p_dataServizio"></div>
+    <div><label>TIPO DI SERVIZIO RICHIESTO (in evidenza)</label><input id="p_tipo" placeholder="Es. Matrimonio, Battesimo, Compleanno..."></div>
+  </div>
+  <div class="card">
+    <h2>Luoghi dell'evento</h2>
+    <div class="locRow">
+      <div>
+        <label>Chiesa / Luogo cerimonia</label>
+        <input id="p_chiesa" placeholder="Es. Chiesa di San Marco, Via Roma 1, Milano">
+      </div>
+      <button class="btn secondary" id="btnMapChiesa">Maps</button>
+    </div>
+    <div class="locRow">
+      <div>
+        <label>Location / Ricevimento</label>
+        <input id="p_location" placeholder="Es. Villa Bellini, Via Verdi 5, Milano">
+      </div>
+      <button class="btn secondary" id="btnMapLocation">Maps</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Servizi & Costi (prezzi da listino admin – modificabili)</h2>
+    <div id="serviziBox"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <h2>Sconto</h2>
+      <div class="grid">
+        <div><label>Sconto % (es. 15)</label><input type="number" step="0.01" id="p_scontoPerc" value="0"></div>
+        <div><label>Importo sconto % calcolato</label><input id="p_scontoPercImporto" readonly value="0,00 €"></div>
+        <div><label>Buono / promozione (€)</label><input type="number" step="0.01" id="p_sconto" value="0"></div>
+        <div><label>Nota buono / promozione</label><input id="p_scontoNota" placeholder="Es. buono fiera, promozione..."></div>
+      </div>
+      <p style="margin-bottom:0">Totale sconto applicato: <b id="totScontoApplicato">-0,00 €</b></p>
+    </div>
+    <div class="card">
+      <h2>Acconti ricevuti (date e importi modificabili)</h2>
+      <div id="accontiBox"></div>
+      <p style="margin-bottom:0"><button class="btn secondary" id="btnAddAcconto">+ Aggiungi acconto</button></p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Piano di pagamento (importi inseriti dallo studio)</h2>
+    <div id="pianoBox"></div>
+    <p><button class="btn secondary" id="btnAddPiano">+ Aggiungi voce</button></p>
+    <div id="pianoResiduo" class="hint"></div>
+  </div>
+  <div class="card totCard">
+    <div class="riga"><span>Totale servizi</span><b id="totServizi">0,00 €</b></div>
+    <div class="riga"><span>Sconto percentuale (<span id="lblPerc">0</span>%)</span><b id="totScontoPerc">-0,00 €</b></div>
+    <div class="riga"><span>Buono / promozione</span><b id="totScontoBuono">-0,00 €</b></div>
+    <div class="riga"><span>TOTALE SCONTO APPLICATO</span><b id="totScontoTot">-0,00 €</b></div>
+    <div class="riga big"><span>IMPORTO TOTALE</span><span id="totale">0,00 €</span></div>
+    <div class="riga"><span>Totale acconti versati</span><b id="totAcconti">0,00 €</b></div>
+    <div class="riga big saldo"><span>SALDO RESIDUO</span><span id="saldoResiduo">0,00 €</span></div>
+  </div>
+  <div class="card">
+    <h2>Accettazione</h2>
+    <label class="chk"><input type="checkbox" id="chkAccettato"> ACCETTATO E FIRMATO DAL CLIENTE <span class="hint">(flag apposto dallo studio – il PDF inviato resta con i riquadri firma da compilare a mano)</span></label>
+  </div>
+  <div class="card">
+    <h2>Note aggiuntive</h2>
+    <textarea id="p_note" placeholder="Condizioni particolari, tempi di consegna, ecc."></textarea>
+  </div>
+  <div class="actions">
+    <button id="btnSalva" class="btn">Salva in archivio</button>
+    <button id="btnPDF" class="btn">Crea PDF da inviare</button>
+    <button id="btnContratto" class="btn">Trasforma in Contratto</button>
+    <button id="btnNuovo" class="btn secondary">+ Nuovo preventivo</button>
+  </div>
+</section>
+<section id="view-archivio" hidden></section>
+<section id="view-clienti" hidden></section>
+<section id="view-listini" hidden></section>
+<section id="view-studio" hidden>
+  <div class="card">
+    <h2>Dati dello Studio (compaiono su PDF e intestazione)</h2>
+    <div class="grid">
+      <div><label>Nome Studio</label><input id="s_nome"></div>
+      <div><label>P.IVA</label><input id="s_piva"></div>
+      <div><label>Indirizzo</label><input id="s_indirizzo"></div>
+      <div><label>Telefono</label><input id="s_telefono"></div>
+      <div><label>Email</label><input id="s_email"></div>
+    </div>
+    <label style="margin-top:8px">Note fisse su PDF (es. orari, sito web)</label><textarea id="s_note"></textarea>
+  </div>
+  <div class="card">
+    <h2>Logo dello Studio</h2>
+    <p class="hint">Carica il logo dello studio. Verrà salvato in locale e, se Netlify è configurato, pubblicato sul sito cliente come /logo.png.</p>
+    <div class="actions">
+      <label class="btn secondary" style="cursor:pointer">Carica immagine logo<input type="file" id="fileLogo" accept="image/*" hidden></label>
+      <button id="btnRimuoviLogo" class="btn secondary">Rimuovi logo</button>
+    </div>
+    <div id="logoPreviewBox"></div>
+  </div>
+  <div class="card">
+    <h2>Backup & Ripristino</h2>
+    <p class="hint">I dati sono salvati in questo browser. Scarica periodicamente un backup e ripristinalo su qualsiasi dispositivo.</p>
+    <div class="actions">
+      <button id="btnBackup" class="btn">Scarica Backup</button>
+      <label class="btn secondary" style="cursor:pointer">Ripristina Backup<input type="file" id="fileRestore" accept=".json" hidden></label>
+      <button id="btnResetAll" class="btn secondary">Azzera tutti i dati</button>
+    </div>
+  </div>
+</section>
+</main>
+<footer>AppCenterStudio Premium – Gestionale preventivi & contratti per studi fotografici · Tutto in Euro (€)</footer>
 <script>
-const TYPE_ORDER = [
-  "Anteprima + Matrimonio", "Anteprima + Battesimo", "Anteprima + 18° Compleanno",
-  "Maternity + New Born + Family", "Maternity + New Born", "Maternity + Family", "New Born + Family",
-  "Maternity", "New Born", "Family",
-  "Matrimonio", "Battesimo", "Comunione", "Cresima",
-  "1° Compleanno", "18° Compleanno", "Compleanno", "Anniversario",
-  "Evento"
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY='appcenter_db_v1';
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const fmt=n=>(isNaN(+n)?0:+n).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtData=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');};
+const today=()=>new Date().toISOString().slice(0,10);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DEFAULT_CATEGORIE=[
+ {id:'cat1',nome:'Matrimonio',servizi:[
+  {id:'m1',nome:'Matrimonio solo file non ritoccati in formato JPEG',prezzo:1200},
+  {id:'m2',nome:'Matrimonio con album digitale 30x40 cm, 40 interni, 100 foto, Copertina inclusa e valigia',prezzo:1400},
+  {id:'m3',nome:'Matrimonio con album digitale 30x40 cm, 40 interni, 100 foto, con effetti, Copertina inclusa e valigia',prezzo:1600},
+  {id:'m4',nome:'Matrimonio con album digitale 35x45 cm, 40 interni, 100 foto, Copertina inclusa e valigia',prezzo:1700},
+  {id:'m5',nome:'Matrimonio con album digitale 35x45 cm, 40 interni, 100 foto, con effetti, Copertina inclusa e valigia',prezzo:1900},
+  {id:'m6',nome:'Matrimonio con album analogico 33x33 cm, 50 interni, 100 foto, Copertina inclusa e valigia',prezzo:1400},
+  {id:'m7',nome:'Matrimonio con album analogico 40x40 cm, 50 interni, 100 foto, Copertina inclusa e valigia',prezzo:1700}]},
+ {id:'cat2',nome:'Battesimo / Anniversario / Compleanno',servizi:[
+  {id:'b1',nome:'Misura 25x35 cm orizzontale, 20 interni, 60 foto, copertina semplice',prezzo:350},
+  {id:'b2',nome:'Misura 25x35 cm orizzontale, 20 interni, 60 foto, copertina extra',prezzo:400},
+  {id:'b3',nome:'Ogni foto in più',prezzo:5}]},
+ {id:'cat3',nome:'Video',servizi:[
+  {id:'v1',nome:'Matrimonio + Drone',prezzo:1200},
+  {id:'v2',nome:'Matrimonio + Drone + Live',prezzo:1400},
+  {id:'v3',nome:'Matrimonio + Drone + Anteprima',prezzo:1500},
+  {id:'v4',nome:'Matrimonio + Drone + Anteprima + Live',prezzo:1600},
+  {id:'v5',nome:'Video Post-matrimonio con Drone',prezzo:300},
+  {id:'v6',nome:'Battesimo / Anniversario / Compleanno + taglio torta',prezzo:300},
+  {id:'v7',nome:'Battesimo / Anniversario / Compleanno + tutta serata',prezzo:400}]}
 ];
-const STEPS = [
-  { id: "download",    label: "Download schede", short: "D" },
-  { id: "backupAB",    label: "Archiviazione HD A/B", short: "A" },
-  { id: "archiveVideo",label: "Archiviazione Video", short: "V", extra: true, extraType: "archivedBy" },
-  { id: "backupAltro", label: "Archiviazione su altro", short: "O", extra: true, extraLabel: "Dove" },
-  { id: "rawToJpg",    label: "RAW → JPEG", short: "R" },
-  { id: "selection",   label: "Selezione + Copertina", short: "S", extra: true, extraType: "cover" },
-  { id: "albumEdit",   label: "Lavorazione album", short: "L" },
-  { id: "sendLab",     label: "Invio laboratorio", short: "I" },
-  { id: "labToStudio", label: "Lab → Studio", short: "B" },
-  { id: "albumClient", label: "Album al cliente", short: "C" },
-  { id: "filesClient", label: "Consegna file cliente", short: "F" },
-  { id: "videoClient", label: "Video Pronto cliente", short: "P" },
-  { id: "confirmDel",  label: "Conferma cancellazione", short: "X" }
-];
-const STEPS_PREVIEW = [
-  { id: "p_download",    label: "Download schede", short: "PD" },
-  { id: "p_backupAB",    label: "Archiviazione HD A/B", short: "PA" },
-  { id: "p_archiveVideo",label: "Archiviazione Video", short: "PV", extra: true, extraType: "archivedBy" },
-  { id: "p_backupAltro", label: "Archiviazione su altro", short: "PO", extra: true, extraLabel: "Dove" },
-  { id: "p_rawToJpg",    label: "RAW → JPEG", short: "PR" },
-  { id: "p_deliverPreview", label: "Consegna Anteprima al cliente", short: "PC" }
-];
-const COMBO_TYPES = {
-  "Maternity + New Born": ["Maternity", "New Born"],
-  "Maternity + Family": ["Maternity", "Family"],
-  "Maternity + New Born + Family": ["Maternity", "New Born", "Family"],
-  "New Born + Family": ["New Born", "Family"]
-};
-const SECTION_COLORS = {
-  "Maternity": { bg: "#555", hex: "#555" },
-  "New Born":  { bg: "#777", hex: "#777" },
-  "Family":    { bg: "#999", hex: "#999" }
-};
-const TYPE_COLORS = {
-  "Anteprima + Matrimonio": "#333",
-  "Anteprima + Battesimo": "#444",
-  "Anteprima + 18° Compleanno": "#555",
-  "Maternity + New Born": "#666",
-  "Maternity + Family": "#777",
-  "Maternity + New Born + Family": "#888",
-  "New Born + Family": "#999",
-  "Matrimonio":     "#222",
-  "Battesimo":      "#3a3a3a",
-  "New Born":       "#4a4a4a",
-  "Maternity":      "#5a5a5a",
-  "Family":         "#6a6a6a",
-  "1° Compleanno":  "#7a7a7a",
-  "18° Compleanno": "#8a8a8a",
-  "Compleanno":     "#9a9a9a",
-  "Anniversario":   "#333",
-  "Comunione":      "#444",
-  "Cresima":        "#555",
-  "Evento":         "#111"
-};
-const STEP_LABEL_CLEAN = {
-  "Download schede": "Download schede",
-  "Archiviazione HD A/B": "Archiviazione HD A/B",
-  "Archiviazione Video": "Archiviazione Video",
-  "Archiviazione su altro": "Archiviazione su altro",
-  "RAW → JPEG": "RAW -> JPEG",
-  "Selezione + Copertina": "Selezione + Copertina",
-  "Lavorazione album": "Lavorazione album",
-  "Invio laboratorio": "Invio laboratorio",
-  "Lab → Studio": "Lab -> Studio",
-  "Album al cliente": "Album al cliente",
-  "Consegna file cliente": "Consegna file cliente",
-  "Video Pronto cliente": "Video Pronto cliente",
-  "Conferma cancellazione": "Conferma cancellazione",
-  "Consegna Anteprima al cliente": "Consegna Anteprima al cliente"
-};
-let services = JSON.parse(localStorage.getItem("gl_services") || "[]");
-let editingId = null;
-function migrateService(s) {
-  if (!s) return null;
-  if (!s.client) s.client = "Cliente sconosciuto";
-  if (!s.type) s.type = "Evento";
-  if (!s.steps) s.steps = {};
-  if (!s.createdAt) s.createdAt = new Date().toISOString();
-  if (s.videographer === undefined) s.videographer = "";
-  STEPS.forEach(st => {
-    if (!s.steps[st.id]) s.steps[st.id] = { done: false, date: "", extra: {} };
-    if (!s.steps[st.id].extra) s.steps[st.id].extra = {};
-    if (s.steps[st.id].done === undefined) s.steps[st.id].done = false;
-    if (!s.steps[st.id].date) s.steps[st.id].date = "";
-  });
-  if (isPreviewType(s.type)) {
-    if (!s.previewSteps) s.previewSteps = {};
-    STEPS_PREVIEW.forEach(st => {
-      if (!s.previewSteps[st.id]) s.previewSteps[st.id] = { done: false, date: "", extra: {} };
-      if (!s.previewSteps[st.id].extra) s.previewSteps[st.id].extra = {};
-      if (s.previewSteps[st.id].done === undefined) s.previewSteps[st.id].done = false;
-      if (!s.previewSteps[st.id].date) s.previewSteps[st.id].date = "";
-    });
-  } else {
-    delete s.previewSteps;
-  }
-  if (isComboType(s.type)) {
-    if (!s.sections) s.sections = {};
-    COMBO_TYPES[s.type].forEach(secName => {
-      if (!s.sections[secName]) s.sections[secName] = {};
-      STEPS.forEach(st => {
-        if (!s.sections[secName][st.id]) s.sections[secName][st.id] = { done: false, date: "", extra: {} };
-        if (!s.sections[secName][st.id].extra) s.sections[secName][st.id].extra = {};
-        if (!s.sections[secName][st.id].done === undefined) s.sections[secName][st.id].done = false;
-        if (!s.sections[secName][st.id].date) s.sections[secName][st.id].date = "";
-      });
-    });
-  } else {
-    delete s.sections;
-  }
-  return s;
-}
-function isPreviewType(type) { return type && type.startsWith("Anteprima +"); }
-function isComboType(type) { return type && COMBO_TYPES[type]; }
-function getComboSections(type) { return COMBO_TYPES[type] || []; }
-function toggleNewService() { document.getElementById("newService").classList.toggle("open"); }
-function saveService() {
-  const client = document.getElementById("inputClient").value.trim();
-  const type = document.getElementById("inputType").value;
-  const date = document.getElementById("inputDate").value;
-  const videographer = document.getElementById("inputVideographer").value.trim();
-  if (!client || !type) { alert("Inserisci nome cliente e tipo di servizio"); return; }
-  const steps = {};
-  STEPS.forEach(s => steps[s.id] = { done: false, date: "", extra: {} });
-  const newService = { id: Date.now(), client, type, date, videographer, steps, createdAt: new Date().toISOString() };
-  if (isPreviewType(type)) {
-    newService.previewSteps = {};
-    STEPS_PREVIEW.forEach(s => newService.previewSteps[s.id] = { done: false, date: "", extra: {} });
-  }
-  if (isComboType(type)) {
-    newService.sections = {};
-    COMBO_TYPES[type].forEach(secName => {
-      newService.sections[secName] = {};
-      STEPS.forEach(st => newService.sections[secName][st.id] = { done: false, date: "", extra: {} });
-    });
-  }
-  services.unshift(newService);
-  save();
-  document.getElementById("inputClient").value = "";
-  document.getElementById("inputType").value = "";
-  document.getElementById("inputDate").value = "";
-  document.getElementById("inputVideographer").value = "";
-  toggleNewService();
-  renderServices();
-}
-function getArchiveByOptions(s) {
-  const options = [`<option value="Studio">Studio</option>`];
-  if (s.videographer && s.videographer.trim()) {
-    options.push(`<option value="${s.videographer}">${s.videographer} (collega)</option>`);
-  }
-  options.push(`<option value="__altro__">Altro...</option>`);
-  return options.join("");
-}
-function countDone(stepsObj, stepsList) {
-  return stepsList.filter(st => (stepsObj && stepsObj[st.id] && stepsObj[st.id].done)).length;
-}
-document.getElementById("tbBack").onclick=()=>history.back();
-document.getElementById("tbHome").onclick=()=>{const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');};
-document.getElementById("tbBackup").onclick=()=>{const dump={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);dump[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='appcenter_backup_globale_'+new Date().toISOString().slice(0,10)+'.json';a.click();};
-document.getElementById("tbRestore").onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Ripristino completato. La pagina verrà ricaricata.');location.reload();}catch(x){alert('File di backup non valido.');}};r.readAsText(f);};inp.click();};
-document.getElementById("tbPubblicaComune").onclick=pubblicaArchivioComune;
-document.getElementById("tbScaricaComune").onclick=scaricaEUnisciArchivio;
+const DEFAULT_PIANO=['Caparra alla firma','Acconto prima del servizio','Acconto alla scelta foto e copertina','Saldo prima della stampa'];
+function defaultDB(){return{studio:{nome:'',indirizzo:'',telefono:'',email:'',piva:'',note:'',logoData:''},categorie:JSON.parse(JSON.stringify(DEFAULT_CATEGORIE)),clienti:[],preventivi:[],seq:1};}
+let DB=(function(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.categorie){(d.preventivi||[]).forEach(p=>{if(p.scontoPerc===undefined)p.scontoPerc=0;if(p.chiesa===undefined)p.chiesa='';if(p.location===undefined)p.location='';});if(!d.studio.logoData)d.studio.logoData='';return d;}}catch(e){}return defaultDB();})();
+function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
+const emptyC=()=>({nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''});
+const emptyP=()=>({id:uid(),numero:'',dataCreazione:today(),dataServizio:'',tipoServizio:'',chiesa:'',location:'',clienteA:emptyC(),clienteB:emptyC(),servizi:[],scontoPerc:0,sconto:0,scontoNota:'',acconti:[],piano:DEFAULT_PIANO.map(v=>({voce:v,importo:0})),accettato:false,stato:'preventivo',note:''});
+let P=emptyP();
+const totServiziOf=p=>p.servizi.reduce((a,s)=>a+(+s.prezzo||0)*(+s.qta||1),0);
+const totAccontiOf=p=>p.acconti.reduce((a,x)=>a+(+x.importo||0),0);
+const scontoTotOf=p=>totServiziOf(p)*((+p.scontoPerc||0)/100)+(+p.sconto||0);
+const totaleOf=p=>totServiziOf(p)-scontoTotOf(p);
+const saldoOf=p=>totaleOf(p)-totAccontiOf(p);
+$('#tbBack').onclick=()=>history.back();
+$('#tbHome').onclick=()=>{const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');};
+$('#tbBackup').onclick=()=>{const dump={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);dump[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='appcenter_backup_globale_'+today()+'.json';a.click();};
+$('#tbRestore').onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Ripristino completato. La pagina verrà ricaricata.');location.reload();}catch(x){alert('File di backup non valido.');}};r.readAsText(f);};inp.click();};
+$('#tbPubblicaComune').onclick=pubblicaArchivioComune;
+$('#tbScaricaComune').onclick=scaricaEUnisciArchivio;
 async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function sha1ArrayBuffer(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function deployFileNetlify(path,content,isBinary){
@@ -488,745 +309,215 @@ async function leggiFileNetlify(path){
 }
 async function pubblicaArchivioComune(){
  try{
-  const data={services:services,exportedAt:new Date().toISOString()};
-  await deployFileNetlify('/archivio-comune-workflow.json',JSON.stringify(data,null,2),false);
+  const data={preventivi:DB.preventivi,clienti:DB.clienti,exportedAt:new Date().toISOString()};
+  await deployFileNetlify('/archivio-comune-preventivi.json',JSON.stringify(data,null,2),false);
   alert('Archivio comune pubblicato su Netlify. Gli altri PC dello studio possono ora scaricarlo.');
  }catch(e){alert('Errore pubblicazione: '+e.message);}
 }
 async function scaricaEUnisciArchivio(){
  try{
-  const data=await leggiFileNetlify('/archivio-comune-workflow.json');
-  if(!data||!data.services)throw new Error('Archivio comune vuoto o non trovato.');
-  if(!confirm('Unire '+data.services.length+' servizi dall\'archivio comune ai '+services.length+' locali?\nI servizi con lo stesso ID verranno aggiornati se la versione remota è più recente.'))return;
+  const data=await leggiFileNetlify('/archivio-comune-preventivi.json');
+  if(!data||!data.preventivi)throw new Error('Archivio comune vuoto o non trovato.');
+  if(!confirm('Unire '+data.preventivi.length+' preventivi dall\'archivio comune ai '+DB.preventivi.length+' locali?\nI preventivi con lo stesso ID verranno aggiornati se la versione remota è più recente.'))return;
   const map={};
-  services.forEach(s=>{map[s.id]=s;});
+  DB.preventivi.forEach(p=>{map[p.id]=p;});
   let added=0,updated=0;
-  data.services.forEach(s=>{
-   const m=migrateService(s);
-   if(!m)return;
-   if(!map[m.id]){map[m.id]=m;added++;}
-   else if(m.createdAt>map[m.id].createdAt){map[m.id]=m;updated++;}
+  data.preventivi.forEach(p=>{
+   if(!p.id)p.id=uid();
+   if(!map[p.id]){map[p.id]=p;added++;}
+   else if(p.dataCreazione>map[p.id].dataCreazione){map[p.id]=p;updated++;}
   });
-  services=Object.values(map);
+  DB.preventivi=Object.values(map);
+  if(data.clienti&&data.clienti.length){
+   const clientiMap={};
+   DB.clienti.forEach(c=>{clientiMap[c.id]=c;});
+   data.clienti.forEach(c=>{
+    if(!c.id)c.id=uid();
+    if(!clientiMap[c.id]){clientiMap[c.id]=c;}
+   });
+   DB.clienti=Object.values(clientiMap);
+  }
   save();
-  renderServices();
-  renderTable();
-  alert('Unione completata: '+added+' aggiunti, '+updated+' aggiornati.');
+  renderArchivio();
+  renderClienti();
+  alert('Unione completata: '+added+' preventivi aggiunti, '+updated+' aggiornati.');
  }catch(e){alert('Errore download/unione: '+e.message);}
 }
-function getLastMainStepInfo(s) {
-  const completed = [];
-  const mainSteps = s.steps || {};
-  STEPS.forEach((st, idx) => {
-    const d = mainSteps[st.id];
-    if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx, section: null });
-  });
-  if (isComboType(s.type) && s.sections) {
-    Object.keys(s.sections).forEach(secName => {
-      const secSteps = s.sections[secName];
-      STEPS.forEach((st, idx) => {
-        const d = secSteps[st.id];
-        if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx, section: secName });
-      });
-    });
-  }
-  if (completed.length === 0) return null;
-  completed.sort((a, b) => {
-    if (a.date && b.date) { const cmp = a.date.localeCompare(b.date); if (cmp !== 0) return cmp; }
-    else if (a.date && !b.date) return -1;
-    else if (!a.date && b.date) return 1;
-    return a.order - b.order;
-  });
-  return completed[completed.length - 1];
+function switchTab(v){$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));$$('main section').forEach(s=>s.hidden=s.id!=='view-'+v);}
+$$('.tab').forEach(t=>t.onclick=()=>{switchTab(t.dataset.view);if(t.dataset.view==='archivio')renderArchivio();if(t.dataset.view==='clienti')renderClienti();if(t.dataset.view==='listini')renderListini();if(t.dataset.view==='studio')renderStudio();});
+const C_FIELDS=['nome','cognome','telefono','email','via','citta','cap','prov'];
+function bind(id,fn){$(id).addEventListener('input',e=>{fn(e.target.value);recalc();});}
+C_FIELDS.forEach(k=>{bind('#a_'+k,v=>P.clienteA[k]=v);bind('#b_'+k,v=>P.clienteB[k]=v);});
+bind('#p_dataCreazione',v=>P.dataCreazione=v);bind('#p_dataServizio',v=>P.dataServizio=v);
+bind('#p_tipo',v=>P.tipoServizio=v);
+bind('#p_chiesa',v=>P.chiesa=v);
+bind('#p_location',v=>P.location=v);
+bind('#p_scontoPerc',v=>P.scontoPerc=+v||0);
+bind('#p_sconto',v=>P.sconto=+v||0);
+bind('#p_scontoNota',v=>P.scontoNota=v);bind('#p_note',v=>P.note=v);
+$('#chkAccettato').addEventListener('change',e=>P.accettato=e.target.checked);
+$('#btnMapA').onclick=()=>openMap(P.clienteA);
+$('#btnMapB').onclick=()=>openMap(P.clienteB);
+$('#btnMapChiesa').onclick=()=>openMapValue($('#p_chiesa').value);
+$('#btnMapLocation').onclick=()=>openMapValue($('#p_location').value);
+function openMap(c){const q=[c.via,c.cap,c.citta,c.prov].filter(Boolean).join(', ');if(!q){alert('Inserire prima un indirizzo.');return;}window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');}
+function openMapValue(v){if(!v||!v.trim()){alert('Inserire prima il luogo.');return;}window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(v.trim()),'_blank');}
+function findServizio(sid){for(const c of DB.categorie)for(const s of c.servizi)if(s.id===sid)return s;return{nome:'?',prezzo:0};}
+function buildServizi(){const box=$('#serviziBox');box.innerHTML='';DB.categorie.forEach(cat=>{const h=document.createElement('h3');h.textContent=cat.nome;box.appendChild(h);cat.servizi.forEach(s=>{const sel=P.servizi.find(x=>x.servId===s.id);const r=document.createElement('div');r.className='servRow';r.innerHTML='<input type="checkbox" data-sid="'+s.id+'" '+(sel?'checked':'')+'><span>'+esc(s.nome)+'</span><input type="number" step="0.01" class="prezzoIn" data-sid="'+s.id+'" value="'+(sel?sel.prezzo:s.prezzo)+'" '+(sel?'':'disabled')+'><input type="number" min="1" class="qtaIn" data-sid="'+s.id+'" value="'+(sel?sel.qta:1)+'" '+(sel?'':'disabled')+'><span style="font-size:11px">€</span>';box.appendChild(r);});});}
+$('#serviziBox').addEventListener('change',e=>{const sid=e.target.dataset.sid;if(!sid||e.target.type!=='checkbox')return;const s=findServizio(sid);if(e.target.checked)P.servizi.push({servId:sid,nome:s.nome,prezzo:s.prezzo,qta:1});else P.servizi=P.servizi.filter(x=>x.servId!==sid);buildServizi();recalc();});
+$('#serviziBox').addEventListener('input',e=>{const sid=e.target.dataset.sid;if(!sid)return;const en=P.servizi.find(x=>x.servId===sid);if(!en)return;if(e.target.classList.contains('prezzoIn'))en.prezzo=+e.target.value||0;if(e.target.classList.contains('qtaIn'))en.qta=+e.target.value||1;recalc();});
+function renderAcconti(){const box=$('#accontiBox');box.innerHTML='';if(!P.acconti.length)box.innerHTML='<p class="hint">Nessun acconto registrato.</p>';P.acconti.forEach((a,i)=>{const d=document.createElement('div');d.className='servRow';d.innerHTML='<input type="date" data-i="'+i+'" data-f="data" value="'+(a.data||'')+'"><input type="number" step="0.01" data-i="'+i+'" data-f="importo" value="'+(a.importo||0)+'"><input type="text" data-i="'+i+'" data-f="nota" value="'+esc(a.nota)+'" placeholder="Nota (es. caparra)"><button class="mini" data-del="'+i+'">✕</button><span></span>';box.appendChild(d);});}
+$('#accontiBox').addEventListener('input',e=>{const i=e.target.dataset.i,f=e.target.dataset.f;if(i===undefined||!f)return;P.acconti[+i][f]=f==='importo'?(+e.target.value||0):e.target.value;recalc();});
+$('#accontiBox').addEventListener('click',e=>{if(e.target.dataset.del!==undefined){P.acconti.splice(+e.target.dataset.del,1);renderAcconti();recalc();}});
+$('#btnAddAcconto').onclick=()=>{P.acconti.push({data:today(),importo:0,nota:''});renderAcconti();recalc();};
+function renderPiano(){const box=$('#pianoBox');box.innerHTML='';P.piano.forEach((r,i)=>{const d=document.createElement('div');d.className='servRow';d.innerHTML='<span>€</span><input type="text" data-i="'+i+'" data-f="voce" value="'+esc(r.voce)+'"><input type="number" step="0.01" data-i="'+i+'" data-f="importo" value="'+(r.importo||0)+'"><span style="font-size:11px">€</span><button class="mini" data-del="'+i+'">✕</button>';box.appendChild(d);});}
+$('#pianoBox').addEventListener('input',e=>{const i=e.target.dataset.i,f=e.target.dataset.f;if(i===undefined||!f)return;P.piano[+i][f]=f==='importo'?(+e.target.value||0):e.target.value;recalc();});
+$('#pianoBox').addEventListener('click',e=>{if(e.target.dataset.del!==undefined){P.piano.splice(+e.target.dataset.del,1);renderPiano();recalc();}});
+$('#btnAddPiano').onclick=()=>{P.piano.push({voce:'',importo:0});renderPiano();recalc();};
+function recalc(){const ts=totServiziOf(P),percAmt=ts*((+P.scontoPerc||0)/100),buono=+P.sconto||0,totS=percAmt+buono,tot=ts-totS,tac=totAccontiOf(P);
+$('#p_scontoPercImporto').value=fmt(percAmt)+' €';
+$('#lblPerc').textContent=P.scontoPerc||0;
+$('#totServizi').textContent=fmt(ts)+' €';
+$('#totScontoPerc').textContent='-'+fmt(percAmt)+' €';
+$('#totScontoBuono').textContent='-'+fmt(buono)+' €';
+$('#totScontoTot').textContent='-'+fmt(totS)+' €';
+$('#totScontoApplicato').textContent='-'+fmt(totS)+' €';
+$('#totale').textContent=fmt(tot)+' €';
+$('#totAcconti').textContent=fmt(tac)+' €';
+$('#saldoResiduo').textContent=fmt(tot-tac)+' €';
+const sumP=P.piano.reduce((a,r)=>a+(+r.importo||0),0);$('#pianoResiduo').innerHTML='Pianificato: <b>'+fmt(sumP)+' €</b> · Non pianificato: <b>'+fmt(tot-sumP)+' €</b>';}
+function renderForm(){$('#p_numero').value=P.numero||'(assegnato al salvataggio)';$('#p_dataCreazione').value=P.dataCreazione;$('#p_dataServizio').value=P.dataServizio;$('#p_tipo').value=P.tipoServizio;$('#p_chiesa').value=P.chiesa||'';$('#p_location').value=P.location||'';$('#p_scontoPerc').value=P.scontoPerc||0;$('#p_sconto').value=P.sconto||0;$('#p_scontoNota').value=P.scontoNota;$('#p_note').value=P.note;$('#chkAccettato').checked=!!P.accettato;
+C_FIELDS.forEach(k=>{$('#a_'+k).value=P.clienteA[k]||'';$('#b_'+k).value=P.clienteB[k]||'';});
+const bc=$('#btnContratto');if(P.stato==='contratto'){bc.disabled=true;bc.textContent='Contratto attivo (riapribile e modificabile)';}else{bc.disabled=false;bc.textContent='Trasforma in Contratto';}
+buildServizi();renderAcconti();renderPiano();recalc();refreshBadge();}
+function refreshBadge(){$('#pBadge').textContent=P.numero?(P.stato==='contratto'?'CONTRATTO '+P.numero:'PREVENTIVO '+P.numero):'Nuovo preventivo';}
+function collectStatic(){P.dataCreazione=$('#p_dataCreazione').value;P.dataServizio=$('#p_dataServizio').value;P.tipoServizio=$('#p_tipo').value;P.chiesa=$('#p_chiesa').value;P.location=$('#p_location').value;P.scontoPerc=+$('#p_scontoPerc').value||0;P.sconto=+$('#p_sconto').value||0;P.scontoNota=$('#p_scontoNota').value;P.note=$('#p_note').value;P.accettato=$('#chkAccettato').checked;}
+function assignNum(){if(!P.numero){P.numero='P-'+new Date().getFullYear()+'-'+String(DB.seq).padStart(3,'0');DB.seq++;}}
+function commit(){collectStatic();const i=DB.preventivi.findIndex(x=>x.id===P.id);if(i>=0)DB.preventivi[i]=JSON.parse(JSON.stringify(P));else DB.preventivi.unshift(JSON.parse(JSON.stringify(P)));upsertClienti();save();renderForm();renderArchivio();}
+function upsertClienti(){[P.clienteA,P.clienteB].forEach(c=>{if(!(c.nome||c.cognome))return;let ex=DB.clienti.find(x=>x.nome===c.nome&&x.cognome===c.cognome);if(ex)Object.assign(ex,c);else DB.clienti.push(Object.assign({id:uid()},c));});}
+$('#btnSalva').onclick=()=>{assignNum();commit();alert('Salvato in archivio.');};
+$('#btnPDF').onclick=()=>{assignNum();commit();makePDF(P);};
+$('#btnContratto').onclick=()=>{collectStatic();if(!P.accettato){alert('Spuntare "ACCETTATO E FIRMATO DAL CLIENTE" per trasformare in contratto.');return;}P.stato='contratto';assignNum();commit();makePDF(P);};
+$('#btnNuovo').onclick=()=>{if(P.numero&&!confirm('Creare un nuovo preventivo? (assicurati di aver salvato)'))return;P=emptyP();renderForm();window.scrollTo(0,0);};
+function renderArchivio(){const v=$('#view-archivio');let h='<div class="card"><h2>Archivio Preventivi & Contratti (sempre riapribili e modificabili)</h2><table><tr><th>N.</th><th>Cliente</th><th>Data serv.</th><th>Tipo</th><th>Chiesa</th><th>Location</th><th>Totale</th><th>Acconti</th><th>Saldo residuo</th><th>Stato</th><th>Azioni</th></tr>';
+DB.preventivi.forEach(p=>{h+='<tr><td><b>'+esc(p.numero)+'</b></td><td>'+esc(p.clienteA.nome)+' '+esc(p.clienteA.cognome)+(p.clienteB.nome||p.clienteB.cognome?'<br>+'+esc(p.clienteB.nome)+' '+esc(p.clienteB.cognome):'')+'</td><td>'+fmtData(p.dataServizio)+'</td><td>'+esc(p.tipoServizio)+'</td><td>'+esc(p.chiesa||'')+'</td><td>'+esc(p.location||'')+'</td><td><b>'+fmt(totaleOf(p))+' €</b></td><td>'+fmt(totAccontiOf(p))+' €</td><td><b>'+fmt(saldoOf(p))+' €</b></td><td>'+(p.stato==='contratto'?'Contratto'+(p.accettato?' ✔':''):'Preventivo')+'</td><td><button class="mini" data-act="open" data-id="'+p.id+'">Apri/Modifica</button> <button class="mini" data-act="pdf" data-id="'+p.id+'">PDF</button> <button class="mini" data-act="contr" data-id="'+p.id+'">Contratto</button> <button class="mini" data-act="del" data-id="'+p.id+'">🗑</button></td></tr>';});
+v.innerHTML=h+'</table></div>';}
+$('#view-archivio').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!b.dataset.id)return;const p=DB.preventivi.find(x=>x.id===b.dataset.id);if(!p)return;
+if(b.dataset.act==='open'){P=JSON.parse(JSON.stringify(p));renderForm();switchTab('preventivo');window.scrollTo(0,0);}
+if(b.dataset.act==='pdf')makePDF(p);
+if(b.dataset.act==='contr'){if(!p.accettato){alert('Spuntare prima "Accettato e firmato" aprendo il documento.');return;}p.stato='contratto';save();renderArchivio();makePDF(p);}
+if(b.dataset.act==='del'){if(confirm('Eliminare definitivamente '+p.numero+'?')){DB.preventivi=DB.preventivi.filter(x=>x.id!==p.id);save();renderArchivio();}}});
+function renderClienti(){const v=$('#view-clienti');let h='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Clienti (modificabile)</h2><button class="btn" id="btnNewCliente">+ Nuovo Cliente</button></div><div id="clienteForm" hidden style="margin-top:12px"><div class="grid">'+C_FIELDS.map(k=>'<div><label>'+k.toUpperCase()+'</label><input id="c_'+k+'"></div>').join('')+'</div><p><button class="btn" id="btnSaveCliente">Salva cliente</button> <button class="btn secondary" id="btnAnnCliente">Annulla</button></p></div><table style="margin-top:12px"><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr>';
+DB.clienti.forEach(c=>{h+='<tr><td>'+esc(c.nome)+'</td><td>'+esc(c.cognome)+'</td><td>'+esc(c.telefono)+'</td><td>'+esc(c.email)+'</td><td>'+esc(c.citta)+'</td><td><button class="mini" data-cmod="'+c.id+'">Modifica</button> <button class="mini" data-cdel="'+c.id+'">🗑</button> <button class="mini" data-cprev="'+c.id+'">+ Preventivo</button></td></tr>';});
+v.innerHTML=h+'</table></div>';let editId=null;
+$('#btnNewCliente').onclick=()=>{editId=null;C_FIELDS.forEach(k=>$('#c_'+k).value='');$('#clienteForm').hidden=false;};
+$('#btnAnnCliente').onclick=()=>$('#clienteForm').hidden=true;
+$('#btnSaveCliente').onclick=()=>{const o={};C_FIELDS.forEach(k=>o[k]=$('#c_'+k).value);if(editId){const c=DB.clienti.find(x=>x.id===editId);Object.assign(c,o);}else DB.clienti.push(Object.assign({id:uid()},o));save();renderClienti();};
+v.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+if(b.dataset.cmod){editId=b.dataset.cmod;const c=DB.clienti.find(x=>x.id===editId);C_FIELDS.forEach(k=>$('#c_'+k).value=c[k]||'');$('#clienteForm').hidden=false;}
+if(b.dataset.cdel){if(confirm('Eliminare cliente?')){DB.clienti=DB.clienti.filter(x=>x.id!==b.dataset.cdel);save();renderClienti();}}
+if(b.dataset.cprev){const c=DB.clienti.find(x=>x.id===b.dataset.cprev);P=emptyP();P.clienteA=JSON.parse(JSON.stringify(c));renderForm();switchTab('preventivo');window.scrollTo(0,0);}});}
+function renderListini(){const v=$('#view-listini');v.innerHTML='<div class="card"><h2>Listini & Categorie (tutto modificabile)</h2><p class="hint">Le modifiche sono salvate automaticamente e usate nei nuovi preventivi. Gli importi sono in Euro.</p><p><button class="btn secondary" id="btnAddCat">+ Nuova categoria</button> <button class="btn secondary" id="btnResetList">Ripristina listini default</button></p><div id="catBox"></div></div>';
+const box=$('#catBox');DB.categorie.forEach((cat,ci)=>{const c=document.createElement('div');c.className='card inner';c.innerHTML='<div class="servRow"><span>📁</span><input class="catNome" data-ci="'+ci+'" value="'+esc(cat.nome)+'"><span></span><span></span><button class="mini" data-delcat="'+ci+'">🗑</button></div>';
+cat.servizi.forEach((s,si)=>{const r=document.createElement('div');r.className='servRow';r.innerHTML='<span>•</span><input class="servNome" data-ci="'+ci+'" data-si="'+si+'" value="'+esc(s.nome)+'"><input type="number" step="0.01" class="servPrezzo" data-ci="'+ci+'" data-si="'+si+'" value="'+s.prezzo+'"><span style="font-size:11px">€</span><button class="mini" data-delserv="'+ci+':'+si+'">✕</button>';c.appendChild(r);});
+const add=document.createElement('button');add.className='btn secondary';add.dataset.addserv=ci;add.textContent='+ Servizio';c.appendChild(add);box.appendChild(c);});
+$('#btnAddCat').onclick=()=>{DB.categorie.push({id:uid(),nome:'Nuova categoria',servizi:[]});save();renderListini();};
+$('#btnResetList').onclick=()=>{if(confirm('Ripristinare i listini di default?')){DB.categorie=JSON.parse(JSON.stringify(DEFAULT_CATEGORIE));save();renderListini();}};
+box.addEventListener('input',e=>{const ci=+e.target.dataset.ci,si=e.target.dataset.si!==undefined?+e.target.dataset.si:null;if(e.target.classList.contains('catNome'))DB.categorie[ci].nome=e.target.value;if(si!==null&&e.target.classList.contains('servNome'))DB.categorie[ci].servizi[si].nome=e.target.value;if(si!==null&&e.target.classList.contains('servPrezzo'))DB.categorie[ci].servizi[si].prezzo=+e.target.value||0;save();});
+box.addEventListener('click',e=>{if(e.target.dataset.delcat!==undefined){if(confirm('Eliminare categoria?')){DB.categorie.splice(+e.target.dataset.delcat,1);save();renderListini();}}else if(e.target.dataset.delserv){const a=e.target.dataset.delserv.split(':').map(Number);DB.categorie[a[0]].servizi.splice(a[1],1);save();renderListini();}else if(e.target.dataset.addserv!==undefined){DB.categorie[+e.target.dataset.addserv].servizi.push({id:uid(),nome:'Nuovo servizio',prezzo:0});save();renderListini();}});}
+function renderStudio(){['nome','indirizzo','telefono','email','piva','note'].forEach(k=>$('#s_'+k).value=DB.studio[k]||'');
+['nome','indirizzo','telefono','email','piva','note'].forEach(k=>{$('#s_'+k).oninput=e=>{DB.studio[k]=e.target.value;save();refreshHead();};});
+renderLogoPreview();}
+function renderLogoPreview(){const box=$('#logoPreviewBox');if(DB.studio.logoData){box.innerHTML='<img class="logoPreview" src="'+DB.studio.logoData+'" alt="Logo">';}else{box.innerHTML='<p class="hint">Nessun logo caricato.</p>';}}
+$('#fileLogo').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{DB.studio.logoData=r.result;save();renderLogoPreview();refreshHead();publishLogoNetlify(r.result);};r.readAsDataURL(f);};
+$('#btnRimuoviLogo').onclick=()=>{DB.studio.logoData='';save();renderLogoPreview();refreshHead();};
+async function publishLogoNetlify(dataURL){
+const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
+if(!tok||!siteId)return;
+try{
+const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{'Authorization':'Bearer '+tok}});
+const existing=resp.ok?await resp.json():[];
+const files={};existing.forEach(f=>{files[f.path]=f;});
+const bin=atob(dataURL.split(',')[1]);const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+const hash=await crypto.subtle.digest('SHA-1',ab).then(h=>Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+const newPath='/logo.png';
+if(files[newPath]&&files[newPath].id===hash)return;
+files[newPath]={path:newPath,hash:hash};
+const body={files:files};
+const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+const required=dep.required||[];
+if(required.includes(newPath)){
+await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+newPath,{method:'PUT',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
 }
-function getLastPreviewStepInfo(s) {
-  if (!isPreviewType(s.type) || !s.previewSteps) return null;
-  const completed = [];
-  STEPS_PREVIEW.forEach((st, idx) => {
-    const d = s.previewSteps[st.id];
-    if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx });
-  });
-  if (completed.length === 0) return null;
-  completed.sort((a, b) => {
-    if (a.date && b.date) { const cmp = a.date.localeCompare(b.date); if (cmp !== 0) return cmp; }
-    else if (a.date && !b.date) return -1;
-    else if (!a.date && b.date) return 1;
-    return a.order - b.order;
-  });
-  return completed[completed.length - 1];
+console.log('Logo pubblicato su Netlify.');
+}catch(err){console.warn('Errore pubblicazione logo Netlify:',err);}
 }
-function getVideoReadyDate(s) {
-  const mainSteps = s.steps || {};
-  const videoStep = mainSteps["videoClient"];
-  if (videoStep && videoStep.done && videoStep.date) return videoStep.date;
-  if (isComboType(s.type) && s.sections) {
-    for (let secName of Object.keys(s.sections)) {
-      const secSteps = s.sections[secName];
-      const secVideoStep = secSteps["videoClient"];
-      if (secVideoStep && secVideoStep.done && secVideoStep.date) return secVideoStep.date;
-    }
-  }
-  return null;
+$('#btnBackup').onclick=()=>{const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='appcenter_backup_'+today()+'.json';a.click();};
+$('#fileRestore').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.categorie)throw 0;DB=Object.assign(defaultDB(),d);save();alert('Backup ripristinato!');location.reload();}catch(x){alert('File di backup non valido.');}};r.readAsText(f);};
+$('#btnResetAll').onclick=()=>{if(confirm('AZZERARE TUTTI I DATI? L\'operazione non è reversibile.')){localStorage.removeItem(KEY);location.reload();}};
+function makePDF(p){if(!window.jspdf){alert('Libreria PDF non caricata: serve connessione internet.');return;}
+const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');const W=210;let y=0;const st=DB.studio;
+doc.setFillColor(20,20,20);doc.rect(0,0,W,32,'F');doc.setTextColor(255,255,255);
+doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(st.nome||'Studio Fotografico',10,11);
+doc.setFont('helvetica','normal');doc.setFontSize(8);
+doc.text([st.indirizzo,st.telefono?'Tel. '+st.telefono:'',st.email,st.piva?'P.IVA '+st.piva:''].filter(Boolean).join('  ·  '),10,17);
+doc.text(st.note||'',10,22);
+doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('AppCenterStudio Premium',W-10,11,{align:'right'});
+doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text('Preventivi & Contratti per studi fotografici',W-10,16,{align:'right'});
+y=40;doc.setTextColor(0,0,0);
+doc.setFont('helvetica','bold');doc.setFontSize(13);
+doc.text(p.stato==='contratto'?'CONTRATTO DI SERVIZIO FOTOGRAFICO':'PREVENTIVO DI SERVIZIO FOTOGRAFICO',10,y);
+doc.text('N. '+p.numero,W-10,y,{align:'right'});y+=6;
+doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('Data emissione: '+fmtData(p.dataCreazione),10,y);y+=8;
+const need=h=>{if(y+h>280){doc.addPage();y=15;}};
+const clientBlock=(t,c)=>{need(28);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text(t,10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(9);
+[[c.nome,c.cognome].filter(Boolean).join(' ')||'—',[c.via,c.cap,c.citta,c.prov].filter(Boolean).join(', '),[c.telefono?'Tel. '+c.telefono:'',c.email].filter(Boolean).join('  ·  ')].filter(s=>s&&s!=='—').forEach(s=>{doc.text(s,12,y);y+=4.5;});y+=3;};
+clientBlock('CLIENTE A',p.clienteA);
+if(p.clienteB.nome||p.clienteB.cognome)clientBlock('CLIENTE B',p.clienteB);
+need(20);doc.setFillColor(25,25,25);doc.roundedRect(10,y,W-20,16,2,2,'F');doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(10);
+doc.text('DATA SERVIZIO: '+fmtData(p.dataServizio),16,y+10);doc.text('TIPO DI SERVIZIO: '+(p.tipoServizio||''),W-16,y+10,{align:'right'});doc.setTextColor(0,0,0);y+=23;
+if(p.chiesa||p.location){need(14);doc.setFont('helvetica','bold');doc.setFontSize(9);
+if(p.chiesa){doc.text('CHIESA / CERIMONIA: '+p.chiesa,10,y);y+=5;}
+if(p.location){doc.text('LOCATION / RICEVIMENTO: '+p.location,10,y);y+=5;}
+doc.setFont('helvetica','normal');y+=3;}
+doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SERVIZI RICHIESTI',10,y);y+=5;doc.setFontSize(9);
+p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToSize(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
+y+=2;const ts=totServiziOf(p),percAmt=ts*((+p.scontoPerc||0)/100),buono=+p.sconto||0,totS=percAmt+buono,tot=totaleOf(p),tac=totAccontiOf(p);
+doc.text('Totale servizi: '+fmt(ts)+' €',W-12,y,{align:'right'});y+=5;
+if(p.scontoPerc>0){doc.text('Sconto '+p.scontoPerc+'%: -'+fmt(percAmt)+' €',W-12,y,{align:'right'});y+=5;}
+if(buono>0){doc.text('Buono/promozione'+(p.scontoNota?' ('+p.scontoNota+')':'')+': -'+fmt(buono)+' €',W-12,y,{align:'right'});y+=5;}
+if(totS>0){doc.setFont('helvetica','bold');doc.text('TOTALE SCONTO APPLICATO: -'+fmt(totS)+' €',W-12,y,{align:'right'});y+=5;}
+doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('IMPORTO TOTALE: '+fmt(tot)+' €',W-12,y,{align:'right'});y+=8;
+doc.setFontSize(9);doc.setFont('helvetica','normal');
+if(p.acconti.length){doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('ACCONTI RICEVUTI',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(9);
+p.acconti.forEach(a=>{need(8);doc.text('• '+fmtData(a.data)+'   '+fmt(a.importo)+' €'+(a.nota?'  – '+a.nota:''),12,y);y+=5;});
+doc.setFont('helvetica','bold');doc.text('Totale acconti: '+fmt(tac)+' €',W-12,y,{align:'right'});y+=5;
+doc.setFontSize(11);doc.text('SALDO RESIDUO: '+fmt(tot-tac)+' €',W-12,y,{align:'right'});y+=8;doc.setFont('helvetica','normal');doc.setFontSize(9);}
+need(20);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('PIANO DI PAGAMENTO',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(9);
+let sumP=0;p.piano.forEach(r=>{need(8);sumP+=+r.importo||0;doc.text(r.voce,12,y);doc.text(fmt(r.importo)+' €',W-12,y,{align:'right'});y+=5;});
+doc.text('Non pianificato: '+fmt(tot-sumP)+' €',W-12,y,{align:'right'});y+=8;
+if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToSize(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
+need(48);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('ACCETTAZIONE E FIRMA',10,y);y+=5;
+doc.setFont('helvetica','normal');doc.setFontSize(8);
+doc.text(doc.splitTextToSize('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
+if(p.accettato){doc.setFont('helvetica','bold');doc.text('DOCUMENTO ACCETTATO E FIRMATO DAL CLIENTE',10,y);doc.setFont('helvetica','normal');y+=6;}
+const fw=85,fh=25;doc.rect(10,y,fw,fh);doc.rect(W-10-fw,y,fw,fh);y+=fh+4;
+doc.setFontSize(8);doc.text('Firma Cliente',10,y);doc.text('Firma Studio',W-10-fw,y);y+=6;
+const pages=doc.getNumberOfPages();
+for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7);doc.setTextColor(120);doc.text('Generato con AppCenterStudio Premium',10,292);doc.text('Pag. '+i+'/'+pages,W-10,292,{align:'right'});}
+doc.save((p.stato==='contratto'?'Contratto_':'Preventivo_')+p.numero+'.pdf');}
+function refreshHead(){
+$('#studioNameHead').textContent=DB.studio.nome||'Gestionale per studi fotografici';
+const logoEl=$('#studioLogoHead');
+if(DB.studio.logoData){logoEl.src=DB.studio.logoData;logoEl.style.display='';}
+else{logoEl.src='logo.jpg';}
 }
-function renderServices(data = services) {
-  const list = document.getElementById("servicesList");
-  if (data.length === 0) {
-    list.innerHTML = '<div class="empty">Nessun servizio. Clicca su "Nuovo Servizio" per iniziare!</div>';
-    return;
-  }
-  list.innerHTML = data.map(s => {
-    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
-    const videoInfo = s.videographer ? `<div class="videographer-info">Videografo: ${s.videographer}</div>` : '';
-    let progressHtml = '';
-    if (isPreviewType(s.type)) {
-      const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW);
-      const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
-      const serviceDone = countDone(s.steps, STEPS);
-      const servicePct = Math.round((serviceDone / STEPS.length) * 100);
-      progressHtml = `<div class="progress-row">
-        <div><div class="progress-label">ANTEPRIMA</div><div class="progress-bar"><div class="progress-fill" style="width:${previewPct}%; background:#999;"></div></div><div class="progress-text">${previewDone}/${STEPS_PREVIEW.length} (${previewPct}%)</div></div>
-        <div><div class="progress-label">SERVIZIO</div><div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">${serviceDone}/${STEPS.length} (${servicePct}%)</div></div>
-      </div>`;
-    } else if (isComboType(s.type)) {
-      const sections = getComboSections(s.type);
-      progressHtml = '<div class="progress-row">';
-      sections.forEach(secName => {
-        const secSteps = s.sections?.[secName] || {};
-        const done = countDone(secSteps, STEPS);
-        const pct = Math.round((done / STEPS.length) * 100);
-        const secColor = SECTION_COLORS[secName]?.bg || '#111';
-        progressHtml += `<div><div class="progress-label">${secName}</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%; background:${secColor};"></div></div><div class="progress-text">${done}/${STEPS.length} (${pct}%)</div></div>`;
-      });
-      progressHtml += '</div>';
-    } else {
-      const serviceDone = countDone(s.steps, STEPS);
-      const servicePct = Math.round((serviceDone / STEPS.length) * 100);
-      progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">Avanzamento: ${serviceDone}/${STEPS.length} (${servicePct}%)</div>`;
-    }
-    return `<div class="card">
-      <div class="card-header" onclick="toggleSteps(${s.id})">
-        <div class="client-info"><div class="client-name">${s.client}</div><div class="client-date">${s.date ? s.date : ''}</div>${videoInfo}</div>
-        <div class="service-badge" style="background:${color}">${s.type}</div>
-      </div>
-      ${progressHtml}
-      <div class="steps" id="steps-${s.id}">${renderSteps(s)}</div>
-      <div class="card-footer">
-        <button class="btn-view" onclick="viewService(${s.id})">Visualizza</button>
-        <button class="btn-edit" onclick="editService(${s.id})">Modifica</button>
-        <button class="btn-pdf" onclick="generatePDF(${s.id})">PDF</button>
-        <button class="btn-del" onclick="deleteService(${s.id})">Elimina</button>
-      </div>
-    </div>`;
-  }).join("");
-}
-function renderSteps(s) {
-  let html = '';
-  if (isPreviewType(s.type)) {
-    html += `<div class="section-title preview">ANTEPRIMA</div>`;
-    html += STEPS_PREVIEW.map(st => renderStepRow(s, st, 'preview')).join('');
-  }
-  if (isComboType(s.type)) {
-    const sections = getComboSections(s.type);
-    sections.forEach(secName => {
-      html += `<div class="section-title ${secName.toLowerCase().replace(' ', '')}">${secName.toUpperCase()}</div>`;
-      html += STEPS.map(st => renderComboStepRow(s, st, secName)).join('');
-    });
-    return html;
-  }
-  const serviceTitle = isPreviewType(s.type) ? `SERVIZIO (${s.type.replace("Anteprima + ", "")})` : 'WORKFLOW SERVIZIO';
-  html += `<div class="section-title service">${serviceTitle}</div>`;
-  html += STEPS.map(st => renderStepRow(s, st, 'service')).join('');
-  return html;
-}
-function renderStepRow(s, st, section) {
-  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : (s.steps || {});
-  const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
-  let extraHtml = "";
-  if (st.extra) {
-    if (st.extraType === "archivedBy") {
-      const currentVal = d.extra?.archivedBy || "Studio";
-      const isAltro = currentVal && !["Studio", s.videographer].includes(currentVal);
-      const displayVal = isAltro ? currentVal : "";
-      extraHtml = `<div class="step-extra"><select onchange="handleArchiveByChange(${s.id}, '${st.id}', this.value, '${section}')">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateExtra(${s.id},'${st.id}','archivedBy',this.value,'${section}')">` : ''}</div>`;
-    } else if (st.extraType === "cover") {
-      extraHtml = `<div class="step-extra"><input type="text" placeholder="Fornitore copertina" value="${d.extra?.supplier || ''}" onchange="updateExtra(${s.id},'${st.id}','supplier',this.value,'${section}')"><input type="text" placeholder="Articolo prodotto" value="${d.extra?.article || ''}" onchange="updateExtra(${s.id},'${st.id}','article',this.value,'${section}')"></div>`;
-    } else if (st.extraLabel) {
-      extraHtml = `<div class="step-extra"><input type="text" placeholder="${st.extraLabel}" value="${d.extra?.luogo || ''}" onchange="updateExtra(${s.id},'${st.id}','luogo',this.value,'${section}')" style="flex:2;"></div>`;
-    }
-  }
-  return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleStep(${s.id},'${st.id}',this.checked,'${section}')"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateDate(${s.id},'${st.id}',this.value,'${section}')">${extraHtml}</div>`;
-}
-function renderComboStepRow(s, st, sectionName) {
-  const stepsObj = s.sections?.[sectionName] || {};
-  const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
-  let extraHtml = "";
-  if (st.extra) {
-    if (st.extraType === "archivedBy") {
-      const currentVal = d.extra?.archivedBy || "Studio";
-      const isAltro = currentVal && !["Studio", s.videographer].includes(currentVal);
-      const displayVal = isAltro ? currentVal : "";
-      extraHtml = `<div class="step-extra"><select onchange="handleComboArchiveByChange(${s.id}, '${sectionName}', '${st.id}', this.value)">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','archivedBy',this.value)">` : ''}</div>`;
-    } else if (st.extraType === "cover") {
-      extraHtml = `<div class="step-extra"><input type="text" placeholder="Fornitore copertina" value="${d.extra?.supplier || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','supplier',this.value)"><input type="text" placeholder="Articolo prodotto" value="${d.extra?.article || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','article',this.value)"></div>`;
-    } else if (st.extraLabel) {
-      extraHtml = `<div class="step-extra"><input type="text" placeholder="${st.extraLabel}" value="${d.extra?.luogo || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','luogo',this.value)" style="flex:2;"></div>`;
-    }
-  }
-  return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleComboStep(${s.id},'${sectionName}','${st.id}',this.checked)"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateComboDate(${s.id},'${sectionName}','${st.id}',this.value)">${extraHtml}</div>`;
-}
-function ensureStep(stepsObj, stepId) {
-  if (!stepsObj[stepId]) stepsObj[stepId] = { done: false, date: "", extra: {} };
-  if (!stepsObj[stepId].extra) stepsObj[stepId].extra = {};
-  return stepsObj[stepId];
-}
-function handleArchiveByChange(serviceId, stepId, value, section) {
-  const s = services.find(x => x.id === serviceId); if (!s) return;
-  if (value === "__altro__") return;
-  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
-  ensureStep(stepsObj, stepId).extra.archivedBy = value;
-  save(); renderServices();
-  document.getElementById("steps-" + serviceId).classList.add("open");
-}
-function handleComboArchiveByChange(serviceId, sectionName, stepId, value) {
-  const s = services.find(x => x.id === serviceId); if (!s) return;
-  if (value === "__altro__") return;
-  if (!s.sections) s.sections = {};
-  if (!s.sections[sectionName]) s.sections[sectionName] = {};
-  ensureStep(s.sections[sectionName], stepId).extra.archivedBy = value;
-  save(); renderServices();
-  document.getElementById("steps-" + serviceId).classList.add("open");
-}
-function toggleSteps(id) { document.getElementById("steps-" + id).classList.toggle("open"); }
-function toggleStep(id, stepId, checked, section) {
-  const s = services.find(x => x.id === id); if (!s) return;
-  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
-  const st = ensureStep(stepsObj, stepId);
-  st.done = checked;
-  if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
-  if ((stepId === "archiveVideo" && section === 'service') || (stepId === "p_archiveVideo" && section === 'preview')) {
-    if (!st.extra.archivedBy) st.extra.archivedBy = "Studio";
-  }
-  save(); renderServices();
-  document.getElementById("steps-" + id).classList.add("open");
-  renderTable();
-}
-function toggleComboStep(serviceId, sectionName, stepId, checked) {
-  const s = services.find(x => x.id === serviceId); if (!s) return;
-  if (!s.sections) s.sections = {};
-  if (!s.sections[sectionName]) s.sections[sectionName] = {};
-  const st = ensureStep(s.sections[sectionName], stepId);
-  st.done = checked;
-  if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
-  if (stepId === "archiveVideo" && !st.extra.archivedBy) st.extra.archivedBy = "Studio";
-  save(); renderServices();
-  document.getElementById("steps-" + serviceId).classList.add("open");
-  renderTable();
-}
-function updateDate(id, stepId, val, section) {
-  const s = services.find(x => x.id === id); if (!s) return;
-  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
-  ensureStep(stepsObj, stepId).date = val; save();
-}
-function updateComboDate(serviceId, sectionName, stepId, val) {
-  const s = services.find(x => x.id === serviceId); if (!s) return;
-  if (!s.sections) s.sections = {};
-  if (!s.sections[sectionName]) s.sections[sectionName] = {};
-  ensureStep(s.sections[sectionName], stepId).date = val; save();
-}
-function updateExtra(id, stepId, field, val, section) {
-  const s = services.find(x => x.id === id); if (!s) return;
-  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
-  ensureStep(stepsObj, stepId).extra[field] = val; save();
-}
-function updateComboExtra(serviceId, sectionName, stepId, field, val) {
-  const s = services.find(x => x.id === serviceId); if (!s) return;
-  if (!s.sections) s.sections = {};
-  if (!s.sections[sectionName]) s.sections[sectionName] = {};
-  ensureStep(s.sections[sectionName], stepId).extra[field] = val; save();
-}
-function deleteService(id) {
-  if (!confirm("Eliminare questo servizio?")) return;
-  services = services.filter(x => x.id !== id);
-  save(); renderServices(); renderTable();
-}
-function save() { localStorage.setItem("gl_services", JSON.stringify(services)); }
-function viewService(id) {
-  const s = services.find(x => x.id === id); if (!s) return;
-  let html = `<div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${s.client}</div></div>
-    <div class="detail-row"><div class="detail-label">Tipo Servizio</div><div class="detail-value">${s.type}</div></div>
-    <div class="detail-row"><div class="detail-label">Data Evento</div><div class="detail-value">${s.date || 'Non specificata'}</div></div>
-    <div class="detail-row"><div class="detail-label">Videografo/Collega</div><div class="detail-value">${s.videographer || 'Non specificato'}</div></div>`;
-  if (isPreviewType(s.type)) {
-    const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW);
-    const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
-    const serviceDone = countDone(s.steps, STEPS);
-    const servicePct = Math.round((serviceDone / STEPS.length) * 100);
-    html += `<div class="detail-row" style="background:#f0f0f0;"><div class="detail-label">Avanzamento ANTEPRIMA</div><div class="detail-value">${previewDone}/${STEPS_PREVIEW.length} completati (${previewPct}%)</div></div>`;
-    html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
-    html += `<h3 style="margin:20px 0 10px; padding:10px; background:#999; color:white; border-radius:10px;">ANTEPRIMA</h3>`;
-    STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
-    html += `<h3 style="margin:20px 0 10px; padding:10px; background:#444; color:white; border-radius:10px;">SERVIZIO</h3>`;
-    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
-  } else if (isComboType(s.type)) {
-    const sections = getComboSections(s.type);
-    sections.forEach(secName => {
-      const secSteps = s.sections?.[secName] || {};
-      const done = countDone(secSteps, STEPS);
-      const pct = Math.round((done / STEPS.length) * 100);
-      const secColor = SECTION_COLORS[secName]?.bg || '#111';
-      html += `<div class="detail-row" style="background:${secColor};color:#fff;"><div class="detail-label">Avanzamento ${secName}</div><div class="detail-value">${done}/${STEPS.length} completati (${pct}%)</div></div>`;
-    });
-    sections.forEach(secName => {
-      const secColor = SECTION_COLORS[secName]?.bg || '#111';
-      html += `<h3 style="margin:20px 0 10px; padding:10px; background:${secColor}; color:white; border-radius:10px;">${secName.toUpperCase()}</h3>`;
-      const secSteps = s.sections?.[secName] || {};
-      STEPS.forEach(st => { const d = secSteps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
-    });
-  } else {
-    const serviceDone = countDone(s.steps, STEPS);
-    const servicePct = Math.round((serviceDone / STEPS.length) * 100);
-    html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
-    html += `<h3 style="margin:20px 0 10px; padding:10px; background:#444; color:white; border-radius:10px;">SERVIZIO</h3>`;
-    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
-  }
-  document.getElementById("detailTitle").textContent = `${s.client} - ${s.type}`;
-  document.getElementById("detailBody").innerHTML = html;
-  document.getElementById("detailModal").classList.add("active");
-}
-function renderStepDetail(st, d) {
-  const status = d.done ? 'Completato' : 'In attesa';
-  const dateStr = d.date ? ` - ${d.date}` : '';
-  const extraInfo = [];
-  if (st.extraType === "archivedBy" && d.extra?.archivedBy) extraInfo.push(`Archiviato da: ${d.extra.archivedBy}`);
-  if (st.extraType === "cover") {
-    if (d.extra?.supplier) extraInfo.push(`Fornitore: ${d.extra.supplier}`);
-    if (d.extra?.article) extraInfo.push(`Articolo: ${d.extra.article}`);
-  }
-  if (st.extraLabel && d.extra?.luogo) extraInfo.push(`Luogo: ${d.extra.luogo}`);
-  return `<div class="step-detail ${d.done ? 'completed' : ''}"><div class="step-name">${status} - ${st.label}${dateStr}</div>${extraInfo.length ? `<div class="step-extra-info">${extraInfo.join(' | ')}</div>` : ''}</div>`;
-}
-function editService(id) {
-  const s = services.find(x => x.id === id); if (!s) return;
-  editingId = id;
-  document.getElementById("editClient").value = s.client;
-  document.getElementById("editType").value = s.type;
-  document.getElementById("editDate").value = s.date || '';
-  document.getElementById("editVideographer").value = s.videographer || '';
-  document.getElementById("editModal").classList.add("active");
-}
-function saveEdit() {
-  if (!editingId) return;
-  const s = services.find(x => x.id === editingId); if (!s) return;
-  const oldType = s.type;
-  s.client = document.getElementById("editClient").value.trim();
-  s.type = document.getElementById("editType").value;
-  s.date = document.getElementById("editDate").value;
-  s.videographer = document.getElementById("editVideographer").value.trim();
-  if (isPreviewType(s.type) && !s.previewSteps) { s.previewSteps = {}; STEPS_PREVIEW.forEach(st => s.previewSteps[st.id] = { done: false, date: "", extra: {} }); }
-  if (!isPreviewType(s.type) && isPreviewType(oldType)) delete s.previewSteps;
-  if (isComboType(s.type) && !s.sections) { s.sections = {}; COMBO_TYPES[s.type].forEach(secName => { s.sections[secName] = {}; STEPS.forEach(st => s.sections[secName][st.id] = { done: false, date: "", extra: {} }); }); }
-  if (!isComboType(s.type) && isComboType(oldType)) delete s.sections;
-  save(); closeModal('editModal'); renderServices(); renderTable();
-}
-async function generatePDF(id) {
-  const s = services.find(x => x.id === id); if (!s) return;
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFillColor(17, 17, 17);
-  doc.rect(0, 0, 210, 40, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(24); doc.text("AppCenterStudio Premium", 15, 20);
-  doc.setFontSize(12); doc.text("Workflow Foto & Video", 15, 28);
-  doc.setTextColor(0, 0, 0); doc.setFontSize(14);
-  doc.text(`Cliente: ${s.client}`, 15, 55);
-  doc.text(`Tipo: ${s.type}`, 15, 63);
-  doc.text(`Data Evento: ${s.date || 'N/D'}`, 15, 71);
-  doc.text(`Videografo: ${s.videographer || 'N/D'}`, 15, 79);
-  let y = 92;
-  if (isPreviewType(s.type)) {
-    doc.setFillColor(153, 153, 153); doc.rect(15, y - 5, 180, 8, 'F');
-    doc.setTextColor(0, 0, 0); doc.setFontSize(12); doc.text("ANTEPRIMA", 20, y); y += 8;
-    STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
-    y += 5;
-    doc.setFillColor(68, 68, 68); doc.rect(15, y - 5, 180, 8, 'F');
-    doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
-    doc.setTextColor(0, 0, 0); y += 8;
-    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
-  } else if (isComboType(s.type)) {
-    const sections = getComboSections(s.type);
-    sections.forEach(secName => {
-      const secColor = SECTION_COLORS[secName]?.hex || '#111';
-      const rgb = hexToRgb(secColor);
-      doc.setFillColor(rgb.r, rgb.g, rgb.b); doc.rect(15, y - 5, 180, 8, 'F');
-      doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text(secName.toUpperCase(), 20, y);
-      doc.setTextColor(0, 0, 0); y += 8;
-      const secSteps = s.sections?.[secName] || {};
-      STEPS.forEach(st => { const d = secSteps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
-      y += 5;
-    });
-  } else {
-    doc.setFillColor(68, 68, 68); doc.rect(15, y - 5, 180, 8, 'F');
-    doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
-    doc.setTextColor(0, 0, 0); y += 8;
-    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
-  }
-  doc.setFontSize(10); doc.setTextColor(150, 150, 150);
-  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, 15, 285);
-  doc.save(`AppCenterStudio_${s.client.replace(/\s+/g, '_')}_${s.type.replace(/\s+/g, '_')}.pdf`);
-}
-function renderPDFStep(doc, st, d, y) {
-  const status = d.done ? "[X]" : "[ ]";
-  const dateStr = d.date ? ` - ${d.date}` : '';
-  const cleanLabel = STEP_LABEL_CLEAN[st.label] || st.label;
-  doc.text(`${status} ${cleanLabel}${dateStr}`, 20, y); y += 7;
-  const extra = getExtraText(st, d);
-  if (extra) { doc.setTextColor(100, 100, 100); doc.text(`    -> ${extra}`, 20, y); doc.setTextColor(0, 0, 0); y += 7; }
-  if (y > 270) { doc.addPage(); y = 20; }
-  return y;
-}
-function hexToRgb(hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 17, g: 17, b: 17 };
-}
-function getExtraText(st, d) {
-  const extra = [];
-  if (st.extraType === "archivedBy" && d.extra?.archivedBy) extra.push(`Archiviato da: ${d.extra.archivedBy}`);
-  if (st.extraType === "cover") { if (d.extra?.supplier) extra.push(`Fornitore: ${d.extra.supplier}`); if (d.extra?.article) extra.push(`Articolo: ${d.extra.article}`); }
-  if (st.extraLabel && d.extra?.luogo) extra.push(`Luogo: ${d.extra.luogo}`);
-  return extra.join(' | ');
-}
-function showArchive() { document.getElementById("servicesList").style.display = "none"; document.getElementById("tableView").style.display = "none"; document.getElementById("newService").classList.remove("open"); document.getElementById("archiveView").style.display = "block"; filterServices(); }
-function showTable() { document.getElementById("servicesList").style.display = "none"; document.getElementById("archiveView").style.display = "none"; document.getElementById("newService").classList.remove("open"); document.getElementById("tableView").style.display = "block"; renderTable(); }
-function showMain() { document.getElementById("archiveView").style.display = "none"; document.getElementById("tableView").style.display = "none"; document.getElementById("servicesList").style.display = "block"; renderServices(); }
-function filterServices() {
-  const search = document.getElementById("searchBox").value.toLowerCase();
-  const type = document.getElementById("filterType").value;
-  let filtered = services;
-  if (search) filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
-  if (type) filtered = filtered.filter(s => s.type === type);
-  const list = document.getElementById("archiveList");
-  if (filtered.length === 0) { list.innerHTML = '<div class="empty">Nessun servizio trovato</div>'; return; }
-  list.innerHTML = filtered.map(s => {
-    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
-    const videoInfo = s.videographer ? `<div class="videographer-info">Videografo: ${s.videographer}</div>` : '';
-    let progressHtml = '';
-    if (isPreviewType(s.type)) {
-      const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW); const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
-      const serviceDone = countDone(s.steps, STEPS); const servicePct = Math.round((serviceDone / STEPS.length) * 100);
-      progressHtml = `<div class="progress-row"><div><div class="progress-label">ANTEPRIMA</div><div class="progress-bar"><div class="progress-fill" style="width:${previewPct}%; background:#999;"></div></div><div class="progress-text">${previewDone}/${STEPS_PREVIEW.length} (${previewPct}%)</div></div><div><div class="progress-label">SERVIZIO</div><div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">${serviceDone}/${STEPS.length} (${servicePct}%)</div></div></div>`;
-    } else if (isComboType(s.type)) {
-      const sections = getComboSections(s.type); progressHtml = '<div class="progress-row">';
-      sections.forEach(secName => { const secSteps = s.sections?.[secName] || {}; const done = countDone(secSteps, STEPS); const pct = Math.round((done / STEPS.length) * 100); const secColor = SECTION_COLORS[secName]?.bg || '#111'; progressHtml += `<div><div class="progress-label">${secName}</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%; background:${secColor};"></div></div><div class="progress-text">${done}/${STEPS.length} (${pct}%)</div></div>`; });
-      progressHtml += '</div>';
-    } else { const serviceDone = countDone(s.steps, STEPS); const servicePct = Math.round((serviceDone / STEPS.length) * 100); progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">Completamento: ${servicePct}%</div>`; }
-    return `<div class="card"><div class="card-header"><div class="client-info"><div class="client-name">${s.client}</div><div class="client-date">${s.date ? s.date : ''}</div>${videoInfo}</div><div class="service-badge" style="background:${color}">${s.type}</div></div>${progressHtml}<div class="card-footer"><button class="btn-view" onclick="viewService(${s.id})">Visualizza</button><button class="btn-edit" onclick="editService(${s.id})">Modifica</button><button class="btn-pdf" onclick="generatePDF(${s.id})">PDF</button><button class="btn-del" onclick="deleteService(${s.id})">Elimina</button></div></div>`;
-  }).join("");
-}
-function renderTable() {
-  const search = (document.getElementById("tableSearch")?.value || "").toLowerCase();
-  let filtered = services.slice();
-  if (search) {
-    filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || s.type.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
-  }
-  filtered.sort((a, b) => {
-    const orderA = TYPE_ORDER.indexOf(a.type);
-    const orderB = TYPE_ORDER.indexOf(b.type);
-    if (orderA !== orderB) return orderA - orderB;
-    return a.client.localeCompare(b.client, 'it');
-  });
-  const table = document.getElementById("workflowTable");
-  if (filtered.length === 0) {
-    table.innerHTML = '<tr><td colspan="11" style="padding:40px;text-align:center;color:#888;">Nessun servizio trovato</td></tr>';
-    return;
-  }
-  let thead = '<thead><tr>';
-  thead += '<th>#</th><th>Cliente</th><th class="center">Tipo Servizio</th><th class="center">Data Evento</th><th>Videografo</th><th class="center">Video Pronto</th><th class="center">Data Video</th><th>Ultimo Step (Servizio)</th><th class="center">Data Step</th><th class="center">Stato</th><th class="center">Azioni</th>';
-  thead += '</tr></thead>';
-  let tbody = '<tbody>';
-  filtered.forEach((s, idx) => {
-    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
-    const lastStep = getLastMainStepInfo(s);
-    const videoDate = getVideoReadyDate(s);
-    let totalDone = 0, totalSteps = 0;
-    if (isPreviewType(s.type)) {
-      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
-      totalSteps = STEPS_PREVIEW.length + STEPS.length;
-    } else if (isComboType(s.type)) {
-      const sections = getComboSections(s.type);
-      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
-    } else {
-      totalDone = countDone(s.steps, STEPS);
-      totalSteps = STEPS.length;
-    }
-    const pct = Math.round((totalDone / totalSteps) * 100);
-    const pctClass = pct === 100 ? 'pct-100' : pct >= 70 ? 'pct-high' : pct >= 40 ? 'pct-mid' : pct > 0 ? 'pct-low' : 'pct-zero';
-    let lastStepHtml = '';
-    if (lastStep) {
-      const sectionTag = lastStep.section ? `<span class="section-tag" style="background:${SECTION_COLORS[lastStep.section]?.hex || '#111'}">${lastStep.section}</span>` : '';
-      lastStepHtml = `<span class="td-laststep">${lastStep.label}${sectionTag}</span>`;
-    } else {
-      lastStepHtml = `<span class="td-laststep empty">Nessuno step completato</span>`;
-    }
-    const dateDisplay = lastStep?.date ? formatDate(lastStep.date) : '-';
-    const videoDisplay = videoDate ? formatDate(videoDate) : '-';
-    const videoDone = videoDate ? 'OK' : '-';
-    tbody += '<tr>';
-    tbody += `<td style="color:#888;font-size:0.85em;">${idx + 1}</td>`;
-    tbody += `<td class="td-client">${s.client}</td>`;
-    tbody += `<td class="td-type"><span class="badge-cell" style="background:${color}">${s.type}</span></td>`;
-    tbody += `<td class="td-center">${s.date ? formatDate(s.date) : '-'}</td>`;
-    tbody += `<td>${s.videographer || '-'}</td>`;
-    tbody += `<td class="td-center">${videoDone}</td>`;
-    tbody += `<td class="td-center" style="font-weight:600;color:#444;">${videoDisplay}</td>`;
-    tbody += `<td>${lastStepHtml}</td>`;
-    tbody += `<td class="td-center" style="font-weight:600;color:#444;">${dateDisplay}</td>`;
-    tbody += `<td class="td-center"><span class="pct-badge ${pctClass}">${pct}%</span></td>`;
-    tbody += `<td><div class="cell-actions">
-      <button class="mini-view" onclick="viewService(${s.id})" title="Visualizza">V</button>
-      <button class="mini-edit" onclick="editService(${s.id})" title="Modifica">M</button>
-      <button class="mini-pdf" onclick="generatePDF(${s.id})" title="PDF">P</button>
-      <button class="mini-del" onclick="deleteService(${s.id})" title="Elimina">X</button>
-    </div></td>`;
-    tbody += '</tr>';
-  });
-  tbody += '</tbody>';
-  table.innerHTML = thead + tbody;
-}
-function formatDate(dateStr) {
-  if (!dateStr) return '-';
-  const parts = dateStr.split('-');
-  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-  return dateStr;
-}
-function generateTablePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  doc.setFillColor(17, 17, 17);
-  doc.rect(0, 0, 297, 25, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(20);
-  doc.text("AppCenterStudio Premium - Stato Lavori Clienti", 14, 16);
-  const sorted = services.slice().sort((a, b) => {
-    const orderA = TYPE_ORDER.indexOf(a.type);
-    const orderB = TYPE_ORDER.indexOf(b.type);
-    if (orderA !== orderB) return orderA - orderB;
-    return a.client.localeCompare(b.client, 'it');
-  });
-  const head = [['#', 'Cliente', 'Tipo', 'Data Evento', 'Videografo', 'Video Pronto', 'Data Video', 'Ultimo Step', 'Data Step', 'Stato']];
-  const body = sorted.map((s, idx) => {
-    const lastStep = getLastMainStepInfo(s);
-    const videoDate = getVideoReadyDate(s);
-    let totalDone = 0, totalSteps = 0;
-    if (isPreviewType(s.type)) {
-      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
-      totalSteps = STEPS_PREVIEW.length + STEPS.length;
-    } else if (isComboType(s.type)) {
-      const sections = getComboSections(s.type);
-      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
-    } else {
-      totalDone = countDone(s.steps, STEPS);
-      totalSteps = STEPS.length;
-    }
-    const pct = Math.round((totalDone / totalSteps) * 100);
-    const cleanLabel = lastStep ? (STEP_LABEL_CLEAN[lastStep.label] || lastStep.label) : '-';
-    return [
-      idx + 1, s.client, s.type,
-      s.date ? formatDate(s.date) : '-',
-      s.videographer || '-',
-      videoDate ? 'OK' : '-',
-      videoDate ? formatDate(videoDate) : '-',
-      cleanLabel,
-      lastStep?.date ? formatDate(lastStep.date) : '-',
-      `${pct}%`
-    ];
-  });
-  doc.autoTable({
-    startY: 30,
-    margin: { left: 8, right: 8, top: 30, bottom: 15 },
-    head: head,
-    body: body,
-    theme: 'grid',
-    headStyles: { fillColor: [68, 68, 68], textColor: 255, fontSize: 7, halign: 'center' },
-    bodyStyles: { fontSize: 6.5, cellPadding: 2 },
-    columnStyles: {
-      0: { cellWidth: 8, halign: 'center' },
-      1: { cellWidth: 50 },
-      2: { cellWidth: 38, halign: 'center' },
-      3: { cellWidth: 18, halign: 'center' },
-      4: { cellWidth: 38 },
-      5: { cellWidth: 18, halign: 'center' },
-      6: { cellWidth: 18, halign: 'center' },
-      7: { cellWidth: 35 },
-      8: { cellWidth: 18, halign: 'center' },
-      9: { cellWidth: 13, halign: 'center', fontStyle: 'bold' }
-    },
-    alternateRowStyles: { fillColor: [251, 251, 251] }
-  });
-  const pageCount = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFontSize(9);
-    doc.setTextColor(150, 150, 150);
-    doc.text(`Pagina ${i} di ${pageCount} - Generato il ${new Date().toLocaleDateString('it-IT')}`, 14, doc.internal.pageSize.height - 10);
-  }
-  doc.save(`AppCenterStudio_Stato_Lavori_${new Date().toISOString().slice(0,10)}.pdf`);
-}
-function generateArchivePDF() {
-  const search = (document.getElementById("searchBox")?.value || "").toLowerCase();
-  const type = document.getElementById("filterType")?.value || "";
-  let filtered = services.slice();
-  if (search) filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
-  if (type) filtered = filtered.filter(s => s.type === type);
-  filtered.sort((a, b) => {
-    const orderA = TYPE_ORDER.indexOf(a.type);
-    const orderB = TYPE_ORDER.indexOf(b.type);
-    if (orderA !== orderB) return orderA - orderB;
-    return a.client.localeCompare(b.client, 'it');
-  });
-  if (filtered.length === 0) {
-    alert("Nessun cliente nell'archivio con i filtri attuali.");
-    return;
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  doc.setFillColor(17, 17, 17);
-  doc.rect(0, 0, 297, 30, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(22);
-  doc.text("AppCenterStudio Premium - Archivio Clienti", 14, 14);
-  doc.setFontSize(11);
-  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')} - ${filtered.length} servizi`, 14, 23);
-  const head = [['#', 'Cliente', 'Tipo', 'Data', 'Videografo', 'Video', 'Data Video', 'Ult. Step Anteprima', 'Data Anteprima', 'Ult. Step Servizio', 'Data Servizio', 'Stato']];
-  const body = filtered.map((s, idx) => {
-    const lastMainStep = getLastMainStepInfo(s);
-    const lastPreviewStep = getLastPreviewStepInfo(s);
-    const videoDate = getVideoReadyDate(s);
-    let totalDone = 0, totalSteps = 0;
-    if (isPreviewType(s.type)) {
-      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
-      totalSteps = STEPS_PREVIEW.length + STEPS.length;
-    } else if (isComboType(s.type)) {
-      const sections = getComboSections(s.type);
-      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
-    } else {
-      totalDone = countDone(s.steps, STEPS);
-      totalSteps = STEPS.length;
-    }
-    const pct = Math.round((totalDone / totalSteps) * 100);
-    const cleanMainLabel = lastMainStep ? (STEP_LABEL_CLEAN[lastMainStep.label] || lastMainStep.label) : '-';
-    const mainDate = lastMainStep?.date ? formatDate(lastMainStep.date) : '-';
-    const cleanPreviewLabel = lastPreviewStep ? (STEP_LABEL_CLEAN[lastPreviewStep.label] || lastPreviewStep.label) : '-';
-    const previewDate = lastPreviewStep?.date ? formatDate(lastPreviewStep.date) : '-';
-    return [
-      idx + 1, s.client, s.type,
-      s.date ? formatDate(s.date) : '-',
-      s.videographer || '-',
-      videoDate ? 'OK' : '-',
-      videoDate ? formatDate(videoDate) : '-',
-      cleanPreviewLabel, previewDate,
-      cleanMainLabel, mainDate,
-      `${pct}%`
-    ];
-  });
-  doc.autoTable({
-    startY: 35,
-    margin: { left: 6, right: 6, top: 35, bottom: 15 },
-    head: head,
-    body: body,
-    theme: 'grid',
-    headStyles: { fillColor: [68, 68, 68], textColor: 255, fontSize: 6, halign: 'center', fontStyle: 'bold' },
-    bodyStyles: { fontSize: 6, cellPadding: 1.8 },
-    columnStyles: {
-      0: { cellWidth: 7, halign: 'center' },
-      1: { cellWidth: 42 },
-      2: { cellWidth: 30, halign: 'center' },
-      3: { cellWidth: 17, halign: 'center' },
-      4: { cellWidth: 32 },
-      5: { cellWidth: 12, halign: 'center' },
-      6: { cellWidth: 17, halign: 'center' },
-      7: { cellWidth: 32 },
-      8: { cellWidth: 17, halign: 'center' },
-      9: { cellWidth: 32 },
-      10: { cellWidth: 17, halign: 'center' },
-      11: { cellWidth: 12, halign: 'center', fontStyle: 'bold' }
-    },
-    alternateRowStyles: { fillColor: [251, 251, 251] },
-    didParseCell: function(data) {
-      if (data.section === 'body' && data.column.index === 11) {
-        if (data.cell.raw === '100%') {
-          data.cell.styles.fillColor = [17, 17, 17];
-          data.cell.styles.textColor = [255, 255, 255];
-        }
-      }
-      if (data.section === 'body' && data.column.index === 5) {
-        if (data.cell.raw === 'OK') {
-          data.cell.styles.fillColor = [238, 238, 238];
-        }
-      }
-    }
-  });
-  const pageCount = doc.internal.getNumberOfPages();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text(`Nota: L'ultimo step del servizio principale è sempre mostrato separatamente dall'anteprima`, 14, doc.internal.pageSize.height - 15);
-    doc.text(`Pagina ${i} di ${pageCount}`, 14, doc.internal.pageSize.height - 8);
-  }
-  doc.save(`AppCenterStudio_Archivio_Clienti_${new Date().toISOString().slice(0,10)}.pdf`);
-}
-function doBackup() {
-  const data = { version: 19, exportedAt: new Date().toISOString(), services };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "AppCenterStudio_Backup_" + new Date().toISOString().slice(0,10) + ".json";
-  a.click();
-}
-function doRestore(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const rawText = ev.target.result;
-      let data;
-      try { data = JSON.parse(rawText); }
-      catch (parseErr) { alert("ERRORE: Il file non è un JSON valido.\n\n" + parseErr.message); return; }
-      let servicesToImport = null;
-      if (data.services && Array.isArray(data.services)) servicesToImport = data.services;
-      else if (Array.isArray(data)) servicesToImport = data;
-      else if (data.data && Array.isArray(data.data)) servicesToImport = data.data;
-      if (!servicesToImport || servicesToImport.length === 0) {
-        alert("ERRORE: Nessun servizio trovato nel file di backup."); return;
-      }
-      const info = `File di backup trovato:\n\n` +
-        `- Servizi: ${servicesToImport.length}\n` +
-        `- Versione: ${data.version || 'sconosciuta'}\n` +
-        `- Data export: ${data.exportedAt || 'sconosciuta'}\n\n` +
-        `Vuoi ripristinare questi ${servicesToImport.length} servizi?\n\n` +
-        `ATTENZIONE: i dati attuali verranno sostituiti.`;
-      if (!confirm(info)) { e.target.value = ""; return; }
-      const migrated = servicesToImport.map(migrateService).filter(s => s !== null);
-      if (migrated.length === 0) { alert("ERRORE: Nessun servizio valido dopo la migrazione."); return; }
-      services = migrated;
-      save();
-      renderServices();
-      renderTable();
-      alert(`RIPRISTINO COMPLETATO!\n\n${migrated.length} servizi recuperati con successo.`);
-    } catch (err) {
-      alert("ERRORE DURANTE IL RIPRISTINO:\n\n" + err.message);
-      console.error(err);
-    }
-  };
-  reader.onerror = () => { alert("ERRORE: Impossibile leggere il file."); };
-  reader.readAsText(file);
-  e.target.value = "";
-}
-function closeModal(id) { document.getElementById(id).classList.remove("active"); editingId = null; }
-services = services.map(migrateService).filter(s => s !== null);
-save();
-renderServices();
+refreshHead();
+renderForm();
+renderArchivio();
+renderClienti();
+renderListini();
+renderStudio();
 </script>
 </body>
 </html>
