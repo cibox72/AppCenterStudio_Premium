@@ -1,4 +1,3 @@
-<!-- PARTE 1/4 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -85,7 +84,7 @@ summary { cursor:pointer; font-weight:bold; }
     <div id="logoPreviewBox"></div>
     <button class="btn" onclick="salvaIdentita()">Salva e pubblica</button>
   </div>
-<!-- PARTE 2/4 -->
+
   <div class="card">
     <h2>Nuovo cliente</h2>
     <label>Nome</label><input type="text" id="ncNome">
@@ -215,6 +214,27 @@ async function deployWithMerge(newFiles, contents, shaToPath, progress) {
   return dep;
 }
 
+/* ===== NUOVA FUNZIONE: rende il sito Netlify pubblico (toglie eventuale password) ===== */
+async function rendiSitoPubblico() {
+  const token = localStorage.getItem('netlify_token');
+  const siteId = localStorage.getItem('netlify_site');
+  if (!token || !siteId) return false;
+  try {
+    const r = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password: null, visibility: 'public' })
+    });
+    return r.ok;
+  } catch(e) {
+    console.warn('Errore rendiSitoPubblico:', e);
+    return false;
+  }
+}
+
 function aggiornaStatoNetlify() {
   const token = localStorage.getItem('netlify_token');
   const siteId = localStorage.getItem('netlify_site');
@@ -264,10 +284,12 @@ async function autoSetup() {
   localStorage.setItem('netlify_site', site.id);
   localStorage.setItem('netlify_sitename', site.name);
   localStorage.setItem('netlify_siteurl', site.ssl_url || site.url);
+  /* Rendi il sito pubblico automaticamente (toglie eventuali password/protezioni) */
+  await rendiSitoPubblico();
   await pubblicaBase();
   aggiornaStatoNetlify();
 }
-<!-- PARTE 3/4 -->
+
 async function pubblicaBase() {
   const headers = '/*\n  Access-Control-Allow-Origin: *\n  Access-Control-Allow-Methods: GET, POST, OPTIONS\n  Access-Control-Allow-Headers: Content-Type\n*/\n';
   const forms = '<!DOCTYPE html><html><body><form name="selezioni" netlify><input name="tipo"><input name="codice"><input name="cliente"><textarea name="dati"></textarea></form></body></html>';
@@ -293,7 +315,7 @@ function generaCodiceCollegamento() {
   navigator.clipboard.writeText(code).then(()=>alert('Codice collegamento copiato. Invialo allo studio.'));
 }
 
-function applicaCodiceCollegamento() {
+async function applicaCodiceCollegamento() {
   const code = document.getElementById('codiceCollegamento').value.trim();
   if (!code) return alert('Incolla il codice ricevuto.');
   try {
@@ -305,7 +327,9 @@ function applicaCodiceCollegamento() {
     if (obj.sitename) localStorage.setItem('netlify_sitename', obj.sitename);
     if (obj.siteurl) localStorage.setItem('netlify_siteurl', obj.siteurl);
     document.getElementById('codiceCollegamento').value = '';
-    alert('Collegamento completato. Ora puoi caricare le foto.');
+    /* Rendi il sito pubblico automaticamente (toglie eventuali password/protezioni) */
+    await rendiSitoPubblico();
+    alert('Collegamento completato. Sito impostato come pubblico. Ora puoi caricare le foto.');
     refreshStatus();
   } catch(e) { alert('Codice non valido.'); }
 }
@@ -415,7 +439,7 @@ async function caricaFoto() {
   progress.textContent = 'Completato';
   renderArchivio();
 }
-<!-- PARTE 4/4 -->
+
 function renderArchivio() {
   const box = document.getElementById('archivioLista');
   const siteName = localStorage.getItem('netlify_sitename') || '';
