@@ -30,13 +30,18 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .msg .time{font-size:11px;opacity:.7;margin-bottom:4px}
 .msg .text{font-size:14px;line-height:1.5;white-space:pre-wrap}
 .nota{background:#f5f5f5;border-left:4px solid #111;padding:12px;border-radius:8px;font-size:13px;line-height:1.6;margin-bottom:16px}
+.warn-big{background:#111;color:#fff;border:3px solid #111;border-radius:14px;padding:20px;margin-bottom:20px;font-size:14px;line-height:1.7}
+.warn-big h3{font-family:Georgia,serif;font-size:17px;margin-bottom:10px;color:#fff}
+.warn-big b{color:#fff}
+.warn-big .btn{background:#fff;color:#111;margin-top:12px}
+.warn-big .btn:hover{background:#ddd}
 .anydesk-box{background:#111;color:#fff;padding:20px;border-radius:12px;margin-top:20px}
 .anydesk-box h3{font-family:Georgia,serif;margin-bottom:12px}
 .anydesk-box p{font-size:13px;line-height:1.6;margin-bottom:12px}
 .anydesk-box input{background:#fff;color:#111;border:none;padding:10px;border-radius:8px;font-size:14px;width:100%;margin-bottom:10px}
 .anydesk-box .btn{background:#fff;color:#111}
 .anydesk-box .btn:hover{background:#ddd}
-.anydesk-code{background:#fff;color:#111;border-radius:8px;padding:10px;font-family:monospace;font-size:18px;font-weight:700;text-align:center;margin-bottom:10px}
+.promemoria{background:#fff;color:#111;border:2px solid #fff;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.6;margin-bottom:14px;font-weight:600}
 .studio-list{list-style:none;padding:0}
 .studio-item{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:14px;margin-bottom:12px}
 .studio-item h3{font-family:Georgia,serif;font-size:15px;margin-bottom:8px}
@@ -75,6 +80,7 @@ window.addEventListener('DOMContentLoaded',()=>{isAdminMode?renderAdmin():render
 
 /* ================= NETLIFY (file JSON chat) ================= */
 function netlifyCreds(){return{tok:localStorage.getItem('netlify_token'),site:localStorage.getItem('netlify_site')};}
+function netlifyOk(){const c=netlifyCreds();return !!(c.tok&&c.site);}
 async function siteUrl(){
  let u=localStorage.getItem('netlify_url');if(u)return u;
  const{tok,site}=netlifyCreds();if(!tok||!site)return null;
@@ -87,7 +93,7 @@ async function leggiFileNetlify(path){
 }
 async function pubblicaFileNetlify(path,obj){
  const{tok,site}=netlifyCreds();
- if(!tok||!site)throw new Error('Netlify non e\' configurato in questo browser.');
+ if(!tok||!site)throw new Error('Netlify non e\' configurato: inserisci prima il codice ACS- del fornitore nell\'app Clienti & Foto.');
  const resp=await fetch(NETLIFY_API+'/sites/'+site+'/files',{headers:{Authorization:'Bearer '+tok}});
  const existing=resp.ok?await resp.json():[];
  const files={};existing.forEach(f=>{files[f.path]=f;});
@@ -122,11 +128,18 @@ function disegnaChat(box,msgs,etichettaStudio){
  }).join('');
  box.scrollTop=box.scrollHeight;
 }
+function avvisoCodiceMancante(){alert('PRIMA DI CONTINUARE: apri l\'app "Clienti & Foto", incolla nel campo "Codice ricevuto (per lo studio)" il codice ACS- che ti ha mandato il fornitore e premi "Collega". Poi torna qui e ricarica la pagina.');}
 
 /* ================= MODALITA' STUDIO ================= */
 function renderStudio(){
  if(!studioCode){$('content').innerHTML='<div class="card"><h2>Accesso non valido</h2><p style="color:var(--soft);font-size:14px">Apri questa pagina dal pulsante "Assistenza Online" nella home del tuo studio.</p></div>';return;}
- $('content').innerHTML=`
+ const ok=netlifyOk();
+ $('content').innerHTML=(ok?'':`
+ <div class="warn-big">
+  <h3>PASSO 1 OBBLIGATORIO - Inserisci il codice ricevuto dal fornitore</h3>
+  <p>Prima di usare la chat e AnyDesk devi collegare il tuo spazio foto. Apri l'app <b>Clienti &amp; Foto</b>: nel riquadro <b>"Collegamento rapido per lo studio"</b> incolla nel campo <b>"Codice ricevuto (per lo studio)"</b> il codice <b>ACS-</b> che ti ha mandato il fornitore, poi premi <b>"Collega"</b>. Infine torna qui e ricarica la pagina.</p>
+  <a class="btn" href="clienti-foto/?studio=${studioCode}">Apri Clienti &amp; Foto ora</a>
+ </div>`)+`
  <div class="card">
   <h2>Chat con il fornitore</h2>
   <div class="nota"><b>Come funziona:</b> scrivi qui sotto e premi "Invia messaggio". Le risposte del fornitore compaiono da sole: la pagina si aggiorna ogni 10 secondi.</div>
@@ -138,6 +151,7 @@ function renderStudio(){
  <div class="card">
   <div class="anydesk-box">
    <h3>Assistenza remota con AnyDesk</h3>
+   <div class="promemoria">PRIMA DI USARE ANYDESK: devi aver inserito il codice ACS- del fornitore nell'app "Clienti &amp; Foto" (campo "Codice ricevuto (per lo studio)" → "Collega"). Senza quel codice questa pagina non puo' inviare nulla.</div>
    <p>Se il fornitore deve collegarsi al tuo computer: 1) scarica AnyDesk dal pulsante qui sotto; 2) apri AnyDesk; 3) copia il tuo codice (9 cifre) e incollalo nel campo; 4) premi "Invia codice al fornitore".</p>
    <a class="btn" href="${ANYDESK_DOWNLOAD}" target="_blank" rel="noopener">Scarica AnyDesk</a>
    <div style="margin-top:16px">
@@ -158,6 +172,7 @@ async function aggiornaStudio(){
  const st=$('statusMsg');if(st)st.textContent='Ultimo aggiornamento: '+new Date().toLocaleTimeString('it-IT');
 }
 async function inviaMessaggio(){
+ if(!netlifyOk()){avvisoCodiceMancante();return;}
  const txt=$('msgInput').value.trim();
  if(!txt)return alert('Scrivi un messaggio prima di inviare.');
  try{
@@ -169,6 +184,7 @@ async function inviaMessaggio(){
  }catch(e){alert('Errore invio: '+e.message);}
 }
 async function inviaAnydesk(){
+ if(!netlifyOk()){avvisoCodiceMancante();return;}
  const code=$('anydeskCode').value.trim();
  if(!code||code.replace(/\D/g,'').length<9)return alert('Inserisci un codice AnyDesk valido (9 cifre).');
  try{
