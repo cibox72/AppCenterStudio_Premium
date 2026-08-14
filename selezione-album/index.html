@@ -55,7 +55,6 @@ select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;fo
 .bottom-bar .n{font-family:monospace;font-size:14px}
 .bb-btn{padding:10px 20px;border-radius:999px;border:1px solid #fff;background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer}
 .bb-btn.main{background:#fff;color:#111;border-color:#fff}
-/* ===== LIGHTBOX ===== */
 .lb{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:50;display:none;flex-direction:column}
 .lb.open{display:flex}
 .lb-top{display:flex;align-items:center;gap:12px;padding:12px 16px;color:#fff;justify-content:space-between}
@@ -124,6 +123,12 @@ function renderAdmin(codice){
     <textarea id="incollaSel" rows="4" style="margin-top:10px" placeholder="Incolla qui il messaggio WhatsApp della selezione..."></textarea>
     <button class="btn-secondary" style="margin-top:8px" onclick="aggiungiManuale()">Aggiungi all'archivio</button>
    </details>
+  </div>
+  <div class="card">
+   <h2>GRU per il tuo computer</h2>
+   <div class="warn" style="margin-bottom:10px">Scarica GRU sul PC che userai per prelevare gli originali alta risoluzione con il text Gru.<br>Mac: decomprimi lo zip e al primo avvio apri l'app con tasto destro → "Apri".<br>Windows: decomprimi lo zip in una cartella e avvia il file .bat con doppio click.</div>
+   <button class="btn-primary" onclick="location.href='../gru/gru-mac.zip'">GRU per Mac</button>
+   <button class="btn-secondary" onclick="location.href='../gru/gru-windows.zip'">GRU per Windows</button>
   </div>
   <div class="card">
    <h2>Link selezione per cliente</h2>
@@ -325,10 +330,9 @@ function draw(){
    <div class="fname">${esc(p.split('/').pop())}</div>
   </div>`).join('');
  $('selCount').textContent=SEL.size+' selezionate';
- const cb=$('countBar');if(cb)cb.innerHTML='<span class="n">'+SEL.size+'</span> foto selezionate'+(SEL.size===1?'':'');
+ const cb=$('countBar');if(cb)cb.innerHTML='<span class="n">'+SEL.size+'</span> foto selezionate';
 }
 function toggle(i){SEL.has(PH[i])?SEL.delete(PH[i]):SEL.add(PH[i]);draw();if($('lb')&&$('lb').classList.contains('open'))renderLb();}
-/* ===== LIGHTBOX ===== */
 function openLb(i){LB=i;renderLb();$('lb').classList.add('open');document.body.style.overflow='hidden';}
 function closeLb(){$('lb').classList.remove('open');document.body.style.overflow='';}
 function renderLb(){
