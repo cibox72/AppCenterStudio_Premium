@@ -1,10 +1,3 @@
 {
-  "studi": [
-    {
-      "codice": "st-001",
-      "nome": "G&LStudio Foto & Video",
-      "attivo": true,
-      "scadenza": "2026-09-12"
-    }
-  ]
+  "studi": []
 }
