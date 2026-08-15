@@ -5,12 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AppCenterStudio Premium</title>
 <style>
-:root{--b:#e2e4e9;--s:#8a8f98;--nero:#111;--ombra:0 6px 18px rgba(15,20,40,.07)}
+:root{--b:#e2e4e9;--s:#8a8f98;--nero:#111;--ombra:0 6px 18px rgba(15,20,40,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#fafafb 0%,#eef0f3 100%);background-attachment:fixed;color:var(--nero);min-height:100vh}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--nero);min-height:100vh;
+background-color:#e9ebef;
+background-image:
+ radial-gradient(ellipse 62% 52% at 50% 45%, rgba(255,255,255,.92), rgba(255,255,255,0) 70%),
+ repeating-linear-gradient(115deg, rgba(255,255,255,0) 0 26px, rgba(255,255,255,.55) 26px 30px, rgba(255,255,255,0) 30px 74px, rgba(255,255,255,.35) 74px 77px, rgba(255,255,255,0) 77px 120px),
+ repeating-linear-gradient(115deg, rgba(140,146,158,0) 0 40px, rgba(140,146,158,.16) 40px 44px, rgba(140,146,158,0) 44px 150px),
+ linear-gradient(115deg,#b9bec7 0%,#dfe2e8 40%,#f2f3f6 55%,#c2c7cf 100%);
+background-attachment:fixed;}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
+.mono{width:56px;height:56px;border-radius:50%;background:var(--nero);color:#fff;font-family:Georgia,serif;font-size:20px;display:inline-flex;align-items:center;justify-content:center;letter-spacing:1px;margin-bottom:10px}
 .hd{text-align:center;padding:30px;background:#fff;border:1px solid var(--b);border-radius:16px;margin-bottom:22px;box-shadow:var(--ombra)}
-.hd img{filter:grayscale(100%);height:60px;border-radius:12px;margin-bottom:8px}
 .hd h1{font-family:Georgia,serif;font-size:28px}
 .hd p{color:var(--s)}
 .tb{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:16px}
@@ -34,7 +41,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gr
 .app h3{font-family:Georgia,serif;font-size:18px;margin:4px 0}
 .app p{font-size:13px;color:var(--s)}
 .lw{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lc{background:#fff;border:1px solid var(--b);border-radius:20px;padding:38px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(15,20,40,.12)}
+.lc{background:#fff;border:1px solid var(--b);border-radius:20px;padding:38px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(15,20,40,.15)}
 .bl{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
 .bl:hover{background:#111;color:#fff;border-color:#111}
 .bl-danger{padding:7px 13px;background:#fff;border:1px solid #a33;color:#a33;border-radius:999px;cursor:pointer;font-size:12px}
@@ -48,12 +55,11 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gr
 <script>
 const OWNER='cibox72',REPO='AppCenterStudio_Premium';
 const BASE='https://'+OWNER+'.github.io/'+REPO+'/';
-const PAYPAL_EMAIL='appcenterstudiopremium@gmail.com';
 const $=id=>document.getElementById(id);
 window.addEventListener('DOMContentLoaded',()=>{sessionStorage.getItem('admin')?renderDash():renderLogin();});
 function renderLogin(){
 $('root').innerHTML=`<div class="lw"><div class="lc">
-<img src="logo.jpg" style="height:50px;filter:grayscale(100%);border-radius:12px;margin-bottom:10px" alt="">
+<div class="mono">AC</div>
 <h1 style="font-family:Georgia,serif;font-size:22px">AppCenterStudio Premium</h1>
 <p style="color:var(--s);margin-bottom:16px">Accesso fornitore</p>
 <div class="fg"><label>Utente</label><input id="lu" autocomplete="username"></div>
@@ -84,41 +90,27 @@ $('root').innerHTML=`<div class="wrap">
 <button class="bs" onclick="location.href='assistenza.html?admin=true'">Assistenza Online</button>
 <button class="bs" onclick="sessionStorage.clear();renderLogin();">Esci</button>
 </div>
-<div class="hd"><img src="logo.jpg" alt="logo"><h1>AppCenterStudio Premium</h1><p>Suite gestionale per studi fotografici</p></div>
-<div class="card">
-<h2>Token GitHub</h2>
+<div class="hd"><div class="mono">AC</div><h1>AppCenterStudio Premium</h1><p>Suite gestionale per studi fotografici</p></div>
+<div class="card"><h2>Token GitHub</h2>
 <div class="ib">Serve per creare studi e scrivere licenses.json. Lo trovi su GitHub → Settings → Developer settings → Personal access tokens.</div>
 <div class="fg"><input id="ghTok" type="password" placeholder="ghp_…"></div>
-<button class="bs" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());alert('Token salvato.');">Salva token</button>
-</div>
-<div class="card">
-<h2>Studi & Licenze</h2>
-<div class="fr">
-<div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio"></div>
-<div class="fg"><label>Giorni di prova</label><input id="stGiorni" type="number" value="30"></div>
-</div>
+<button class="bs" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());alert('Token salvato.');">Salva token</button></div>
+<div class="card"><h2>Studi & Licenze</h2>
+<div class="fr"><div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio"></div>
+<div class="fg"><label>Giorni di prova</label><input id="stGiorni" type="number" value="30"></div></div>
 <button class="bp" onclick="creaStudio()">Crea studio</button>
-<div id="studiList" style="margin-top:14px"></div>
-</div>
-<div class="card">
-<h2>Offerte agli studi</h2>
-<div class="ib">Crea offerte personalizzate con prezzo e durata. Lo studio riceve un link e paga con PayPal. Dopo il pagamento, estendi la licenza manualmente.</div>
-<div class="fr">
-<div class="fg"><label>Studio</label><select id="ofStudio"></select></div>
-<div class="fg"><label>Prezzo (€)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div>
-</div>
-<div class="fr">
-<div class="fg"><label>Durata (mesi)</label><input id="ofDurata" type="number" value="12" min="1"></div>
-<div class="fg"><label>Descrizione</label><input id="ofDesc" placeholder="Es. Pacchetto matrimoni 2026"></div>
-</div>
+<div id="studiList" style="margin-top:14px"></div></div>
+<div class="card"><h2>Offerte agli studi</h2>
+<div class="ib">Crea offerte personalizzate con prezzo e durata. Lo studio paga con PayPal; dopo estendi la licenza.</div>
+<div class="fr"><div class="fg"><label>Studio</label><select id="ofStudio"></select></div>
+<div class="fg"><label>Prezzo (€)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div></div>
+<div class="fr"><div class="fg"><label>Durata (mesi)</label><input id="ofDurata" type="number" value="12" min="1"></div>
+<div class="fg"><label>Descrizione</label><input id="ofDesc" placeholder="Es. Pacchetto matrimoni 2026"></div></div>
 <button class="bp" onclick="creaOfferta()">Crea offerta</button>
-<div id="offerteList" style="margin-top:14px"></div>
-</div>
-<div class="card">
-<h2>Applicazioni</h2>
+<div id="offerteList" style="margin-top:14px"></div></div>
+<div class="card"><h2>Applicazioni</h2>
 <div class="ib" id="studioSel">Seleziona prima uno studio qui sopra: i link delle app si attivano con il suo codice.</div>
-<div class="grid" id="appGrid"></div>
-</div>
+<div class="grid" id="appGrid"></div></div>
 </div>`;
 $('ghTok').value=localStorage.getItem('gh_token')||'';
 renderStudi();renderOfferte();renderApps();
@@ -134,31 +126,21 @@ studi.push({codice,nome,attivo:true,scadenza:sc.toISOString().slice(0,10)});
 try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice);renderStudi();renderOfferte();}catch(e){alert('Errore: '+e.message);}
 }
 async function toggleStudio(codice){
-try{
-const l=await leggiLicenze();
-const studi=(l.studi||[]).map(s=>{
-if(s.codice===codice)return {...s,attivo:!s.attivo};
-return s;
-});
-await ghPut('licenses.json',JSON.stringify({studi},null,2));
-renderStudi();
-}catch(e){alert('Errore: '+e.message);}
+try{const l=await leggiLicenze();
+const studi=(l.studi||[]).map(s=>s.codice===codice?{...s,attivo:!s.attivo}:s);
+await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();}catch(e){alert('Errore: '+e.message);}
 }
 async function eliminaStudio(codice){
 if(!confirm('Eliminare lo studio '+codice+'?'))return;
-if(!confirm('CONFERMA DEFINITIVA: Lo studio '+codice+' verrà rimosso permanentemente. Questa azione è irreversibile. Procedere?'))return;
-try{
-const l=await leggiLicenze();
+if(!confirm('CONFERMA DEFINITIVA: rimozione permanente di '+codice+'. Procedere?'))return;
+try{const l=await leggiLicenze();
 const studi=(l.studi||[]).filter(s=>s.codice!==codice);
 await ghPut('licenses.json',JSON.stringify({studi},null,2));
-alert('Studio '+codice+' eliminato.');
 renderStudi();
 if(sessionStorage.getItem('studio')===codice){sessionStorage.removeItem('studio');renderApps();}
 const o=await leggiOfferte();
-const offerte=(o.offerte||[]).filter(x=>x.codice!==codice);
-await ghPut('offers.json',JSON.stringify({offerte},null,2));
-renderOfferte();
-}catch(e){alert('Errore: '+e.message);}
+await ghPut('offers.json',JSON.stringify({offerte:(o.offerte||[]).filter(x=>x.codice!==codice)},null,2));
+renderOfferte();}catch(e){alert('Errore: '+e.message);}
 }
 async function renderStudi(){
 const l=await leggiLicenze();const studi=l.studi||[];
@@ -178,29 +160,23 @@ async function creaOfferta(){
 const codice=$('ofStudio').value;if(!codice)return alert('Seleziona uno studio.');
 const prezzo=parseFloat($('ofPrezzo').value);if(!prezzo||prezzo<=0)return alert('Prezzo non valido.');
 const durata=parseInt($('ofDurata').value);if(!durata||durata<1)return alert('Durata non valida.');
-const desc=$('ofDesc').value.trim();
 const o=await leggiOfferte();const offerte=o.offerte||[];
-offerte.push({codice,prezzo,durata,descrizione:desc,attiva:true,creata:new Date().toISOString().slice(0,10)});
+offerte.push({codice,prezzo,durata,descrizione:$('ofDesc').value.trim(),attiva:true,creata:new Date().toISOString().slice(0,10)});
 try{await ghPut('offers.json',JSON.stringify({offerte},null,2));alert('Offerta creata.');renderOfferte();}catch(e){alert('Errore: '+e.message);}
 }
 async function rimuoviOfferta(idx){
 if(!confirm('Rimuovere questa offerta?'))return;
-const o=await leggiOfferte();
-o.offerte.splice(idx,1);
+const o=await leggiOfferte();o.offerte.splice(idx,1);
 try{await ghPut('offers.json',JSON.stringify(o,null,2));renderOfferte();}catch(e){alert('Errore: '+e.message);}
 }
 async function estendiScadenza(idx){
-const o=await leggiOfferte();const of=o.offerte[idx];
-if(!of)return;
-const giorni=parseInt(prompt('Quanti mesi aggiungere alla scadenza? (es. 12)',String(of.durata)));
-if(!giorni||giorni<1)return;
-const l=await leggiLicenze();const s=l.studi.find(x=>x.codice===of.codice);
-if(!s)return alert('Studio non trovato.');
+const o=await leggiOfferte();const of=o.offerte[idx];if(!of)return;
+const mesi=parseInt(prompt('Quanti mesi aggiungere? (es. '+of.durata+')',String(of.durata)));
+if(!mesi||mesi<1)return;
+const l=await leggiLicenze();const s=l.studi.find(x=>x.codice===of.codice);if(!s)return alert('Studio non trovato.');
 const oggi=new Date();
 const sc=new Date(s.scadenza>oggi.toISOString().slice(0,10)?s.scadenza:oggi.toISOString().slice(0,10));
-sc.setMonth(sc.getMonth()+giorni);
-s.scadenza=sc.toISOString().slice(0,10);
-s.attivo=true;
+sc.setMonth(sc.getMonth()+mesi);s.scadenza=sc.toISOString().slice(0,10);s.attivo=true;
 try{await ghPut('licenses.json',JSON.stringify(l,null,2));alert('Scadenza estesa a '+s.scadenza);renderStudi();}catch(e){alert('Errore: '+e.message);}
 }
 async function renderOfferte(){
@@ -210,16 +186,14 @@ if(!offerte.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Ness
 const l=await leggiLicenze();const studi=l.studi||[];
 box.innerHTML=offerte.map((of,i)=>{
 const s=studi.find(x=>x.codice===of.codice);
-const nome=s?s.nome:'Studio eliminato';
 const link=BASE+'benvenuto.html?studio='+of.codice+'&offerta=1';
 return`<div class="row">
-<div><b>${nome}</b> (${of.codice})<br><small style="color:var(--s)">${of.descrizione||'Nessuna descrizione'} · <b>€${of.prezzo}</b> · ${of.durata} mesi · creata ${of.creata}</small></div>
+<div><b>${s?s.nome:'Studio eliminato'}</b> (${of.codice})<br><small style="color:var(--s)">${of.descrizione||''} · <b>€${of.prezzo}</b> · ${of.durata} mesi</small></div>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
 <button class="bl" onclick="copiaTxt('${link}')">Copia link</button>
 <button class="bl-toggle" onclick="estendiScadenza(${i})">Estendi licenza</button>
 <button class="bl-danger" onclick="rimuoviOfferta(${i})">Rimuovi</button>
-</div></div>`;
-}).join('');
+</div></div>`;}).join('');
 }
 function scegliStudio(c){sessionStorage.setItem('studio',c);$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';renderApps();}
 function renderApps(){
