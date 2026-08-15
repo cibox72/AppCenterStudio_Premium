@@ -1,4 +1,3 @@
-<!-- PARTE 1/6 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -11,15 +10,23 @@
 <style>
 :root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#666;--accento:#111;--bordo:#e0e0e0;--ok:#111;--ko:#666}
 *{box-sizing:border-box;margin:0;padding:0;font-family:Georgia,'Segoe UI',Roboto,sans-serif}
-body{background:var(--sfondo);min-height:100vh;padding:0;color:var(--testo)}
+body{
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
+  background-attachment:fixed;
+  min-height:100vh;padding:0;color:var(--testo)
+}
 .container{max-width:1600px;margin:0 auto;padding:20px}
 
 /* TOPBAR */
-.topbar{display:flex;gap:6px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
-.topbar .pill{background:#fff;color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
+.topbar .pill{background:rgba(255,255,255,0.8);color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .topbar .pill:hover{background:#111;color:#fff}
 
-header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:18px 22px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
 .logo{font-family:Georgia,serif;font-size:1.6em;font-weight:600;color:var(--testo)}
 .logo span{font-size:.55em;display:block;color:var(--soft);font-weight:400}
 .actions button{margin-left:8px;padding:9px 16px;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;color:#fff}
@@ -27,7 +34,7 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .btn-new,.btn-archive,.btn-table,.btn-backup,.btn-restore{background:#111;color:#fff}
 .btn-new:hover,.btn-archive:hover,.btn-table:hover,.btn-backup:hover,.btn-restore:hover{background:#fff;color:#111;border:1px solid #111}
 
-.new-service{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:none}
+.new-service{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:none}
 .new-service.open{display:block}
 .new-service h2{color:var(--testo);font-family:Georgia,serif;margin-bottom:14px}
 .form-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
@@ -37,8 +44,7 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .form-actions button{padding:9px 18px;border:none;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
 .btn-save{background:#111;color:#fff}
 .btn-cancel{background:#fff;color:#111;border:1px solid #bbb}
-<!-- PARTE 2/6 -->
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:10px}
 .client-info{flex:1;min-width:200px}
 .client-name{font-size:1.15em;font-weight:700;color:var(--testo);font-family:Georgia,serif}
@@ -74,16 +80,15 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .btn-edit{background:#555}
 .btn-pdf{background:#777}
 .btn-del{background:#fff;color:#111;border:1px solid #111}
-.empty{text-align:center;padding:50px 20px;color:var(--soft);font-size:1.1em;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-<!-- PARTE 3/6 -->
+.empty{text-align:center;padding:50px 20px;color:var(--soft);font-size:1.1em;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:1000;justify-content:center;align-items:center;padding:20px}
 .modal.active{display:flex}
-.modal-content{background:#fff;border-radius:14px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid #e0e0e0}
+.modal-content{background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);border-radius:14px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid #e0e0e0}
 .modal-header{background:#111;color:#fff;padding:20px 24px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center}
 .modal-header h2{font-size:1.25em;font-family:Georgia,serif}
 .modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.2em}
 .modal-body{padding:22px}
-.detail-row{margin-bottom:12px;padding:12px;background:#fbfbfb;border:1px solid #e0e0e0;border-radius:10px}
+.detail-row{margin-bottom:12px;padding:12px;background:rgba(251,251,251,0.8);backdrop-filter:blur(4px);border:1px solid #e0e0e0;border-radius:10px}
 .detail-label{font-weight:600;color:#111;margin-bottom:5px;font-size:.9em}
 .detail-value{color:#444;font-size:1em}
 .step-detail{padding:10px;margin:6px 0;background:#fff;border-radius:8px;border-left:4px solid #e0e0e0}
@@ -91,11 +96,11 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .step-detail .step-name{font-weight:600;margin-bottom:5px}
 .step-detail .step-date{color:#666;font-size:.9em}
 .step-detail .step-extra-info{color:#888;font-size:.85em;margin-top:3px}
-.archive-header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.archive-header{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
 .archive-header h2{font-family:Georgia,serif}
-.search-box{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit}
+.search-box{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit;background:#fff}
 .filter-select{padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit;background:#fff}
-.table-container{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto}
+.table-container{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow-x:auto}
 .table-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:12px}
 .table-header h2{color:#111;font-size:1.2em;font-family:Georgia,serif}
 .table-toolbar{display:flex;gap:10px;flex-wrap:wrap}
@@ -104,8 +109,8 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .workflow-table th{padding:11px 14px;text-align:left;font-weight:600;border:1px solid rgba(255,255,255,.15);font-size:.88em;white-space:nowrap}
 .workflow-table th.center{text-align:center}
 .workflow-table td{padding:11px 14px;border-bottom:1px solid #e0e0e0;vertical-align:middle}
-.workflow-table tbody tr:nth-child(even){background:#fbfbfb}
-.workflow-table tbody tr:nth-child(odd){background:#fff}
+.workflow-table tbody tr:nth-child(even){background:rgba(251,251,251,0.8)}
+.workflow-table tbody tr:nth-child(odd){background:rgba(255,255,255,0.9)}
 .workflow-table tbody tr:hover{background:#f0f0f0!important}
 .td-client{font-weight:700;color:#111;font-size:1.02em}
 .td-type{text-align:center}
@@ -304,7 +309,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
     </div>
   </div>
 </div>
-<!-- PARTE 4/6 -->
 <script>
 const TYPE_ORDER = [
   "Anteprima + Matrimonio", "Anteprima + Battesimo", "Anteprima + 18° Compleanno",
@@ -483,7 +487,6 @@ function getArchiveByOptions(s) {
 function countDone(stepsObj, stepsList) {
   return stepsList.filter(st => (stepsObj && stepsObj[st.id] && stepsObj[st.id].done)).length;
 }
-<!-- PARTE 5/6 -->
 /* ================= TOPBAR ================= */
 document.getElementById("tbBack").onclick=()=>history.back();
 document.getElementById("tbHome").onclick=()=>{const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');};
@@ -735,7 +738,6 @@ function deleteService(id) {
   save(); renderServices(); renderTable();
 }
 function save() { localStorage.setItem("gl_services", JSON.stringify(services)); }
-<!-- PARTE 6/6 -->
 function viewService(id) {
   const s = services.find(x => x.id === id); if (!s) return;
   let html = `<div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${s.client}</div></div>
