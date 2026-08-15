@@ -8,27 +8,60 @@
 <style>
 :root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e2e4e9}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#fafafb 0%,#eef0f3 100%);background-attachment:fixed;min-height:100vh;color:var(--testo)}
+body{
+  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+  color:var(--testo)
+}
 .container{max-width:1100px;margin:0 auto;padding:20px}
-.app-header{text-align:center;margin-bottom:26px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
+.app-header{
+  text-align:center;margin-bottom:26px;padding:20px;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--bordo);border-radius:14px;
+  box-shadow:0 6px 18px rgba(15,20,40,.07)
+}
 .app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
 .app-header h1{font-family:Georgia,serif;font-size:28px}
 .subtitle{color:var(--soft)}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
+.card{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--bordo);border-radius:14px;
+  padding:22px;margin-bottom:22px;
+  box-shadow:0 6px 18px rgba(15,20,40,.07)
+}
 .card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
 .topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
 .btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
 .btn-primary:hover{background:#333}
-.btn-secondary{padding:10px 18px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
+.btn-secondary{padding:10px 18px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
 .btn-secondary:hover{background:#111;color:#fff}
-.btn-link{padding:7px 14px;background:#fff;color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-link:hover{border-color:#111}
-.btn-del{padding:7px 14px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-link{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-link:hover{border-color:#111;background:#fff}
+.btn-del{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
 .btn-del:hover{background:#111;color:#fff}
-textarea{width:100%;padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:13px;font-family:inherit}
-details{background:#f5f6f8;border:1px solid var(--bordo);border-radius:10px;padding:12px;font-size:13px;margin-top:14px}
+textarea{width:100%;padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:13px;font-family:inherit;background:#fff}
+details{
+  background:rgba(245,246,248,0.85);
+  backdrop-filter:blur(4px);
+  border:1px solid var(--bordo);border-radius:10px;
+  padding:12px;font-size:13px;margin-top:14px
+}
 summary{cursor:pointer;font-weight:700}
-.g-row{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:13px}
+.g-row{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(4px);
+  border:1px solid var(--bordo);border-radius:10px;
+  padding:14px 16px;margin-bottom:12px;font-size:13px;
+  box-shadow:0 2px 8px rgba(15,20,40,.04)
+}
 .g-row .code{font-family:monospace;font-weight:700}
 .chip{display:inline-block;padding:2px 10px;border:1px solid #ccc;border-radius:999px;font-size:11px;color:#555;margin:2px}
 .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#111;color:#fff}
@@ -36,16 +69,33 @@ summary{cursor:pointer;font-weight:700}
 select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;font-size:12px;background:#fff}
 .warn{color:#7a4a10;background:#fff4e0;border:1px solid #f0b050;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center;box-shadow:0 6px 18px rgba(15,20,40,.07)}
-.c-head{background:#fff;border-bottom:1px solid var(--bordo);padding:16px;text-align:center;position:relative;top:0;z-index:5}
+.lock-card{
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--bordo);border-radius:14px;
+  padding:36px;max-width:430px;width:100%;text-align:center;
+  box-shadow:0 10px 30px rgba(15,20,40,.12)
+}
+.c-head{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--bordo);
+  padding:16px;text-align:center;position:relative;top:0;z-index:5
+}
 .c-head img{height:44px;border-radius:50%;filter:grayscale(100%);margin-bottom:6px}
 .c-head h1{font-family:Georgia,serif;font-size:18px}
 .c-head p{font-size:13px;color:var(--soft);margin-top:4px}
 .c-folder-badge{display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:999px;font-size:13px;font-weight:600;margin-top:8px}
-.count-bar{position:sticky;top:0;z-index:6;background:#fff;border-bottom:1px solid var(--bordo);text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif}
+.count-bar{
+  position:sticky;top:0;z-index:6;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--bordo);
+  text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif
+}
 .count-bar .n{font-family:monospace}
 .ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:14px;max-width:1100px;margin:0 auto}
-.ph{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--bordo);background:#fff;cursor:pointer}
+.ph{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--bordo);background:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(15,20,40,.04)}
 .ph img{width:100%;height:150px;object-fit:cover;display:block}
 .ph .heart{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #111;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:6px}
 .ph .heart svg{width:100%;height:100%;display:block}
@@ -121,7 +171,7 @@ function renderAdmin(codice){
     <label class="btn-secondary" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
    </div>
   </div>
-  <header class="app-header"><img src="../logo.png" alt="logo"><h1>Selezione per Album</h1><p class="subtitle">Selezioni ricevute, file Gru e PDF per stampa</p></header>
+  <header class="app-header"><img src="../logo.png" alt="logo" onerror="this.style.display='none'"><h1>Selezione per Album</h1><p class="subtitle">Selezioni ricevute, file Gru e PDF per stampa</p></header>
   <div class="card">
    <h2>Selezioni ricevute</h2>
    <div class="warn" style="margin-bottom:10px">Quando il cliente invia la selezione, qui arriva da sola. Premi "Aggiorna" per leggere le nuove.</div>
@@ -305,7 +355,7 @@ async function clientMode(s){
  document.title='Selezione foto - '+(MAN.nome||'');
  const logo=STUDIO.logo?'https://'+site+'.netlify.app/'+STUDIO.logo:'';
  document.getElementById('root').innerHTML=`
- <div class="c-head">${logo?`<img src="${logo}" alt="logo"><br>`:''}
+ <div class="c-head">${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'"><br>`:''}
   <h1>${esc(STUDIO.nome||'Studio Fotografico')}</h1>
   <p>${esc(STUDIO.messaggio||'Tocca una foto per aprirla, usa il cuore per sceglierla.')}</p>
   ${ACTIVE_FOLDER?`<span class="c-folder-badge">Servizio: ${esc(ACTIVE_FOLDER)}</span>`:''}
@@ -392,7 +442,7 @@ function inviaSel(){
  const testo='NUOVA SELEZIONE da '+(MAN.nome||'')+' '+(MAN.cognome||'')+' ('+(MAN.codice||'')+').\n'+sub+SEL.size+' foto scelte.\nApri Selezione per Album - Selezioni ricevute.';
  if(STUDIO.whatsapp)window.open('https://wa.me/'+STUDIO.whatsapp+'?text='+encodeURIComponent(testo),'_blank');
  const logo=STUDIO.logo?'https://'+site+'/'+STUDIO.logo:'';
- document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card">${logo?`<img src="${logo}" alt="logo" style="height:64px;border-radius:50%;filter:grayscale(100%);margin-bottom:10px">`:''}<h2 style="font-family:Georgia,serif;margin:10px 0">Selezione inviata!</h2><p style="color:var(--soft)">Lo studio ha ricevuto le tue foto scelte e ti contatterà presto.</p></div></div>`;
+ document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card">${logo?`<img src="${logo}" alt="logo" style="height:64px;border-radius:50%;filter:grayscale(100%);margin-bottom:10px" onerror="this.style.display='none'">`:''}<h2 style="font-family:Georgia,serif;margin:10px 0">Selezione inviata!</h2><p style="color:var(--soft)">Lo studio ha ricevuto le tue foto scelte e ti contatterà presto.</p></div></div>`;
 }
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
