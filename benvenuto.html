@@ -3,243 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppCenterStudio Premium — Benvenuto</title>
+<title>Benvenuto - AppCenterStudio Premium</title>
 <style>
-:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;padding:20px;color:var(--testo)}
-.container{max-width:860px;margin:0 auto}
-.app-header{text-align:center;margin-bottom:26px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
-.app-header img{filter:grayscale(100%)}
-.app-header h1{font-family:Georgia,serif;font-size:28px;margin-bottom:6px}
-.subtitle{color:var(--soft)}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:20px}
-.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
-.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
-.form-group input:focus,.form-group textarea:focus{outline:2px solid #111;border-color:transparent}
-.btn-wa{padding:12px 24px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
-.btn-wa:hover{background:#333}
-.btn-paypal{padding:14px 28px;background:#fff;color:#111;border:2px solid #111;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-top:10px}
-.btn-paypal:hover{background:#111;color:#fff}
-.btn-sec{padding:10px 20px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
-.btn-sec:hover{background:#111;color:#fff}
-.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.app-card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:16px;cursor:pointer;text-align:center;transition:transform .2s}
-.app-card:hover{transform:translateY(-3px);border-color:#111}
-.app-card .num{font-family:monospace;font-size:11px;color:#bbb;letter-spacing:2px;margin-bottom:6px}
-.app-card h3{font-family:Georgia,serif;font-size:15px}
-.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:10px}
-.badge.on{background:#111;color:#fff}
-.badge.off{background:#fff;color:#888;border:1px solid #ccc}
-details{background:#f5f5f5;border:1px solid var(--bordo);border-radius:10px;padding:14px;font-size:13px;line-height:1.8}
-summary{cursor:pointer;font-weight:700}
-.lock-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center}
-.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:34px;max-width:430px;width:100%;text-align:center}
-.paypal-box{background:#f5f5f5;border:2px solid #111;border-radius:12px;padding:20px;margin:16px 0;text-align:center}
-.paypal-box h3{margin-bottom:10px}
-.paypal-box p{font-size:13px;color:var(--soft);margin-bottom:12px}
-.offerta-box{background:#111;color:#fff;border:3px solid #111;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center}
-.offerta-box h2{color:#fff;font-size:20px;margin-bottom:8px}
-.off-desc{font-size:14px;color:#ddd;margin-bottom:14px}
-.off-price{font-family:Georgia,serif;font-size:34px;font-weight:700;margin-bottom:4px}
-.off-price span{font-size:15px;font-weight:400;color:#bbb}
-.off-after{font-size:12px;color:#bbb;margin-top:14px;margin-bottom:10px}
-.off-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.off-actions .btn-sec{background:#fff}
-.logoPrev{max-height:64px;border:1px solid var(--bordo);border-radius:10px;padding:4px;background:#fff;margin-top:10px;filter:grayscale(100%)}
-.nota-info{background:#f5f5f5;border:1px solid var(--bordo);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;color:var(--testo)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fbfbfb;color:#111;line-height:1.6}
+h1,h2,h3{font-family:Georgia,serif;font-weight:normal;margin-bottom:1rem}
+.topbar{display:flex;gap:10px;padding:15px;background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.topbar button{padding:8px 16px;background:#fff;border:1px solid #111;cursor:pointer;font-size:14px;border-radius:999px;font-family:inherit}
+.topbar button:hover{background:#111;color:#fff}
+header{background:#fff;border-bottom:1px solid #e0e0e0;padding:24px 20px;text-align:center}
+header img{height:56px;border-radius:50%;filter:grayscale(100%);background:#fff;padding:2px}
+header h1{font-size:26px;margin:8px 0 2px}
+header p{color:#666;font-size:14px}
+.container{max-width:1000px;margin:0 auto;padding:26px 20px 60px}
+.card{background:#fff;border:1px solid #e0e0e0;border-radius:14px;padding:24px;margin-bottom:22px}
+.card h2{padding-bottom:10px;border-bottom:1px solid #e0e0e0;font-size:19px}
+.badge{display:inline-block;padding:6px 16px;border-radius:999px;font-size:13px;font-weight:700;background:#111;color:#fff}
+.badge.ok{background:#2e7d32}
+.badge.ko{background:#b00020}
+.btn{display:inline-block;padding:10px 22px;background:#111;color:#fff;border:none;cursor:pointer;font-size:14px;border-radius:999px;margin:4px 2px;font-family:inherit}
+.btn:hover{background:#333}
+.btn-secondary{background:#fff;color:#111;border:1px solid #111}
+.btn-secondary:hover{background:#111;color:#fff}
+input,textarea,select{width:100%;padding:10px;border:1px solid #e0e0e0;margin:5px 0;border-radius:8px;font-family:inherit;font-size:14px}
+label{display:block;margin-top:10px;font-size:13px;font-weight:700}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.app-card{border:1px solid #e0e0e0;border-radius:14px;padding:18px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.app-card .num{font-family:Georgia,serif;font-size:12px;letter-spacing:1px;color:#666}
+.app-card h3{margin:0;font-size:17px}
+.app-card p{font-size:13px;color:#666;flex:1}
+.app-card button{align-self:flex-start}
+.hint{font-size:12px;color:#777}
+.logoPreview{max-height:70px;max-width:180px;border:1px solid #e0e0e0;border-radius:8px;padding:4px;background:#fff;margin-top:8px}
+.offerta{border:2px solid #111;background:#111;color:#fff;border-radius:14px;padding:22px;margin-bottom:22px}
+.offerta h2{color:#fff;border-bottom-color:#444}
+.offerta .btn{background:#fff;color:#111}
 </style>
 </head>
 <body>
-<div class="container">
-<header class="app-header"><img id="headLogo" src="logo.png" onerror="this.onerror=null;this.src='logo.jpg';" alt="logo" style="height:64px;border-radius:14px;margin-bottom:10px"><h1>AppCenterStudio Premium</h1><p class="subtitle">Il sistema digitale per il tuo studio fotografico</p></header>
-<div id="content"></div>
+
+<div class="topbar">
+  <button onclick="history.back()">← Indietro</button>
+  <button onclick="location.href='index.html'">Home</button>
+  <button onclick="backupGlobale()">Backup Globale</button>
+  <button onclick="ripristinoGlobale()">Ripristino Globale</button>
 </div>
+
+<header>
+  <img id="headLogo" src="logo.jpg" alt="logo" onerror="this.style.display='none'">
+  <h1 id="headNome">AppCenterStudio Premium</h1>
+  <p id="headSub">Suite gestionale per studi fotografici</p>
+</header>
+
+<div class="container">
+
+  <div class="card" id="licenzaCard"></div>
+
+  <div class="offerta hidden" id="offertaCard" style="display:none"></div>
+
+  <div class="card">
+    <h2>1. Dati di contatto dello studio</h2>
+    <p class="hint">Servono al fornitore per assisterti. Compila e invia una volta sola (puoi comunque modificarli quando vuoi).</p>
+    <div class="grid">
+      <div><label>Referente</label><input id="cReferente"></div>
+      <div><label>WhatsApp</label><input id="cWhatsapp" placeholder="39..."></div>
+      <div><label>Email</label><input id="cEmail"></div>
+      <div><label>Città</label><input id="cCitta"></div>
+    </div>
+    <label>Note</label><textarea id="cNote" rows="2"></textarea>
+    <button class="btn" onclick="inviaDatiFornitore()">Invia i dati al fornitore su WhatsApp</button>
+  </div>
+
+  <div class="card">
+    <h2>2. Dati dello Studio e Logo (sempre modificabili)</h2>
+    <p class="hint">Questi dati compaiono sui PDF e sulle pagine cliente. Se ti manca la P.IVA o il logo oggi, potrai tornare qui e completare in qualsiasi momento: salva e pubblica di nuovo.</p>
+    <div class="grid">
+      <div><label>Nome Studio</label><input id="sNome"></div>
+      <div><label>P.IVA</label><input id="sPiva"></div>
+      <div><label>Indirizzo</label><input id="sIndirizzo"></div>
+      <div><label>Telefono</label><input id="sTelefono"></div>
+      <div><label>Email</label><input id="sEmail"></div>
+      <div><label>Note fisse su PDF</label><input id="sNote"></div>
+    </div>
+    <label>Logo dello studio</label>
+    <input type="file" id="sLogo" accept="image/*">
+    <div id="logoPrev"></div>
+    <button class="btn" onclick="salvaEPubblicaIdent()">Salva e pubblica</button>
+  </div>
+
+  <div class="card" id="appsCard">
+    <h2>3. Le tue applicazioni</h2>
+    <div class="apps" id="appsGrid"></div>
+  </div>
+
+</div>
+
 <script>
-const FORNITORE_WA='393447507656';
-const PAYPAL_EMAIL='appcenterstudiopremium@gmail.com';
-const APPS=[
- {nome:"Preventivi & Contratti",path:"preventivi-contratti/",num:"01"},
- {nome:"Workflow Foto & Video",path:"workflow/",num:"02"},
- {nome:"Selezione per Album",path:"selezione-album/",num:"03"},
- {nome:"Gallery",path:"gallery/",num:"04"},
- {nome:"Clienti & Foto",path:"clienti-foto/",num:"05"},
- {nome:"Negozio Online",path:"negozio/",num:"06"},
- {nome:"Assistenza Online",path:"assistenza.html",num:"07"}
-];
-let STUDIO_CORRENTE=null,OFFERTA_CORRENTE=null;
 const param=n=>new URLSearchParams(location.search).get(n);
-window.addEventListener('DOMContentLoaded',async()=>{
- const code=param('studio');
- if(!code)return err('Link non valido','Chiedi al tuo fornitore il link di attivazione.');
- let s=null;
- try{const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();s=(l.studi||[]).find(x=>x.codice===code);}catch(e){}
- if(!s)return err('Link non valido','Questo codice studio non esiste. Contatta il fornitore.');
- STUDIO_CORRENTE=s;
- const oggi=new Date().toISOString().slice(0,10);
- const attivo=s.attivo&&s.scadenza>=oggi;
- OFFERTA_CORRENTE=await caricaOfferta(code);
- sessionStorage.setItem('studio',code);
- document.getElementById('content').innerHTML=`
- <div class="card">
-  <span class="badge ${attivo?'on':'off'}">${attivo?'LICENZA ATTIVA':'LICENZA SCADUTA O SOSPESA'}</span>
-  <h2>Benvenuto, ${esc(s.nome)}!</h2>
-  <p style="color:var(--soft);font-size:14px">Codice studio: <b style="font-family:monospace">${s.codice}</b> · Scadenza licenza: <b>${s.scadenza}</b></p>
- </div>
- ${OFFERTA_CORRENTE?`
- <div class="offerta-box">
-  <h2>Hai un'offerta da riscattare</h2>
-  <p class="off-desc">${esc(OFFERTA_CORRENTE.descrizione)||'Offerta riservata al tuo studio'}</p>
-  <div class="off-price">€${OFFERTA_CORRENTE.prezzo} <span>/ ${OFFERTA_CORRENTE.durata} mesi</span></div>
-  <button class="btn-paypal" onclick="pagaOfferta()">Paga ora con PayPal</button>
-  <p class="off-after">Dopo il pagamento, manda la ricevuta al fornitore per attivare la licenza:</p>
-  <div class="off-actions">
-   <a class="btn-sec" href="assistenza.html?studio=${s.codice}">Manda ricevuta via Assistenza</a>
-   <button class="btn-sec" onclick="mandaRicevutaWA()">Manda ricevuta via WhatsApp</button>
-  </div>
- </div>`:''}
- <div class="card">
-  <h2>1) Inserisci i dati del tuo studio</h2>
-  <p style="color:var(--soft);font-size:13px;margin-bottom:14px">Servono al fornitore per configurare la tua installazione.</p>
-  <form onsubmit="inviaDati(event)">
-   <div class="form-group"><label>Nome dello studio *</label><input id="dNome" value="${esc(s.nome)}" required></div>
-   <div class="form-group"><label>Referente *</label><input id="dRef" required placeholder="Nome e cognome"></div>
-   <div class="form-group"><label>WhatsApp *</label><input id="dWa" required placeholder="Es. 39123456789"></div>
-   <div class="form-group"><label>Email</label><input id="dMail" type="email" placeholder="studio@email.it"></div>
-   <div class="form-group"><label>Città</label><input id="dCity"></div>
-   <div class="form-group"><label>Note</label><textarea id="dNote" rows="2" placeholder="Es. uso soprattutto per matrimoni"></textarea></div>
-   <button class="btn-wa" type="submit">Invia i dati al fornitore su WhatsApp</button>
-  </form>
- </div>
- <div class="card">
-  <h2>2) Dati dello Studio e Logo (per PDF e intestazione)</h2>
-  <p style="color:var(--soft);font-size:13px;margin-bottom:14px">Compilali subito: compaiono sui PDF (preventivi e contratti) e nell'intestazione delle app. Vengono salvati in questo browser.</p>
-  <div class="form-group"><label>Nome Studio</label><input id="s2_nome"></div>
-  <div class="form-group"><label>P.IVA</label><input id="s2_piva"></div>
-  <div class="form-group"><label>Indirizzo</label><input id="s2_indirizzo"></div>
-  <div class="form-group"><label>Telefono</label><input id="s2_telefono"></div>
-  <div class="form-group"><label>Email</label><input id="s2_email"></div>
-  <div class="form-group"><label>Note fisse su PDF (es. orari, sito web)</label><textarea id="s2_note" rows="2"></textarea></div>
-  <h2 style="margin-top:20px">Logo dello Studio</h2>
-  <p style="color:var(--soft);font-size:13px;margin-bottom:12px">Carica il logo dello studio. Verrà salvato in locale e, se Netlify è configurato, pubblicato sul sito cliente come /logo.png.</p>
-  <label class="btn-sec" style="cursor:pointer">Carica immagine logo<input type="file" id="s2_logo" accept="image/*" hidden></label>
-  <button class="btn-sec" id="s2_nologo" type="button" style="margin-left:8px">Rimuovi logo</button>
-  <div id="s2_logoPrev"></div>
- </div>
- ${!attivo&&!OFFERTA_CORRENTE?`<div class="card">
-  <div class="paypal-box">
-   <h3>Rinnova la tua licenza</h3>
-   <p>La tua licenza è scaduta. Contatta il fornitore per ricevere un'offerta di rinnovo personalizzata.</p>
-  </div>
- </div>`:''}
- <div class="card">
-  <h2>3) Le tue applicazioni</h2>
-  <div class="app-grid">${APPS.map(a=>`<div class="app-card" onclick="location.href='${a.path}?studio=${s.codice}'"><div class="num">${a.num}</div><h3>${a.nome}</h3></div>`).join('')}</div>
- </div>
- <div class="card">
-  <h2>Installazione Netlify</h2>
-  <div class="nota-info"><b>Non devi fare nulla:</b> l'installazione la esegue il fornitore. Quando è pronta ricevi un codice <b>ACS-</b>: apri l'app "Clienti &amp; Foto", incolla il codice nel campo "Codice ricevuto (per lo studio)" e premi "Collega". Da quel momento carichi le foto dei clienti direttamente dalle app.</div>
- </div>`;
- initStudioSection();
-});
-async function caricaOfferta(code){
- try{
-  const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();
-  return (o.offerte||[]).find(x=>x.codice===code&&x.attiva)||null;
- }catch(e){return null;}
+const studioCode=param('studio')||sessionStorage.getItem('studio')||'';
+if(studioCode)sessionStorage.setItem('studio',studioCode);
+let studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+let contatti=JSON.parse(localStorage.getItem('studioContatti')||'{}');
+const FORNITORE_WA='393447507656';
+const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
+
+async function sha1(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-1',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function sha1Buf(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
+
+async function init(){
+  renderLicenza();
+  renderOfferta();
+  loadContatti();
+  loadIdent();
+  renderApps();
 }
-function pagaOfferta(){
- if(!OFFERTA_CORRENTE)return;
- const of=OFFERTA_CORRENTE;
- const url='https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(PAYPAL_EMAIL)+'&currency_code=EUR&amount='+of.prezzo.toFixed(2)+'&item_name='+encodeURIComponent((of.descrizione||'AppCenterStudio Premium')+' - '+of.durata+' mesi')+'&return='+encodeURIComponent(location.href);
- window.open(url,'_blank');
+
+async function renderLicenza(){
+  const box=document.getElementById('licenzaCard');
+  if(!studioCode){box.innerHTML='<span class="badge ko">Nessun codice studio</span><p style="margin-top:10px">Apri questa pagina dal link benvenuto che ti ha inviato il fornitore.</p>';document.getElementById('appsCard').style.display='none';return;}
+  let lic=null;
+  try{
+    const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+    lic=(l.studi||[]).find(s=>s.codice===studioCode);
+  }catch(e){}
+  if(!lic){box.innerHTML='<span class="badge ko">Codice non riconosciuto</span>';document.getElementById('appsCard').style.display='none';return;}
+  const oggi=new Date().toISOString().slice(0,10);
+  if(!lic.attivo){box.innerHTML='<span class="badge ko">Accesso sospeso</span><p style="margin-top:10px">Contatta il fornitore.</p>';document.getElementById('appsCard').style.display='none';return;}
+  if(lic.scadenza<oggi){box.innerHTML='<span class="badge ko">Prova scaduta il '+lic.scadenza+'</span><p style="margin-top:10px">Per continuare, riscatta un\'offerta o contatta il fornitore.</p>';document.getElementById('appsCard').style.display='none';return;}
+  box.innerHTML='<span class="badge ok">LICENZA ATTIVA</span> <span class="badge">'+studioCode+'</span><p style="margin-top:10px">Attiva fino al <b>'+lic.scadenza+'</b>.</p>';
 }
-function mandaRicevutaWA(){
- if(!OFFERTA_CORRENTE||!STUDIO_CORRENTE)return;
- const of=OFFERTA_CORRENTE;
- const t=`CONFERMA PAGAMENTO AppCenterStudio\n• Studio: ${STUDIO_CORRENTE.nome} (${STUDIO_CORRENTE.codice})\n• Offerta: ${of.descrizione||'Rinnovo licenza'} - €${of.prezzo} / ${of.durata} mesi\n• Transazione PayPal: [inserisci qui il numero transazione]\n• Data: ${new Date().toLocaleDateString('it-IT')}`;
- window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
+
+async function renderOfferta(){
+  if(!studioCode)return;
+  let off=null;
+  try{
+    const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();
+    off=(o.offerte||[]).find(x=>x.studio===studioCode&&x.attiva);
+  }catch(e){}
+  if(!off)return;
+  const card=document.getElementById('offertaCard');
+  card.style.display='block';
+  card.innerHTML='<h2>Hai un\'offerta da riscattare</h2>'+
+   '<p style="margin:8px 0">'+(off.descrizione||'')+'</p>'+
+   '<p style="font-size:22px;font-weight:800;margin:6px 0">€ '+off.prezzo+' <span style="font-size:13px;font-weight:400">per '+off.mesi+' mesi di licenza</span></p>'+
+   '<a class="btn" style="text-decoration:none" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(FORNITORE_PAYPAL)+'&currency_code=EUR&amount='+off.prezzo+'&item_name=Offerta+'+encodeURIComponent(studioCode)+'">Paga ora con PayPal</a>'+
+   '<a class="btn btn-secondary" style="text-decoration:none" href="assistenza.html?studio='+studioCode+'">Manda ricevuta via Assistenza</a>'+
+   '<p class="hint" style="color:#bbb;margin-top:8px">Dopo il pagamento il fornitore estende la tua licenza.</p>';
 }
-function initStudioSection(){
- const d=dbGet();const st=d.studio;
- ['nome','piva','indirizzo','telefono','email','note'].forEach(k=>{
-  const el=document.getElementById('s2_'+k);if(!el)return;
-  el.value=st[k]||'';
-  el.addEventListener('input',()=>{st[k]=el.value;dbSave(d);});
- });
- if(st.logoData){const h=document.getElementById('headLogo');if(h)h.src=st.logoData;}
- const prev=()=>{const box=document.getElementById('s2_logoPrev');if(!box)return;box.innerHTML=st.logoData?'<img class="logoPrev" src="'+st.logoData+'" alt="Logo">':'<p style="color:var(--soft);font-size:13px;margin-top:10px">Nessun logo caricato.</p>';};
- prev();
- document.getElementById('s2_logo').addEventListener('change',e=>{
+
+function loadContatti(){
+  document.getElementById('cReferente').value=contatti.referente||'';
+  document.getElementById('cWhatsapp').value=contatti.whatsapp||'';
+  document.getElementById('cEmail').value=contatti.email||'';
+  document.getElementById('cCitta').value=contatti.citta||'';
+  document.getElementById('cNote').value=contatti.note||'';
+}
+function inviaDatiFornitore(){
+  contatti={
+    referente:document.getElementById('cReferente').value.trim(),
+    whatsapp:document.getElementById('cWhatsapp').value.trim(),
+    email:document.getElementById('cEmail').value.trim(),
+    citta:document.getElementById('cCitta').value.trim(),
+    note:document.getElementById('cNote').value.trim()
+  };
+  localStorage.setItem('studioContatti',JSON.stringify(contatti));
+  const testo='DATI STUDIO '+studioCode+'\nReferente: '+contatti.referente+'\nWhatsApp: '+contatti.whatsapp+'\nEmail: '+contatti.email+'\nCittà: '+contatti.citta+'\nNote: '+contatti.note;
+  window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(testo),'_blank');
+}
+
+function loadIdent(){
+  document.getElementById('sNome').value=studioIdent.nome||'';
+  document.getElementById('sPiva').value=studioIdent.piva||'';
+  document.getElementById('sIndirizzo').value=studioIdent.indirizzo||'';
+  document.getElementById('sTelefono').value=studioIdent.telefono||'';
+  document.getElementById('sEmail').value=studioIdent.email||'';
+  document.getElementById('sNote').value=studioIdent.note||'';
+  renderLogoPrev();
+  refreshHead();
+}
+document.getElementById('sLogo').addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=()=>{st.logoData=r.result;dbSave(d);prev();const h=document.getElementById('headLogo');if(h)h.src=st.logoData;publishLogoNetlify(r.result);};
+  r.onload=()=>{studioIdent.logoData=r.result;renderLogoPrev();};
   r.readAsDataURL(f);
- });
- document.getElementById('s2_nologo').addEventListener('click',()=>{st.logoData='';dbSave(d);prev();});
+});
+function renderLogoPrev(){
+  const box=document.getElementById('logoPrev');
+  box.innerHTML=studioIdent.logoData?'<img class="logoPreview" src="'+studioIdent.logoData+'">':'';
 }
-const DB_KEY='appcenter_db_v1';
-const DEFAULT_CATEGORIE=[
- {id:'cat1',nome:'Matrimonio',servizi:[
-  {id:'m1',nome:'Matrimonio solo file non ritoccati in formato JPEG',prezzo:1200},
-  {id:'m2',nome:'Matrimonio con album digitale 30x40 cm, 40 interni, 100 foto, Copertina inclusa e valigia',prezzo:1400},
-  {id:'m3',nome:'Matrimonio con album digitale 30x40 cm, 40 interni, 100 foto, con effetti, Copertina inclusa e valigia',prezzo:1600},
-  {id:'m4',nome:'Matrimonio con album digitale 35x45 cm, 40 interni, 100 foto, Copertina inclusa e valigia',prezzo:1700},
-  {id:'m5',nome:'Matrimonio con album digitale 35x45 cm, 40 interni, 100 foto, con effetti, Copertina inclusa e valigia',prezzo:1900},
-  {id:'m6',nome:'Matrimonio con album analogico 33x33 cm, 50 interni, 100 foto, Copertina inclusa e valigia',prezzo:1400},
-  {id:'m7',nome:'Matrimonio con album analogico 40x40 cm, 50 interni, 100 foto, Copertina inclusa e valigia',prezzo:1700}]},
- {id:'cat2',nome:'Battesimo / Anniversario / Compleanno',servizi:[
-  {id:'b1',nome:'Misura 25x35 cm orizzontale, 20 interni, 60 foto, copertina semplice',prezzo:350},
-  {id:'b2',nome:'Misura 25x35 cm orizzontale, 20 interni, 60 foto, copertina extra',prezzo:400},
-  {id:'b3',nome:'Ogni foto in più',prezzo:5}]},
- {id:'cat3',nome:'Video',servizi:[
-  {id:'v1',nome:'Matrimonio + Drone',prezzo:1200},
-  {id:'v2',nome:'Matrimonio + Drone + Live',prezzo:1400},
-  {id:'v3',nome:'Matrimonio + Drone + Anteprima',prezzo:1500},
-  {id:'v4',nome:'Matrimonio + Drone + Anteprima + Live',prezzo:1600},
-  {id:'v5',nome:'Video Post-matrimonio con Drone',prezzo:300},
-  {id:'v6',nome:'Battesimo / Anniversario / Compleanno + taglio torta',prezzo:300},
-  {id:'v7',nome:'Battesimo / Anniversario / Compleanno + tutta serata',prezzo:400}]}
-];
-function dbDefault(){return{studio:{nome:'',indirizzo:'',telefono:'',email:'',piva:'',note:'',logoData:''},categorie:JSON.parse(JSON.stringify(DEFAULT_CATEGORIE)),clienti:[],preventivi:[],seq:1};}
-function dbGet(){
- try{const d=JSON.parse(localStorage.getItem(DB_KEY));if(d&&typeof d==='object'){
-  if(!d.studio)d.studio={nome:'',indirizzo:'',telefono:'',email:'',piva:'',note:'',logoData:''};
-  if(!d.categorie)d.categorie=JSON.parse(JSON.stringify(DEFAULT_CATEGORIE));
-  if(!d.clienti)d.clienti=[];if(!d.preventivi)d.preventivi=[];if(!d.seq)d.seq=1;
-  return d;}}catch(e){}
- const n=dbDefault();localStorage.setItem(DB_KEY,JSON.stringify(n));return n;
+function refreshHead(){
+  if(studioIdent.nome)document.getElementById('headNome').textContent=studioIdent.nome;
+  if(studioIdent.logoData)document.getElementById('headLogo').src=studioIdent.logoData;
 }
-function dbSave(d){localStorage.setItem(DB_KEY,JSON.stringify(d));}
-async function publishLogoNetlify(dataURL){
-const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
-if(!tok||!siteId)return;
-try{
-const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{'Authorization':'Bearer '+tok}});
-const existing=resp.ok?await resp.json():[];
-const files={};existing.forEach(f=>{files[f.path]=f;});
-const bin=atob(dataURL.split(',')[1]);const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
-const hash=await crypto.subtle.digest('SHA-1',ab).then(h=>Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join(''));
-const newPath='/logo.png';
-if(files[newPath]&&files[newPath].id===hash)return;
-files[newPath]={path:newPath,hash:hash};
-const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
-const required=dep.required||[];
-if(required.includes(newPath)){
-await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+newPath,{method:'PUT',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
+
+async function salvaEPubblicaIdent(){
+  studioIdent.nome=document.getElementById('sNome').value.trim();
+  studioIdent.piva=document.getElementById('sPiva').value.trim();
+  studioIdent.indirizzo=document.getElementById('sIndirizzo').value.trim();
+  studioIdent.telefono=document.getElementById('sTelefono').value.trim();
+  studioIdent.email=document.getElementById('sEmail').value.trim();
+  studioIdent.note=document.getElementById('sNote').value.trim();
+  localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
+  refreshHead();
+  const tok=localStorage.getItem('netlify_token'),site=localStorage.getItem('netlify_site');
+  if(!tok||!site){alert('Dati salvati in questo browser.\nVerranno pubblicati sul sito cliente dopo il collegamento dello spazio foto (codice ACS-).');return;}
+  try{
+    const entries=[{path:'/studio.json',data:JSON.stringify(studioIdent,null,2)}];
+    if(studioIdent.logoData&&studioIdent.logoData.startsWith('data:')){
+      const bin=atob(studioIdent.logoData.split(',')[1]);
+      const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);
+      for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+      entries.push({path:'/logo.png',data:ab});
+      studioIdent.logo='/logo.png';
+      localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
+      entries[0].data=JSON.stringify(studioIdent,null,2);
+    }
+    const existing=await fetch('https://api.netlify.com/api/v1/sites/'+site+'/files',{headers:{'Authorization':'Bearer '+tok}}).then(r=>r.ok?r.json():[]);
+    const merged={};(existing||[]).forEach(f=>{if(f.path&&f.sha)merged[f.path]=f.sha;});
+    const contents={},shaToPath={};
+    for(const e of entries){
+      let ab,hash;
+      if(typeof e.data==='string'){const b=new TextEncoder().encode(e.data);ab=b.buffer;hash=await sha1(b);}
+      else{ab=e.data;hash=await sha1Buf(ab);}
+      merged[e.path]=hash;contents[hash]=ab;shaToPath[hash]=e.path;
+    }
+    const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+site+'/deploys',{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:merged})})).json();
+    if(dep.error)throw new Error(dep.error);
+    for(const sh of (dep.required||[])){
+      if(contents[sh]===undefined)continue;
+      await fetch('https://api.netlify.com/api/v1/deploys/'+dep.id+'/files'+shaToPath[sh],{method:'PUT',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/octet-stream'},body:contents[sh]});
+    }
+    alert('Dati dello studio salvati e pubblicati.');
+  }catch(e){
+    alert('Dati salvati in locale. Errore pubblicazione: '+e.message);
+  }
 }
-console.log('Logo pubblicato su Netlify.');
-}catch(err){console.warn('Errore pubblicazione logo Netlify:',err);}
+
+function renderApps(){
+  if(!studioCode)return;
+  const q='?studio='+encodeURIComponent(studioCode);
+  const apps=[
+    {n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, acconti, piani di pagamento e PDF intestati.',u:'preventivi-contratti/'+q},
+    {n:'02',t:'Workflow Foto & Video',d:'Stato di avanzamento di ogni servizio, tabella clienti e PDF.',u:'workflow/'+q},
+    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto, gallery e spazio Netlify.',u:'clienti-foto/'+q},
+    {n:'04',t:'Selezione per Album',d:'Il cliente sceglie le foto; tu ricevi selezione, text Gru e PDF.',u:'selezione-album/'+q},
+    {n:'05',t:'Gallery',d:'Galleria foto per il cliente con selettore cartelle.',u:'gallery/'+q},
+    {n:'06',t:'Negozio Online',d:'Prodotti con foto e prezzi, carrello, ordini e pagamenti allo studio.',u:'negozio/'+q},
+    {n:'07',t:'Assistenza Online',d:'Chat con il fornitore e codice AnyDesk per il controllo remoto.',u:'assistenza.html'+q}
+  ];
+  document.getElementById('appsGrid').innerHTML=apps.map(a=>`
+   <div class="app-card">
+    <div class="num">${a.n}</div>
+    <h3>${a.t}</h3>
+    <p>${a.d}</p>
+    <button class="btn" onclick="location.href='${a.u}'">Apri</button>
+   </div>`).join('');
 }
-function inviaDati(e){
- e.preventDefault();
- const t=`ATTIVAZIONE STUDIO AppCenterStudio\n• Studio: ${document.getElementById('dNome').value}\n• Referente: ${document.getElementById('dRef').value}\n• WhatsApp: ${document.getElementById('dWa').value}\n• Email: ${document.getElementById('dMail').value||'—'}\n• Città: ${document.getElementById('dCity').value||'—'}\n• Note: ${document.getElementById('dNote').value||'—'}`;
- window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(t),'_blank');
+
+function backupGlobale(){
+  const d={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  alert('Backup globale scaricato.');
 }
-function err(t,s){document.getElementById('content').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">❌</div><h2 style="font-family:Georgia,serif;margin:10px 0 6px">${t}</h2><p style="color:var(--soft)">${s}</p></div></div>`}
-function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function ripristinoGlobale(){
+  const input=document.createElement('input');input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{try{
+      const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+      if(typeof d!=='object')throw new Error('File non valido.');
+      if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
+      Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+      alert('Backup ripristinato. La pagina si ricarica.');location.reload();
+    }catch(err){alert('Errore: '+err.message)}};
+    r.readAsText(f);
+  };
+  input.click();
+}
+
+init();
 </script>
 </body>
 </html>
