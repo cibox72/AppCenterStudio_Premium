@@ -47,9 +47,9 @@ select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;fo
 .ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:14px;max-width:1100px;margin:0 auto}
 .ph{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--bordo);background:#fff;cursor:pointer}
 .ph img{width:100%;height:150px;object-fit:cover;display:block}
-.ph .heart{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #111;color:#111;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ph .heart{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #111;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:6px}
+.ph .heart svg{width:100%;height:100%;display:block}
 .ph.sel{border:2px solid #111}
-.ph.sel .heart{background:#111;color:#fff}
 .ph .fname{font-size:10px;color:var(--soft);padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;display:flex;gap:10px;align-items:center;justify-content:center;padding:12px;flex-wrap:wrap;z-index:7}
 .bottom-bar .n{font-family:monospace;font-size:14px}
@@ -70,8 +70,8 @@ select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;fo
 .lb-nav.next{right:10px}
 .lb-bottom{display:flex;align-items:center;justify-content:center;gap:16px;padding:12px}
 .lb-name{color:#bbb;font-size:12px;font-family:monospace;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lb-heart{width:54px;height:54px;border-radius:50%;border:1px solid #fff;background:transparent;color:#fff;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.lb-heart.on{background:#fff;color:#111}
+.lb-heart{width:54px;height:54px;border-radius:50%;border:1px solid #fff;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:10px}
+.lb-heart svg{width:100%;height:100%;display:block}
 @media(max-width:640px){.lb-imgwrap{padding:0 8px}.lb-nav{width:38px;height:38px;font-size:16px;opacity:.85}}
 </style>
 </head>
@@ -80,6 +80,13 @@ select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;fo
 <script>
 const $=id=>document.getElementById(id);
 const param=n=>new URLSearchParams(location.search).get(n);
+
+/* ===== CUORI SVG ===== */
+const HEART_EMPTY = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_FILLED = '<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_EMPTY_LB = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_FILLED_LB = '<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+
 window.addEventListener('DOMContentLoaded',()=>{const s=param('s');if(s)return clientMode(s);adminGate();});
 function blocca(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">&#x1f512;</div><h2 style="font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
 async function adminGate(){
@@ -99,6 +106,7 @@ async function adminGate(){
 function leggiClienti(){try{return JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]}}catch(e){return{clients:[]}}}
 function leggiSel(){try{return JSON.parse(localStorage.getItem('selezioniRicevute'))||[]}catch(e){return[]}}
 function scriviSel(a){localStorage.setItem('selezioniRicevute',JSON.stringify(a))}
+
 /* ===== ADMIN ===== */
 function renderAdmin(codice){
  document.getElementById('root').innerHTML=`
@@ -145,7 +153,7 @@ async function aggiornaSelezioni(){
   if(!fr.ok)throw new Error('Errore '+fr.status);
   const forms=await fr.json();
   const f=(forms||[]).find(x=>x.name==='selezioni');
-  if(!f)return alert('Modulo non trovato sul sito: carica almeno una volta le foto (o pubblica l\'identità) da Clienti & Foto.');
+  if(!f)return alert('Modulo non trovato sul sito. Controlla la configurazione in Clienti & Foto.');
   const sr=await fetch('https://api.netlify.com/api/v1/forms/'+f.id+'/submissions',{headers:{Authorization:'Bearer '+tok}});
   const subs=await sr.json();
   const imported=JSON.parse(localStorage.getItem('importedSubIds')||'[]');
@@ -272,6 +280,7 @@ function restoreGlobale(e){
  }catch(err){alert('Errore: '+err.message)}};
  r.readAsText(f);e.target.value='';
 }
+
 /* ===== CLIENTE ===== */
 let PH=[],BASE='',STUDIO=null,MAN=null,SEL=new Set(),ACTIVE_FOLDER='',LB=0;
 function errPage(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">&#x274C;</div><h2 style="font-family:Georgia,serif">Selezione non disponibile</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
@@ -316,7 +325,7 @@ async function clientMode(s){
   </div>
   <div class="lb-bottom">
    <span class="lb-name" id="lbName"></span>
-   <button class="lb-heart" id="lbHeart" onclick="lbToggle()">&#x2661;</button>
+   <button class="lb-heart" id="lbHeart" onclick="lbToggle()"></button>
   </div>
  </div>`;
  draw();setupLb();
@@ -326,7 +335,7 @@ function draw(){
  $('grid').innerHTML=PH.map((p,i)=>`
   <div class="ph ${SEL.has(p)?'sel':''}" onclick="openLb(${i})">
    <img src="${photoUrl(i)}" loading="lazy" alt="">
-   <div class="heart" onclick="event.stopPropagation();toggle(${i})">${SEL.has(p)?'&#x2665;':'&#x2661;'}</div>
+   <div class="heart" onclick="event.stopPropagation();toggle(${i})">${SEL.has(p)?HEART_FILLED:HEART_EMPTY}</div>
    <div class="fname">${esc(p.split('/').pop())}</div>
   </div>`).join('');
  $('selCount').textContent=SEL.size+' selezionate';
@@ -340,8 +349,7 @@ function renderLb(){
  $('lbName').textContent=PH[LB].split('/').pop();
  $('lbCount').textContent=(LB+1)+' / '+PH.length;
  const sel=SEL.has(PH[LB]);
- $('lbHeart').innerHTML=sel?'&#x2665;':'&#x2661;';
- $('lbHeart').classList.toggle('on',sel);
+ $('lbHeart').innerHTML=sel?HEART_FILLED_LB:HEART_EMPTY_LB;
  $('lbSel').textContent=SEL.size+' selezionate';
 }
 function lbPrev(e){if(e)e.stopPropagation();LB=(LB-1+PH.length)%PH.length;renderLb();}
