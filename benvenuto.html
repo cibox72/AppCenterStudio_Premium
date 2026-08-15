@@ -7,7 +7,7 @@
 <style>
 :root{--nero:#0e0e0e;--grigio:#6b6b6b;--bordo:#e6e6e6;--sfondo:#fbfbfb;--carta:#fff}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--sfondo);color:var(--nero);line-height:1.6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(180deg,#fafafb 0%,#eef0f3 100%);background-attachment:fixed;color:var(--nero);line-height:1.6}
 .topbar{display:flex;gap:8px;padding:12px 20px;background:var(--carta);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
 .topbar button{padding:7px 16px;background:var(--carta);border:1px solid #bbb;cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;letter-spacing:.02em}
 .topbar button:hover{background:var(--nero);color:#fff;border-color:var(--nero)}
@@ -22,11 +22,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .hbadge.ok{background:#fff;color:var(--nero);border-color:#fff;font-weight:700}
 .hbadge.ko{background:#7a1010;border-color:#7a1010;color:#fff;font-weight:700}
 .container{max-width:1040px;margin:0 auto;padding:40px 20px 70px}
+.notice{border-radius:16px;padding:18px 22px;margin-bottom:26px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 6px 18px rgba(15,20,40,.08)}
+.notice .ico{font-size:22px;line-height:1}
+.notice .txt{flex:1;font-size:14px}
+.notice .txt b{display:block;font-family:Georgia,serif;font-size:16px;margin-bottom:2px}
+.notice button{border:none;border-radius:999px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.04em;text-transform:uppercase}
+.notice.info{background:#eef4ff;border:1px solid #b9cdf5;color:#1c3fae}
+.notice.info button{background:#1c3fae;color:#fff}
+.notice.warn{background:#fff4e0;border:1px solid #f0b050;color:#7a4a10}
+.notice.warn button{background:#7a4a10;color:#fff}
 .step-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 18px}
 .step-head .n{font-family:Georgia,serif;font-size:15px;color:#fff;background:var(--nero);width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .step-head h2{font-family:Georgia,serif;font-size:24px;font-weight:400}
 .step-head .line{flex:1;border-top:1px solid var(--bordo);transform:translateY(-6px)}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:16px;padding:28px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:16px;padding:28px;margin-bottom:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 .card .hint{font-size:13px;color:var(--grigio);margin-bottom:14px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.hero h1{font-size:32px}}
@@ -38,7 +47,7 @@ input:focus,textarea:focus{outline:2px solid var(--nero)}
 .btn.ghost{background:var(--carta);color:var(--nero);border:1px solid var(--nero)}
 .btn.ghost:hover{background:var(--nero);color:#fff}
 .apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.app{background:var(--carta);border:1px solid var(--bordo);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s, transform .2s}
+.app{background:var(--carta);border:1px solid var(--bordo);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s, transform .2s;box-shadow:0 6px 18px rgba(15,20,40,.06)}
 .app:hover{border-color:var(--nero);transform:translateY(-2px)}
 .app .num{font-family:Georgia,serif;font-size:13px;letter-spacing:.25em;color:#9a9a9a}
 .app h3{font-family:Georgia,serif;font-size:19px;font-weight:400}
@@ -75,6 +84,13 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 </section>
 
 <div class="container">
+
+  <div class="notice info" id="chromeNotice" style="display:none">
+    <span class="ico">&#x1f4bb;</span>
+    <span class="txt"><b>Consiglio per un uso ottimale</b>
+    Ti consigliamo vivamente di utilizzare <strong>Google Chrome</strong> (o Microsoft Edge) sul computer. Alcune funzioni &mdash; copia dei file originali (GRU), caricamento foto e notifiche &mdash; rendono al meglio con questi browser.</span>
+    <button onclick="chiudiNotice()">Ho capito</button>
+  </div>
 
   <div class="offerta hidden" id="offertaCard"></div>
 
@@ -130,8 +146,22 @@ const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
 async function sha1(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-1',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
 async function sha1Buf(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
 
+function mostraNotice(){
+ if(sessionStorage.getItem('noticeChrome')==='1')return;
+ const ua=navigator.userAgent;
+ const ok=/Chrome\/|Edg\//.test(ua);
+ const el=document.getElementById('chromeNotice');
+ el.style.display='flex';
+ if(!ok){el.classList.remove('info');el.classList.add('warn');}
+}
+function chiudiNotice(){
+ sessionStorage.setItem('noticeChrome','1');
+ document.getElementById('chromeNotice').style.display='none';
+}
+
 async function init(){
   await renderHero();
+  mostraNotice();
   renderOfferta();
   loadContatti();
   loadIdent();
