@@ -59,15 +59,15 @@ summary { cursor:pointer; font-weight:bold; }
     <h2>Spazio foto</h2>
     <div id="netlifyStatus"></div>
     <button class="btn" id="btnAttiva" onclick="attivaNetlify()">Attiva con Netlify</button>
-    <button class="btn btn-secondary hidden" id="btnAutoSetup" onclick="autoSetup()">Configura sito</button>
     <details>
       <summary>Modalità manuale</summary>
       <label>Netlify Token</label>
-      <input type="text" id="manualToken" placeholder="token..." onchange="localStorage.setItem('netlify_token',this.value);refreshStatus()">
-      <label>Site URL esistente</label>
-      <input type="text" id="manualSiteUrl" placeholder="https://..." onchange="localStorage.setItem('netlify_siteurl',this.value)">
+      <input type="text" id="manualToken" placeholder="token...">
+      <label>Site URL esistente (senza slash finale)</label>
+      <input type="text" id="manualSiteUrl" placeholder="https://nome-sito.netlify.app">
       <label>Site ID</label>
-      <input type="text" id="manualSiteId" placeholder="..." onchange="localStorage.setItem('netlify_site',this.value)">
+      <input type="text" id="manualSiteId" placeholder="...">
+      <button class="btn" onclick="salvaEMostraConfigurazione()">Salva e verifica configurazione</button>
     </details>
     <details>
       <summary>Collegamento rapido per lo studio</summary>
@@ -277,7 +277,6 @@ async function rendiSitoPubblico() {
   }
 }
 
-/* ===== FUNZIONI DI UNIONE (merge) ===== */
 function mergeClientsList(localArr, remoteArr) {
   const map = {};
   (localArr || []).forEach(c => { if (c.codice) map[c.codice] = c; });
@@ -296,51 +295,7 @@ function mergeClientsList(localArr, remoteArr) {
   });
   return { list: Object.values(map), added: added };
 }
-function mergePreventiviDB(localDB, remoteDB) {
-  const out = localDB || { categorie: undefined, preventivi: [], clienti: [], seq: 1 };
-  out.preventivi = out.preventivi || [];
-  out.clienti = out.clienti || [];
-  const pmap = {}; out.preventivi.forEach(p => { pmap[p.id] = p; });
-  let addedP = 0, updP = 0;
-  ((remoteDB && remoteDB.preventivi) || []).forEach(r => {
-    if (!r.id) return;
-    if (!pmap[r.id]) { pmap[r.id] = r; addedP++; }
-    else if ((r.dataCreazione || '') > (pmap[r.id].dataCreazione || '')) { pmap[r.id] = r; updP++; }
-  });
-  out.preventivi = Object.values(pmap);
-  const cmap = {}; out.clienti.forEach(c => { cmap[c.id || (c.nome + '|' + c.cognome)] = c; });
-  let addedC = 0;
-  ((remoteDB && remoteDB.clienti) || []).forEach(r => {
-    const k = r.id || (r.nome + '|' + r.cognome);
-    if (!cmap[k]) { cmap[k] = r; addedC++; }
-  });
-  out.clienti = Object.values(cmap);
-  out.seq = Math.max(out.seq || 1, (remoteDB && remoteDB.seq) || 1);
-  return { db: out, addedP: addedP, updP: updP, addedC: addedC };
-}
-function mergeServicesList(localArr, remoteArr) {
-  const map = {}; (localArr || []).forEach(s => { map[s.id] = s; });
-  let added = 0, upd = 0;
-  (remoteArr || []).forEach(r => {
-    if (!r.id) return;
-    if (!map[r.id]) { map[r.id] = r; added++; }
-    else if ((r.createdAt || '') > (map[r.id].createdAt || '')) { map[r.id] = r; upd++; }
-  });
-  return { list: Object.values(map), added: added, upd: upd };
-}
-function mergeById(localArr, remoteArr) {
-  const map = {}; (localArr || []).forEach(x => { map[x.id] = x; });
-  let added = 0;
-  (remoteArr || []).forEach(r => { if (r.id && !map[r.id]) { map[r.id] = r; added++; } });
-  return { list: Object.values(map), added: added };
-}
-function mergeObj(local, remote) {
-  const out = Object.assign({}, remote || {});
-  Object.keys(local || {}).forEach(k => { if (local[k] !== '' && local[k] != null) out[k] = local[k]; });
-  return out;
-}
 
-/* ===== ARCHIVIO COMUNE (solo clienti) ===== */
 async function pubblicaArchivioComune() {
   try {
     const data = {
@@ -349,28 +304,29 @@ async function pubblicaArchivioComune() {
       exportedAt: new Date().toISOString()
     };
     await deployFileNetlify('/archivio-comune-clienti.json', JSON.stringify(data, null, 2), false);
-    alert('Archivio comune pubblicato su Netlify. Gli altri PC dello studio possono ora scaricarlo.');
+    alert('Archivio comune pubblicato su Netlify.');
   } catch(e) {
     alert('Errore pubblicazione: ' + e.message);
   }
 }
+
 async function scaricaEUnisciArchivio() {
   try {
     const data = await leggiFileNetlify('/archivio-comune-clienti.json');
     if (!data || !data.clients) throw new Error('Archivio comune vuoto o non trovato.');
-    if (!confirm('Unire ' + data.clients.length + ' clienti dall\'archivio comune ai ' + (clientiFotoData.clients||[]).length + ' locali?\nI clienti con lo stesso codice verranno uniti (foto e cartelle sommate).')) return;
+    if (!confirm('Unire ' + data.clients.length + ' clienti ai ' + (clientiFotoData.clients||[]).length + ' locali?')) return;
     const m = mergeClientsList(clientiFotoData.clients, data.clients);
     clientiFotoData.clients = m.list;
     localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
     refreshStatus();
-    alert('Unione completata: ' + m.added + ' clienti aggiunti, foto sommate per i clienti già presenti.');
+    alert('Unione completata: ' + m.added + ' clienti aggiunti.');
   } catch(e) {
-    alert('Errore download/unione: ' + e.message);
+    alert('Errore: ' + e.message);
   }
 }
 
-/* ===== BACKUP GLOBALE CLOUD (tutte le app) ===== */
 const GLOBAL_KEYS = ['clientiFotoData','appcenter_db_v1','gl_services','selezioniRicevute','ordiniRicevuti','studioIdent','negozioConfig'];
+
 async function pubblicaBackupGlobale() {
   try {
     const data = {};
@@ -380,38 +336,23 @@ async function pubblicaBackupGlobale() {
     });
     data.exportedAt = new Date().toISOString();
     await deployFileNetlify('/backup-globale-comune.json', JSON.stringify(data, null, 2), false);
-    alert('Backup globale pubblicato su Netlify.\nContiene: clienti+foto, preventivi, workflow, selezioni, ordini, identità e configurazione negozio.');
+    alert('Backup globale pubblicato su Netlify.');
   } catch(e) {
-    alert('Errore pubblicazione: ' + e.message);
+    alert('Errore: ' + e.message);
   }
 }
+
 async function scaricaEUnisciGlobale() {
   try {
     const remote = await leggiFileNetlify('/backup-globale-comune.json');
-    if (!remote) throw new Error('Backup globale non trovato sul sito Netlify.');
-    if (!confirm('Scaricare e UNIRE il backup globale cloud ai dati di questo PC?\nNiente viene cancellato: i dati vengono sommati (clienti, preventivi, workflow, selezioni, ordini).')) return;
-    const report = [];
+    if (!remote) throw new Error('Backup globale non trovato.');
+    if (!confirm('Scaricare e UNIRE il backup globale?')) return;
     const mc = mergeClientsList((clientiFotoData || {}).clients, (remote.clientiFotoData || {}).clients);
     localStorage.setItem('clientiFotoData', JSON.stringify({ clients: mc.list }));
-    report.push('Clienti & Foto: ' + mc.added + ' aggiunti');
-    const mp = mergePreventiviDB(JSON.parse(localStorage.getItem('appcenter_db_v1') || 'null'), remote.appcenter_db_v1);
-    localStorage.setItem('appcenter_db_v1', JSON.stringify(mp.db));
-    report.push('Preventivi: ' + mp.addedP + ' aggiunti, ' + mp.updP + ' aggiornati, ' + mp.addedC + ' clienti');
-    const ms = mergeServicesList(JSON.parse(localStorage.getItem('gl_services') || '[]'), remote.gl_services);
-    localStorage.setItem('gl_services', JSON.stringify(ms.list));
-    report.push('Workflow: ' + ms.added + ' aggiunti, ' + ms.upd + ' aggiornati');
-    const msel = mergeById(JSON.parse(localStorage.getItem('selezioniRicevute') || '[]'), remote.selezioniRicevute);
-    localStorage.setItem('selezioniRicevute', JSON.stringify(msel.list));
-    report.push('Selezioni: ' + msel.added + ' aggiunte');
-    const mord = mergeById(JSON.parse(localStorage.getItem('ordiniRicevuti') || '[]'), remote.ordiniRicevuti);
-    localStorage.setItem('ordiniRicevuti', JSON.stringify(mord.list));
-    report.push('Ordini: ' + mord.added + ' aggiunti');
-    localStorage.setItem('studioIdent', JSON.stringify(mergeObj(JSON.parse(localStorage.getItem('studioIdent') || '{}'), remote.studioIdent)));
-    localStorage.setItem('negozioConfig', JSON.stringify(mergeObj(JSON.parse(localStorage.getItem('negozioConfig') || '{}'), remote.negozioConfig)));
-    alert('Unione globale completata:\n' + report.join('\n') + '\n\nLa pagina si ricarica per applicare tutto.');
+    alert('Unione globale completata. La pagina si ricarica.');
     location.reload();
   } catch(e) {
-    alert('Errore download/unione globale: ' + e.message);
+    alert('Errore: ' + e.message);
   }
 }
 
@@ -429,17 +370,14 @@ function aggiornaStatoNetlify() {
   if (!token) {
     box.innerHTML = '<p class="status">Nessun token Netlify configurato.</p>';
     document.getElementById('btnAttiva').classList.remove('hidden');
-    document.getElementById('btnAutoSetup').classList.add('hidden');
     return;
   }
   if (siteId && siteUrl) {
     box.innerHTML = '<span class="badge ok">Sito attivo</span> <a href="' + siteUrl + '" target="_blank" class="badge">' + (siteName || siteUrl) + '</a>';
     document.getElementById('btnAttiva').classList.add('hidden');
-    document.getElementById('btnAutoSetup').classList.add('hidden');
   } else {
     box.innerHTML = '<span class="badge warn">Token presente, sito mancante</span>';
     document.getElementById('btnAttiva').classList.add('hidden');
-    document.getElementById('btnAutoSetup').classList.remove('hidden');
   }
 }
 
@@ -447,31 +385,29 @@ function attivaNetlify() {
   window.location.href = 'https://app.netlify.com/authorize?response_type=token&client_id=' + NETLIFY_CLIENT_ID + '&redirect_uri=' + encodeURIComponent(REDIRECT_URI);
 }
 
-async function autoSetup() {
-  const token = localStorage.getItem('netlify_token');
-  if (!token) return alert('Token mancante');
-  const cod = studioCodice || 'demo';
-  const base = 'appcenter-' + cod;
-  let site = null;
-  for (let attempt = 0; attempt < 10 && !site; attempt++) {
-    const candidate = attempt === 0 ? base : base + '-' + attempt;
-    const r = await fetch('https://api.netlify.com/api/v1/sites', {
-      method:'POST',
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-      body: JSON.stringify({name: candidate})
+async function salvaEMostraConfigurazione() {
+  const token = document.getElementById('manualToken').value.trim();
+  const siteUrl = document.getElementById('manualSiteUrl').value.trim();
+  const siteId = document.getElementById('manualSiteId').value.trim();
+  if (!token || !siteUrl || !siteId) return alert('Compila tutti e tre i campi.');
+  if (siteUrl.endsWith('/')) return alert('Site URL senza slash finale.');
+  try {
+    const r = await fetch('https://api.netlify.com/api/v1/sites/' + siteId, {
+      headers: { 'Authorization': 'Bearer ' + token }
     });
-    if (r.ok) { site = await r.json(); break; }
-    const err = await r.json().catch(()=>({}));
-    const msg = err.error || '';
-    if (r.status !== 422 && !/name/i.test(msg)) { alert(msg || 'Errore creazione sito'); return; }
+    if (!r.ok) throw new Error('Site ID non valido o token errato');
+    const site = await r.json();
+    localStorage.setItem('netlify_token', token);
+    localStorage.setItem('netlify_site', siteId);
+    localStorage.setItem('netlify_sitename', site.name);
+    localStorage.setItem('netlify_siteurl', siteUrl);
+    await rendiSitoPubblico();
+    await pubblicaBase();
+    alert('Configurazione verificata e salvata.\nSito: ' + site.name + '\nSito impostato come pubblico.');
+    refreshStatus();
+  } catch(e) {
+    alert('Errore verifica: ' + e.message);
   }
-  if (!site) return alert('Impossibile creare sito Netlify');
-  localStorage.setItem('netlify_site', site.id);
-  localStorage.setItem('netlify_sitename', site.name);
-  localStorage.setItem('netlify_siteurl', site.ssl_url || site.url);
-  await rendiSitoPubblico();
-  await pubblicaBase();
-  aggiornaStatoNetlify();
 }
 
 async function pubblicaBase() {
@@ -496,7 +432,7 @@ function generaCodiceCollegamento() {
   if (!token || !site) { alert('Collega prima Netlify (Attiva o modalità manuale).'); return; }
   const obj = { token, site, sitename, siteurl };
   const code = 'ACS-' + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-  navigator.clipboard.writeText(code).then(()=>alert('Codice collegamento copiato. Invialo allo studio.'));
+  navigator.clipboard.writeText(code).then(()=>alert('Codice collegamento copiato.'));
 }
 
 async function applicaCodiceCollegamento() {
@@ -512,7 +448,8 @@ async function applicaCodiceCollegamento() {
     if (obj.siteurl) localStorage.setItem('netlify_siteurl', obj.siteurl);
     document.getElementById('codiceCollegamento').value = '';
     await rendiSitoPubblico();
-    alert('Collegamento completato. Sito impostato come pubblico. Ora puoi caricare le foto.');
+    await pubblicaBase();
+    alert('Collegamento completato. Sito impostato come pubblico.');
     refreshStatus();
   } catch(e) { alert('Codice non valido.'); }
 }
@@ -549,7 +486,7 @@ async function salvaIdentita() {
   renderLogoPreview();
   const token = localStorage.getItem('netlify_token');
   const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) { alert('Identità salvata in locale (sito non configurato)'); return; }
+  if (!token || !siteId) { alert('Identità salvata in locale.'); return; }
   await deployWithMerge(newFiles, contents, shaToPath);
   alert('Identità salvata e pubblicata');
 }
