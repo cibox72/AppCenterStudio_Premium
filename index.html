@@ -227,7 +227,9 @@ const apps=[
 {n:'04',t:'Selezione per Album',d:'Archivio selezioni e text Gru',u:'selezione-album/'},
 {n:'05',t:'Gallery',d:'Gallery privata per gli sposi',u:'gallery/'},
 {n:'06',t:'Negozio Online',d:'Ordini stampa, Gru e PDF',u:'negozio/'},
-{n:'07',t:'Agenda',d:'Calendario impegni, contratti e promemoria',u:'agenda/'}
+{n:'07',t:'Agenda',d:'Calendario impegni, contratti e promemoria',u:'agenda/'},
+{n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo con PDF e firme',u:'ricevute/'},
+{n:'09',t:'Email',d:'Email e PEC dall\'indirizzo dello studio',u:'email/'}
 ];
 $('appGrid').innerHTML=apps.map(a=>`<a class="app" href="${c?a.u+'?studio='+c:'#'}" onclick="if(!${!!c}){event.preventDefault();alert('Seleziona prima uno studio (pulsante Entra).');}">
 <div class="num">${a.n}</div><h3>${a.t}</h3><p>${a.d}</p></a>`).join('');
