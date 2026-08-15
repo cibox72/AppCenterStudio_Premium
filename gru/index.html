@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GRU nel browser - AppCenterStudio Premium</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
+  background-attachment:fixed;
+  color:#111;line-height:1.6;min-height:100vh
+}
+h1,h2,h3{font-family:Georgia,serif;font-weight:normal;margin-bottom:1rem}
+.topbar{
+  display:flex;gap:10px;padding:15px;
+  background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100;flex-wrap:wrap
+}
+.topbar button{padding:8px 16px;background:rgba(255,255,255,0.9);border:1px solid #111;cursor:pointer;font-size:14px;border-radius:999px;font-family:inherit}
+.topbar button:hover{background:#111;color:#fff}
+.container{max-width:900px;margin:0 auto;padding:30px 20px 80px}
+.card{
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);
+  border:1px solid #e0e0e0;padding:25px;margin-bottom:25px;border-radius:14px;
+  box-shadow:0 6px 18px rgba(15,20,40,.07)
+}
+.card h2{padding-bottom:10px;border-bottom:1px solid #e0e0e0}
+.btn{display:inline-block;padding:10px 22px;background:#111;color:#fff;border:none;cursor:pointer;font-size:14px;border-radius:999px;margin:4px 2px;font-family:inherit}
+.btn:hover{background:#333}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:rgba(255,255,255,0.9);color:#111;border:1px solid #111}
+.btn-secondary:hover{background:#111;color:#fff}
+.btn-big{padding:16px 40px;font-size:16px;font-weight:700}
+.hint{font-size:13px;color:#777}
+.warn{color:#7a4a10;background:rgba(255,244,224,0.9);border:1px solid #f0b050;border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0}
+.ok-box{color:#2a7020;background:rgba(231,245,231,0.9);border:1px solid #7fb777;border-radius:8px;padding:10px 14px;font-size:13px;margin:10px 0}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:#111;color:#fff;font-family:Georgia,serif;font-size:15px;margin-right:8px;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;gap:10px;margin:14px 0}
+.step-row .txt{flex:1}
+.folder-state{font-family:monospace;font-size:13px;color:#2a7020;font-weight:700}
+textarea{width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:8px;font-family:monospace;font-size:12px;background:#fff;min-height:110px}
+textarea:focus{outline:2px solid #111}
+select{width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:8px;background:#fff;font-family:inherit;font-size:14px}
+.chip{display:inline-block;padding:3px 12px;border:1px solid #ccc;border-radius:999px;font-size:12px;color:#555;margin:2px}
+.chip.strong{background:#111;color:#fff;border-color:#111;font-weight:700}
+.progress-wrap{background:#e0e0e0;border-radius:999px;height:12px;overflow:hidden;margin:12px 0}
+.progress-fill{height:100%;background:#111;width:0%;transition:width .2s}
+#logBox{font-family:monospace;font-size:12px;background:rgba(250,250,250,0.9);border:1px solid #e0e0e0;border-radius:8px;padding:12px;max-height:220px;overflow-y:auto;white-space:pre-wrap;margin-top:10px}
+.mancanti{color:#a33}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button onclick="history.back()">← Indietro</button>
+  <button onclick="goHome()">Home</button>
+  <button onclick="backupGlobale()">Backup Globale</button>
+  <label class="btn btn-secondary" style="cursor:pointer;margin:0;padding:8px 16px;font-size:14px">Ripristino Globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+</div>
+
+<div class="container">
+<h1>GRU nel browser</h1>
+<p class="hint">Copia automaticamente gli ORIGINALI ad alta risoluzione delle foto scelte dal cliente, usando i NOMI IDENTICI della selezione. Non installa niente: funziona solo con <b>Chrome</b> o <b>Edge</b> sul computer.</p>
+<div id="compatBox"></div>
+
+<div class="card">
+  <h2>1 · Elenco nomi da copiare</h2>
+  <div class="step-row"><span class="step-num">A</span><div class="txt">
+    <b>Scegli una selezione ricevuta</b> (se presente in questo browser):
+    <select id="selSelect" onchange="caricaDaSelezione()">
+      <option value="">-- elenco manuale o text Gru --</option>
+    </select>
+  </div></div>
+  <div class="step-row"><span class="step-num">B</span><div class="txt">
+    <b>Oppure carica il text Gru</b> (.txt scaricato da Selezione per Album):
+    <br><input type="file" id="txtFile" accept=".txt,text/plain" style="margin-top:6px">
+  </div></div>
+  <div class="step-row"><span class="step-num">C</span><div class="txt">
+    <b>Oppure incolla i nomi</b> (uno per riga):
+    <textarea id="nomiArea" placeholder="IMG_6202.jpg&#10;IMG_6210.jpg&#10;..."></textarea>
+  </div></div>
+  <p><span class="chip strong" id="countChip">0 nomi pronti</span></p>
+</div>
+
+<div class="card">
+  <h2>2 · Cartella SORGENTE (ORIGINALI alta risoluzione)</h2>
+  <p class="hint">La cartella dove stai gli originali AD ALTA risoluzione (anche con sottocartelle: il GRU li cerca dentro).</p>
+  <button class="btn" onclick="scegliSorgente()">Sfoglia sorgente…</button>
+  <span class="folder-state" id="srcState">nessuna cartella</span>
+</div>
+
+<div class="card">
+  <h2>3 · Cartella DESTINAZIONE</h2>
+  <p class="hint">Dove verranno copiati gli originali delle foto scelte (es. cartella "DA STAMPARE").</p>
+  <button class="btn" onclick="scegliDestinazione()">Sfoglia destinazione…</button>
+  <span class="folder-state" id="dstState">nessuna cartella</span>
+</div>
+
+<div class="card">
+  <h2>4 · COPIA</h2>
+  <button class="btn btn-big" id="btnCopia" onclick="copia()">COPIA</button>
+  <div class="progress-wrap"><div class="progress-fill" id="prog"></div></div>
+  <div id="statusLine" class="hint">Pronto.</div>
+  <div id="logBox" style="display:none"></div>
+</div>
+
+<div class="card">
+  <h2>Non usi Chrome o Edge?</h2>
+  <p class="warn">Scarica il programma GRU <b>SOLO se</b> il tuo browser è Firefox o Safari. Con Chrome/Edge usa sempre il GRU nel browser qui sopra.</p>
+  <button class="btn btn-secondary" onclick="location.href='gru-mac.zip'">GRU per Mac</button>
+  <button class="btn btn-secondary" onclick="location.href='gru-windows.zip'">GRU per Windows</button>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let srcHandle=null,dstHandle=null,nomiLista=[];
+const studioCode=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCode)sessionStorage.setItem('studio',studioCode);
+
+function goHome(){location.href='../benvenuto.html'+(studioCode?'?studio='+studioCode:'');}
+function backupGlobale(){
+ const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+ alert('Backup globale scaricato.');
+}
+function ripristinoGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm('Ripristinare il backup globale? I dati attuali verranno sostituiti.'))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Ripristinato. Ricarico.');location.reload();
+ }catch(err){alert('Errore: '+err.message)}};
+ r.readAsText(f);e.target.value='';
+}
+
+/* ===== compatibilità ===== */
+function fsOk(){return typeof window.showDirectoryPicker==='function';}
+window.addEventListener('DOMContentLoaded',()=>{
+ if(!fsOk()){
+  $('compatBox').innerHTML='<div class="warn"><b>Browser non supportato.</b> Il GRU nel browser richiede Chrome o Edge sul computer. Usa i programmi scaricabili in fondo alla pagina.</div>';
+  $('btnCopia').disabled=true;
+ }else{
+  $('compatBox').innerHTML='<div class="ok-box">Browser compatibile: puoi usare il GRU nel browser.</div>';
+ }
+ popolaSelezioni();
+});
+
+/* ===== elenco nomi ===== */
+function parseNomi(t){
+ return t.split(/\r?\n/).map(s=>s.trim()).filter(s=>s&&/\.[a-zA-Z0-9]{2,5}$/.test(s)&&!s.includes('/')&&!s.includes('\\'));
+}
+function aggiornaCount(){
+ $('countChip').textContent=nomiLista.length+' nomi pronti';
+}
+function popolaSelezioni(){
+ let a=[];try{a=JSON.parse(localStorage.getItem('selezioniRicevute'))||[]}catch(e){}
+ const sel=$('selSelect');
+ a.slice().reverse().forEach(r=>{
+  const o=document.createElement('option');
+  o.value=r.id;
+  o.textContent=(r.cliente||'Cliente')+' · '+(r.codice||'')+' · '+(r.photos||[]).length+' foto · '+ (r.date||'');
+  sel.appendChild(o);
+ });
+}
+function caricaDaSelezione(){
+ const id=$('selSelect').value;
+ if(!id){nomiLista=[];aggiornaCount();return;}
+ let a=[];try{a=JSON.parse(localStorage.getItem('selezioniRicevute'))||[]}catch(e){}
+ const r=a.find(x=>String(x.id)===String(id));
+ nomiLista=r?(r.photos||[]).slice():[];
+ if(nomiLista.length)$('nomiArea').value=nomiLista.join('\n');
+ aggiornaCount();
+}
+$('txtFile').addEventListener('change',e=>{
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{$('nomiArea').value=ev.target.result;nomiLista=parseNomi(ev.target.result);aggiornaCount();};
+ r.readAsText(f);
+});
+$('nomiArea').addEventListener('input',e=>{nomiLista=parseNomi(e.target.value);aggiornaCount();});
+
+/* ===== cartelle ===== */
+async function scegliSorgente(){
+ if(!fsOk())return alert('Serve Chrome o Edge.');
+ try{
+  srcHandle=await window.showDirectoryPicker();
+  $('srcState').textContent='✔ '+srcHandle.name;
+ }catch(e){if(e.name!=='AbortError')alert('Errore: '+e.message);}
+}
+async function scegliDestinazione(){
+ if(!fsOk())return alert('Serve Chrome o Edge.');
+ try{
+  dstHandle=await window.showDirectoryPicker({mode:'readwrite'});
+  $('dstState').textContent='✔ '+dstHandle.name;
+ }catch(e){if(e.name!=='AbortError')alert('Errore: '+e.message);}
+}
+
+/* ===== scansione ricorsiva sorgente ===== */
+async function scanDir(handle,map){
+ for await(const entry of handle.values()){
+  if(entry.kind==='file'){
+   const low=entry.name.toLowerCase();
+   if(!map[low])map[low]=entry;
+  }else{
+   await scanDir(entry,map);
+  }
+ }
+}
+
+/* ===== COPIA ===== */
+async function copia(){
+ if(!fsOk())return alert('Serve Chrome o Edge sul computer.');
+ if(!nomiLista.length)return alert('Prima prepara l\'elenco nomi (selezione, text Gru o incolla).');
+ if(!srcHandle)return alert('Seleziona la cartella SORGENTE (ORIGINALI).');
+ if(!dstHandle)return alert('Seleziona la cartella DESTINAZIONE.');
+ try{
+  const p1=await srcHandle.requestPermission({mode:'read'});
+  const p2=await dstHandle.requestPermission({mode:'readwrite'});
+  if(p1!=='granted'||p2!=='granted')return alert('Permessi negati sulle cartelle.');
+ }catch(e){}
+ const log=$('logBox');log.style.display='block';log.textContent='Scansione sorgente in corso…\n';
+ $('statusLine').textContent='Scansione sorgente…';
+ const map={};
+ try{await scanDir(srcHandle,map);}catch(e){return alert('Errore scansione: '+e.message);}
+ log.textContent+='Trovati '+Object.keys(map).length+' file nella sorgente.\nAvvio copia…\n';
+ let ok=0;const mancati=[];
+ for(let i=0;i<nomiLista.length;i++){
+  const nome=nomiLista[i];
+  const h=map[nome.toLowerCase()];
+  $('prog').style.width=Math.round(((i+1)/nomiLista.length)*100)+'%';
+  $('statusLine').textContent='Copia '+(i+1)+'/'+nomiLista.length+': '+nome;
+  if(!h){mancati.push(nome);log.textContent+='NON TROVATO: '+nome+'\n';continue;}
+  try{
+   const file=await h.getFile();
+   const dst=await dstHandle.getFileHandle(file.name,{create:true});
+   const w=await dst.createWritable();
+   await w.write(file);
+   await w.close();
+   ok++;log.textContent+='copiato: '+file.name+'\n';
+  }catch(e){mancati.push(nome);log.textContent+='ERRORE copia '+nome+': '+e.message+'\n';}
+  await new Promise(r=>setTimeout(r,0));
+ }
+ $('statusLine').textContent='Completato: '+ok+' copiati, '+mancati.length+' non trovati.';
+ log.textContent+='\n===== FINE: '+ok+' copiati, '+mancati.length+' non trovati =====\n';
+ if(mancati.length){
+  log.innerHTML+='<span class="mancanti">I nomi non trovati di solito significano che i file a bassa risoluzione sono stati RINOMINATI: riesporta le foto senza rinominarle (REGOLA D\'ORO), oppure controlla di aver scelto la sorgente giusta.</span>';
+  alert('Copia completata.\n'+ok+' file copiati.\n'+mancati.length+' NON trovati (vedi elenco in pagina).');
+ }else{
+  alert('COPIA COMPLETATA: '+ok+' originali ad alta risoluzione pronti nella destinazione.');
+ }
+}
+</script>
+</body>
+</html>
