@@ -1,4 +1,3 @@
-<!-- PARTE 1/3 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -9,28 +8,62 @@
 <style>
 :root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;color:var(--testo)}
+body{
+  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+  color:var(--testo)
+}
 .container{max-width:1100px;margin:0 auto;padding:20px}
-.app-header{text-align:center;margin-bottom:26px;padding:22px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header{
+  text-align:center;margin-bottom:26px;padding:22px;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--bordo);border-radius:14px;
+  box-shadow:0 6px 18px rgba(15,20,40,.07)
+}
 .app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
 .app-header h1{font-family:Georgia,serif;font-size:28px}
 .subtitle{color:var(--soft)}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
+.card{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--bordo);border-radius:14px;
+  padding:22px;margin-bottom:22px;
+  box-shadow:0 6px 18px rgba(15,20,40,.07)
+}
 .card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
 .topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
 .btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
 .btn-primary:hover{background:#333}
-.btn-secondary{padding:10px 18px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
+.btn-secondary{padding:10px 18px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
 .btn-secondary:hover{background:#111;color:#fff}
-.btn-link{padding:7px 14px;background:#fff;color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-link:hover{border-color:#111}
-.g-row{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.btn-link{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
+.btn-link:hover{border-color:#111;background:#fff}
+.g-row{
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(4px);
+  border:1px solid var(--bordo);border-radius:10px;
+  padding:14px 16px;margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(15,20,40,.04)
+}
 .g-row .info{font-size:13px;line-height:1.7}
 .g-row .code{font-family:monospace;font-weight:700}
 .chip{display:inline-block;padding:2px 10px;border:1px solid #ccc;border-radius:999px;font-size:11px;color:#555;margin:2px}
 .warn{color:var(--soft);font-size:13px}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
+.lock-card{
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--bordo);border-radius:14px;
+  padding:36px;max-width:430px;width:100%;text-align:center;
+  box-shadow:0 10px 30px rgba(15,20,40,.12)
+}
 /* ===== VISTA CLIENTE ===== */
 .viewer{position:fixed;inset:0;background:#14141a;display:flex;flex-direction:column}
 .v-top{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;color:#eee;background:rgba(0,0,0,.55);flex-wrap:wrap;gap:8px}
@@ -47,8 +80,17 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .v-btn{width:52px;height:52px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:22px;cursor:pointer}
 .v-btn:active{background:rgba(255,255,255,.3)}
 .v-btn.dl{background:#fff;color:#111;font-size:20px}
-.thanks{position:fixed;inset:0;background:var(--sfondo);display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
-.thanks .box{background:#fff;border:1px solid var(--bordo);border-radius:16px;padding:36px 26px;max-width:460px;width:100%}
+.thanks{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;padding:20px;text-align:center
+}
+.thanks .box{
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(10px);
+  border:1px solid var(--bordo);border-radius:16px;
+  padding:36px 26px;max-width:460px;width:100%;
+  box-shadow:0 10px 30px rgba(15,20,40,.12)
+}
 .thanks img{height:64px;border-radius:50%;object-fit:cover;margin-bottom:10px;filter:grayscale(100%)}
 .thanks h1{font-family:Georgia,serif;font-size:26px;margin-bottom:10px}
 .thanks p{color:var(--soft);font-size:15px;line-height:1.6}
@@ -94,7 +136,7 @@ function renderAdmin(codice){
     <label class="btn-secondary" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
    </div>
   </div>
-  <header class="app-header"><img src="../logo.png" alt="logo"><h1>Gallery</h1><p class="subtitle">Archivio gallerie clienti su Netlify</p></header>
+  <header class="app-header"><img src="../logo.png" alt="logo" onerror="this.style.display='none'"><h1>Gallery</h1><p class="subtitle">Archivio gallerie clienti su Netlify</p></header>
   <div class="card">
    <h2>Archivio Gallery</h2>
    <div id="archivio"><p class="warn">Caricamento...</p></div>
@@ -139,7 +181,6 @@ function apriGallery(codice){window.open(linkGallery(codice),'_blank')}
 function copiaLink(codice,btn){
  navigator.clipboard.writeText(linkGallery(codice)).then(()=>{const t=btn.textContent;btn.textContent='Copiato!';setTimeout(()=>btn.textContent=t,1500);});
 }
-<!-- PARTE 2/3 -->
 /* ===== PDF PER STAMPA ===== */
 function imgToJpeg(url){return new Promise((res,rej)=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{try{const c=document.createElement('canvas');const s=Math.min(1,900/img.width);c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.82));}catch(e){rej(e)}};img.onerror=rej;img.src=url;});}
 async function stampaPDF(codice){
@@ -275,7 +316,6 @@ function renderViewer(base,manifest,studio){
  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
  show(0);
 }
-<!-- PARTE 3/3 -->
 function show(i){
  if(!PH.length){
   $('cnt').textContent='0 foto';
@@ -315,7 +355,7 @@ function thanks(){
  const wa=STUDIO.whatsapp?`https://wa.me/${STUDIO.whatsapp}?text=`+encodeURIComponent('Ciao! Ho visto le mie foto, grazie!'):'';
  document.getElementById('root').innerHTML=`
  <div class="thanks"><div class="box">
-  ${logo?`<img src="${logo}" alt="logo">`:''}
+  ${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'">`:''}
   <h1>Grazie per averci scelto!</h1>
   <p>${esc(STUDIO.messaggio||'Le vostre foto, con amore.')}</p>
   <p style="margin-top:14px;font-size:13px">- ${esc(STUDIO.nome||'Lo Studio')}</p>
