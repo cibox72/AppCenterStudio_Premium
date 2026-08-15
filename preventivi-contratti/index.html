@@ -60,10 +60,20 @@ th{background:#111;color:#fff}
 .hint{font-size:12px;color:#777}
 footer{text-align:center;padding:20px;font-size:12px;color:#888}
 .logoPreview{max-height:60px;max-width:160px;border:1px solid var(--bordo);border-radius:6px;background:#fff;padding:4px;margin-top:8px}
+.agenda-item{background:#fafafa;border:1px solid var(--bordo);border-radius:10px;padding:14px;margin-bottom:12px}
+.agenda-item h4{margin:0 0 8px;font-size:15px;color:#111;font-family:Georgia,serif}
+.agenda-item .meta{font-size:12px;color:#666;margin-bottom:6px}
+.agenda-item .note{font-size:13px;color:#333;margin-top:6px;white-space:pre-wrap}
+.promemoria-box{background:linear-gradient(135deg,#111 0%,#333 100%);color:#fff;border-radius:14px;padding:20px;margin-bottom:20px}
+.promemoria-box h3{color:#fff;border-left-color:#fff;margin-top:0}
+.promemoria-list{list-style:none;padding:0;margin:0}
+.promemoria-list li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:13px}
+.promemoria-list li:last-child{border-bottom:none}
 @media(max-width:800px){.grid,.highlight{grid-template-columns:1fr}.servRow{grid-template-columns:auto 1fr 90px 60px auto}}
 </style>
 </head>
 <body>
+
 <div class="topbar">
   <button class="pill" id="tbBack">← Indietro</button>
   <button class="pill" id="tbHome">Home</button>
@@ -72,6 +82,7 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
   <button class="pill" id="tbPubblicaComune" style="background:#111;color:#fff;border-color:#111">Pubblica archivio comune</button>
   <button class="pill" id="tbScaricaComune" style="background:#111;color:#fff;border-color:#111">Scarica e unisci archivio</button>
 </div>
+
 <header>
   <div class="brand">
     <img id="studioLogoHead" src="logo.jpg" alt="AppCenterStudio Premium" onerror="this.remove()">
@@ -79,14 +90,18 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
   </div>
   <div id="studioNameHead"></div>
 </header>
+
 <nav>
   <button class="tab active" data-view="preventivo">+ Nuovo Preventivo</button>
   <button class="tab" data-view="archivio">Preventivi & Contratti</button>
+  <button class="tab" data-view="agenda">Agenda</button>
   <button class="tab" data-view="clienti">Archivio Clienti</button>
   <button class="tab" data-view="listini">Listini & Categorie</button>
   <button class="tab" data-view="studio">Studio & Backup</button>
 </nav>
+
 <main>
+
 <section id="view-preventivo">
   <div class="card">
     <div class="rowBetween">
@@ -98,6 +113,7 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
       <div><label>Data emissione</label><input id="p_dataCreazione" type="date"></div>
     </div>
   </div>
+
   <div class="card">
     <h2>Anagrafica Cliente A</h2>
     <div class="grid">
@@ -112,6 +128,7 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     </div>
     <p><button class="btn secondary" id="btnMapA">Vedi luogo su Google Maps</button></p>
   </div>
+
   <div class="card">
     <h2>Anagrafica Cliente B (secondo intestatario)</h2>
     <div class="grid">
@@ -126,10 +143,12 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     </div>
     <p><button class="btn secondary" id="btnMapB">Vedi luogo su Google Maps</button></p>
   </div>
+
   <div class="highlight">
     <div><label>DATA DEL SERVIZIO (in evidenza)</label><input type="date" id="p_dataServizio"></div>
     <div><label>TIPO DI SERVIZIO RICHIESTO (in evidenza)</label><input id="p_tipo" placeholder="Es. Matrimonio, Battesimo, Compleanno..."></div>
   </div>
+
   <div class="card">
     <h2>Luoghi dell'evento</h2>
     <div class="locRow">
@@ -147,10 +166,12 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
       <button class="btn secondary" id="btnMapLocation">Maps</button>
     </div>
   </div>
+
   <div class="card">
     <h2>Servizi & Costi (prezzi da listino admin – modificabili)</h2>
     <div id="serviziBox"></div>
   </div>
+
   <div class="grid">
     <div class="card">
       <h2>Sconto</h2>
@@ -168,12 +189,14 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
       <p style="margin-bottom:0"><button class="btn secondary" id="btnAddAcconto">+ Aggiungi acconto</button></p>
     </div>
   </div>
+
   <div class="card">
     <h2>Piano di pagamento (importi inseriti dallo studio)</h2>
     <div id="pianoBox"></div>
     <p><button class="btn secondary" id="btnAddPiano">+ Aggiungi voce</button></p>
     <div id="pianoResiduo" class="hint"></div>
   </div>
+
   <div class="card totCard">
     <div class="riga"><span>Totale servizi</span><b id="totServizi">0,00 €</b></div>
     <div class="riga"><span>Sconto percentuale (<span id="lblPerc">0</span>%)</span><b id="totScontoPerc">-0,00 €</b></div>
@@ -183,14 +206,17 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     <div class="riga"><span>Totale acconti versati</span><b id="totAcconti">0,00 €</b></div>
     <div class="riga big saldo"><span>SALDO RESIDUO</span><span id="saldoResiduo">0,00 €</span></div>
   </div>
+
   <div class="card">
     <h2>Accettazione</h2>
     <label class="chk"><input type="checkbox" id="chkAccettato"> ACCETTATO E FIRMATO DAL CLIENTE <span class="hint">(flag apposto dallo studio – il PDF inviato resta con i riquadri firma da compilare a mano)</span></label>
   </div>
+
   <div class="card">
     <h2>Note aggiuntive</h2>
     <textarea id="p_note" placeholder="Condizioni particolari, tempi di consegna, ecc."></textarea>
   </div>
+
   <div class="actions">
     <button id="btnSalva" class="btn">Salva in archivio</button>
     <button id="btnPDF" class="btn">Crea PDF da inviare</button>
@@ -198,9 +224,29 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     <button id="btnNuovo" class="btn secondary">+ Nuovo preventivo</button>
   </div>
 </section>
+
 <section id="view-archivio" hidden></section>
+
+<section id="view-agenda" hidden>
+  <div class="card">
+    <h2>Agenda dello Studio</h2>
+    <div id="promemoriaBox"></div>
+    <div class="rowBetween" style="margin-bottom:14px">
+      <h3 style="margin:0">Appuntamenti e promemoria</h3>
+      <button class="btn" onclick="nuovoAppuntamento()">+ Nuovo appuntamento</button>
+    </div>
+    <div id="agendaList"></div>
+  </div>
+  <div class="card">
+    <h2>Contratti attivi</h2>
+    <p class="hint">I contratti firmati appaiono automaticamente qui con le date chiave.</p>
+    <div id="contrattiAttivi"></div>
+  </div>
+</section>
+
 <section id="view-clienti" hidden></section>
 <section id="view-listini" hidden></section>
+
 <section id="view-studio" hidden>
   <div class="card">
     <h2>Dati dello Studio (compaiono su PDF e intestazione)</h2>
@@ -213,6 +259,7 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     </div>
     <label style="margin-top:8px">Note fisse su PDF (es. orari, sito web)</label><textarea id="s_note"></textarea>
   </div>
+
   <div class="card">
     <h2>Logo dello Studio</h2>
     <p class="hint">Carica il logo dello studio. Verrà salvato in locale e, se Netlify è configurato, pubblicato sul sito cliente come /logo.png.</p>
@@ -222,6 +269,7 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     </div>
     <div id="logoPreviewBox"></div>
   </div>
+
   <div class="card">
     <h2>Backup & Ripristino</h2>
     <p class="hint">I dati sono salvati in questo browser. Scarica periodicamente un backup e ripristinalo su qualsiasi dispositivo.</p>
@@ -232,16 +280,20 @@ footer{text-align:center;padding:20px;font-size:12px;color:#888}
     </div>
   </div>
 </section>
+
 </main>
 <footer>AppCenterStudio Premium – Gestionale preventivi & contratti per studi fotografici · Tutto in Euro (€)</footer>
+
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const KEY='appcenter_db_v1';
+const AGENDA_KEY='appcenter_agenda';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const fmt=n=>(isNaN(+n)?0:+n).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmtData=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');};
 const today=()=>new Date().toISOString().slice(0,10);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
 const DEFAULT_CATEGORIE=[
  {id:'cat1',nome:'Matrimonio',servizi:[
   {id:'m1',nome:'Matrimonio solo file non ritoccati in formato JPEG',prezzo:1200},
@@ -265,23 +317,28 @@ const DEFAULT_CATEGORIE=[
   {id:'v7',nome:'Battesimo / Anniversario / Compleanno + tutta serata',prezzo:400}]}
 ];
 const DEFAULT_PIANO=['Caparra alla firma','Acconto prima del servizio','Acconto alla scelta foto e copertina','Saldo prima della stampa'];
+
 function defaultDB(){return{studio:{nome:'',indirizzo:'',telefono:'',email:'',piva:'',note:'',logoData:''},categorie:JSON.parse(JSON.stringify(DEFAULT_CATEGORIE)),clienti:[],preventivi:[],seq:1};}
 let DB=(function(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.categorie){(d.preventivi||[]).forEach(p=>{if(p.scontoPerc===undefined)p.scontoPerc=0;if(p.chiesa===undefined)p.chiesa='';if(p.location===undefined)p.location='';});if(!d.studio.logoData)d.studio.logoData='';return d;}}catch(e){}return defaultDB();})();
+let agenda=JSON.parse(localStorage.getItem(AGENDA_KEY)||'[]');
 function save(){localStorage.setItem(KEY,JSON.stringify(DB));}
+function saveAgenda(){localStorage.setItem(AGENDA_KEY,JSON.stringify(agenda));}
+
 const emptyC=()=>({nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''});
 const emptyP=()=>({id:uid(),numero:'',dataCreazione:today(),dataServizio:'',tipoServizio:'',chiesa:'',location:'',clienteA:emptyC(),clienteB:emptyC(),servizi:[],scontoPerc:0,sconto:0,scontoNota:'',acconti:[],piano:DEFAULT_PIANO.map(v=>({voce:v,importo:0})),accettato:false,stato:'preventivo',note:''});
 let P=emptyP();
+
 const totServiziOf=p=>p.servizi.reduce((a,s)=>a+(+s.prezzo||0)*(+s.qta||1),0);
 const totAccontiOf=p=>p.acconti.reduce((a,x)=>a+(+x.importo||0),0);
 const scontoTotOf=p=>totServiziOf(p)*((+p.scontoPerc||0)/100)+(+p.sconto||0);
 const totaleOf=p=>totServiziOf(p)-scontoTotOf(p);
 const saldoOf=p=>totaleOf(p)-totAccontiOf(p);
+
 $('#tbBack').onclick=()=>history.back();
 $('#tbHome').onclick=()=>{const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');};
 $('#tbBackup').onclick=()=>{const dump={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);dump[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='appcenter_backup_globale_'+today()+'.json';a.click();};
 $('#tbRestore').onclick=()=>{const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Ripristino completato. La pagina verrà ricaricata.');location.reload();}catch(x){alert('File di backup non valido.');}};r.readAsText(f);};inp.click();};
-$('#tbPubblicaComune').onclick=pubblicaArchivioComune;
-$('#tbScaricaComune').onclick=scaricaEUnisciArchivio;
+
 async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function sha1ArrayBuffer(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 async function deployFileNetlify(path,content,isBinary){
@@ -311,16 +368,15 @@ async function pubblicaArchivioComune(){
  try{
   const data={preventivi:DB.preventivi,clienti:DB.clienti,exportedAt:new Date().toISOString()};
   await deployFileNetlify('/archivio-comune-preventivi.json',JSON.stringify(data,null,2),false);
-  alert('Archivio comune pubblicato su Netlify. Gli altri PC dello studio possono ora scaricarlo.');
+  alert('Archivio comune pubblicato su Netlify.');
  }catch(e){alert('Errore pubblicazione: '+e.message);}
 }
 async function scaricaEUnisciArchivio(){
  try{
   const data=await leggiFileNetlify('/archivio-comune-preventivi.json');
   if(!data||!data.preventivi)throw new Error('Archivio comune vuoto o non trovato.');
-  if(!confirm('Unire '+data.preventivi.length+' preventivi dall\'archivio comune ai '+DB.preventivi.length+' locali?\nI preventivi con lo stesso ID verranno aggiornati se la versione remota è più recente.'))return;
-  const map={};
-  DB.preventivi.forEach(p=>{map[p.id]=p;});
+  if(!confirm('Unire '+data.preventivi.length+' preventivi ai '+DB.preventivi.length+' locali?'))return;
+  const map={};DB.preventivi.forEach(p=>{map[p.id]=p;});
   let added=0,updated=0;
   data.preventivi.forEach(p=>{
    if(!p.id)p.id=uid();
@@ -329,22 +385,21 @@ async function scaricaEUnisciArchivio(){
   });
   DB.preventivi=Object.values(map);
   if(data.clienti&&data.clienti.length){
-   const clientiMap={};
-   DB.clienti.forEach(c=>{clientiMap[c.id]=c;});
-   data.clienti.forEach(c=>{
-    if(!c.id)c.id=uid();
-    if(!clientiMap[c.id]){clientiMap[c.id]=c;}
-   });
+   const clientiMap={};DB.clienti.forEach(c=>{clientiMap[c.id]=c;});
+   data.clienti.forEach(c=>{if(!c.id)c.id=uid();if(!clientiMap[c.id]){clientiMap[c.id]=c;}});
    DB.clienti=Object.values(clientiMap);
   }
-  save();
-  renderArchivio();
-  renderClienti();
+  save();renderArchivio();renderClienti();
   alert('Unione completata: '+added+' preventivi aggiunti, '+updated+' aggiornati.');
  }catch(e){alert('Errore download/unione: '+e.message);}
 }
-function switchTab(v){$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));$$('main section').forEach(s=>s.hidden=s.id!=='view-'+v);}
+
+$('#tbPubblicaComune').onclick=pubblicaArchivioComune;
+$('#tbScaricaComune').onclick=scaricaEUnisciArchivio;
+
+function switchTab(v){$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));$$('main section').forEach(s=>s.hidden=s.id!=='view-'+v);if(v==='agenda')renderAgenda();}
 $$('.tab').forEach(t=>t.onclick=()=>{switchTab(t.dataset.view);if(t.dataset.view==='archivio')renderArchivio();if(t.dataset.view==='clienti')renderClienti();if(t.dataset.view==='listini')renderListini();if(t.dataset.view==='studio')renderStudio();});
+
 const C_FIELDS=['nome','cognome','telefono','email','via','citta','cap','prov'];
 function bind(id,fn){$(id).addEventListener('input',e=>{fn(e.target.value);recalc();});}
 C_FIELDS.forEach(k=>{bind('#a_'+k,v=>P.clienteA[k]=v);bind('#b_'+k,v=>P.clienteB[k]=v);});
@@ -356,24 +411,64 @@ bind('#p_scontoPerc',v=>P.scontoPerc=+v||0);
 bind('#p_sconto',v=>P.sconto=+v||0);
 bind('#p_scontoNota',v=>P.scontoNota=v);bind('#p_note',v=>P.note=v);
 $('#chkAccettato').addEventListener('change',e=>P.accettato=e.target.checked);
+
 $('#btnMapA').onclick=()=>openMap(P.clienteA);
 $('#btnMapB').onclick=()=>openMap(P.clienteB);
 $('#btnMapChiesa').onclick=()=>openMapValue($('#p_chiesa').value);
 $('#btnMapLocation').onclick=()=>openMapValue($('#p_location').value);
 function openMap(c){const q=[c.via,c.cap,c.citta,c.prov].filter(Boolean).join(', ');if(!q){alert('Inserire prima un indirizzo.');return;}window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q),'_blank');}
 function openMapValue(v){if(!v||!v.trim()){alert('Inserire prima il luogo.');return;}window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(v.trim()),'_blank');}
+
 function findServizio(sid){for(const c of DB.categorie)for(const s of c.servizi)if(s.id===sid)return s;return{nome:'?',prezzo:0};}
 function buildServizi(){const box=$('#serviziBox');box.innerHTML='';DB.categorie.forEach(cat=>{const h=document.createElement('h3');h.textContent=cat.nome;box.appendChild(h);cat.servizi.forEach(s=>{const sel=P.servizi.find(x=>x.servId===s.id);const r=document.createElement('div');r.className='servRow';r.innerHTML='<input type="checkbox" data-sid="'+s.id+'" '+(sel?'checked':'')+'><span>'+esc(s.nome)+'</span><input type="number" step="0.01" class="prezzoIn" data-sid="'+s.id+'" value="'+(sel?sel.prezzo:s.prezzo)+'" '+(sel?'':'disabled')+'><input type="number" min="1" class="qtaIn" data-sid="'+s.id+'" value="'+(sel?sel.qta:1)+'" '+(sel?'':'disabled')+'><span style="font-size:11px">€</span>';box.appendChild(r);});});}
 $('#serviziBox').addEventListener('change',e=>{const sid=e.target.dataset.sid;if(!sid||e.target.type!=='checkbox')return;const s=findServizio(sid);if(e.target.checked)P.servizi.push({servId:sid,nome:s.nome,prezzo:s.prezzo,qta:1});else P.servizi=P.servizi.filter(x=>x.servId!==sid);buildServizi();recalc();});
 $('#serviziBox').addEventListener('input',e=>{const sid=e.target.dataset.sid;if(!sid)return;const en=P.servizi.find(x=>x.servId===sid);if(!en)return;if(e.target.classList.contains('prezzoIn'))en.prezzo=+e.target.value||0;if(e.target.classList.contains('qtaIn'))en.qta=+e.target.value||1;recalc();});
-function renderAcconti(){const box=$('#accontiBox');box.innerHTML='';if(!P.acconti.length)box.innerHTML='<p class="hint">Nessun acconto registrato.</p>';P.acconti.forEach((a,i)=>{const d=document.createElement('div');d.className='servRow';d.innerHTML='<input type="date" data-i="'+i+'" data-f="data" value="'+(a.data||'')+'"><input type="number" step="0.01" data-i="'+i+'" data-f="importo" value="'+(a.importo||0)+'"><input type="text" data-i="'+i+'" data-f="nota" value="'+esc(a.nota)+'" placeholder="Nota (es. caparra)"><button class="mini" data-del="'+i+'">✕</button><span></span>';box.appendChild(d);});}
+
+function renderAcconti(){const box=$('#accontiBox');box.innerHTML='';if(!P.acconti.length)box.innerHTML='<p class="hint">Nessun acconto registrato.</p>';P.acconti.forEach((a,i)=>{const d=document.createElement('div');d.className='servRow';d.innerHTML='<input type="date" data-i="'+i+'" data-f="data" value="'+(a.data||'')+'"><input type="number" step="0.01" data-i="'+i+'" data-f="importo" value="'+(a.importo||0)+'"><input type="text" data-i="'+i+'" data-f="nota" value="'+esc(a.nota)+'" placeholder="Nota (es. caparra)"><button class="mini" data-i="'+i+'" data-act="ricevuta">Ricevuta</button><button class="mini" data-del="'+i+'">✕</button>';box.appendChild(d);});}
 $('#accontiBox').addEventListener('input',e=>{const i=e.target.dataset.i,f=e.target.dataset.f;if(i===undefined||!f)return;P.acconti[+i][f]=f==='importo'?(+e.target.value||0):e.target.value;recalc();});
-$('#accontiBox').addEventListener('click',e=>{if(e.target.dataset.del!==undefined){P.acconti.splice(+e.target.dataset.del,1);renderAcconti();recalc();}});
+$('#accontiBox').addEventListener('click',e=>{
+ if(e.target.dataset.del!==undefined){P.acconti.splice(+e.target.dataset.del,1);renderAcconti();recalc();}
+ if(e.target.dataset.act==='ricevuta'){stampaRicevutaAcconto(+e.target.dataset.i);}
+});
 $('#btnAddAcconto').onclick=()=>{P.acconti.push({data:today(),importo:0,nota:''});renderAcconti();recalc();};
+
+function stampaRicevutaAcconto(idx){
+ if(!P.numero){alert('Salva prima il preventivo per generare la ricevuta.');return;}
+ const ac=P.acconti[idx];if(!ac)return;
+ const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');const W=210;let y=0;const st=DB.studio;
+ doc.setFillColor(20,20,20);doc.rect(0,0,W,32,'F');doc.setTextColor(255,255,255);
+ doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(st.nome||'Studio Fotografico',10,11);
+ doc.setFont('helvetica','normal');doc.setFontSize(8);
+ doc.text([st.indirizzo,st.telefono?'Tel. '+st.telefono:'',st.email,st.piva?'P.IVA '+st.piva:''].filter(Boolean).join('  ·  '),10,17);
+ doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('AppCenterStudio Premium',W-10,11,{align:'right'});
+ y=40;doc.setTextColor(0,0,0);
+ doc.setFont('helvetica','bold');doc.setFontSize(18);doc.text('RICEVUTA DI PAGAMENTO',10,y);y+=8;
+ doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('Data: '+fmtData(ac.data),10,y);y+=10;
+ doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text('Cliente: '+[P.clienteA.nome,P.clienteA.cognome].filter(Boolean).join(' '),10,y);y+=6;
+ doc.setFont('helvetica','normal');doc.setFontSize(9);
+ doc.text('Preventivo/Contratto N. '+P.numero+' del '+fmtData(P.dataCreazione),10,y);y+=6;
+ doc.text('Servizio: '+(P.tipoServizio||'N/D')+' del '+fmtData(P.dataServizio),10,y);y+=12;
+ doc.setFont('helvetica','bold');doc.setFontSize(14);
+ doc.text('IMPORTO RICEVUTO: € '+fmt(ac.importo),10,y);y+=8;
+ if(ac.nota){doc.setFont('helvetica','normal');doc.setFontSize(10);doc.text('Nota: '+ac.nota,10,y);y+=8;}
+ y+=6;doc.setFont('helvetica','bold');doc.setFontSize(11);
+ doc.text('RIEPILOGO PAGAMENTI',10,y);y+=6;
+ doc.setFont('helvetica','normal');doc.setFontSize(9);
+ P.acconti.forEach((a,j)=>{
+  doc.text('• '+fmtData(a.data)+' — € '+fmt(a.importo)+(a.nota?' ('+a.nota+')':''),12,y);y+=5;
+ });
+ y+=4;doc.setFont('helvetica','bold');doc.text('Totale acconti versati: € '+fmt(totAccontiOf(P)),10,y);y+=6;
+ doc.text('Saldo residuo: € '+fmt(saldoOf(P)),10,y);y+=10;
+ doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120);
+ doc.text('Documento generato con AppCenterStudio Premium',10,285);
+ doc.save('Ricevuta_'+P.numero+'_'+fmtData(ac.data).replace(/\//g,'-')+'.pdf');
+}
+
 function renderPiano(){const box=$('#pianoBox');box.innerHTML='';P.piano.forEach((r,i)=>{const d=document.createElement('div');d.className='servRow';d.innerHTML='<span>€</span><input type="text" data-i="'+i+'" data-f="voce" value="'+esc(r.voce)+'"><input type="number" step="0.01" data-i="'+i+'" data-f="importo" value="'+(r.importo||0)+'"><span style="font-size:11px">€</span><button class="mini" data-del="'+i+'">✕</button>';box.appendChild(d);});}
 $('#pianoBox').addEventListener('input',e=>{const i=e.target.dataset.i,f=e.target.dataset.f;if(i===undefined||!f)return;P.piano[+i][f]=f==='importo'?(+e.target.value||0):e.target.value;recalc();});
 $('#pianoBox').addEventListener('click',e=>{if(e.target.dataset.del!==undefined){P.piano.splice(+e.target.dataset.del,1);renderPiano();recalc();}});
 $('#btnAddPiano').onclick=()=>{P.piano.push({voce:'',importo:0});renderPiano();recalc();};
+
 function recalc(){const ts=totServiziOf(P),percAmt=ts*((+P.scontoPerc||0)/100),buono=+P.sconto||0,totS=percAmt+buono,tot=ts-totS,tac=totAccontiOf(P);
 $('#p_scontoPercImporto').value=fmt(percAmt)+' €';
 $('#lblPerc').textContent=P.scontoPerc||0;
@@ -386,6 +481,7 @@ $('#totale').textContent=fmt(tot)+' €';
 $('#totAcconti').textContent=fmt(tac)+' €';
 $('#saldoResiduo').textContent=fmt(tot-tac)+' €';
 const sumP=P.piano.reduce((a,r)=>a+(+r.importo||0),0);$('#pianoResiduo').innerHTML='Pianificato: <b>'+fmt(sumP)+' €</b> · Non pianificato: <b>'+fmt(tot-sumP)+' €</b>';}
+
 function renderForm(){$('#p_numero').value=P.numero||'(assegnato al salvataggio)';$('#p_dataCreazione').value=P.dataCreazione;$('#p_dataServizio').value=P.dataServizio;$('#p_tipo').value=P.tipoServizio;$('#p_chiesa').value=P.chiesa||'';$('#p_location').value=P.location||'';$('#p_scontoPerc').value=P.scontoPerc||0;$('#p_sconto').value=P.sconto||0;$('#p_scontoNota').value=P.scontoNota;$('#p_note').value=P.note;$('#chkAccettato').checked=!!P.accettato;
 C_FIELDS.forEach(k=>{$('#a_'+k).value=P.clienteA[k]||'';$('#b_'+k).value=P.clienteB[k]||'';});
 const bc=$('#btnContratto');if(P.stato==='contratto'){bc.disabled=true;bc.textContent='Contratto attivo (riapribile e modificabile)';}else{bc.disabled=false;bc.textContent='Trasforma in Contratto';}
@@ -395,10 +491,12 @@ function collectStatic(){P.dataCreazione=$('#p_dataCreazione').value;P.dataServi
 function assignNum(){if(!P.numero){P.numero='P-'+new Date().getFullYear()+'-'+String(DB.seq).padStart(3,'0');DB.seq++;}}
 function commit(){collectStatic();const i=DB.preventivi.findIndex(x=>x.id===P.id);if(i>=0)DB.preventivi[i]=JSON.parse(JSON.stringify(P));else DB.preventivi.unshift(JSON.parse(JSON.stringify(P)));upsertClienti();save();renderForm();renderArchivio();}
 function upsertClienti(){[P.clienteA,P.clienteB].forEach(c=>{if(!(c.nome||c.cognome))return;let ex=DB.clienti.find(x=>x.nome===c.nome&&x.cognome===c.cognome);if(ex)Object.assign(ex,c);else DB.clienti.push(Object.assign({id:uid()},c));});}
+
 $('#btnSalva').onclick=()=>{assignNum();commit();alert('Salvato in archivio.');};
 $('#btnPDF').onclick=()=>{assignNum();commit();makePDF(P);};
 $('#btnContratto').onclick=()=>{collectStatic();if(!P.accettato){alert('Spuntare "ACCETTATO E FIRMATO DAL CLIENTE" per trasformare in contratto.');return;}P.stato='contratto';assignNum();commit();makePDF(P);};
 $('#btnNuovo').onclick=()=>{if(P.numero&&!confirm('Creare un nuovo preventivo? (assicurati di aver salvato)'))return;P=emptyP();renderForm();window.scrollTo(0,0);};
+
 function renderArchivio(){const v=$('#view-archivio');let h='<div class="card"><h2>Archivio Preventivi & Contratti (sempre riapribili e modificabili)</h2><table><tr><th>N.</th><th>Cliente</th><th>Data serv.</th><th>Tipo</th><th>Chiesa</th><th>Location</th><th>Totale</th><th>Acconti</th><th>Saldo residuo</th><th>Stato</th><th>Azioni</th></tr>';
 DB.preventivi.forEach(p=>{h+='<tr><td><b>'+esc(p.numero)+'</b></td><td>'+esc(p.clienteA.nome)+' '+esc(p.clienteA.cognome)+(p.clienteB.nome||p.clienteB.cognome?'<br>+'+esc(p.clienteB.nome)+' '+esc(p.clienteB.cognome):'')+'</td><td>'+fmtData(p.dataServizio)+'</td><td>'+esc(p.tipoServizio)+'</td><td>'+esc(p.chiesa||'')+'</td><td>'+esc(p.location||'')+'</td><td><b>'+fmt(totaleOf(p))+' €</b></td><td>'+fmt(totAccontiOf(p))+' €</td><td><b>'+fmt(saldoOf(p))+' €</b></td><td>'+(p.stato==='contratto'?'Contratto'+(p.accettato?' ✔':''):'Preventivo')+'</td><td><button class="mini" data-act="open" data-id="'+p.id+'">Apri/Modifica</button> <button class="mini" data-act="pdf" data-id="'+p.id+'">PDF</button> <button class="mini" data-act="contr" data-id="'+p.id+'">Contratto</button> <button class="mini" data-act="del" data-id="'+p.id+'">🗑</button></td></tr>';});
 v.innerHTML=h+'</table></div>';}
@@ -407,6 +505,50 @@ if(b.dataset.act==='open'){P=JSON.parse(JSON.stringify(p));renderForm();switchTa
 if(b.dataset.act==='pdf')makePDF(p);
 if(b.dataset.act==='contr'){if(!p.accettato){alert('Spuntare prima "Accettato e firmato" aprendo il documento.');return;}p.stato='contratto';save();renderArchivio();makePDF(p);}
 if(b.dataset.act==='del'){if(confirm('Eliminare definitivamente '+p.numero+'?')){DB.preventivi=DB.preventivi.filter(x=>x.id!==p.id);save();renderArchivio();}}});
+
+function renderAgenda(){
+ const oggi=today();
+ const promBox=$('#promemoriaBox');
+ const promList=[];
+ agenda.filter(a=>a.data>=oggi).slice(0,5).forEach(a=>{promList.push('<li><b>'+fmtData(a.data)+'</b> — '+esc(a.titolo)+(a.ora?' alle '+esc(a.ora):'')+'</li>');});
+ DB.preventivi.filter(p=>p.stato==='contratto'&&p.dataServizio>=oggi).slice(0,5).forEach(p=>{promList.push('<li><b>'+fmtData(p.dataServizio)+'</b> — '+esc(p.tipoServizio)+' ('+esc(p.clienteA.nome)+' '+esc(p.clienteA.cognome)+')</li>');});
+ promBox.innerHTML='<div class="promemoria-box"><h3>Promemoria prossimi impegni</h3>'+(promList.length?'<ul class="promemoria-list">'+promList.join('')+'</ul>':'<p style="color:#ccc">Nessun impegno imminente.</p>')+'</div>';
+ 
+ const box=$('#agendaList');
+ const futuri=agenda.filter(a=>a.data>=oggi).sort((a,b)=>a.data.localeCompare(b.data));
+ box.innerHTML=futuri.length?futuri.map((a,i)=>'<div class="agenda-item"><h4>'+esc(a.titolo)+'</h4><div class="meta">'+fmtData(a.data)+(a.ora?' — '+esc(a.ora):'')+'</div><div class="note">'+esc(a.note||'')+'</div><button class="mini" data-del="'+agenda.indexOf(a)+'" style="margin-top:8px">Elimina</button></div>').join(''):'<p class="hint">Nessun appuntamento programmato.</p>';
+ box.onclick=e=>{if(e.target.dataset.del!==undefined){if(confirm('Eliminare questo appuntamento?')){agenda.splice(+e.target.dataset.del,1);saveAgenda();renderAgenda();}}};
+ 
+ const cBox=$('#contrattiAttivi');
+ const contratti=DB.preventivi.filter(p=>p.stato==='contratto').sort((a,b)=>(b.dataServizio||'').localeCompare(a.dataServizio||''));
+ cBox.innerHTML=contratti.length?contratti.slice(0,20).map(p=>'<div class="agenda-item"><h4>'+esc(p.clienteA.nome)+' '+esc(p.clienteA.cognome)+' — '+esc(p.tipoServizio)+'</h4><div class="meta">Contratto '+esc(p.numero)+' del '+fmtData(p.dataCreazione)+' — Servizio: '+fmtData(p.dataServizio)+'</div><div class="meta">Totale: € '+fmt(totaleOf(p))+' — Acconti: € '+fmt(totAccontiOf(p))+' — Saldo: € '+fmt(saldoOf(p))+'</div><button class="mini" data-open="'+p.id+'" style="margin-top:8px">Apri</button></div>').join(''):'<p class="hint">Nessun contratto attivo.</p>';
+ cBox.onclick=e=>{if(e.target.dataset.open){const p=DB.preventivi.find(x=>x.id===e.target.dataset.open);if(p){P=JSON.parse(JSON.stringify(p));renderForm();switchTab('preventivo');window.scrollTo(0,0);}}};
+}
+
+function nuovoAppuntamento(){
+ const titolo=prompt('Titolo dell\'appuntamento:');if(!titolo)return;
+ const data=prompt('Data (AAAA-MM-DD):',today());if(!data)return;
+ const ora=prompt('Ora (opzionale, es. 15:30):','');
+ const note=prompt('Note (opzionale):','');
+ agenda.push({id:uid(),titolo,data,ora,note});
+ saveAgenda();renderAgenda();
+}
+
+function checkPromemoria(){
+ const oggi=today();
+ const prom=agenda.filter(a=>a.data===oggi);
+ const contratti=DB.preventivi.filter(p=>p.stato==='contratto'&&p.dataServizio===oggi);
+ if(!prom.length&&!contratti.length)return;
+ if(Notification&&Notification.permission==='granted'){
+  let msg='Oggi: ';
+  prom.forEach(p=>{msg+=p.titolo+' '+(p.ora||'')+', ';});
+  contratti.forEach(c=>{msg+=c.tipoServizio+' ('+c.clienteA.nome+') ';});
+  new Notification('AppCenterStudio Premium',{body:msg,icon:'../logo.png'});
+ }else if(Notification&&Notification.permission!=='denied'){
+  Notification.requestPermission();
+ }
+}
+
 function renderClienti(){const v=$('#view-clienti');let h='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Clienti (modificabile)</h2><button class="btn" id="btnNewCliente">+ Nuovo Cliente</button></div><div id="clienteForm" hidden style="margin-top:12px"><div class="grid">'+C_FIELDS.map(k=>'<div><label>'+k.toUpperCase()+'</label><input id="c_'+k+'"></div>').join('')+'</div><p><button class="btn" id="btnSaveCliente">Salva cliente</button> <button class="btn secondary" id="btnAnnCliente">Annulla</button></p></div><table style="margin-top:12px"><tr><th>Nome</th><th>Cognome</th><th>Telefono</th><th>Email</th><th>Città</th><th>Azioni</th></tr>';
 DB.clienti.forEach(c=>{h+='<tr><td>'+esc(c.nome)+'</td><td>'+esc(c.cognome)+'</td><td>'+esc(c.telefono)+'</td><td>'+esc(c.email)+'</td><td>'+esc(c.citta)+'</td><td><button class="mini" data-cmod="'+c.id+'">Modifica</button> <button class="mini" data-cdel="'+c.id+'">🗑</button> <button class="mini" data-cprev="'+c.id+'">+ Preventivo</button></td></tr>';});
 v.innerHTML=h+'</table></div>';let editId=null;
@@ -417,6 +559,7 @@ v.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
 if(b.dataset.cmod){editId=b.dataset.cmod;const c=DB.clienti.find(x=>x.id===editId);C_FIELDS.forEach(k=>$('#c_'+k).value=c[k]||'');$('#clienteForm').hidden=false;}
 if(b.dataset.cdel){if(confirm('Eliminare cliente?')){DB.clienti=DB.clienti.filter(x=>x.id!==b.dataset.cdel);save();renderClienti();}}
 if(b.dataset.cprev){const c=DB.clienti.find(x=>x.id===b.dataset.cprev);P=emptyP();P.clienteA=JSON.parse(JSON.stringify(c));renderForm();switchTab('preventivo');window.scrollTo(0,0);}});}
+
 function renderListini(){const v=$('#view-listini');v.innerHTML='<div class="card"><h2>Listini & Categorie (tutto modificabile)</h2><p class="hint">Le modifiche sono salvate automaticamente e usate nei nuovi preventivi. Gli importi sono in Euro.</p><p><button class="btn secondary" id="btnAddCat">+ Nuova categoria</button> <button class="btn secondary" id="btnResetList">Ripristina listini default</button></p><div id="catBox"></div></div>';
 const box=$('#catBox');DB.categorie.forEach((cat,ci)=>{const c=document.createElement('div');c.className='card inner';c.innerHTML='<div class="servRow"><span>📁</span><input class="catNome" data-ci="'+ci+'" value="'+esc(cat.nome)+'"><span></span><span></span><button class="mini" data-delcat="'+ci+'">🗑</button></div>';
 cat.servizi.forEach((s,si)=>{const r=document.createElement('div');r.className='servRow';r.innerHTML='<span>•</span><input class="servNome" data-ci="'+ci+'" data-si="'+si+'" value="'+esc(s.nome)+'"><input type="number" step="0.01" class="servPrezzo" data-ci="'+ci+'" data-si="'+si+'" value="'+s.prezzo+'"><span style="font-size:11px">€</span><button class="mini" data-delserv="'+ci+':'+si+'">✕</button>';c.appendChild(r);});
@@ -425,12 +568,16 @@ $('#btnAddCat').onclick=()=>{DB.categorie.push({id:uid(),nome:'Nuova categoria',
 $('#btnResetList').onclick=()=>{if(confirm('Ripristinare i listini di default?')){DB.categorie=JSON.parse(JSON.stringify(DEFAULT_CATEGORIE));save();renderListini();}};
 box.addEventListener('input',e=>{const ci=+e.target.dataset.ci,si=e.target.dataset.si!==undefined?+e.target.dataset.si:null;if(e.target.classList.contains('catNome'))DB.categorie[ci].nome=e.target.value;if(si!==null&&e.target.classList.contains('servNome'))DB.categorie[ci].servizi[si].nome=e.target.value;if(si!==null&&e.target.classList.contains('servPrezzo'))DB.categorie[ci].servizi[si].prezzo=+e.target.value||0;save();});
 box.addEventListener('click',e=>{if(e.target.dataset.delcat!==undefined){if(confirm('Eliminare categoria?')){DB.categorie.splice(+e.target.dataset.delcat,1);save();renderListini();}}else if(e.target.dataset.delserv){const a=e.target.dataset.delserv.split(':').map(Number);DB.categorie[a[0]].servizi.splice(a[1],1);save();renderListini();}else if(e.target.dataset.addserv!==undefined){DB.categorie[+e.target.dataset.addserv].servizi.push({id:uid(),nome:'Nuovo servizio',prezzo:0});save();renderListini();}});}
+
 function renderStudio(){['nome','indirizzo','telefono','email','piva','note'].forEach(k=>$('#s_'+k).value=DB.studio[k]||'');
 ['nome','indirizzo','telefono','email','piva','note'].forEach(k=>{$('#s_'+k).oninput=e=>{DB.studio[k]=e.target.value;save();refreshHead();};});
 renderLogoPreview();}
+
 function renderLogoPreview(){const box=$('#logoPreviewBox');if(DB.studio.logoData){box.innerHTML='<img class="logoPreview" src="'+DB.studio.logoData+'" alt="Logo">';}else{box.innerHTML='<p class="hint">Nessun logo caricato.</p>';}}
+
 $('#fileLogo').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{DB.studio.logoData=r.result;save();renderLogoPreview();refreshHead();publishLogoNetlify(r.result);};r.readAsDataURL(f);};
 $('#btnRimuoviLogo').onclick=()=>{DB.studio.logoData='';save();renderLogoPreview();refreshHead();};
+
 async function publishLogoNetlify(dataURL){
 const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
 if(!tok||!siteId)return;
@@ -452,9 +599,11 @@ await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/
 console.log('Logo pubblicato su Netlify.');
 }catch(err){console.warn('Errore pubblicazione logo Netlify:',err);}
 }
+
 $('#btnBackup').onclick=()=>{const blob=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='appcenter_backup_'+today()+'.json';a.click();};
 $('#fileRestore').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.categorie)throw 0;DB=Object.assign(defaultDB(),d);save();alert('Backup ripristinato!');location.reload();}catch(x){alert('File di backup non valido.');}};r.readAsText(f);};
-$('#btnResetAll').onclick=()=>{if(confirm('AZZERARE TUTTI I DATI? L\'operazione non è reversibile.')){localStorage.removeItem(KEY);location.reload();}};
+$('#btnResetAll').onclick=()=>{if(confirm('AZZERARE TUTTI I DATI? L\'operazione non è reversibile.')){localStorage.removeItem(KEY);localStorage.removeItem(AGENDA_KEY);location.reload();}};
+
 function makePDF(p){if(!window.jspdf){alert('Libreria PDF non caricata: serve connessione internet.');return;}
 const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');const W=210;let y=0;const st=DB.studio;
 doc.setFillColor(20,20,20);doc.rect(0,0,W,32,'F');doc.setTextColor(255,255,255);
@@ -481,7 +630,7 @@ if(p.chiesa){doc.text('CHIESA / CERIMONIA: '+p.chiesa,10,y);y+=5;}
 if(p.location){doc.text('LOCATION / RICEVIMENTO: '+p.location,10,y);y+=5;}
 doc.setFont('helvetica','normal');y+=3;}
 doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('SERVIZI RICHIESTI',10,y);y+=5;doc.setFontSize(9);
-p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToSize(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
+p.servizi.forEach(s=>{need(10);const nome=s.nome+(s.qta>1?'  (x'+s.qta+')':'');const lines=doc.splitTextToType(nome,W-60);doc.setFont('helvetica','normal');doc.text(lines,12,y);doc.text(fmt(s.prezzo*s.qta)+' €',W-12,y,{align:'right'});y+=lines.length*4.2+2;});
 y+=2;const ts=totServiziOf(p),percAmt=ts*((+p.scontoPerc||0)/100),buono=+p.sconto||0,totS=percAmt+buono,tot=totaleOf(p),tac=totAccontiOf(p);
 doc.text('Totale servizi: '+fmt(ts)+' €',W-12,y,{align:'right'});y+=5;
 if(p.scontoPerc>0){doc.text('Sconto '+p.scontoPerc+'%: -'+fmt(percAmt)+' €',W-12,y,{align:'right'});y+=5;}
@@ -496,16 +645,17 @@ doc.setFontSize(11);doc.text('SALDO RESIDUO: '+fmt(tot-tac)+' €',W-12,y,{align
 need(20);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('PIANO DI PAGAMENTO',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(9);
 let sumP=0;p.piano.forEach(r=>{need(8);sumP+=+r.importo||0;doc.text(r.voce,12,y);doc.text(fmt(r.importo)+' €',W-12,y,{align:'right'});y+=5;});
 doc.text('Non pianificato: '+fmt(tot-sumP)+' €',W-12,y,{align:'right'});y+=8;
-if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToSize(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
+if(p.note){need(16);doc.setFont('helvetica','bold');doc.text('NOTE',10,y);y+=5;doc.setFont('helvetica','normal');doc.setFontSize(8);const nl=doc.splitTextToType(p.note,W-20);doc.text(nl,10,y);y+=nl.length*3.8+6;}
 need(48);doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text('ACCETTAZIONE E FIRMA',10,y);y+=5;
 doc.setFont('helvetica','normal');doc.setFontSize(8);
-doc.text(doc.splitTextToSize('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
+doc.text(doc.splitTextToType('Con la firma il cliente accetta il presente documento che si trasforma in contratto di servizio. Il cliente riceverà il PDF per la firma; lo studio registrerà l\'avvenuta accettazione con il flag "Accettato e firmato".'),10,y);y+=12;
 if(p.accettato){doc.setFont('helvetica','bold');doc.text('DOCUMENTO ACCETTATO E FIRMATO DAL CLIENTE',10,y);doc.setFont('helvetica','normal');y+=6;}
 const fw=85,fh=25;doc.rect(10,y,fw,fh);doc.rect(W-10-fw,y,fw,fh);y+=fh+4;
 doc.setFontSize(8);doc.text('Firma Cliente',10,y);doc.text('Firma Studio',W-10-fw,y);y+=6;
 const pages=doc.getNumberOfPages();
 for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7);doc.setTextColor(120);doc.text('Generato con AppCenterStudio Premium',10,292);doc.text('Pag. '+i+'/'+pages,W-10,292,{align:'right'});}
 doc.save((p.stato==='contratto'?'Contratto_':'Preventivo_')+p.numero+'.pdf');}
+
 function refreshHead(){
 $('#studioNameHead').textContent=DB.studio.nome||'Gestionale per studi fotografici';
 const logoEl=$('#studioLogoHead');
@@ -518,6 +668,7 @@ renderArchivio();
 renderClienti();
 renderListini();
 renderStudio();
+checkPromemoria();
 </script>
 </body>
 </html>
