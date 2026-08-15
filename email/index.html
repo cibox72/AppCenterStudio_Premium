@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>09 Email - AppCenterStudio Premium</title>
+<script src="../licenza.js"></script>
+<style>
+:root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--nero);min-height:100vh}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
+.topbar .pill{background:#fff;color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.topbar .pill:hover{background:#111;color:#fff}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{height:34px;background:#fff;border-radius:8px;padding:2px 6px}
+.brandName{font-weight:800;font-size:19px;letter-spacing:.5px;font-family:Georgia,serif}
+#studioNameHead{font-size:13px;opacity:.85}
+button{font-family:inherit}
+.btn{background:#111;color:#fff;border:none;padding:10px 18px;border-radius:999px;font-weight:600;cursor:pointer;font-size:13px}
+.btn:hover{opacity:.88}
+.btn.secondary{background:#fff;color:#111;border:1px solid #bbb}
+.mini{border:1px solid #ccc;background:#fff;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:12px}
+.mini:hover{background:#eee}
+main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
+.card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:11px;color:#666;display:block;margin-bottom:3px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bordo);border-radius:8px;background:#fff;font-size:13px;font-family:inherit}
+input:focus,textarea:focus,select:focus{outline:2px solid #000}
+textarea{min-height:140px}
+.hint{font-size:12px;color:#777}
+.badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:left;vertical-align:top}
+th{background:#111;color:#fff}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;border:1px solid var(--bordo)}
+.riga{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px;border-bottom:1px dashed #e0e0e0}
+.testo{white-space:pre-wrap;background:#fafafa;border:1px solid #e0e0e0;border-radius:8px;padding:12px;font-size:13px;margin-top:10px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="pill" onclick="history.back()">← Indietro</button>
+  <button class="pill" onclick="goHome()">Home</button>
+  <button class="pill" onclick="backupGlobale()">Backup Globale</button>
+  <label class="pill" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+  <button class="pill" style="background:#111;color:#fff" onclick="pubblicaArchivioComune()">Pubblica archivio comune</button>
+  <button class="pill" style="background:#111;color:#fff" onclick="scaricaEUnisciArchivio()">Scarica e unisci archivio</button>
+</div>
+
+<header>
+  <div class="brand">
+    <img id="studioLogoHead" src="logo.jpg" alt="" onerror="this.remove()">
+    <span class="brandName">AppCenterStudio Premium</span>
+  </div>
+  <div id="studioNameHead"></div>
+</header>
+
+<main>
+  <div class="card">
+    <h2>Mittente (indirizzo dello studio)</h2>
+    <p class="hint">Questi sono gli indirizzi DA cui scrivi. Il messaggio parte davvero dal tuo account quando usi "Invia con app email" (il programma di posta o la PEC configurati su questo dispositivo) oppure quando incolli il testo nella tua webmail / PEC web.</p>
+    <div class="grid">
+      <div><label>Email dello studio</label><input id="cfgEmail" placeholder="studio@esempio.it"></div>
+      <div><label>PEC dello studio (facoltativa)</label><input id="cfgPec" placeholder="studio@pec.it"></div>
+    </div>
+    <button class="btn secondary" onclick="salvaConfig()">Salva mittente</button>
+  </div>
+
+  <div class="card">
+    <h2>Nuova email</h2>
+    <label>Modello rapido</label>
+    <select id="template" onchange="applicaTemplate()">
+      <option value="">-- Testo libero --</option>
+      <option value="appuntamento">Promemoria appuntamento</option>
+      <option value="pronto">Ordine / album pronto per consegna</option>
+      <option value="saldo">Sollecito saldo</option>
+      <option value="grazie">Ringraziamento post servizio</option>
+      <option value="ricevuta">Conferma ricevuta acconto</option>
+    </select>
+    <div class="grid">
+      <div><label>A: email o PEC destinatario *</label><input id="e_a" placeholder="cliente@esempio.it / cliente@pec.it"></div>
+      <div><label>Oggetto *</label><input id="e_oggetto" placeholder="Es. Conferma appuntamento"></div>
+    </div>
+    <label>Messaggio</label>
+    <textarea id="e_testo" placeholder="Scrivi qui il messaggio..."></textarea>
+    <p style="margin-top:12px">
+      <button class="btn" onclick="inviaMail(false)">Invia con app email</button>
+      <button class="btn" onclick="inviaMail(true)">Invia con PEC</button>
+      <button class="btn secondary" onclick="copiaTutto()">Copia oggetto + testo</button>
+      <button class="btn secondary" onclick="salvaInArchivio()">Salva in archivio</button>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Archivio email</h2>
+    <div id="listaBox"></div>
+  </div>
+</main>
+
+<div id="viewModal" class="modal">
+  <div class="modal-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h2 style="margin:0;border:none;padding:0">Dettaglio email</h2>
+      <button class="mini" onclick="chiudiModal()">Chiudi</button>
+    </div>
+    <div id="viewBody"></div>
+  </div>
+</div>
+
+<script>
+const KEY='appcenter_email';
+const CFG='emailStudioCfg';
+const $=s=>document.querySelector(s);
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let store=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.list)return d;}catch(e){}return{list:[]};})();
+let cfg=JSON.parse(localStorage.getItem(CFG)||'{}');
+let ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+let editingId=null;
+function save(){localStorage.setItem(KEY,JSON.stringify(store));}
+function goHome(){const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');}
+
+function refreshHead(){
+ $('#studioNameHead').textContent=ident.nome||'Email';
+ if(ident.logoData)$('#studioLogoHead').src=ident.logoData;
+}
+
+function salvaConfig(){
+ cfg.email=$('#cfgEmail').value.trim();
+ cfg.pec=$('#cfgPec').value.trim();
+ localStorage.setItem(CFG,JSON.stringify(cfg));
+ alert('Mittente salvato.');
+}
+
+const TEMPLATES={
+ appuntamento:a=>('Gentile '+a+',\n\nle ricordiamo l\'appuntamento concordato con '+ (ident.nome||'il nostro studio') +'.\nRestiamo a disposizione per qualsiasi necessita\'.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
+ pronto:a=>('Gentile '+a+',\n\nil suo ordine / album e\' pronto per la consegna presso il nostro studio.\nLa aspettiamo negli orari di apertura.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
+ saldo:a=>('Gentile '+a+',\n\nle ricordiamo il saldo residuo relativo al servizio effettuato.\nRestiamo a disposizione per concordare il pagamento.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
+ grazie:a=>('Gentile '+a+',\n\ngrazie per aver scelto '+ (ident.nome||'il nostro studio') +'.\nE\' stato un piacere raccontare il suo giorno speciale.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
+ ricevuta:a=>('Gentile '+a+',\n\nconfermiamo la ricezione dell\'acconto versato.\nLa ricevuta e\' disponibile in studio.\n\nCordiali saluti,\n'+(ident.nome||'Studio'))
+};
+function applicaTemplate(){
+ const t=$('#template').value;
+ if(!t)return;
+ const nome=$('#e_a').value.trim()||'Cliente';
+ const testi={appuntamento:'Promemoria appuntamento',pronto:'Ordine pronto per consegna',saldo:'Sollecito saldo',grazie:'Grazie per averci scelto',ricevuta:'Conferma ricevuta acconto'};
+ $('#e_oggetto').value=testi[t];
+ $('#e_testo').value=TEMPLATES[t](nome);
+}
+
+function mittente(pec){
+ return pec?(cfg.pec||cfg.email||''):(cfg.email||'');
+}
+
+function inviaMail(pec){
+ const a=$('#e_a').value.trim();
+ const oggetto=$('#e_oggetto').value.trim();
+ const testo=$('#e_testo').value;
+ if(!a||!oggetto)return alert('Inserisci destinatario e oggetto.');
+ const da=mittente(pec);
+ let url='mailto:'+encodeURIComponent(a)+'?subject='+encodeURIComponent(oggetto)+'&body='+encodeURIComponent(testo);
+ if(da)url+='&from='+encodeURIComponent(da);
+ salvaInArchivio(true);
+ window.location.href=url;
+}
+
+function copiaTutto(){
+ const oggetto=$('#e_oggetto').value.trim();
+ const testo=$('#e_testo').value;
+ if(!oggetto&&!testo)return alert('Niente da copiare.');
+ const txt='Oggetto: '+oggetto+'\n\n'+testo;
+ navigator.clipboard.writeText(txt).then(()=>alert('Oggetto e testo copiati. Incollali nella tua webmail o PEC web.'));
+}
+
+function salvaInArchivio(silenzioso){
+ const a=$('#e_a').value.trim();
+ const oggetto=$('#e_oggetto').value.trim();
+ const testo=$('#e_testo').value;
+ if(!a||!oggetto)return silenzioso?null:alert('Inserisci destinatario e oggetto.');
+ const dati={a:a,oggetto:oggetto,testo:testo,data:today(),da:mittente(false)};
+ if(editingId){
+  const m=store.list.find(x=>x.id===editingId);
+  if(m)Object.assign(m,dati);
+  editingId=null;
+ }else{
+  dati.id=uid();
+  store.list.unshift(dati);
+ }
+ save();renderLista();pulisciForm();
+ if(!silenzioso)alert('Email salvata in archivio.');
+ return dati;
+}
+
+function pulisciForm(){
+ editingId=null;
+ $('#e_a').value='';$('#e_oggetto').value='';$('#e_testo').value='';$('#template').value='';
+}
+
+function renderLista(){
+ const box=$('#listaBox');
+ if(!store.list.length){box.innerHTML='<p class="hint">Nessuna email in archivio.</p>';return;}
+ box.innerHTML='<table><tr><th>Data</th><th>A</th><th>Oggetto</th><th>Azioni</th></tr>'+
+ store.list.map(m=>'<tr><td>'+m.data+'</td><td>'+esc(m.a)+'</td><td>'+esc(m.oggetto)+'</td><td>'+
+ '<button class="mini" onclick="visualizza(\''+m.id+'\')">Visualizza</button> '+
+ '<button class="mini" onclick="modifica(\''+m.id+'\')">Modifica</button> '+
+ '<button class="mini" onclick="elimina(\''+m.id+'\')">Elimina</button></td></tr>').join('')+'</table>';
+}
+function trova(id){return store.list.find(x=>x.id===id);}
+function visualizza(id){
+ const m=trova(id);if(!m)return;
+ $('#viewBody').innerHTML=
+ '<div class="riga"><span>Data</span><b>'+m.data+'</b></div>'+
+ '<div class="riga"><span>Da</span><b>'+esc(m.da||'')+'</b></div>'+
+ '<div class="riga"><span>A</span><b>'+esc(m.a)+'</b></div>'+
+ '<div class="riga"><span>Oggetto</span><b>'+esc(m.oggetto)+'</b></div>'+
+ '<div class="testo">'+esc(m.testo)+'</div>'+
+ '<p style="margin-top:16px"><button class="btn" onclick="reinvia(\''+m.id+'\',false)">Invia con app email</button> <button class="btn" onclick="reinvia(\''+m.id+'\',true)">Invia con PEC</button></p>';
+ $('#viewModal').classList.add('active');
+}
+function chiudiModal(){$('#viewModal').classList.remove('active');}
+function reinvia(id,pec){
+ const m=trova(id);if(!m)return;
+ let url='mailto:'+encodeURIComponent(m.a)+'?subject='+encodeURIComponent(m.oggetto)+'&body='+encodeURIComponent(m.testo);
+ if(mittente(pec))url+='&from='+encodeURIComponent(mittente(pec));
+ window.location.href=url;
+}
+function modifica(id){
+ const m=trova(id);if(!m)return;
+ editingId=id;
+ $('#e_a').value=m.a;$('#e_oggetto').value=m.oggetto;$('#e_testo').value=m.testo;
+ window.scrollTo(0,0);
+}
+function elimina(id){
+ if(!confirm('Eliminare questa email?'))return;
+ store.list=store.list.filter(x=>x.id!==id);
+ save();renderLista();
+}
+
+/* ===== archivio comune ===== */
+async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function deployFileNetlify(path,content){
+ const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
+ if(!tok||!siteId)throw new Error('Netlify non configurato.');
+ const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{Authorization:'Bearer '+tok}});
+ const existing=resp.ok?await resp.json():[];
+ const files={};existing.forEach(f=>{files[f.path]=f;});
+ const bin=new TextEncoder().encode(content);const ab=bin.buffer;const hash=await sha1(bin);
+ files[path]={path:path,hash:hash};
+ const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
+ if(dep.required&&dep.required.includes(path)){
+  await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
+ }
+}
+async function leggiFileNetlify(path){
+ const siteUrl=localStorage.getItem('netlify_siteurl');
+ if(!siteUrl)throw new Error('Site URL mancante.');
+ const r=await fetch(siteUrl+path+'?t='+Date.now(),{cache:'no-store'});
+ if(!r.ok)return null;
+ return await r.json();
+}
+async function pubblicaArchivioComune(){
+ try{
+  await deployFileNetlify('/archivio-comune-email.json',JSON.stringify({list:store.list,exportedAt:new Date().toISOString()},null,2));
+  alert('Archivio email pubblicato.');
+ }catch(e){alert('Errore: '+e.message);}
+}
+async function scaricaEUnisciArchivio(){
+ try{
+  const data=await leggiFileNetlify('/archivio-comune-email.json');
+  if(!data||!data.list)throw new Error('Archivio vuoto o non trovato.');
+  if(!confirm('Unire '+data.list.length+' email remote alle '+store.list.length+' locali?'))return;
+  const map={};store.list.forEach(m=>{map[m.id]=m;});
+  let added=0;
+  data.list.forEach(m=>{if(!m.id)m.id=uid();if(!map[m.id]){map[m.id]=m;added++;}});
+  store.list=Object.values(map);
+  save();renderLista();
+  alert('Unione completata: '+added+' email aggiunte.');
+ }catch(e){alert('Errore: '+e.message);}
+}
+
+function backupGlobale(){
+ const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+today()+'.json';a.click();
+}
+function ripristinoGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm('Ripristinare il backup? I dati attuali verranno sostituiti.'))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Ripristinato. Ricarico.');location.reload();
+ }catch(err){alert('Errore: '+err.message);}};
+ r.readAsText(f);e.target.value='';
+}
+
+refreshHead();
+$('#cfgEmail').value=cfg.email||ident.email||'';
+$('#cfgPec').value=cfg.pec||'';
+renderLista();
+</script>
+</body>
+</html>
