@@ -9,9 +9,20 @@
 <style>
 :root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
 *{box-sizing:border-box}
-body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--nero);min-height:100vh}
-.topbar{display:flex;gap:6px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
-.topbar .pill{background:#fff;color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+body{
+  margin:0;
+  font-family:Georgia,'Segoe UI',Tahoma,sans-serif;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
+  background-attachment:fixed;
+  color:var(--nero);
+  min-height:100vh
+}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
+.topbar .pill{background:rgba(255,255,255,0.8);color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .topbar .pill:hover{background:#111;color:#fff}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
 .brand{display:flex;align-items:center;gap:10px}
@@ -24,12 +35,12 @@ button{font-family:inherit}
 .btn.secondary{background:#fff;color:#111;border:1px solid #bbb}
 .mini{border:1px solid #ccc;background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px}
 .mini:hover{background:#eee}
-nav{display:flex;gap:6px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;position:sticky;top:0;z-index:5}
-.tab{border:1px solid var(--bordo);background:linear-gradient(180deg,#fff,#eee);padding:9px 14px;border-radius:999px;cursor:pointer;font-weight:600;color:#222;font-size:13px}
+nav{display:flex;gap:6px;padding:10px 16px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.tab{border:1px solid var(--bordo);background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(238,238,238,0.9));padding:9px 14px;border-radius:999px;cursor:pointer;font-weight:600;color:#222;font-size:13px}
 .tab.active{background:#111;color:#fff;border-color:#000}
 main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
-.card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.card.inner{background:var(--chiaro)}
+.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.card.inner{background:rgba(247,247,247,0.9)}
 h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
 h3{margin:14px 0 6px;font-size:14px;color:#222;text-transform:uppercase;letter-spacing:.5px;font-family:Georgia,serif}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -38,7 +49,7 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--bordo);borde
 input:focus,textarea:focus{outline:2px solid #000}
 input[readonly]{background:#f0f0f0;font-weight:700}
 textarea{min-height:70px}
-.highlight{background:linear-gradient(90deg,#000,#3a3a3a);color:#fff;padding:16px;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.highlight{background:linear-gradient(90deg,#000,#3a3a3a);color:#fff;padding:16px;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;box-shadow:0 6px 18px rgba(0,0,0,.15)}
 .highlight label{color:#bbb}
 .highlight input{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);color:#fff;font-weight:700}
 .rowBetween{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
@@ -47,7 +58,7 @@ textarea{min-height:70px}
 .servRow span{font-size:13px}
 .locRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:10px}
 .locRow input{margin:0}
-.totCard{background:linear-gradient(90deg,#fff,#f0f0f0)}
+.totCard{background:linear-gradient(90deg,rgba(255,255,255,0.95),rgba(240,240,240,0.95));backdrop-filter:blur(8px)}
 .totCard .riga{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
 .totCard .big{font-size:20px;font-weight:800;border-top:2px solid #000;margin-top:6px;padding-top:8px}
 .totCard .saldo{color:#000;background:#e8e8e8;border-radius:8px;padding:6px 10px}
@@ -58,13 +69,13 @@ table{width:100%;border-collapse:collapse}
 th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:left;vertical-align:top}
 th{background:#111;color:#fff}
 .hint{font-size:12px;color:#777}
-footer{text-align:center;padding:20px;font-size:12px;color:#888}
+footer{text-align:center;padding:20px;font-size:12px;color:#888;background:rgba(255,255,255,0.5);backdrop-filter:blur(6px)}
 .logoPreview{max-height:60px;max-width:160px;border:1px solid var(--bordo);border-radius:6px;background:#fff;padding:4px;margin-top:8px}
-.agenda-item{background:#fafafa;border:1px solid var(--bordo);border-radius:10px;padding:14px;margin-bottom:12px}
+.agenda-item{background:rgba(250,250,250,0.9);backdrop-filter:blur(6px);border:1px solid var(--bordo);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .agenda-item h4{margin:0 0 8px;font-size:15px;color:#111;font-family:Georgia,serif}
 .agenda-item .meta{font-size:12px;color:#666;margin-bottom:6px}
 .agenda-item .note{font-size:13px;color:#333;margin-top:6px;white-space:pre-wrap}
-.promemoria-box{background:linear-gradient(135deg,#111 0%,#333 100%);color:#fff;border-radius:14px;padding:20px;margin-bottom:20px}
+.promemoria-box{background:linear-gradient(135deg,#111 0%,#333 100%);color:#fff;border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:0 8px 25px rgba(0,0,0,0.2)}
 .promemoria-box h3{color:#fff;border-left-color:#fff;margin-top:0}
 .promemoria-list{list-style:none;padding:0;margin:0}
 .promemoria-list li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:13px}
