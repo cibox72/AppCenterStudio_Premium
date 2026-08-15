@@ -3,59 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppCenterStudio Premium</title>
+<title>AppCenter Studio Premium - Console Fornitore</title>
 <style>
-:root{--b:#e0e0e0;--s:#888}
+:root{--nero:#0e0e0e;--grigio:#6b6b6b;--bordo:#e6e6e6;--sfondo:#fbfbfb;--carta:#fff}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:#fbfbfb;color:#111}
-.wrap{max-width:1100px;margin:0 auto;padding:20px}
-.hd{text-align:center;padding:26px;background:#fff;border:1px solid var(--b);border-radius:14px;margin-bottom:22px}
-.hd img{filter:grayscale(100%);height:60px;border-radius:12px;margin-bottom:8px}
-.hd h1{font-family:Georgia,serif;font-size:28px}
-.hd p{color:var(--s)}
-.tb{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-bottom:16px}
-.bp{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
-.bs{padding:9px 16px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
-.card{background:#fff;border:1px solid var(--b);border-radius:14px;padding:20px;margin-bottom:20px}
-.card h2{font-family:Georgia,serif;font-size:17px;margin-bottom:12px}
-.fg{margin-bottom:10px}.fg label{display:block;font-weight:600;font-size:12px;margin-bottom:4px}
-.fg input,.fg select{width:100%;padding:9px;border:1px solid var(--b);border-radius:9px;font-size:13px}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ib{background:#f5f5f5;border-left:4px solid #111;padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px}
-.row{background:#fff;border:1px solid var(--b);border-radius:10px;padding:12px 14px;margin-bottom:10px;font-size:13px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
-.code{font-family:monospace;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.app{background:#fff;border:1px solid var(--b);border-radius:14px;padding:20px;text-decoration:none;color:#111;display:block;transition:border-color .2s}
-.app:hover{border-color:#111}
-.app .num{font-family:Georgia,serif;font-size:13px;color:var(--s)}
-.app h3{font-family:Georgia,serif;font-size:18px;margin:4px 0}
-.app p{font-size:13px;color:var(--s)}
-.lw{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lc{background:#fff;border:1px solid var(--b);border-radius:14px;padding:34px;max-width:400px;width:100%;text-align:center}
-.bl{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.bl-danger{padding:7px 13px;background:#fff;border:1px solid #a33;color:#a33;border-radius:999px;cursor:pointer;font-size:12px}
-.bl-danger:hover{background:#a33;color:#fff}
-.bl-toggle{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.bl-toggle:hover{background:#111;color:#fff}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);color:var(--nero);line-height:1.6}
+.wrap{max-width:1140px;margin:0 auto;padding:24px 20px 60px}
+.topbar{display:flex;gap:8px;justify-content:flex-end;align-items:center;padding:14px 20px;background:var(--carta);border-bottom:1px solid var(--bordo);flex-wrap:wrap;position:sticky;top:0;z-index:100}
+.topbar .brand{margin-right:auto;font-family:Georgia,serif;font-size:12px;letter-spacing:.18em;color:var(--grigio);text-transform:uppercase}
+.topbar button{padding:7px 16px;background:var(--carta);border:1px solid #bbb;cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;letter-spacing:.04em}
+.topbar button:hover{background:var(--nero);color:#fff;border-color:var(--nero)}
+.topbar button.primary{background:var(--nero);color:#fff;border-color:var(--nero)}
+.topbar button.primary:hover{background:#333}
+.hero{background:var(--nero);color:#fff;text-align:center;padding:56px 20px 48px;margin:-24px -20px 30px;border-radius:0 0 20px 20px}
+.hero .eyebrow{font-size:11px;letter-spacing:.35em;color:#9a9a9a;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-family:Georgia,serif;font-weight:400;font-size:34px;line-height:1.2}
+.hero h1 em{font-style:italic}
+.hero p{color:#bdbdbd;font-size:14px;margin-top:10px;max-width:520px;margin-left:auto;margin-right:auto}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:16px;padding:26px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.card h2{font-family:Georgia,serif;font-size:20px;font-weight:400;margin-bottom:6px}
+.card .hint{font-size:12px;color:var(--grigio);margin-bottom:14px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a;margin-bottom:4px}
+.fg input,.fg select{width:100%;padding:11px 12px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;font-family:inherit;background:#fff}
+.fg input:focus,.fg select:focus{outline:2px solid var(--nero)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.fr{grid-template-columns:1fr}}
+.ib{background:#f5f5f5;border-left:3px solid var(--nero);padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:13px;color:#444}
+.row{background:var(--carta);border:1px solid var(--bordo);border-radius:12px;padding:14px 16px;margin-bottom:10px;font-size:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.row .info{flex:1;min-width:200px}
+.row .info .code{font-family:monospace;font-weight:700;font-size:12px;letter-spacing:.05em;background:#f0f0f0;padding:2px 8px;border-radius:4px}
+.row .info .nome{font-family:Georgia,serif;font-size:16px;margin:2px 0}
+.row .info small{color:var(--grigio);font-size:12px}
+.row .acts{display:flex;gap:6px;flex-wrap:wrap}
+.bl{padding:7px 14px;background:var(--carta);border:1px solid #999;border-radius:999px;cursor:pointer;font-size:11px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.bl:hover{background:var(--nero);color:#fff;border-color:var(--nero)}
+.bl.primary{background:var(--nero);color:#fff;border-color:var(--nero)}
+.bl.primary:hover{background:#333}
+.bl.danger{background:var(--carta);border:1px solid #a33;color:#a33}
+.bl.danger:hover{background:#a33;color:#fff;border-color:#a33}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.app{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;text-decoration:none;color:var(--nero);display:flex;flex-direction:column;gap:8px;transition:border-color .2s, transform .2s}
+.app:hover{border-color:var(--nero);transform:translateY(-2px)}
+.app .num{font-family:Georgia,serif;font-size:13px;letter-spacing:.25em;color:#9a9a9a}
+.app h3{font-family:Georgia,serif;font-size:18px;font-weight:400}
+.app p{font-size:13px;color:var(--grigio);flex:1}
+.app .arrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;border-bottom:1px solid var(--nero);padding-bottom:2px;align-self:flex-start}
+.lw{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--sfondo)}
+.lc{background:var(--carta);border:1px solid var(--bordo);border-radius:20px;padding:38px;max-width:420px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+.lc h1{font-family:Georgia,serif;font-size:26px;margin-bottom:4px}
+.lc .eyebrow{font-size:11px;letter-spacing:.25em;color:var(--grigio);text-transform:uppercase;margin-bottom:20px}
+.lc .bp{width:100%;padding:13px;background:var(--nero);color:#fff;border:none;border-radius:999px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;cursor:pointer;margin-top:10px}
+.lc .bp:hover{background:#333}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--nero);color:#fff;padding:12px 22px;border-radius:999px;font-size:13px;letter-spacing:.04em;z-index:1000;opacity:0;transition:opacity .3s;max-width:90%;text-align:center}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <div id="root"></div>
+<div id="toast" class="toast"></div>
 <script>
 const OWNER='cibox72',REPO='AppCenterStudio_Premium';
 const BASE='https://'+OWNER+'.github.io/'+REPO+'/';
 const PAYPAL_EMAIL='appcenterstudiopremium@gmail.com';
 const $=id=>document.getElementById(id);
+function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function slugify(s){return(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'studio';}
+function uniqueSlug(base,existing){
+ let slug=base,n=2;
+ while(existing.includes(slug)){slug=base+'-'+n;n++;}
+ return slug;
+}
 window.addEventListener('DOMContentLoaded',()=>{sessionStorage.getItem('admin')?renderDash():renderLogin();});
 function renderLogin(){
 $('root').innerHTML=`<div class="lw"><div class="lc">
-<img src="logo.jpg" style="height:50px;filter:grayscale(100%);border-radius:12px;margin-bottom:10px" alt="">
-<h1 style="font-family:Georgia,serif;font-size:22px">AppCenterStudio Premium</h1>
-<p style="color:var(--s);margin-bottom:16px">Accesso fornitore</p>
-<div class="fg"><label>Utente</label><input id="lu" autocomplete="username"></div>
-<div class="fg"><label>Password</label><input id="lp" type="password" autocomplete="current-password"></div>
-<button class="bp" style="width:100%" onclick="login()">Entra</button>
-<div id="lerr" style="color:#a33;font-size:13px;margin-top:10px"></div>
+<div class="eyebrow">AppCenter Studio Premium</div>
+<h1>Console Fornitore</h1>
+<p style="color:var(--grigio);margin:14px 0 22px;font-size:14px">Accesso riservato all'amministratore del sistema.</p>
+<div class="fg" style="text-align:left"><label>Utente</label><input id="lu" autocomplete="username"></div>
+<div class="fg" style="text-align:left"><label>Password</label><input id="lp" type="password" autocomplete="current-password"></div>
+<button class="bp" onclick="login()">Accedi</button>
+<div id="lerr" style="color:#a33;font-size:12px;margin-top:12px;letter-spacing:.04em"></div>
 </div></div>`;
 }
 function login(){
@@ -66,53 +94,66 @@ async function leggiLicenze(){try{const r=await fetch(BASE+'licenses.json?t='+Da
 async function leggiOfferte(){try{const r=await fetch(BASE+'offers.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{offerte:[]}}}
 async function ghPut(path,content){
 const tok=localStorage.getItem('gh_token');
-if(!tok)throw new Error('Token GitHub mancante: inseriscilo nella card "Token GitHub".');
+if(!tok)throw new Error('Token GitHub mancante.');
 const g=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'}});
 let sha=null;if(g.ok){const j=await g.json();sha=j.sha;}
 const p=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({message:'aggiorna '+path,content:btoa(unescape(encodeURIComponent(content))),sha:sha||undefined})});
 const j2=await p.json();if(!p.ok)throw new Error(j2.message||'Errore GitHub');
 }
+function linkBenvenuto(studio){return BASE+'benvenuto.html#'+studio.codice;}
+function messaggioBenvenuto(studio){return 'Benvenuto '+studio.nome+'!\n\nQuesto e\' il tuo link personale di accesso ad AppCenter Studio Premium:\n\n'+linkBenvenuto(studio)+'\n\nConservalo: lo userai ogni volta che vorrai aprire le tue applicazioni. Da li\' potrai anche riscattare eventuali offerte che ti invieremo.';}
+function messaggioOfferta(studio,of){return 'Offerta riservata a '+studio.nome+'\n\n'+(of.descrizione||'Un\'offerta speciale per il tuo studio.')+'\n\nPrezzo: \u20ac'+of.prezzo+' per '+of.durata+' mesi di licenza completa.\n\nPer riscattarla, apri il tuo link personale:\n'+linkBenvenuto(studio)+'\n\nDopo il pagamento estenderemo la tua licenza.';}
 function renderDash(){
-$('root').innerHTML=`<div class="wrap">
-<div class="tb">
-<button class="bp" onclick="backupGlobale()">Backup Globale</button>
-<label class="bs" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
-<button class="bs" onclick="location.href='assistenza.html?admin=true'">Assistenza Online</button>
-<button class="bs" onclick="sessionStorage.clear();renderLogin();">Esci</button>
+$('root').innerHTML=`<div class="topbar">
+<span class="brand">AppCenter Studio Premium &middot; Console</span>
+<button onclick="backupGlobale()">Backup</button>
+<label style="cursor:pointer;padding:7px 16px;background:var(--carta);border:1px solid #bbb;font-size:12px;border-radius:999px;letter-spacing:.04em">Ripristino<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
+<button onclick="location.href='assistenza.html?admin=true'">Assistenza</button>
+<button class="primary" onclick="sessionStorage.clear();renderLogin();">Esci</button>
 </div>
-<div class="hd"><img src="logo.jpg" alt="logo"><h1>AppCenterStudio Premium</h1><p>Suite gestionale per studi fotografici</p></div>
+<div class="wrap">
+<div class="hero">
+<div class="eyebrow">Console fornitore</div>
+<h1>Gestisci <em>gli studi</em> che usano AppCenter</h1>
+<p>Crea nuovi studi, genera i loro link personali, pubblica offerte e controlla lo stato di tutte le licenze da un'unica pagina.</p>
+</div>
+
 <div class="card">
 <h2>Token GitHub</h2>
-<div class="ib">Serve per creare studi e scrivere licenses.json. Lo trovi su GitHub → Settings → Developer settings → Personal access tokens.</div>
-<div class="fg"><input id="ghTok" type="password" placeholder="ghp_…"></div>
-<button class="bs" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());alert('Token salvato.');">Salva token</button>
+<p class="hint">Serve a creare studi e scrivere licenses.json. Lo trovi su GitHub &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens.</p>
+<div class="fg"><input id="ghTok" type="password" placeholder="ghp_..."></div>
+<button class="bl primary" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());showToast('Token salvato');">Salva token</button>
 </div>
+
 <div class="card">
 <h2>Studi & Licenze</h2>
+<p class="hint">Crea un nuovo studio: il codice viene generato automaticamente dal nome in forma leggibile (es. &ldquo;G&amp;L Studio&rdquo; &rarr; gl-studio). Lo studio ricevera' un link personale tipo <code>benvenuto.html#gl-studio</code>.</p>
 <div class="fr">
-<div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio"></div>
+<div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio, Foto Rossi"></div>
 <div class="fg"><label>Giorni di prova</label><input id="stGiorni" type="number" value="30"></div>
 </div>
-<button class="bp" onclick="creaStudio()">Crea studio</button>
-<div id="studiList" style="margin-top:14px"></div>
+<button class="bl primary" onclick="creaStudio()">Crea nuovo studio</button>
+<div id="studiList" style="margin-top:18px"></div>
 </div>
+
 <div class="card">
-<h2>Offerte agli studi</h2>
-<div class="ib">Crea offerte personalizzate con prezzo e durata. Lo studio riceve un link e paga con PayPal. Dopo il pagamento, estendi la licenza manualmente.</div>
+<h2>Offerte riservate</h2>
+<p class="hint">Crea offerte personalizzate con prezzo e durata. Lo studio riceve un messaggio pronto da WhatsApp con il suo link personale; dopo il pagamento estendi la licenza.</p>
 <div class="fr">
 <div class="fg"><label>Studio</label><select id="ofStudio"></select></div>
-<div class="fg"><label>Prezzo (€)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div>
+<div class="fg"><label>Prezzo (&euro;)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div>
 </div>
 <div class="fr">
 <div class="fg"><label>Durata (mesi)</label><input id="ofDurata" type="number" value="12" min="1"></div>
 <div class="fg"><label>Descrizione</label><input id="ofDesc" placeholder="Es. Pacchetto matrimoni 2026"></div>
 </div>
-<button class="bp" onclick="creaOfferta()">Crea offerta</button>
-<div id="offerteList" style="margin-top:14px"></div>
+<button class="bl primary" onclick="creaOfferta()">Crea offerta</button>
+<div id="offerteList" style="margin-top:18px"></div>
 </div>
+
 <div class="card">
-<h2>Applicazioni</h2>
-<div class="ib" id="studioSel">Seleziona prima uno studio qui sopra: i link delle app si attivano con il suo codice.</div>
+<h2>Apri un'applicazione</h2>
+<p class="hint" id="studioSel">Seleziona uno studio dalla lista qui sopra per aprire le applicazioni con il suo codice attivo.</p>
 <div class="grid" id="appGrid"></div>
 </div>
 </div>`;
@@ -120,134 +161,179 @@ $('ghTok').value=localStorage.getItem('gh_token')||'';
 renderStudi();renderOfferte();renderApps();
 }
 async function creaStudio(){
-const nome=$('stNome').value.trim();if(!nome)return alert('Nome studio obbligatorio.');
+const nome=$('stNome').value.trim();
+if(!nome)return showToast('Inserisci il nome dello studio');
 const giorni=parseInt($('stGiorni').value)||30;
 const l=await leggiLicenze();const studi=l.studi||[];
-let n=studi.length+1,codice='st-'+String(n).padStart(3,'0');
-while(studi.find(s=>s.codice===codice)){n++;codice='st-'+String(n).padStart(3,'0');}
+const esistenti=studi.map(s=>s.codice);
+const base=slugify(nome);
+const codice=uniqueSlug(base,esistenti);
 const sc=new Date();sc.setDate(sc.getDate()+giorni);
 studi.push({codice,nome,attivo:true,scadenza:sc.toISOString().slice(0,10)});
-try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice);renderStudi();renderOfferte();}catch(e){alert('Errore: '+e.message);}
+try{
+await ghPut('licenses.json',JSON.stringify({studi},null,2));
+$('stNome').value='';
+await renderStudi();renderOfferte();
+const msg=messaggioBenvenuto({codice,nome});
+showToast('Studio "'+nome+'" creato: '+codice);
+navigator.clipboard.writeText(msg).then(()=>{showToast('Messaggio di benvenuto copiato: incollalo su WhatsApp allo studio');},()=>{});
+}catch(e){showToast('Errore: '+e.message);}
 }
 async function toggleStudio(codice){
 try{
 const l=await leggiLicenze();
-const studi=(l.studi||[]).map(s=>{
-if(s.codice===codice)return {...s,attivo:!s.attivo};
-return s;
-});
+const studi=(l.studi||[]).map(s=>s.codice===codice?{...s,attivo:!s.attivo}:s);
 await ghPut('licenses.json',JSON.stringify({studi},null,2));
-renderStudi();
-}catch(e){alert('Errore: '+e.message);}
+renderStudi();showToast('Stato aggiornato');
+}catch(e){showToast('Errore: '+e.message);}
 }
 async function eliminaStudio(codice){
 if(!confirm('Eliminare lo studio '+codice+'?'))return;
-if(!confirm('CONFERMA DEFINITIVA: Lo studio '+codice+' verrà rimosso permanentemente. Questa azione è irreversibile. Procedere?'))return;
+if(!confirm('CONFERMA DEFINITIVA: lo studio '+codice+' sara\' rimosso permanentemente. Procedere?'))return;
 try{
 const l=await leggiLicenze();
 const studi=(l.studi||[]).filter(s=>s.codice!==codice);
 await ghPut('licenses.json',JSON.stringify({studi},null,2));
-alert('Studio '+codice+' eliminato.');
 renderStudi();
 if(sessionStorage.getItem('studio')===codice){sessionStorage.removeItem('studio');renderApps();}
 const o=await leggiOfferte();
 const offerte=(o.offerte||[]).filter(x=>x.codice!==codice);
 await ghPut('offers.json',JSON.stringify({offerte},null,2));
 renderOfferte();
-}catch(e){alert('Errore: '+e.message);}
+showToast('Studio eliminato');
+}catch(e){showToast('Errore: '+e.message);}
+}
+async function copiaBenvenuto(codice){
+const l=await leggiLicenze();
+const s=(l.studi||[]).find(x=>x.codice===codice);
+if(!s)return;
+const msg=messaggioBenvenuto(s);
+navigator.clipboard.writeText(msg).then(()=>showToast('Messaggio di benvenuto copiato per '+s.nome),()=>showToast('Copia manuale: '+linkBenvenuto(s)));
 }
 async function renderStudi(){
 const l=await leggiLicenze();const studi=l.studi||[];
 const box=$('studiList');
-if(!studi.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuno studio: crea il primo qui sopra.</p>';return;}
+if(!studi.length){box.innerHTML='<p style="color:var(--grigio);font-size:13px;padding:14px 0">Nessuno studio: crea il primo qui sopra.</p>';return;}
 box.innerHTML=studi.map(s=>`<div class="row">
-<div><span class="code">${s.codice}</span> — <b>${s.nome}</b><br><small style="color:var(--s)">scadenza ${s.scadenza} · ${s.attivo?'attivo':'sospeso'}</small></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="bl" onclick="scegliStudio('${s.codice}')">Entra</button>
-<button class="bl-toggle" onclick="toggleStudio('${s.codice}')">${s.attivo?'Sospendi':'Attiva'}</button>
-<button class="bl" onclick="copiaTxt('${BASE}benvenuto.html?studio=${s.codice}')">Link benvenuto</button>
-<button class="bl-danger" onclick="eliminaStudio('${s.codice}')">Elimina</button>
+<div class="info">
+<span class="code">${s.codice}</span>
+<div class="nome">${s.nome}</div>
+<small>Scadenza ${s.scadenza} &middot; ${s.attivo?'attivo':'sospeso'}</small>
+</div>
+<div class="acts">
+<button class="bl primary" onclick="scegliStudio('${s.codice}')">Entra</button>
+<button class="bl" onclick="copiaBenvenuto('${s.codice}')">Messaggio di benvenuto</button>
+<button class="bl" onclick="toggleStudio('${s.codice}')">${s.attivo?'Sospendi':'Attiva'}</button>
+<button class="bl danger" onclick="eliminaStudio('${s.codice}')">Elimina</button>
 </div></div>`).join('');
-const sel=$('ofStudio');if(sel)sel.innerHTML='<option value="">-- Scegli studio --</option>'+studi.map(s=>'<option value="'+s.codice+'">'+s.nome+' ('+s.codice+')</option>').join('');
+const sel=$('ofStudio');
+if(sel)sel.innerHTML='<option value="">-- Scegli uno studio --</option>'+studi.map(s=>'<option value="'+s.codice+'">'+s.nome+'</option>').join('');
 }
 async function creaOfferta(){
-const codice=$('ofStudio').value;if(!codice)return alert('Seleziona uno studio.');
-const prezzo=parseFloat($('ofPrezzo').value);if(!prezzo||prezzo<=0)return alert('Prezzo non valido.');
-const durata=parseInt($('ofDurata').value);if(!durata||durata<1)return alert('Durata non valida.');
+const codice=$('ofStudio').value;if(!codice)return showToast('Seleziona uno studio');
+const prezzo=parseFloat($('ofPrezzo').value);if(!prezzo||prezzo<=0)return showToast('Prezzo non valido');
+const durata=parseInt($('ofDurata').value);if(!durata||durata<1)return showToast('Durata non valida');
 const desc=$('ofDesc').value.trim();
 const o=await leggiOfferte();const offerte=o.offerte||[];
 offerte.push({codice,prezzo,durata,descrizione:desc,attiva:true,creata:new Date().toISOString().slice(0,10)});
-try{await ghPut('offers.json',JSON.stringify({offerte},null,2));alert('Offerta creata.');renderOfferte();}catch(e){alert('Errore: '+e.message);}
+try{
+await ghPut('offers.json',JSON.stringify({offerte},null,2));
+renderOfferte();
+const l=await leggiLicenze();
+const s=(l.studi||[]).find(x=>x.codice===codice);
+if(s){
+const msg=messaggioOfferta(s,{prezzo,durata,descrizione:desc});
+navigator.clipboard.writeText(msg).then(()=>showToast('Offerta creata e messaggio copiato per '+s.nome),()=>showToast('Offerta creata'));
+}else{showToast('Offerta creata');}
+}catch(e){showToast('Errore: '+e.message);}
 }
 async function rimuoviOfferta(idx){
 if(!confirm('Rimuovere questa offerta?'))return;
 const o=await leggiOfferte();
 o.offerte.splice(idx,1);
-try{await ghPut('offers.json',JSON.stringify(o,null,2));renderOfferte();}catch(e){alert('Errore: '+e.message);}
+try{await ghPut('offers.json',JSON.stringify(o,null,2));renderOfferte();showToast('Offerta rimossa');}catch(e){showToast('Errore: '+e.message);}
 }
 async function estendiScadenza(idx){
 const o=await leggiOfferte();const of=o.offerte[idx];
 if(!of)return;
-const giorni=parseInt(prompt('Quanti mesi aggiungere alla scadenza? (es. 12)',String(of.durata)));
-if(!giorni||giorni<1)return;
+const mesi=parseInt(prompt('Quanti mesi aggiungere alla scadenza? (es. '+of.durata+')',String(of.durata)));
+if(!mesi||mesi<1)return;
 const l=await leggiLicenze();const s=l.studi.find(x=>x.codice===of.codice);
-if(!s)return alert('Studio non trovato.');
+if(!s)return showToast('Studio non trovato');
 const oggi=new Date();
 const sc=new Date(s.scadenza>oggi.toISOString().slice(0,10)?s.scadenza:oggi.toISOString().slice(0,10));
-sc.setMonth(sc.getMonth()+giorni);
+sc.setMonth(sc.getMonth()+mesi);
 s.scadenza=sc.toISOString().slice(0,10);
 s.attivo=true;
-try{await ghPut('licenses.json',JSON.stringify(l,null,2));alert('Scadenza estesa a '+s.scadenza);renderStudi();}catch(e){alert('Errore: '+e.message);}
+try{await ghPut('licenses.json',JSON.stringify(l,null,2));showToast('Scadenza estesa al '+s.scadenza);renderStudi();}catch(e){showToast('Errore: '+e.message);}
 }
 async function renderOfferte(){
 const o=await leggiOfferte();const offerte=o.offerte||[];
 const box=$('offerteList');
-if(!offerte.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuna offerta creata.</p>';return;}
+if(!offerte.length){box.innerHTML='<p style="color:var(--grigio);font-size:13px;padding:14px 0">Nessuna offerta creata.</p>';return;}
 const l=await leggiLicenze();const studi=l.studi||[];
 box.innerHTML=offerte.map((of,i)=>{
 const s=studi.find(x=>x.codice===of.codice);
 const nome=s?s.nome:'Studio eliminato';
-const link=BASE+'benvenuto.html?studio='+of.codice+'&offerta=1';
 return`<div class="row">
-<div><b>${nome}</b> (${of.codice})<br><small style="color:var(--s)">${of.descrizione||'Nessuna descrizione'} · <b>€${of.prezzo}</b> · ${of.durata} mesi · creata ${of.creata}</small></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="bl" onclick="copiaTxt('${link}')">Copia link</button>
-<button class="bl-toggle" onclick="estendiScadenza(${i})">Estendi licenza</button>
-<button class="bl-danger" onclick="rimuoviOfferta(${i})">Rimuovi</button>
+<div class="info">
+<span class="code">${of.codice}</span>
+<div class="nome">${nome}</div>
+<small>${of.descrizione||'Nessuna descrizione'} &middot; <b>\u20ac${of.prezzo}</b> &middot; ${of.durata} mesi &middot; creata ${of.creata}</small>
+</div>
+<div class="acts">
+<button class="bl" onclick="copiaLinkOfferta(${i})">Messaggio offerta</button>
+<button class="bl primary" onclick="estendiScadenza(${i})">Estendi licenza</button>
+<button class="bl danger" onclick="rimuoviOfferta(${i})">Rimuovi</button>
 </div></div>`;
 }).join('');
 }
-function scegliStudio(c){sessionStorage.setItem('studio',c);$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';renderApps();}
+async function copiaLinkOfferta(idx){
+const o=await leggiOfferte();const of=o.offerte[idx];if(!of)return;
+const l=await leggiLicenze();const s=(l.studi||[]).find(x=>x.codice===of.codice);
+if(!s)return showToast('Studio non trovato');
+const msg=messaggioOfferta(s,of);
+navigator.clipboard.writeText(msg).then(()=>showToast('Messaggio offerta copiato per '+s.nome),()=>showToast('Copia manuale non riuscita'));
+}
+function scegliStudio(c){sessionStorage.setItem('studio',c);renderApps();showToast('Studio attivo: '+c);}
 function renderApps(){
 const c=sessionStorage.getItem('studio');
 const apps=[
-{n:'01',t:'Preventivi & Contratti',d:'Preventivi PDF e contratti con firma',u:'preventivi/'},
+{n:'01',t:'Preventivi & Contratti',d:'Preventivi PDF e contratti con firma',u:'preventivi-contratti/'},
 {n:'02',t:'Workflow Foto & Video',d:'Stati di avanzamento e consegne',u:'workflow/'},
 {n:'03',t:'Clienti & Foto',d:'Codici cliente, Netlify e caricamento',u:'clienti-foto/'},
 {n:'04',t:'Selezione per Album',d:'Archivio selezioni e text Gru',u:'selezione-album/'},
 {n:'05',t:'Gallery',d:'Gallery privata per gli sposi',u:'gallery/'},
-{n:'06',t:'Negozio Online',d:'Ordini stampa, Gru e PDF',u:'negozio/'}
+{n:'06',t:'Negozio Online',d:'Prodotti, ordini e Gru',u:'negozio/'}
 ];
-$('appGrid').innerHTML=apps.map(a=>`<a class="app" href="${c?a.u+'?studio='+c:'#'}" onclick="if(!${!!c}){event.preventDefault();alert('Seleziona prima uno studio (pulsante Entra).');}">
-<div class="num">${a.n}</div><h3>${a.t}</h3><p>${a.d}</p></a>`).join('');
-if(c)$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';
+$('studioSel').innerHTML=c?'Studio attivo: <b class="code" style="background:#f0f0f0;padding:2px 8px;border-radius:4px;font-family:monospace">'+c+'</b>':'Seleziona uno studio dalla lista qui sopra per aprire le applicazioni con il suo codice attivo.';
+$('appGrid').innerHTML=apps.map(a=>{
+const href=c?a.u+'?studio='+c:'#';
+return`<a class="app" href="${href}" onclick="if(!${!!c}){event.preventDefault();showToast('Seleziona prima uno studio');}">
+<div class="num">${a.n}</div>
+<h3>${a.t}</h3>
+<p>${a.d}</p>
+<span class="arrow">Apri &rarr;</span>
+</a>`;
+}).join('');
 }
-function copiaTxt(t){navigator.clipboard.writeText(t).then(()=>alert('Copiato: '+t));}
 function backupGlobale(){
 const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
 const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
-const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+a.download='AppCenterStudio_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+showToast('Backup scaricato');
 }
 function restoreGlobale(e){
 const f=e.target.files[0];if(!f)return;
 const r=new FileReader();
 r.onload=ev=>{try{
 const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-if(typeof d!=='object')throw new Error('File non valido.');
+if(typeof d!=='object')throw new Error('File non valido');
 if(!confirm('Ripristinare il backup? I dati attuali verranno sostituiti.'))return;
 Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-alert('Ripristinato. Ricarico.');location.reload();
-}catch(err){alert('Errore: '+err.message);}};
+showToast('Ripristinato');setTimeout(()=>location.reload(),800);
+}catch(err){showToast('Errore: '+err.message);}};
 r.readAsText(f);e.target.value='';
 }
 </script>
