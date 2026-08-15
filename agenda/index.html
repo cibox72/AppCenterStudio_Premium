@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 Agenda - AppCenterStudio Premium</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fbfbfb;color:#111;line-height:1.6}
+h1,h2,h3{font-family:Georgia,serif;font-weight:normal;margin-bottom:1rem}
+.topbar{display:flex;gap:10px;padding:15px;background:#fff;border-bottom:1px solid #e0e0e0;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.topbar button{padding:8px 16px;background:#fff;border:1px solid #111;cursor:pointer;font-size:14px;border-radius:999px;font-family:inherit}
+.topbar button:hover{background:#111;color:#fff}
+.container{max-width:1180px;margin:0 auto;padding:30px 20px}
+.card{background:#fff;border:1px solid #e0e0e0;padding:25px;margin-bottom:25px;border-radius:14px}
+.card h2{padding-bottom:10px;border-bottom:1px solid #e0e0e0}
+.btn{display:inline-block;padding:8px 18px;background:#111;color:#fff;border:none;cursor:pointer;font-size:14px;border-radius:20px;margin:4px 2px}
+.btn:hover{background:#333}
+.btn-secondary{background:#fff;color:#111;border:1px solid #111}
+.btn-secondary:hover{background:#111;color:#fff}
+.mini{border:1px solid #ccc;background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px}
+.mini:hover{background:#eee}
+input,select,textarea{width:100%;padding:10px;border:1px solid #e0e0e0;margin:5px 0;font-family:inherit;border-radius:6px}
+label{display:block;margin-top:10px;font-size:14px;font-weight:bold}
+.hint{font-size:12px;color:#777}
+.hidden{display:none}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap}
+.cal-head h2{margin:0;border:none;padding:0;font-size:22px}
+.cal-nav{display:flex;gap:6px;align-items:center}
+.cal-nav .mese{font-family:Georgia,serif;font-size:18px;font-weight:700;min-width:170px;text-align:center;text-transform:capitalize}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{font-size:11px;font-weight:700;text-align:center;padding:6px 0;color:#666;letter-spacing:.08em;text-transform:uppercase}
+.cal-day{min-height:88px;background:#fafafa;border:1px solid #e0e0e0;border-radius:8px;padding:6px;cursor:pointer;position:relative;display:flex;flex-direction:column;transition:all .15s}
+.cal-day:hover{background:#f0f0f0;border-color:#111}
+.cal-day.other{background:#f4f4f4;color:#aaa}
+.cal-day.today{background:#fff;border:2px solid #111}
+.cal-day.selected{background:#111;color:#fff;border-color:#111}
+.cal-day.selected .cal-n{color:#fff}
+.cal-n{font-size:13px;font-weight:700;margin-bottom:4px}
+.cal-ev{flex:1;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.ev-row{font-size:10px;line-height:1.2;padding:2px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
+.ev-row .ev-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ev-row.contratto{background:rgba(17,17,17,.08);color:#111;font-weight:600}
+.ev-row.contratto .ev-dot{background:#111}
+.ev-row.appuntamento{background:rgba(76,132,62,.1);color:#2d5a20}
+.ev-row.appuntamento .ev-dot{background:#4c843e}
+.ev-row.altro{background:rgba(180,120,40,.12);color:#7a4a10}
+.ev-row.altro .ev-dot{background:#b47828}
+.cal-more{font-size:10px;color:#666;padding:1px 4px}
+.day-panel{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:20px;margin-top:18px}
+.day-panel h3{margin-top:0;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.day-panel h3 span{font-size:13px;color:#666;font-weight:400;text-transform:none}
+.day-list{margin:12px 0}
+.day-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px;background:#fafafa;border:1px solid #e0e0e0;border-radius:8px;margin-bottom:8px}
+.day-item .ora{font-family:monospace;font-weight:700;font-size:14px;min-width:50px}
+.day-item .info{flex:1}
+.day-item .info .titolo{font-weight:700;font-size:14px;font-family:Georgia,serif}
+.day-item .info .tipo{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+.day-item .info .tipo.contratto{background:#111;color:#fff}
+.day-item .info .tipo.preventivo{background:#888;color:#fff}
+.day-item .info .tipo.appuntamento{background:#4c843e;color:#fff}
+.day-item .info .tipo.altro{background:#b47828;color:#fff}
+.day-item .info .note{font-size:12px;color:#555;margin-top:4px;white-space:pre-wrap}
+.day-item .acts{display:flex;gap:4px}
+.warn-box{background:#fff4e0;border:1px solid #f0b050;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;color:#7a4a10}
+.warn-box b{color:#5a3200}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.form-row.full{grid-template-columns:1fr}
+@media(max-width:800px){
+ .cal-grid{gap:2px}
+ .cal-day{min-height:64px;padding:4px}
+ .cal-n{font-size:11px}
+ .ev-row{font-size:9px;padding:1px 3px}
+ .cal-dow{font-size:10px}
+ .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<button onclick="history.back()">← Indietro</button>
+<button onclick="goHome()">Home</button>
+<button onclick="backupGlobale()">Backup Globale</button>
+<label class="btn btn-secondary" style="cursor:pointer;margin:0">Ripristino Globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+<button id="btnPubblicaComune">Pubblica archivio comune</button>
+<button id="btnScaricaComune">Scarica e unisci archivio</button>
+</div>
+
+<div class="container">
+<h1>07 Agenda dello Studio</h1>
+
+<div class="card">
+ <div class="cal-head">
+  <h2>Calendario impegni</h2>
+  <div class="cal-nav">
+   <button class="btn btn-secondary" onclick="calOggi()">Oggi</button>
+   <button class="btn btn-secondary" onclick="calPrecedente()">‹</button>
+   <span class="mese" id="calMese"></span>
+   <button class="btn btn-secondary" onclick="calSuccessivo()">›</button>
+  </div>
+ </div>
+ <div class="cal-grid" id="calDow"></div>
+ <div class="cal-grid" id="calGrid" style="margin-top:4px"></div>
+ <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno.</p>
+</div>
+
+<div id="dayPanel"></div>
+</div>
+
+<script>
+let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCodice)sessionStorage.setItem('studio',studioCodice);
+let DB=JSON.parse(localStorage.getItem('appcenter_db_v1')||'null')||{preventivi:[],clienti:[]};
+let agenda=JSON.parse(localStorage.getItem('appcenter_agenda')||'[]');
+function saveAgenda(){localStorage.setItem('appcenter_agenda',JSON.stringify(agenda));}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const fmtData=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');};
+const today=()=>new Date().toISOString().slice(0,10);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
+
+async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function sha1ArrayBuffer(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function deployFileNetlify(path,content){
+ const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
+ if(!tok||!siteId)throw new Error('Netlify non configurato. Configura in Clienti & Foto.');
+ const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{Authorization:'Bearer '+tok}});
+ const existing=resp.ok?await resp.json():[];
+ const files={};existing.forEach(f=>{files[f.path]=f;});
+ const bin=new TextEncoder().encode(content);const ab=bin.buffer;const hash=await sha1(bin);
+ files[path]={path:path,hash:hash};
+ const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
+ if(dep.required&&dep.required.includes(path)){
+  await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
+ }
+}
+async function leggiFileNetlify(path){
+ const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
+ if(!tok||!siteId)throw new Error('Netlify non configurato.');
+ const siteUrl=localStorage.getItem('netlify_siteurl');
+ if(!siteUrl)throw new Error('Site URL mancante.');
+ const r=await fetch(siteUrl+path+'?t='+Date.now(),{cache:'no-store'});
+ if(!r.ok)return null;
+ return await r.json();
+}
+async function pubblicaArchivioComune(){
+ try{
+  const data={preventivi:DB.preventivi,clienti:DB.clienti,agenda:agenda,exportedAt:new Date().toISOString()};
+  await deployFileNetlify('/archivio-comune-preventivi.json',JSON.stringify(data,null,2));
+  alert('Archivio comune pubblicato su Netlify.');
+ }catch(e){alert('Errore pubblicazione: '+e.message);}
+}
+async function scaricaEUnisciArchivio(){
+ try{
+  const data=await leggiFileNetlify('/archivio-comune-preventivi.json');
+  if(!data)throw new Error('Archivio comune vuoto o non trovato.');
+  if(!confirm('Unire i dati dell\'archivio comune (preventivi, clienti, agenda) ai dati locali?'))return;
+  if(data.preventivi&&data.preventivi.length){
+   const map={};DB.preventivi.forEach(p=>{map[p.id]=p;});
+   data.preventivi.forEach(p=>{if(!p.id)p.id=uid();if(!map[p.id])map[p.id]=p;else if(p.dataCreazione>map[p.id].dataCreazione)map[p.id]=p;});
+   DB.preventivi=Object.values(map);
+   localStorage.setItem('appcenter_db_v1',JSON.stringify(DB));
+  }
+  if(data.agenda&&data.agenda.length){
+   const aMap={};agenda.forEach(a=>{aMap[a.id]=a;});
+   data.agenda.forEach(a=>{if(!a.id)a.id=uid();if(!aMap[a.id])aMap[a.id]=a;});
+   agenda=Object.values(aMap);
+   saveAgenda();
+  }
+  renderCalendario();renderDayPanel();
+  alert('Unione completata.');
+ }catch(e){alert('Errore: '+e.message);}
+}
+document.getElementById('btnPubblicaComune').onclick=pubblicaArchivioComune;
+document.getElementById('btnScaricaComune').onclick=scaricaEUnisciArchivio;
+
+function backupGlobale(){
+ const d={};
+ for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='AppCenterStudio_BACKUP_GLOBALE_'+today()+'.json';a.click();
+ alert('Backup globale scaricato.');
+}
+function ripristinoGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
+ }catch(err){alert('Errore: '+err.message)}};
+ r.readAsText(f);e.target.value='';
+}
+
+/* ===== CALENDARIO ===== */
+let calYear,calMonth,calSelected=null;
+
+function eventiDi(d){
+ const lista=[];
+ (DB.preventivi||[]).forEach(p=>{
+  if(!p.dataServizio||p.dataServizio!==d)return;
+  lista.push({
+   tipo:p.stato==='contratto'?'contratto':'preventivo',
+   titolo:(p.tipoServizio||'Servizio')+' — '+[p.clienteA.nome,p.clienteA.cognome].filter(Boolean).join(' '),
+   ora:'',
+   note:(p.numero||'')+(p.chiesa?' · '+p.chiesa:'')+(p.location?' · '+p.location:''),
+   readOnly:true,refId:p.id,stato:p.stato
+  });
+ });
+ (agenda||[]).forEach(a=>{
+  if(!a.data||a.data!==d)return;
+  lista.push({tipo:a.tipo||'appuntamento',titolo:a.titolo||'(senza titolo)',ora:a.ora||'',note:a.note||'',readOnly:false,refId:a.id});
+ });
+ lista.sort((a,b)=>(a.ora||'').localeCompare(b.ora||''));
+ return lista;
+}
+
+function initCal(){
+ const now=new Date();
+ calYear=now.getFullYear();calMonth=now.getMonth();calSelected=today();
+ document.getElementById('calDow').innerHTML=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'].map(d=>'<div class="cal-dow">'+d+'</div>').join('');
+}
+function renderCalendario(){
+ if(calYear===undefined)initCal();
+ const mesi=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+ document.getElementById('calMese').textContent=mesi[calMonth]+' '+calYear;
+ const primo=new Date(calYear,calMonth,1);
+ let dow0=primo.getDay();dow0=(dow0===0?6:dow0-1);
+ const giorniMese=new Date(calYear,calMonth+1,0).getDate();
+ const giorniMesePrec=new Date(calYear,calMonth,0).getDate();
+ const celle=[];
+ const oggiStr=today();
+ for(let i=dow0-1;i>=0;i--){
+  const d=giorniMesePrec-i;
+  celle.push({n:d,date:new Date(calYear,calMonth-1,d).toISOString().slice(0,10),other:true});
+ }
+ for(let d=1;d<=giorniMese;d++){
+  celle.push({n:d,date:new Date(calYear,calMonth,d).toISOString().slice(0,10),other:false});
+ }
+ const resto=celle.length%7;
+ if(resto){for(let i=1;i<=7-resto;i++){celle.push({n:i,date:new Date(calYear,calMonth+1,i).toISOString().slice(0,10),other:true});}}
+ document.getElementById('calGrid').innerHTML=celle.map(c=>{
+  const ev=eventiDi(c.date);
+  const contratti=ev.filter(e=>e.tipo==='contratto');
+  const appunt=ev.filter(e=>e.tipo==='appuntamento'||e.tipo==='altro');
+  const preventivi=ev.filter(e=>e.tipo==='preventivo');
+  let cls='cal-day';if(c.other)cls+=' other';if(c.date===oggiStr)cls+=' today';if(c.date===calSelected)cls+=' selected';
+  const MAX=3;let evHtml='';let shown=0;
+  contratti.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row contratto"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
+  appunt.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row '+(e.tipo==='altro'?'altro':'appuntamento')+'"><span class="ev-dot"></span>'+(e.ora?e.ora+' ':'')+esc(e.titolo)+'</div>';shown++;});
+  preventivi.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row contratto" style="opacity:.55"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
+  if(ev.length>MAX)evHtml+='<div class="cal-more">+'+(ev.length-MAX)+'</div>';
+  return '<div class="'+cls+'" onclick="selectDay(\''+c.date+'\')"><div class="cal-n">'+c.n+'</div><div class="cal-ev">'+evHtml+'</div></div>';
+ }).join('');
+}
+function selectDay(d){calSelected=d;renderCalendario();renderDayPanel();}
+function calPrecedente(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalendario();}
+function calSuccessivo(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalendario();}
+function calOggi(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();calSelected=today();renderCalendario();renderDayPanel();}
+
+function renderDayPanel(){
+ const box=document.getElementById('dayPanel');if(!box)return;
+ if(!calSelected){box.innerHTML='';return;}
+ const ev=eventiDi(calSelected);
+ const dt=new Date(calSelected+'T00:00:00');
+ const giorni=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+ const mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+ const label=giorni[dt.getDay()]+' '+dt.getDate()+' '+mesi[dt.getMonth()]+' '+dt.getFullYear();
+ let warn='';
+ const contratti=ev.filter(e=>e.tipo==='contratto');
+ if(contratti.length)warn='<div class="warn-box"><b>Data impegnata:</b> ci '+(contratti.length===1?"è un contratto":"sono "+contratti.length+" contratti")+' in questo giorno. Puoi comunque aggiungere altri appuntamenti (secondo/terzo evento).</div>';
+ const listHtml=ev.length?ev.map(e=>{
+  const acts=e.readOnly
+   ?'<button class="mini" data-openprev="'+e.refId+'">Apri contratto</button>'
+   :'<button class="mini" data-editapp="'+e.refId+'">Modifica</button> <button class="mini" data-delapp="'+e.refId+'">Elimina</button>';
+  return '<div class="day-item"><div class="ora">'+(e.ora||'—')+'</div><div class="info"><div class="titolo">'+esc(e.titolo)+'</div><span class="tipo '+e.tipo+'">'+(e.tipo==='contratto'?'Contratto':e.tipo==='preventivo'?'Preventivo':e.tipo==='appuntamento'?'Appuntamento':'Altro')+'</span>'+(e.note?'<div class="note">'+esc(e.note)+'</div>':'')+'</div><div class="acts">'+acts+'</div></div>';
+ }).join(''):'<p class="hint">Nessun impegno in questa giornata.</p>';
+ box.innerHTML='<div class="day-panel"><h3>'+label+'<span>'+ev.length+' impegno/i</span></h3>'+warn+'<div class="day-list">'+listHtml+'</div>'+
+  '<div style="margin-top:18px;border-top:1px solid #e0e0e0;padding-top:16px"><h3 style="margin-top:0">+ Nuovo appuntamento</h3>'+
+  '<div class="form-row"><div><label>Data</label><input type="date" id="appData" value="'+calSelected+'"></div><div><label>Ora (opzionale)</label><input type="time" id="appOra"></div></div>'+
+  '<div class="form-row"><div><label>Titolo</label><input id="appTitolo" placeholder="Es. Sopralluogo, incontro cliente..."></div><div><label>Tipo</label><select id="appTipo"><option value="appuntamento">Appuntamento</option><option value="altro">Altro impegno</option></select></div></div>'+
+  '<div class="form-row full"><div><label>Note</label><textarea id="appNote" rows="2" placeholder="Dettagli..."></textarea></div></div>'+
+  '<button class="btn" onclick="salvaAppuntamento()">Aggiungi al giorno</button></div></div>';
+ box.onclick=e=>{
+  if(e.target.dataset.openprev){location.href='../preventivi-contratti/?studio='+studioCodice;}
+  if(e.target.dataset.editapp){modificaAppuntamento(e.target.dataset.editapp);}
+  if(e.target.dataset.delapp){if(confirm('Eliminare questo appuntamento?')){agenda=agenda.filter(a=>a.id!==e.target.dataset.delapp);saveAgenda();renderDayPanel();renderCalendario();}}
+ };
+}
+function salvaAppuntamento(){
+ const data=document.getElementById('appData').value;
+ const titolo=document.getElementById('appTitolo').value.trim();
+ if(!data||!titolo)return alert('Data e titolo sono obbligatori.');
+ agenda.push({id:uid(),data,ora:document.getElementById('appOra').value,titolo,tipo:document.getElementById('appTipo').value,note:document.getElementById('appNote').value.trim()});
+ saveAgenda();calSelected=data;renderDayPanel();renderCalendario();
+}
+function modificaAppuntamento(id){
+ const a=agenda.find(x=>x.id===id);if(!a)return;
+ const titolo=prompt('Titolo:',a.titolo);if(titolo===null)return;
+ const data=prompt('Data (AAAA-MM-DD):',a.data);if(!data)return;
+ a.titolo=titolo;a.data=data;
+ a.ora=prompt('Ora (HH:MM, vuoto se senza):',a.ora||'');
+ a.note=prompt('Note:',a.note||'');
+ saveAgenda();calSelected=data;renderDayPanel();renderCalendario();
+}
+
+function checkPromemoria(){
+ const oggi=today();
+ const prom=agenda.filter(a=>a.data===oggi);
+ const contratti=(DB.preventivi||[]).filter(p=>p.stato==='contratto'&&p.dataServizio===oggi);
+ if(!prom.length&&!contratti.length)return;
+ if('Notification' in window&&Notification.permission==='granted'){
+  let msg='Oggi: ';
+  prom.forEach(p=>{msg+=p.titolo+' '+(p.ora||'')+', ';});
+  contratti.forEach(c=>{msg+=c.tipoServizio+' ('+c.clienteA.nome+') ';});
+  new Notification('AppCenterStudio Premium - Agenda',{body:msg});
+ }else if('Notification' in window&&Notification.permission!=='denied'){
+  Notification.requestPermission();
+ }
+}
+
+initCal();
+renderCalendario();
+renderDayPanel();
+checkPromemoria();
+</script>
+</body>
+</html>
