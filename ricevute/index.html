@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>08 Ricevute - AppCenterStudio Premium</title>
+<script src="../licenza.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--nero);min-height:100vh}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:#fff;border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
+.topbar .pill{background:#fff;color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.topbar .pill:hover{background:#111;color:#fff}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{height:34px;background:#fff;border-radius:8px;padding:2px 6px}
+.brandName{font-weight:800;font-size:19px;letter-spacing:.5px;font-family:Georgia,serif}
+#studioNameHead{font-size:13px;opacity:.85}
+button{font-family:inherit}
+.btn{background:#111;color:#fff;border:none;padding:10px 18px;border-radius:999px;font-weight:600;cursor:pointer;font-size:13px}
+.btn:hover{opacity:.88}
+.btn.secondary{background:#fff;color:#111;border:1px solid #bbb}
+.mini{border:1px solid #ccc;background:#fff;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:12px}
+.mini:hover{background:#eee}
+main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
+.card{background:#fff;border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:11px;color:#666;display:block;margin-bottom:3px}
+input,textarea{width:100%;padding:8px;border:1px solid var(--bordo);border-radius:8px;background:#fff;font-size:13px;font-family:inherit}
+input:focus,textarea:focus{outline:2px solid #000}
+textarea{min-height:60px}
+.importo{font-size:18px;font-weight:800}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:left;vertical-align:top}
+th{background:#111;color:#fff}
+.hint{font-size:12px;color:#777}
+.badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:#fff;border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;border:1px solid var(--bordo)}
+.riga{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px;border-bottom:1px dashed #e0e0e0}
+.firma{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.firma div{border-top:1px solid #111;padding-top:6px;font-size:12px;text-align:center}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="pill" onclick="history.back()">← Indietro</button>
+  <button class="pill" onclick="goHome()">Home</button>
+  <button class="pill" onclick="backupGlobale()">Backup Globale</button>
+  <label class="pill" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+  <button class="pill" style="background:#111;color:#fff" onclick="pubblicaArchivioComune()">Pubblica archivio comune</button>
+  <button class="pill" style="background:#111;color:#fff" onclick="scaricaEUnisciArchivio()">Scarica e unisci archivio</button>
+</div>
+
+<header>
+  <div class="brand">
+    <img id="studioLogoHead" src="logo.jpg" alt="" onerror="this.remove()">
+    <span class="brandName">AppCenterStudio Premium</span>
+  </div>
+  <div id="studioNameHead"></div>
+</header>
+
+<main>
+  <div class="card">
+    <h2 id="formTitle">Nuova ricevuta</h2>
+    <p class="hint">Ricevuta valida per qualsiasi servizio: servizio fotografico, stampa, video. Compila, salva e stampa il PDF con data e firme.</p>
+    <div class="grid">
+      <div><label>Nome cliente *</label><input id="r_cliente" placeholder="Es. Mario Rossi"></div>
+      <div><label>Tipo di servizio *</label><input id="r_servizio" placeholder="Es. Matrimonio, Stampa album, Video..."></div>
+    </div>
+    <div class="grid">
+      <div><label>Ricevo &euro; *</label><input id="r_importo" type="number" step="0.01" class="importo" placeholder="0,00"></div>
+      <div><label>Data</label><input id="r_data" type="date"></div>
+    </div>
+    <label>A titolo di acconto / saldo per...</label>
+    <input id="r_titolo" placeholder="Es. caparra conferma servizio del 10/08/2027">
+    <label>Note (facoltative)</label>
+    <textarea id="r_note" rows="2" placeholder="Es. metodo di pagamento, resto dovuto..."></textarea>
+    <p style="margin-top:12px">
+      <button class="btn" onclick="salvaRicevuta()">Salva ricevuta</button>
+      <button class="btn secondary" onclick="pulisciForm()">Annulla / nuova</button>
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Archivio ricevute</h2>
+    <div id="listaBox"></div>
+  </div>
+</main>
+
+<div id="viewModal" class="modal">
+  <div class="modal-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h2 style="margin:0;border:none;padding:0">Dettaglio ricevuta</h2>
+      <button class="mini" onclick="chiudiModal()">Chiudi</button>
+    </div>
+    <div id="viewBody"></div>
+  </div>
+</div>
+
+<script>
+const KEY='appcenter_ricevute';
+const $=s=>document.querySelector(s);
+const fmt=n=>(isNaN(+n)?0:+n).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtData=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');};
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let store=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.list)return d;}catch(e){}return{seq:1,list:[]};})();
+let ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+let editingId=null;
+function save(){localStorage.setItem(KEY,JSON.stringify(store));}
+function goHome(){const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');}
+
+function refreshHead(){
+ $('#studioNameHead').textContent=ident.nome||'Ricevute';
+ if(ident.logoData)$('#studioLogoHead').src=ident.logoData;
+}
+
+function pulisciForm(){
+ editingId=null;
+ ['r_cliente','r_servizio','r_importo','r_titolo','r_note'].forEach(id=>$('#'+id).value='');
+ $('#r_data').value=today();
+ $('#formTitle').textContent='Nuova ricevuta';
+}
+
+function salvaRicevuta(){
+ const cliente=$('#r_cliente').value.trim();
+ const servizio=$('#r_servizio').value.trim();
+ const importo=parseFloat($('#r_importo').value);
+ if(!cliente||!servizio||isNaN(importo))return alert('Cliente, tipo di servizio e importo sono obbligatori.');
+ const dati={
+  cliente:cliente,
+  servizio:servizio,
+  importo:importo,
+  titolo:$('#r_titolo').value.trim(),
+  data:$('#r_data').value||today(),
+  note:$('#r_note').value.trim()
+ };
+ if(editingId){
+  const r=store.list.find(x=>x.id===editingId);
+  if(r)Object.assign(r,dati);
+ }else{
+  dati.id=uid();
+  dati.numero='R-'+new Date().getFullYear()+'-'+String(store.seq).padStart(3,'0');
+  store.seq++;
+  store.list.unshift(dati);
+ }
+ save();pulisciForm();renderLista();
+ alert('Ricevuta salvata.');
+}
+
+function renderLista(){
+ const box=$('#listaBox');
+ if(!store.list.length){box.innerHTML='<p class="hint">Nessuna ricevuta salvata.</p>';return;}
+ box.innerHTML='<table><tr><th>N.</th><th>Cliente</th><th>Servizio</th><th>Importo</th><th>Data</th><th>Azioni</th></tr>'+
+ store.list.map(r=>'<tr><td><b>'+esc(r.numero)+'</b></td><td>'+esc(r.cliente)+'</td><td>'+esc(r.servizio)+'</td><td><b>'+fmt(r.importo)+' &euro;</b></td><td>'+fmtData(r.data)+'</td><td>'+
+ '<button class="mini" onclick="makePDF(\''+r.id+'\')">PDF</button> '+
+ '<button class="mini" onclick="visualizza(\''+r.id+'\')">Visualizza</button> '+
+ '<button class="mini" onclick="modifica(\''+r.id+'\')">Modifica</button> '+
+ '<button class="mini" onclick="elimina(\''+r.id+'\')">Elimina</button></td></tr>').join('')+'</table>';
+}
+
+function trova(id){return store.list.find(x=>x.id===id);}
+
+function visualizza(id){
+ const r=trova(id);if(!r)return;
+ $('#viewBody').innerHTML=
+ '<div class="riga"><span>Ricevuta N.</span><b>'+esc(r.numero)+'</b></div>'+
+ '<div class="riga"><span>Data</span><b>'+fmtData(r.data)+'</b></div>'+
+ '<div class="riga"><span>Cliente</span><b>'+esc(r.cliente)+'</b></div>'+
+ '<div class="riga"><span>Tipo di servizio</span><b>'+esc(r.servizio)+'</b></div>'+
+ '<div class="riga"><span>Ricevo &euro;</span><b>'+fmt(r.importo)+' &euro;</b></div>'+
+ '<div class="riga"><span>A titolo di</span><b>'+esc(r.titolo||'acconto')+'</b></div>'+
+ (r.note?'<div class="riga"><span>Note</span><b>'+esc(r.note)+'</b></div>':'')+
+ '<div class="firma"><div>Firma Studio</div><div>Firma Cliente</div></div>'+
+ '<p style="margin-top:16px"><button class="btn" onclick="makePDF(\''+r.id+'\')">Stampa PDF</button></p>';
+ $('#viewModal').classList.add('active');
+}
+function chiudiModal(){$('#viewModal').classList.remove('active');}
+
+function modifica(id){
+ const r=trova(id);if(!r)return;
+ editingId=id;
+ $('#r_cliente').value=r.cliente;
+ $('#r_servizio').value=r.servizio;
+ $('#r_importo').value=r.importo;
+ $('#r_titolo').value=r.titolo||'';
+ $('#r_data').value=r.data;
+ $('#r_note').value=r.note||'';
+ $('#formTitle').textContent='Modifica ricevuta '+r.numero;
+ window.scrollTo(0,0);
+}
+
+function elimina(id){
+ const r=trova(id);if(!r)return;
+ if(!confirm('Eliminare la ricevuta '+r.numero+'?'))return;
+ store.list=store.list.filter(x=>x.id!==id);
+ save();renderLista();
+}
+
+function makePDF(id){
+ const r=trova(id);if(!r)return;
+ if(!window.jspdf)return alert('Libreria PDF non caricata: serve connessione internet.');
+ const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');const W=210;let y=0;
+ doc.setFillColor(20,20,20);doc.rect(0,0,W,32,'F');doc.setTextColor(255,255,255);
+ doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(ident.nome||'Studio Fotografico',10,11);
+ doc.setFont('helvetica','normal');doc.setFontSize(8);
+ doc.text([ident.indirizzo,ident.telefono?'Tel. '+ident.telefono:'',ident.email,ident.piva?'P.IVA '+ident.piva:''].filter(Boolean).join('  ·  '),10,17);
+ doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('AppCenterStudio Premium',W-10,11,{align:'right'});
+ y=45;doc.setTextColor(0,0,0);
+ doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('RICEVUTA N. '+r.numero,10,y);
+ doc.setFont('helvetica','normal');doc.setFontSize(10);doc.text('Data: '+fmtData(r.data),W-10,y,{align:'right'});y+=12;
+ doc.setFontSize(12);
+ doc.text('Ricevo da '+r.cliente,10,y);y+=8;
+ doc.setFont('helvetica','bold');doc.setFontSize(14);
+ doc.text('la somma di  Euro '+fmt(r.importo),10,y);y+=8;
+ doc.setFont('helvetica','normal');doc.setFontSize(12);
+ doc.text('a titolo di '+(r.titolo||'acconto')+' per il seguente servizio:',10,y);y+=8;
+ doc.setFont('helvetica','bold');
+ doc.text('- '+r.servizio,14,y);y+=10;
+ doc.setFont('helvetica','normal');doc.setFontSize(10);
+ if(r.note){const nl=doc.splitTextToSize('Note: '+r.note,W-20);doc.text(nl,10,y);y+=nl.length*5+6;}
+ y+=10;
+ doc.setDrawColor(0);doc.line(10,y,90,y);doc.line(W-90,y,W-10,y);y+=5;
+ doc.setFontSize(9);doc.text('Firma Studio',10,y);doc.text('Firma Cliente',W-90,y);
+ const pages=doc.getNumberOfPages();
+ for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7);doc.setTextColor(120);doc.text('Generato con AppCenterStudio Premium',10,292);doc.text('Pag. '+i+'/'+pages,W-10,292,{align:'right'});}
+ doc.save('Ricevuta_'+r.numero+'.pdf');
+}
+
+/* ===== archivio comune (sync tra PC) ===== */
+async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function deployFileNetlify(path,content){
+ const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
+ if(!tok||!siteId)throw new Error('Netlify non configurato.');
+ const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{Authorization:'Bearer '+tok}});
+ const existing=resp.ok?await resp.json():[];
+ const files={};existing.forEach(f=>{files[f.path]=f;});
+ const bin=new TextEncoder().encode(content);const ab=bin.buffer;const hash=await sha1(bin);
+ files[path]={path:path,hash:hash};
+ const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
+ if(dep.required&&dep.required.includes(path)){
+  await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
+ }
+}
+async function leggiFileNetlify(path){
+ const siteUrl=localStorage.getItem('netlify_siteurl');
+ if(!siteUrl)throw new Error('Site URL mancante.');
+ const r=await fetch(siteUrl+path+'?t='+Date.now(),{cache:'no-store'});
+ if(!r.ok)return null;
+ return await r.json();
+}
+async function pubblicaArchivioComune(){
+ try{
+  await deployFileNetlify('/archivio-comune-ricevute.json',JSON.stringify({list:store.list,exportedAt:new Date().toISOString()},null,2));
+  alert('Archivio ricevute pubblicato.');
+ }catch(e){alert('Errore: '+e.message);}
+}
+async function scaricaEUnisciArchivio(){
+ try{
+  const data=await leggiFileNetlify('/archivio-comune-ricevute.json');
+  if(!data||!data.list)throw new Error('Archivio vuoto o non trovato.');
+  if(!confirm('Unire '+data.list.length+' ricevute remote alle '+store.list.length+' locali?'))return;
+  const map={};store.list.forEach(r=>{map[r.id]=r;});
+  let added=0;
+  data.list.forEach(r=>{if(!r.id)r.id=uid();if(!map[r.id]){map[r.id]=r;added++;}});
+  store.list=Object.values(map);
+  save();renderLista();
+  alert('Unione completata: '+added+' ricevute aggiunte.');
+ }catch(e){alert('Errore: '+e.message);}
+}
+
+function backupGlobale(){
+ const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+today()+'.json';a.click();
+}
+function ripristinoGlobale(e){
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm('Ripristinare il backup? I dati attuali verranno sostituiti.'))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Ripristinato. Ricarico.');location.reload();
+ }catch(err){alert('Errore: '+err.message);}};
+ r.readAsText(f);e.target.value='';
+}
+
+refreshHead();
+$('#r_data').value=today();
+renderLista();
+</script>
+</body>
+</html>
