@@ -35,16 +35,24 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold}
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:20px}
 .photo-item{border:1px solid #e0e0e0;cursor:pointer;position:relative;aspect-ratio:1;overflow:hidden;border-radius:8px}
 .photo-item img{width:100%;height:100%;object-fit:cover}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:1000;padding:20px}
-.modal.active{display:flex;align-items:center;justify-content:center}
-.modal-content{background:#fff;padding:30px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;border-radius:14px}
-.cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid #e0e0e0;margin:10px 0;border-radius:8px}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:1000;padding:20px;overflow-y:auto}
+.modal.active{display:block}
+.modal-content{background:#fff;padding:30px;max-width:800px;width:100%;margin:20px auto;border-radius:14px}
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid #e0e0e0;margin:10px 0;border-radius:8px;gap:10px}
 .cart-item img{width:60px;height:60px;object-fit:cover;border-radius:6px}
-.prod-row{border:1px solid #e0e0e0;padding:12px;margin:8px 0;background:#fafafa;border-radius:8px;display:flex;justify-content:space-between;align-items:center}
+.prod-row{border:1px solid #e0e0e0;padding:12px;margin:8px 0;background:#fafafa;border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.prod-row img{width:56px;height:56px;object-fit:cover;border-radius:6px}
 .c-head{background:#fff;border-bottom:1px solid #e0e0e0;padding:16px;text-align:center;margin-bottom:20px;border-radius:14px}
 .c-head img{height:50px;border-radius:50%;filter:grayscale(100%);margin-bottom:8px}
 .c-head h1{font-family:Georgia,serif;font-size:22px}
 .c-head p{font-size:14px;color:#888}
+.pcard{border:1px solid #e0e0e0;border-radius:10px;padding:12px;margin:10px 0;background:#fff}
+.pcard img{width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-bottom:8px}
+.pcard .pname{font-weight:700;font-family:Georgia,serif}
+.pcard .pdesc{font-size:13px;color:#666;margin:4px 0}
+.pcard .pprice{font-weight:800;font-size:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -67,28 +75,54 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold}
 </div>
 
 <div class="card">
-<h2>Prodotti (prezzi)</h2>
-<p style="font-size:13px;color:#666;margin-bottom:12px">Prezzi per categoria. Il cliente sceglie foto + categoria (+ colore + quantità).</p>
-<div id="prodottiList"></div>
-<button class="btn btn-secondary" onclick="resetProdotti()">Ripristina prezzi default</button>
+<h2>Prodotti del negozio</h2>
+<p style="font-size:13px;color:#666;margin-bottom:12px">Crea e modifica gli articoli che vendi: immagine, nome, categoria, misura, descrizione, colori e prezzo. Tutto modificabile in qualsiasi momento.</p>
+<div class="grid2">
+ <div>
+  <label>Nome prodotto *</label><input id="pNome" placeholder="Es. Stampa 20x30">
+  <label>Categoria</label>
+  <select id="pCategoria">
+   <option value="stampa">Stampe</option>
+   <option value="tela">Tele</option>
+   <option value="forex">Forex</option>
+   <option value="gadget">Gadget</option>
+   <option value="plex">Plexiglass</option>
+  </select>
+  <label>Prezzo (€) *</label><input type="number" step="0.01" id="pPrezzo" placeholder="0.00">
+  <label>Misura / formato</label><input id="pMisura" placeholder="Es. 20x30 cm">
+ </div>
+ <div>
+  <label>Descrizione</label><textarea id="pDesc" rows="3" placeholder="Materiali, caratteristiche..."></textarea>
+  <label>Colori (separati da virgola)</label><input id="pColori" placeholder="Es. Bianco, Nero">
+  <label>Immagine prodotto</label><input type="file" id="pImmagine" accept="image/*">
+  <div id="pImmaginePrev" style="margin-top:8px"></div>
+  <input type="hidden" id="pEditingId">
+ </div>
+</div>
+<button class="btn" onclick="salvaProdotto()">Salva prodotto</button>
+<button class="btn btn-secondary" onclick="pulisciFormProdotto()">Nuovo prodotto</button>
+<div id="prodottiList" style="margin-top:16px"></div>
 </div>
 
 <div class="card">
-<h2>Configurazione</h2>
-<label>Email PayPal</label>
-<input type="email" id="configEmailPayPal" placeholder="email@paypal.com">
+<h2>Configurazione (dati dello studio)</h2>
+<p style="font-size:13px;color:#666;margin-bottom:12px">Questi dati compaiono al cliente nel carrello e nel pagamento. Devono essere quelli dello STUDIO, non del fornitore.</p>
+<label>Email PayPal dello studio</label>
+<input type="email" id="configEmailPayPal" placeholder="paypal@studio.it">
 <label>WhatsApp ordini</label>
-<input type="tel" id="configWhatsApp" placeholder="393447507656">
-<label>Indirizzo</label>
-<input type="text" id="configIndirizzo" placeholder="Via Roma 1, Milano">
-<label>Note</label>
-<textarea id="configNote" rows="4"></textarea>
+<input type="tel" id="configWhatsApp" placeholder="39...">
+<label>Telefono dello studio</label>
+<input type="tel" id="configTelefono" placeholder="Es. 0922 123456">
+<label>Indirizzo dello studio</label>
+<input type="text" id="configIndirizzo" placeholder="Via..., Città (Prov)">
+<label>Note (ritiro, spedizioni...)</label>
+<textarea id="configNote" rows="3"></textarea>
 <button class="btn" onclick="salvaConfigurazione()">Salva configurazione</button>
 </div>
 
 <div class="card">
 <h2>Pubblica negozio</h2>
-<p style="margin-bottom:12px">Pubblica configurazione e prezzi su Netlify per la vista cliente.</p>
+<p style="margin-bottom:12px">Pubblica prodotti, prezzi e configurazione su Netlify per la vista cliente. Da rifare dopo ogni modifica.</p>
 <button class="btn" onclick="pubblicaNegozio()">Pubblica shop.json</button>
 <div id="publishStatus" style="margin-top:10px"></div>
 </div>
@@ -106,7 +140,8 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold}
 <div id="albumGrid" class="album-grid"></div>
 </div>
 <div class="card hidden" id="photoSection">
-<h2>Seleziona prodotti</h2>
+<h2>Le tue foto</h2>
+<p style="font-size:13px;color:#666">Tocca una foto per scegliere il prodotto.</p>
 <div id="photoGrid" class="photo-grid"></div>
 </div>
 <div class="card hidden" id="cartSection">
@@ -119,38 +154,29 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold}
 
 <div id="productModal" class="modal">
 <div class="modal-content">
-<h2>Seleziona prodotto</h2>
+<div style="display:flex;justify-content:space-between;align-items:center">
+ <h2 style="margin:0">Scegli il prodotto</h2>
+ <button class="btn btn-secondary" onclick="chiudiModal()">Chiudi</button>
+</div>
 <img id="modalPhotoPreview" style="width:100%;max-width:300px;margin:10px 0;border-radius:8px">
-<label>Categoria</label>
-<select id="productCategory" onchange="aggiornaPrezzo()"></select>
-<div id="colorOptions">
-<label>Colore (opzionale)</label>
-<input type="text" id="productColor" placeholder="Bianco, Nero, ecc.">
-</div>
-<label>Quantità</label>
-<input type="number" id="productQuantity" value="1" min="1" onchange="aggiornaPrezzoModal()">
-<div style="font-size:18px;font-weight:bold;margin:15px 0" id="modalPrezzo">€ 0,00</div>
-<div style="margin-top:20px">
-<button class="btn" onclick="aggiungiAlCarrello()">Aggiungi al carrello</button>
-<button class="btn btn-secondary" onclick="chiudiModal()">Annulla</button>
-</div>
+<div id="productsByCategory"></div>
 </div>
 </div>
 
 <script>
 let ordiniRicevuti=JSON.parse(localStorage.getItem('ordiniRicevuti'))||[];
-let negozioConfig=JSON.parse(localStorage.getItem('negozioConfig'))||{emailPayPal:'appcenterstudiopremium@gmail.com',whatsapp:'393447507656',indirizzo:'',note:''};
+let negozioConfig=JSON.parse(localStorage.getItem('negozioConfig'))||{emailPayPal:'',whatsapp:'',telefono:'',indirizzo:'',note:''};
 let prodottiDefault=[
-{cat:'stampa',nome:'Stampa fotografica',prezzo:15},
-{cat:'tela',nome:'Tela canvas',prezzo:45},
-{cat:'forex',nome:'Forex',prezzo:35},
-{cat:'gadget',nome:'Gadget (tazza/magnete)',prezzo:12},
-{cat:'plexiglass',nome:'Plexiglass',prezzo:55}
+{id:1,name:'Stampa fotografica',category:'stampa',price:15,size:'20x30 cm',desc:'Stampa professionale su carta fotografica',colors:[],image:''},
+{id:2,name:'Tela canvas',category:'tela',price:45,size:'50x70 cm',desc:'Tela canvas montata su telaio in legno',colors:[],image:''},
+{id:3,name:'Forex',category:'forex',price:35,size:'50x70 cm',desc:'Stampa su pannello forex rigido',colors:[],image:''},
+{id:4,name:'Gadget (tazza/magnete)',category:'gadget',price:12,size:'',desc:'Tazza o magnete personalizzato con la tua foto',colors:['Bianco','Nero'],image:''},
+{id:5,name:'Plexiglass',category:'plex',price:55,size:'50x70 cm',desc:'Stampa su pannello plexiglass effetto vetro',colors:[],image:''}
 ];
-let prodotti=JSON.parse(localStorage.getItem('negozioProdotti'))||prodottiDefault;
+let prodotti=JSON.parse(localStorage.getItem('negozioProdotti'))||JSON.parse(JSON.stringify(prodottiDefault));
 let carrello=[];
 let fotoSelezionata=null;
-let currentAlbum=null;
+const CAT_LABEL={stampa:'Stampe',tela:'Tele',forex:'Forex',gadget:'Gadget',plex:'Plexiglass'};
 const urlParams=new URLSearchParams(window.location.search);
 const siteCode=urlParams.get('n');
 if(siteCode){
@@ -163,366 +189,401 @@ caricaOrdini();
 renderProdotti();
 generaLinkClienti();
 }
+
+/* ===== UTILS NETLIFY ===== */
+async function sha1(content){const buf=new TextEncoder().encode(content);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function sha1ArrayBuffer(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+function dataURLToArrayBuffer(dataURL){const bin=atob(dataURL.split(',')[1]);const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return ab;}
+async function getDeployFiles(siteId){
+ const token=localStorage.getItem('netlify_token');
+ try{const r=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{'Authorization':'Bearer '+token}});
+ if(!r.ok)return{};const arr=await r.json();const map={};(arr||[]).forEach(f=>{if(f.path&&f.sha)map[f.path]=f.sha;});return map;}catch(e){return{};}
+}
+async function deployMany(entries){
+ const token=localStorage.getItem('netlify_token');
+ const siteId=localStorage.getItem('netlify_site');
+ if(!token||!siteId)throw new Error('Netlify non configurato. Configura in Clienti & Foto.');
+ const existing=await getDeployFiles(siteId);
+ const merged=Object.assign({},existing);
+ const contents={},shaToPath={};
+ for(const e of entries){
+  let ab,hash;
+  if(typeof e.data==='string'){const bin=new TextEncoder().encode(e.data);ab=bin.buffer;hash=await sha1(bin);}
+  else{ab=e.data;hash=await sha1ArrayBuffer(ab);}
+  merged[e.path]=hash;contents[hash]=ab;shaToPath[hash]=e.path;
+ }
+ const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({files:merged})})).json();
+ if(dep.error)throw new Error(dep.error);
+ for(const sh of (dep.required||[])){
+  if(contents[sh]===undefined)continue;
+  await fetch('https://api.netlify.com/api/v1/deploys/'+dep.id+'/files'+shaToPath[sh],{method:'PUT',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/octet-stream'},body:contents[sh]});
+ }
+}
+
+/* ===== ADMIN: CONFIG ===== */
 function caricaConfigurazione(){
-document.getElementById('configEmailPayPal').value=negozioConfig.emailPayPal;
-document.getElementById('configWhatsApp').value=negozioConfig.whatsapp;
-document.getElementById('configIndirizzo').value=negozioConfig.indirizzo;
-document.getElementById('configNote').value=negozioConfig.note;
+document.getElementById('configEmailPayPal').value=negozioConfig.emailPayPal||'';
+document.getElementById('configWhatsApp').value=negozioConfig.whatsapp||'';
+document.getElementById('configTelefono').value=negozioConfig.telefono||'';
+document.getElementById('configIndirizzo').value=negozioConfig.indirizzo||'';
+document.getElementById('configNote').value=negozioConfig.note||'';
 }
 function salvaConfigurazione(){
-negozioConfig.emailPayPal=document.getElementById('configEmailPayPal').value;
-negozioConfig.whatsapp=document.getElementById('configWhatsApp').value;
-negozioConfig.indirizzo=document.getElementById('configIndirizzo').value;
-negozioConfig.note=document.getElementById('configNote').value;
+negozioConfig={
+ emailPayPal:document.getElementById('configEmailPayPal').value.trim(),
+ whatsapp:document.getElementById('configWhatsApp').value.trim(),
+ telefono:document.getElementById('configTelefono').value.trim(),
+ indirizzo:document.getElementById('configIndirizzo').value.trim(),
+ note:document.getElementById('configNote').value.trim()
+};
 localStorage.setItem('negozioConfig',JSON.stringify(negozioConfig));
-alert('Configurazione salvata');
+alert('Configurazione salvata. Ricorda di ripubblicare il negozio.');
+}
+
+/* ===== ADMIN: PRODOTTI ===== */
+document.getElementById('pImmagine').addEventListener('change',e=>{
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{document.getElementById('pImmaginePrev').innerHTML='<img src="'+r.result+'" style="max-width:120px;border-radius:8px">';document.getElementById('pImmaginePrev').dataset.url=r.result;};
+ r.readAsDataURL(f);
+});
+function pulisciFormProdotto(){
+['pNome','pPrezzo','pMisura','pDesc','pColori'].forEach(id=>document.getElementById(id).value='');
+document.getElementById('pCategoria').value='stampa';
+document.getElementById('pEditingId').value='';
+document.getElementById('pImmaginePrev').innerHTML='';
+delete document.getElementById('pImmaginePrev').dataset.url;
+}
+function salvaProdotto(){
+ const nome=document.getElementById('pNome').value.trim();
+ const prezzo=parseFloat(document.getElementById('pPrezzo').value);
+ if(!nome||isNaN(prezzo))return alert('Nome e prezzo sono obbligatori.');
+ const id=document.getElementById('pEditingId').value;
+ const prev=document.getElementById('pImmaginePrev');
+ const colors=document.getElementById('pColori').value.split(',').map(s=>s.trim()).filter(Boolean);
+ if(id){
+  const p=prodotti.find(x=>x.id==id);if(!p)return;
+  p.name=nome;p.category=document.getElementById('pCategoria').value;p.price=prezzo;
+  p.size=document.getElementById('pMisura').value.trim();p.desc=document.getElementById('pDesc').value.trim();p.colors=colors;
+  if(prev.dataset.url)p.image=prev.dataset.url;
+ }else{
+  const p={id:Date.now(),name:nome,category:document.getElementById('pCategoria').value,price:prezzo,
+   size:document.getElementById('pMisura').value.trim(),desc:document.getElementById('pDesc').value.trim(),colors:colors,image:prev.dataset.url||''};
+  prodotti.push(p);
+ }
+ localStorage.setItem('negozioProdotti',JSON.stringify(prodotti));
+ pulisciFormProdotto();renderProdotti();
+ alert('Prodotto salvato. Ricorda di ripubblicare il negozio.');
+}
+function modificaProdotto(id){
+ const p=prodotti.find(x=>x.id===id);if(!p)return;
+ document.getElementById('pEditingId').value=p.id;
+ document.getElementById('pNome').value=p.name;
+ document.getElementById('pCategoria').value=p.category;
+ document.getElementById('pPrezzo').value=p.price;
+ document.getElementById('pMisura').value=p.size||'';
+ document.getElementById('pDesc').value=p.desc||'';
+ document.getElementById('pColori').value=(p.colors||[]).join(', ');
+ const prev=document.getElementById('pImmaginePrev');
+ if(p.image&&p.image.startsWith('data:')){prev.innerHTML='<img src="'+p.image+'" style="max-width:120px;border-radius:8px">';prev.dataset.url=p.image;}
+ else{prev.innerHTML='';delete prev.dataset.url;}
+ window.scrollTo(0,0);
+}
+function eliminaProdotto(id){
+ if(!confirm('Eliminare questo prodotto?'))return;
+ prodotti=prodotti.filter(x=>x.id!==id);
+ localStorage.setItem('negozioProdotti',JSON.stringify(prodotti));
+ renderProdotti();
 }
 function renderProdotti(){
-const list=document.getElementById('prodottiList');
-list.innerHTML=prodotti.map((p,i)=>`
-<div class="prod-row">
-<div><b>${p.nome}</b><br><small style="color:#666">${p.cat}</small></div>
-<div style="display:flex;gap:8px;align-items:center">
-<label style="margin:0">€</label>
-<input type="number" step="0.01" value="${p.prezzo}" style="width:80px;margin:0" onchange="aggiornaPrezzoProdotto(${i},this.value)">
-</div>
-</div>`).join('');
+ const box=document.getElementById('prodottiList');
+ if(!prodotti.length){box.innerHTML='<p style="color:#666">Nessun prodotto.</p>';return;}
+ box.innerHTML=prodotti.map(p=>`
+ <div class="prod-row">
+  <div style="display:flex;gap:10px;align-items:center;flex:1;min-width:200px">
+   ${p.image&&p.image.startsWith('data:')?`<img src="${p.image}">`:'<div style="width:56px;height:56px;background:#eee;border-radius:6px"></div>'}
+   <div><b>${esc(p.name)}</b><br><small style="color:#666">${CAT_LABEL[p.category]||p.category}${p.size?' • '+esc(p.size):''}</small><br><small style="color:#666">${esc(p.desc||'')}</small></div>
+  </div>
+  <div style="font-weight:800">€ ${p.price.toFixed(2)}</div>
+  <div>
+   <button class="btn btn-secondary" style="padding:5px 12px;margin:0" onclick="modificaProdotto(${p.id})">Modifica</button>
+   <button class="btn btn-danger" style="padding:5px 12px;margin:0" onclick="eliminaProdotto(${p.id})">Elimina</button>
+  </div>
+ </div>`).join('');
 }
-function aggiornaPrezzoProdotto(i,v){
-prodotti[i].prezzo=parseFloat(v)||0;
-localStorage.setItem('negozioProdotti',JSON.stringify(prodotti));
+
+/* ===== ADMIN: PUBBLICA ===== */
+async function pubblicaNegozio(){
+ const statusDiv=document.getElementById('publishStatus');
+ statusDiv.innerHTML='<p>Pubblicazione in corso...</p>';
+ try{
+  const entries=[];
+  const pubProdotti=prodotti.map(p=>{
+   const cp=Object.assign({},p);
+   if(cp.image&&cp.image.startsWith('data:')){cp.image='/prodotti/'+p.id+'.jpg';}
+   return cp;
+  });
+  for(const p of prodotti){
+   if(p.image&&p.image.startsWith('data:')){
+    entries.push({path:'/prodotti/'+p.id+'.jpg',data:dataURLToArrayBuffer(p.image)});
+   }
+  }
+  const shopData={attivo:true,emailPayPal:negozioConfig.emailPayPal,whatsapp:negozioConfig.whatsapp,telefono:negozioConfig.telefono,indirizzo:negozioConfig.indirizzo,note:negozioConfig.note,prodotti:pubProdotti,pubblicato:new Date().toISOString()};
+  entries.push({path:'/shop.json',data:JSON.stringify(shopData,null,2)});
+  await deployMany(entries);
+  statusDiv.innerHTML='<p style="font-weight:600">Negozio pubblicato con '+pubProdotti.length+' prodotti.</p>';
+ }catch(e){statusDiv.innerHTML='<p style="color:#a33">Errore: '+e.message+'</p>';}
 }
-function resetProdotti(){
-if(!confirm('Ripristinare i prezzi default?'))return;
-prodotti=JSON.parse(JSON.stringify(prodottiDefault));
-localStorage.setItem('negozioProdotti',JSON.stringify(prodotti));
-renderProdotti();
-}
+
+/* ===== ADMIN: ORDINI ===== */
 async function aggiornaOrdini(){
-const netlifyToken=localStorage.getItem('netlify_token');
-const netlifySite=localStorage.getItem('netlify_site');
-if(!netlifyToken||!netlifySite)return alert('Token o site ID Netlify mancanti. Configura in Clienti & Foto.');
-try{
-const formsResponse=await fetch('https://api.netlify.com/api/v1/forms?site_id='+netlifySite,{headers:{'Authorization':'Bearer '+netlifyToken}});
-const forms=await formsResponse.json();
-const ordiniForm=forms.find(f=>f.name==='selezioni');
-if(!ordiniForm)return alert('Form ordini non trovato sul sito Netlify.');
-const submissionsResponse=await fetch('https://api.netlify.com/api/v1/forms/'+ordiniForm.id+'/submissions',{headers:{'Authorization':'Bearer '+netlifyToken}});
-const submissions=await submissionsResponse.json();
-const ordini=submissions.filter(s=>s.data.tipo==='ordine').map(s=>({id:s.id,data:s.created_at,cliente:s.data.cliente,codice:s.data.codice,dati:s.data.dati?JSON.parse(s.data.dati):[],stato:'selezione effettuata'}));
-ordiniRicevuti=ordini;
-localStorage.setItem('ordiniRicevuti',JSON.stringify(ordiniRicevuti));
-caricaOrdini();
-alert('Aggiornati '+ordini.length+' ordini');
-}catch(error){alert('Errore aggiornamento ordini: '+error.message);}
+ const netlifyToken=localStorage.getItem('netlify_token');
+ const netlifySite=localStorage.getItem('netlify_site');
+ if(!netlifyToken||!netlifySite)return alert('Token o site ID Netlify mancanti. Configura in Clienti & Foto.');
+ try{
+  const fr=await fetch('https://api.netlify.com/api/v1/forms?site_id='+netlifySite,{headers:{'Authorization':'Bearer '+netlifyToken}});
+  if(!fr.ok)throw new Error('Errore '+fr.status);
+  const forms=await fr.json();
+  const f=(forms||[]).find(x=>x.name==='selezioni');
+  if(!f)return alert('Modulo non trovato sul sito Netlify.');
+  const sr=await fetch('https://api.netlify.com/api/v1/forms/'+f.id+'/submissions',{headers:{'Authorization':'Bearer '+netlifyToken}});
+  const subs=await sr.json();
+  const ordini=(subs||[]).filter(s=>(s.data||{}).tipo==='ordine').map(s=>({id:s.id,data:s.created_at,cliente:s.data.cliente,codice:s.data.codice,dati:s.data.dati?JSON.parse(s.data.dati):[],stato:'selezione effettuata'}));
+  ordiniRicevuti=ordini;
+  localStorage.setItem('ordiniRicevuti',JSON.stringify(ordiniRicevuti));
+  caricaOrdini();
+  alert('Aggiornati '+ordini.length+' ordini');
+ }catch(e){alert('Errore aggiornamento ordini: '+e.message);}
 }
 function caricaOrdini(){
-const lista=document.getElementById('ordiniLista');
-if(ordiniRicevuti.length===0){lista.innerHTML='<p style="margin-top:20px;color:#666">Nessun ordine ricevuto.</p>';return;}
-lista.innerHTML=ordiniRicevuti.map((ordine,idx)=>{
-const totale=(ordine.dati||[]).reduce((s,d)=>s+(getPrezzoCat(d.categoria)*(d.quantità||1)),0);
-return `
-<div class="order-item">
-<h3>Ordine #${ordine.id.substring(0,8)} - ${ordine.cliente||'Cliente'}</h3>
-<p><b>Data:</b> ${new Date(ordine.data).toLocaleString('it-IT')}</p>
-<p><b>Codice studio:</b> ${ordine.codice||'N/D'}</p>
-<p><b>Stato:</b>
-<select onchange="aggiornaStatoOrdine(${idx},this.value)">
-<option value="selezione effettuata" ${ordine.stato==='selezione effettuata'?'selected':''}>selezione effettuata</option>
-<option value="text scaricato" ${ordine.stato==='text scaricato'?'selected':''}>text scaricato</option>
-<option value="ordine pronto" ${ordine.stato==='ordine pronto'?'selected':''}>ordine pronto</option>
-</select>
-</p>
-<p><b>Totale:</b> € ${totale.toFixed(2)}</p>
-<p><b>Articoli:</b></p>
-<ul style="margin-left:20px;font-size:13px">
-${(ordine.dati||[]).map(d=>`<li>${d.foto} - ${d.categoria}${d.colore?' ('+d.colore+')':''} x${d.quantità||1}</li>`).join('')}
-</ul>
-<button class="btn btn-danger" style="margin-top:10px" onclick="eliminaOrdine(${idx})">Elimina</button>
-</div>`;
-}).join('');
+ const lista=document.getElementById('ordiniLista');
+ if(!ordiniRicevuti.length){lista.innerHTML='<p style="margin-top:20px;color:#666">Nessun ordine ricevuto.</p>';return;}
+ lista.innerHTML=ordiniRicevuti.map((o,idx)=>{
+  const tot=(o.dati||[]).reduce((s,d)=>s+(+d.prezzo||0)*(+d.quantita||1),0);
+  return `<div class="order-item">
+  <h3>Ordine #${String(o.id).substring(0,8)} - ${esc(o.cliente||'Cliente')}</h3>
+  <p><b>Data:</b> ${new Date(o.data).toLocaleString('it-IT')}</p>
+  <p><b>Codice cliente:</b> ${esc(o.codice||'N/D')}</p>
+  <p><b>Stato:</b> <select onchange="aggiornaStatoOrdine(${idx},this.value)">
+   <option ${o.stato==='selezione effettuata'?'selected':''}>selezione effettuata</option>
+   <option ${o.stato==='text scaricato'?'selected':''}>text scaricato</option>
+   <option ${o.stato==='ordine pronto'?'selected':''}>ordine pronto</option>
+  </select></p>
+  <p><b>Totale:</b> € ${tot.toFixed(2)}</p>
+  <ul style="margin-left:20px;font-size:13px">${(o.dati||[]).map(d=>`<li>${esc(d.foto)} - ${esc(d.prodotto||d.categoria||'')}${d.colore?' ('+esc(d.colore)+')':''} x${d.quantita||1}</li>`).join('')}</ul>
+  <button class="btn btn-danger" style="margin-top:10px" onclick="eliminaOrdine(${idx})">Elimina</button>
+  </div>`;
+ }).join('');
 }
-function getPrezzoCat(cat){
-const p=prodotti.find(x=>x.cat===cat);
-return p?p.prezzo:0;
-}
-function aggiornaStatoOrdine(idx,nuovoStato){
-ordiniRicevuti[idx].stato=nuovoStato;
-localStorage.setItem('ordiniRicevuti',JSON.stringify(ordiniRicevuti));
-}
-function eliminaOrdine(idx){
-if(!confirm('Eliminare questo ordine?'))return;
-ordiniRicevuti.splice(idx,1);
-localStorage.setItem('ordiniRicevuti',JSON.stringify(ordiniRicevuti));
-caricaOrdini();
-}
+function aggiornaStatoOrdine(i,v){ordiniRicevuti[i].stato=v;localStorage.setItem('ordiniRicevuti',JSON.stringify(ordiniRicevuti));}
+function eliminaOrdine(i){if(!confirm('Eliminare questo ordine?'))return;ordiniRicevuti.splice(i,1);localStorage.setItem('ordiniRicevuti',JSON.stringify(ordiniRicevuti));caricaOrdini();}
 function scaricaTextGru(){
-if(ordiniRicevuti.length===0)return alert('Nessun ordine disponibile');
-const fotoSet=new Set();
-ordiniRicevuti.forEach(o=>(o.dati||[]).forEach(d=>{if(d.foto)fotoSet.add(d.foto);}));
-const fotoUniche=Array.from(fotoSet).sort();
-if(fotoUniche.length===0)return alert('Nessuna foto negli ordini');
-let content='# Text Gru - Ordini '+new Date().toLocaleDateString('it-IT')+'\n\n';
-content+='Totale file unici: '+fotoUniche.length+'\n\n';
-fotoUniche.forEach((f,i)=>{content+=String(i+1).padStart(4,'0')+' '+f+'\n';});
-const blob=new Blob([content],{type:'text/plain'});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;
-a.download='GRU_ORDINI_'+Date.now()+'.txt';
-a.click();
-URL.revokeObjectURL(url);
+ if(!ordiniRicevuti.length)return alert('Nessun ordine disponibile');
+ const set=new Set();
+ ordiniRicevuti.forEach(o=>(o.dati||[]).forEach(d=>{if(d.foto)set.add(d.foto);}));
+ const foto=Array.from(set).sort();
+ if(!foto.length)return alert('Nessuna foto negli ordini');
+ const content=foto.join('\n');
+ const blob=new Blob([content],{type:'text/plain'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='GRU_ORDINI_'+Date.now()+'.txt';a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),2000);
 }
 function generaPDFStampa(){
-if(ordiniRicevuti.length===0)return alert('Nessun ordine disponibile');
-const{jsPDF}=window.jspdf;
-const doc=new jsPDF();
-doc.setFontSize(18);doc.setFont('times','normal');
-doc.text('ORDINI RICEVUTI - NEGOZIO',105,20,{align:'center'});
-doc.setFontSize(10);
-doc.text('Generato: '+new Date().toLocaleString('it-IT'),105,28,{align:'center'});
-let y=40;
-ordiniRicevuti.forEach((ordine,idx)=>{
-if(y>260){doc.addPage();y=20;}
-const tot=(ordine.dati||[]).reduce((s,d)=>s+(getPrezzoCat(d.categoria)*(d.quantità||1)),0);
-doc.setFontSize(12);doc.setFont('times','bold');
-doc.text('ORDINE #'+(idx+1),20,y);y+=6;
-doc.setFont('times','normal');doc.setFontSize(10);
-doc.text('ID: '+ordine.id,20,y);y+=5;
-doc.text('Cliente: '+(ordine.cliente||'N/D'),20,y);y+=5;
-doc.text('Data: '+new Date(ordine.data).toLocaleString('it-IT'),20,y);y+=5;
-doc.text('Stato: '+(ordine.stato||'selezione effettuata'),20,y);y+=5;
-doc.text('Codice: '+(ordine.codice||'N/D'),20,y);y+=7;
-doc.setFont('times','bold');doc.text('Articoli:',20,y);y+=5;
-doc.setFont('times','normal');
-(ordine.dati||[]).forEach(d=>{
-if(y>270){doc.addPage();y=20;}
-const linea='- '+d.foto+' | '+d.categoria+(d.colore?' ('+d.colore+')':'')+' | x'+(d.quantità||1)+' | € '+(getPrezzoCat(d.categoria)*(d.quantità||1)).toFixed(2);
-doc.text(linea,25,y);y+=5;
-});
-y+=2;doc.setFont('times','bold');
-doc.text('TOTALE: € '+tot.toFixed(2),20,y);y+=8;
-doc.setDrawColor(200);doc.line(20,y-2,190,y-2);y+=5;
-});
-doc.save('ORDINI_'+Date.now()+'.pdf');
+ if(!ordiniRicevuti.length)return alert('Nessun ordine disponibile');
+ const {jsPDF}=window.jspdf;const doc=new jsPDF();
+ doc.setFontSize(18);doc.text('ORDINI RICEVUTI - NEGOZIO',105,20,{align:'center'});
+ doc.setFontSize(10);doc.text('Generato: '+new Date().toLocaleString('it-IT'),105,28,{align:'center'});
+ let y=40;
+ ordiniRicevuti.forEach(o=>{
+  if(y>260){doc.addPage();y=20;}
+  const tot=(o.dati||[]).reduce((s,d)=>s+(+d.prezzo||0)*(+d.quantita||1),0);
+  doc.setFontSize(12);doc.setFont('helvetica','bold');
+  doc.text('Ordine #'+String(o.id).substring(0,8)+' - '+o.cliente,20,y);y+=6;
+  doc.setFont('helvetica','normal');doc.setFontSize(10);
+  doc.text('Data: '+new Date(o.data).toLocaleString('it-IT')+'  ·  Codice: '+(o.codice||'N/D'),20,y);y+=5;
+  (o.dati||[]).forEach(d=>{
+   if(y>270){doc.addPage();y=20;}
+   doc.text('- '+d.foto+' | '+ (d.prodotto||d.categoria||'')+(d.colore?' ('+d.colore+')':'')+' x'+(d.quantita||1)+' | € '+((+d.prezzo||0)*(+d.quantita||1)).toFixed(2),25,y);y+=5;
+  });
+  doc.setFont('helvetica','bold');doc.text('TOTALE: € '+tot.toFixed(2),20,y);y+=8;
+  doc.setFont('helvetica','normal');
+ });
+ doc.save('ORDINI_'+Date.now()+'.pdf');
 }
-async function sha1(content){
-const msgBuffer=new TextEncoder().encode(content);
-const hashBuffer=await crypto.subtle.digest('SHA-1',msgBuffer);
-const hashArray=Array.from(new Uint8Array(hashBuffer));
-return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function pubblicaNegozio(){
-const netlifyToken=localStorage.getItem('netlify_token');
-const netlifySite=localStorage.getItem('netlify_site');
-const netlifySiteUrl=localStorage.getItem('netlify_siteurl');
-if(!netlifyToken||!netlifySite)return alert('Token o site ID Netlify mancanti. Configura in Clienti & Foto.');
-const statusDiv=document.getElementById('publishStatus');
-statusDiv.innerHTML='<p>Pubblicazione in corso...</p>';
-try{
-const shopData={
-attivo:true,
-emailPayPal:negozioConfig.emailPayPal,
-whatsapp:negozioConfig.whatsapp,
-indirizzo:negozioConfig.indirizzo,
-note:negozioConfig.note,
-prodotti:prodotti,
-pubblicato:new Date().toISOString()
-};
-const headersContent='/*\n  Access-Control-Allow-Origin: *\n  Access-Control-Allow-Methods: GET, POST, OPTIONS\n  Access-Control-Allow-Headers: Content-Type\n*/\n';
-const files={'/shop.json':JSON.stringify(shopData,null,2),'/_headers':headersContent};
-const fileDigest={};
-for(const[path,content]of Object.entries(files)){
-fileDigest[path]=await sha1(content);
-}
-const deployResp=await fetch('https://api.netlify.com/api/v1/sites/'+netlifySite+'/deploys',{
-method:'POST',
-headers:{'Authorization':'Bearer '+netlifyToken,'Content-Type':'application/json'},
-body:JSON.stringify({files:fileDigest})
-});
-const deploy=await deployResp.json();
-if(deploy.error){statusDiv.innerHTML='<p style="color:#a33">Errore: '+deploy.error+'</p>';return;}
-const required=new Set(deploy.required||[]);
-for(const[path,content]of Object.entries(files)){
-const hash=fileDigest[path];
-if(!required.has(hash))continue;
-const encodedPath=path.split('/').map(encodeURIComponent).join('/');
-await fetch('https://api.netlify.com/api/v1/deploys/'+deploy.id+'/files'+encodedPath,{
-method:'PUT',
-headers:{'Authorization':'Bearer '+netlifyToken,'Content-Type':'application/octet-stream'},
-body:content
-});
-}
-statusDiv.innerHTML='<p style="color:#111;font-weight:600">Negozio pubblicato su '+netlifySiteUrl+'/shop.json</p>';
-}catch(error){statusDiv.innerHTML='<p style="color:#a33">Errore: '+error.message+'</p>';}
-}
+
+/* ===== ADMIN: LINK ===== */
 function generaLinkClienti(){
-const clientiFotoData=JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]};
-const netlifySiteUrl=localStorage.getItem('netlify_siteurl')||window.location.origin;
-const container=document.getElementById('clientLinks');
-if(!clientiFotoData.clients||clientiFotoData.clients.length===0){
-container.innerHTML='<p style="color:#666">Nessun cliente. Aggiungi clienti tramite l\'app 05 Clienti & Foto.</p>';
-return;
+ const clientiFotoData=JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]};
+ const box=document.getElementById('clientLinks');
+ if(!clientiFotoData.clients||!clientiFotoData.clients.length){box.innerHTML='<p style="color:#666">Nessun cliente. Aggiungi clienti nell\'app 05 Clienti & Foto.</p>';return;}
+ const baseLink=new URL('../negozio/?n=',window.location.href).href;
+ box.innerHTML=clientiFotoData.clients.map(c=>{
+  const link=baseLink+encodeURIComponent((localStorage.getItem('netlify_sitename')||'')+'/'+c.codice);
+  return `<div class="client-link"><b>${esc(c.nome)} ${esc(c.cognome||'')}</b> (${c.codice})<div style="font-size:13px;margin-top:5px">${link}</div><button class="btn btn-secondary" style="margin-top:5px;padding:5px 10px;font-size:12px" onclick="navigator.clipboard.writeText('${link}').then(()=>alert('Copiato'))">Copia link</button></div>`;
+ }).join('');
 }
-const baseLink=new URL('../negozio/?n=',window.location.href).href;
-container.innerHTML=clientiFotoData.clients.map(c=>{
-const link=baseLink+encodeURIComponent((localStorage.getItem('netlify_sitename')||'')+'/'+(c.codice||c.nome));
-return `
-<div class="client-link">
-<b>${c.nome} ${c.cognome||''}</b> (${c.codice||''})
-<div style="font-size:13px;margin-top:5px">${link}</div>
-<button class="btn btn-secondary" style="margin-top:5px;padding:5px 10px;font-size:12px" onclick="navigator.clipboard.writeText('${link}').then(()=>alert('Copiato'))">Copia link</button>
-</div>`;
-}).join('');
-}
+
+/* ===== BACKUP ===== */
 function backupGlobale(){
-const d={};
-for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
-const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
-const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
-alert('Backup globale scaricato.');
+ const d={};
+ for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+ alert('Backup globale scaricato.');
 }
 function ripristinoGlobale(e){
-const f=e.target.files[0];if(!f)return;
-const r=new FileReader();
-r.onload=ev=>{try{
-const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-if(typeof d!=='object')throw new Error('File non valido.');
-if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?\nI dati attuali di TUTTE le app verranno sostituiti.'))return;
-Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-alert('Backup ripristinato. La pagina si ricarica.');location.reload();
-}catch(err){alert('Errore: '+err.message)}};
-r.readAsText(f);e.target.value='';
+ const f=e.target.files[0];if(!f)return;
+ const r=new FileReader();
+ r.onload=ev=>{try{
+  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+  if(typeof d!=='object')throw new Error('File non valido.');
+  if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
+  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
+ }catch(err){alert('Errore: '+err.message)}};
+ r.readAsText(f);e.target.value='';
 }
 function goBack(){history.back();}
 function goHome(){location.href='../index.html';}
+
 /* ===== VISTA CLIENTE ===== */
 function caricaVistaCliente(param){
-const parts=decodeURIComponent(param).split('/');
-let site,code;
-if(parts.length>1){site=parts[0];code=parts.slice(1).join('/');}
-else{site=localStorage.getItem('netlify_sitename')||'';code=parts[0];}
-if(!site){document.getElementById('albumGrid').innerHTML='<p>Link non valido.</p>';return;}
-const base='https://'+site+'.netlify.app';
-window.siteBase=base;window.clientCode=code;
-Promise.all([
-fetch(base+'/shop.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
-fetch(base+'/studio.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
-fetch(base+'/'+code+'/manifest.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
-]).then(([shop,studio,manifest])=>{
-window.shopCfg=shop||{emailPayPal:'appcenterstudiopremium@gmail.com',whatsapp:'393447507656',indirizzo:'',note:''};
-if(shop&&shop.prodotti)prodotti=shop.prodotti;
-const st=studio||{};
-document.getElementById('studioName').textContent=st.nome||'Negozio Online';
-document.getElementById('studioMessage').textContent=st.messaggio||'';
-if(st.logo){const img=new Image();img.src=base+'/'+st.logo;img.style.cssText='height:50px;border-radius:50%;filter:grayscale(100%);margin-bottom:8px';document.getElementById('studioHead').prepend(img);}
-if(!manifest||!manifest.photos||!manifest.photos.length){document.getElementById('albumGrid').innerHTML='<p>Nessuna foto pubblicata. Contatta lo studio.</p>';return;}
-window.manifest=manifest;
-const albums={};
-manifest.photos.forEach(p=>{const k=p.includes('/')?p.split('/')[0]:'Tutte le foto';(albums[k]=albums[k]||[]).push(p);});
-window.albums=albums;
-renderAlbums(albums,base,code);
-});
+ const parts=decodeURIComponent(param).split('/');
+ let site,code;
+ if(parts.length>1){site=parts[0];code=parts.slice(1).join('/');}
+ else{site=localStorage.getItem('netlify_sitename')||'';code=parts[0];}
+ if(!site){document.getElementById('albumGrid').innerHTML='<p>Link non valido.</p>';return;}
+ const base='https://'+site+'.netlify.app';
+ window.siteBase=base;window.clientCode=code;
+ Promise.all([
+  fetch(base+'/shop.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
+  fetch(base+'/studio.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null),
+  fetch(base+'/'+code+'/manifest.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null)
+ ]).then(([shop,studio,manifest])=>{
+  window.shopCfg=shop||{emailPayPal:'',whatsapp:'',telefono:'',indirizzo:'',note:'',prodotti:[]};
+  if(shop&&shop.prodotti)prodotti=shop.prodotti;
+  const st=studio||{};
+  document.getElementById('studioName').textContent=st.nome||'Negozio Online';
+  document.getElementById('studioMessage').textContent=st.messaggio||'';
+  if(st.logo){const img=new Image();img.src=base+'/'+st.logo;img.style.cssText='height:50px;border-radius:50%;filter:grayscale(100%);margin-bottom:8px';document.getElementById('studioHead').prepend(img);}
+  if(!manifest||!manifest.photos||!manifest.photos.length){document.getElementById('albumGrid').innerHTML='<p>Nessuna foto pubblicata. Contatta lo studio.</p>';return;}
+  window.manifest=manifest;
+  const albums={};
+  manifest.photos.forEach(p=>{const k=p.includes('/')?p.split('/')[0]:'Tutte le foto';(albums[k]=albums[k]||[]).push(p);});
+  window.albums=albums;
+  renderAlbums(albums);
+ });
 }
-function renderAlbums(albums,base,code){
-const grid=document.getElementById('albumGrid');
-grid.innerHTML=Object.keys(albums).map(k=>`
-<div class="album-card" onclick="apriAlbum('${esc(k)}')">
-<h3>${esc(k)}</h3>
-<p>${albums[k].length} foto</p>
-</div>`).join('');
+function renderAlbums(albums){
+ document.getElementById('albumGrid').innerHTML=Object.keys(albums).map(k=>`
+ <div class="album-card" onclick="apriAlbum('${esc(k)}')"><h3>${esc(k)}</h3><p>${albums[k].length} foto</p></div>`).join('');
 }
 function apriAlbum(name){
-const photos=window.albums[name];if(!photos)return;
-document.getElementById('photoSection').classList.remove('hidden');
-const grid=document.getElementById('photoGrid');
-grid.innerHTML=photos.map((p,i)=>`
-<div class="photo-item" onclick="openProductModal('${esc(p)}')">
-<img src="${window.siteBase}/${window.clientCode}/${p.split('/').map(encodeURIComponent).join('/')}" loading="lazy" alt="">
-</div>`).join('');
-document.getElementById('photoSection').scrollIntoView({behavior:'smooth'});
+ const photos=window.albums[name];if(!photos)return;
+ document.getElementById('photoSection').classList.remove('hidden');
+ document.getElementById('photoGrid').innerHTML=photos.map(p=>`
+ <div class="photo-item" onclick="openProductModal('${esc(p)}')"><img src="${window.siteBase}/${window.clientCode}/${p.split('/').map(encodeURIComponent).join('/')}" loading="lazy" alt=""></div>`).join('');
+ document.getElementById('photoSection').scrollIntoView({behavior:'smooth'});
+}
+function productImageSrc(p){
+ if(!p.image)return '';
+ if(p.image.startsWith('http')||p.image.startsWith('data:'))return p.image;
+ return window.siteBase+p.image;
 }
 function openProductModal(path){
-fotoSelezionata={path:path,name:path.split('/').pop()};
-document.getElementById('modalPhotoPreview').src=window.siteBase+'/'+window.clientCode+'/'+path.split('/').map(encodeURIComponent).join('/');
-document.getElementById('productCategory').innerHTML=prodotti.map(p=>`<option value="${p.cat}">${p.nome} — € ${p.prezzo.toFixed(2)}</option>`).join('');
-document.getElementById('productQuantity').value=1;
-document.getElementById('productColor').value='';
-aggiornaPrezzo();
-document.getElementById('productModal').classList.add('active');
+ fotoSelezionata={path:path,name:path.split('/').pop()};
+ document.getElementById('modalPhotoPreview').src=window.siteBase+'/'+window.clientCode+'/'+path.split('/').map(encodeURIComponent).join('/');
+ const cats=['stampa','tela','forex','gadget','plex'];
+ let html='';
+ cats.forEach(cat=>{
+  const list=prodotti.filter(p=>p.category===cat);
+  if(!list.length)return;
+  html+='<h3 style="margin:16px 0 6px">'+CAT_LABEL[cat]+'</h3>';
+  list.forEach(p=>{
+   const src=productImageSrc(p);
+   html+=`<div class="pcard">
+    ${src?`<img src="${src}">`:''}
+    <div class="pname">${esc(p.name)}</div>
+    ${p.size?`<div class="pdesc">${esc(p.size)}</div>`:''}
+    ${p.desc?`<div class="pdesc">${esc(p.desc)}</div>`:''}
+    <div class="pprice">€ ${p.price.toFixed(2)}</div>
+    ${(p.colors&&p.colors.length)?`<label>Colore</label><select id="col-${p.id}">${p.colors.map(c=>`<option>${esc(c)}</option>`).join('')}</select>`:''}
+    <label>Quantità</label><input type="number" id="qta-${p.id}" value="1" min="1">
+    <button class="btn" style="margin-top:8px" onclick="aggiungiAlCarrello(${p.id})">Aggiungi al carrello</button>
+   </div>`;
+  });
+ });
+ document.getElementById('productsByCategory').innerHTML=html||'<p>Nessun prodotto disponibile.</p>';
+ document.getElementById('productModal').classList.add('active');
 }
-function aggiornaPrezzo(){
-const cat=document.getElementById('productCategory').value;
-const q=parseInt(document.getElementById('productQuantity').value)||1;
-document.getElementById('modalPrezzo').textContent='€ '+(getPrezzoCat(cat)*q).toFixed(2);
-}
-function aggiornaPrezzoModal(){aggiornaPrezzo();}
 function chiudiModal(){document.getElementById('productModal').classList.remove('active');fotoSelezionata=null;}
-function aggiungiAlCarrello(){
-if(!fotoSelezionata)return;
-const cat=document.getElementById('productCategory').value;
-const q=parseInt(document.getElementById('productQuantity').value)||1;
-carrello.push({foto:fotoSelezionata.name,categoria:cat,colore:document.getElementById('productColor').value,quantità:q,prezzo:getPrezzoCat(cat)});
-chiudiModal();
-renderCarrello();
-document.getElementById('cartSection').classList.remove('hidden');
+function aggiungiAlCarrello(pid){
+ const p=prodotti.find(x=>x.id===pid);if(!p||!fotoSelezionata)return;
+ const qta=parseInt((document.getElementById('qta-'+pid)||{}).value)||1;
+ const colEl=document.getElementById('col-'+pid);
+ carrello.push({foto:fotoSelezionata.name,prodotto:p.name,categoria:p.category,colore:colEl?colEl.value:'',quantita:qta,prezzo:p.price});
+ chiudiModal();renderCarrello();
+ document.getElementById('cartSection').classList.remove('hidden');
 }
 function renderCarrello(){
-const box=document.getElementById('cartItems');
-if(!carrello.length){box.innerHTML='<p>Il carrello è vuoto.</p>';document.getElementById('cartTotal').textContent='';return;}
-box.innerHTML=carrello.map((it,i)=>`
-<div class="cart-item">
-<div style="flex:1"><b>${esc(it.foto)}</b><br><small>${it.categoria}${it.colore?' - '+esc(it.colore):''} x${it.quantità}</small></div>
-<div style="font-weight:bold">€ ${(it.prezzo*it.quantità).toFixed(2)}</div>
-<button class="btn btn-danger" style="padding:5px 10px;margin:0" onclick="rimuoviDalCarrello(${i})">X</button>
-</div>`).join('');
-const tot=carrello.reduce((s,x)=>s+x.prezzo*x.quantità,0);
-document.getElementById('cartTotal').textContent='Totale: € '+tot.toFixed(2);
+ const box=document.getElementById('cartItems');
+ if(!carrello.length){box.innerHTML='<p>Il carrello è vuoto.</p>';document.getElementById('cartTotal').textContent='';return;}
+ box.innerHTML=carrello.map((it,i)=>`
+ <div class="cart-item">
+  <div style="flex:1"><b>${esc(it.prodotto)}</b><br><small>${esc(it.foto)}${it.colore?' - '+esc(it.colore):''} x${it.quantita}</small></div>
+  <div style="font-weight:bold">€ ${(it.prezzo*it.quantita).toFixed(2)}</div>
+  <button class="btn btn-danger" style="padding:5px 10px;margin:0" onclick="rimuoviDalCarrello(${i})">X</button>
+ </div>`).join('');
+ const tot=carrello.reduce((s,x)=>s+x.prezzo*x.quantita,0);
+ document.getElementById('cartTotal').textContent='Totale: € '+tot.toFixed(2);
 }
-function rimuoviDalCarrello(i){
-carrello.splice(i,1);
-renderCarrello();
-if(!carrello.length)document.getElementById('cartSection').classList.add('hidden');
-}
+function rimuoviDalCarrello(i){carrello.splice(i,1);renderCarrello();if(!carrello.length)document.getElementById('cartSection').classList.add('hidden');}
 function inviaFormNetlify(site,tipo,codice,cliente,dati){
-const f=document.createElement('form');
-f.method='POST';f.action='https://'+site+'.netlify.app/';
-f.target='nframe';f.style.display='none';
-const add=(n,v)=>{const i=document.createElement('input');i.type='hidden';i.name=n;i.value=v;f.appendChild(i);};
-add('form-name','selezioni');add('tipo',tipo);add('codice',codice);add('cliente',cliente);add('dati',JSON.stringify(dati));
-const ifr=document.createElement('iframe');ifr.name='nframe';ifr.style.display='none';
-document.body.appendChild(ifr);document.body.appendChild(f);f.submit();
-setTimeout(()=>{ifr.remove();f.remove();},4000);
+ const f=document.createElement('form');
+ f.method='POST';f.action='https://'+site+'.netlify.app/';
+ f.target='nframe';f.style.display='none';
+ const add=(n,v)=>{const i=document.createElement('input');i.type='hidden';i.name=n;i.value=v;f.appendChild(i);};
+ add('form-name','selezioni');add('tipo',tipo);add('codice',codice);add('cliente',cliente);add('dati',JSON.stringify(dati));
+ const ifr=document.createElement('iframe');ifr.name='nframe';ifr.style.display='none';
+ document.body.appendChild(ifr);document.body.appendChild(f);f.submit();
+ setTimeout(()=>{ifr.remove();f.remove();},4000);
 }
 function completaOrdine(){
-if(!carrello.length)return alert('Il carrello è vuoto.');
-if(!confirm('Inviare l\'ordine di '+carrello.length+' articoli allo studio?'))return;
-const tot=carrello.reduce((s,x)=>s+x.prezzo*x.quantità,0);
-const cliente=(window.manifest&&window.manifest.nome?window.manifest.nome+' '+(window.manifest.cognome||''):'Cliente');
-inviaFormNetlify(window.siteBase.split('/')[2],'ordine',window.clientCode,cliente,carrello);
-const cfg=window.shopCfg||{};
-const wa=cfg.whatsapp||'393447507656';
-const testo='NUOVO ORDINE da '+cliente+' ('+window.clientCode+').\nApri Negozio Online → Ordini ricevuti.';
-document.getElementById('clientView').innerHTML=`
-<div style="text-align:center;padding:40px 10px">
-<h1 style="font-family:Georgia,serif">Ordine inviato!</h1>
-<p style="color:#666;margin:10px 0 20px">Grazie ${esc(cliente)}! Lo studio ha ricevuto il tuo ordine.</p>
-<div class="card" style="max-width:500px;margin:0 auto 15px;text-align:left">
-<h2>Pagamento</h2>
-<p style="font-size:16px;font-weight:bold;margin-bottom:10px">Totale: € ${tot.toFixed(2)}</p>
-<a class="btn" style="display:block;text-align:center;text-decoration:none" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(cfg.emailPayPal||'appcenterstudiopremium@gmail.com')}&currency_code=EUR&amount=${tot.toFixed(2)}&item_name=Ordine+Negozio+${encodeURIComponent(window.clientCode)}" target="_blank">Paga con PayPal</a>
-</div>
-<div class="card" style="max-width:500px;margin:0 auto 15px;text-align:left">
-<h2>Conferma allo studio</h2>
-<a class="btn btn-secondary" style="display:block;text-align:center;text-decoration:none" href="https://wa.me/${wa}?text=${encodeURIComponent(testo)}" target="_blank">Invia promemoria WhatsApp</a>
-</div>
-<div class="card" style="max-width:500px;margin:0 auto;text-align:left">
-<h2>Ritiro / spedizione</h2>
-<p>${esc(cfg.indirizzo||'Da concordare con lo studio.')}</p>
-<p style="font-style:italic;color:#666">${esc(cfg.note||'')}</p>
-</div>
-</div>`;
+ if(!carrello.length)return alert('Il carrello è vuoto.');
+ const tot=carrello.reduce((s,x)=>s+x.prezzo*x.quantita,0);
+ if(!confirm('Inviare l\'ordine di '+carrello.length+' articoli per € '+tot.toFixed(2)+'?'))return;
+ const cliente=(window.manifest&&window.manifest.nome?window.manifest.nome+' '+(window.manifest.cognome||''):'Cliente');
+ inviaFormNetlify(window.siteBase.split('/')[2],'ordine',window.clientCode,cliente,carrello);
+ const cfg=window.shopCfg||{};
+ const stNome=document.getElementById('studioName').textContent;
+ let payHtml='';
+ if(cfg.emailPayPal){
+  payHtml=`<div class="card" style="max-width:520px;margin:0 auto 15px;text-align:left">
+   <h2>Pagamento</h2>
+   <p style="font-size:16px;font-weight:bold;margin-bottom:10px">Totale: € ${tot.toFixed(2)}</p>
+   <a class="btn" style="display:block;text-align:center;text-decoration:none" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(cfg.emailPayPal)}&currency_code=EUR&amount=${tot.toFixed(2)}&item_name=Ordine+${encodeURIComponent(window.clientCode)}" target="_blank">Paga con PayPal</a>
+   <p style="font-size:12px;color:#666;margin-top:8px">Pagamento a: ${esc(cfg.emailPayPal)}</p>
+  </div>`;
+ }else{
+  payHtml=`<div class="card" style="max-width:520px;margin:0 auto 15px;text-align:left"><h2>Pagamento</h2><p>Il pagamento verrà concordato direttamente con lo studio.</p></div>`;
+ }
+ const contatti=[cfg.telefono?('Tel: '+esc(cfg.telefono)):'',cfg.whatsapp?('WhatsApp: '+esc(cfg.whatsapp)):'',cfg.indirizzo?esc(cfg.indirizzo):'',cfg.note?esc(cfg.note):''].filter(Boolean).join('<br>');
+ document.getElementById('clientView').innerHTML=`
+ <div style="text-align:center;padding:40px 10px">
+  <h1 style="font-family:Georgia,serif">Ordine inviato!</h1>
+  <p style="color:#666;margin:10px 0 20px">Grazie ${esc(cliente)}! Lo studio ha ricevuto il tuo ordine.</p>
+  ${payHtml}
+  <div class="card" style="max-width:520px;margin:0 auto 15px;text-align:left">
+   <h2>Conferma allo studio</h2>
+   <a class="btn btn-secondary" style="display:block;text-align:center;text-decoration:none" href="https://wa.me/${cfg.whatsapp||''}?text=${encodeURIComponent('NUOVO ORDINE da '+cliente+' ('+window.clientCode+'). Totale € '+tot.toFixed(2))}" target="_blank">Invia promemoria WhatsApp</a>
+  </div>
+  <div class="card" style="max-width:520px;margin:0 auto;text-align:left">
+   <h2>${esc(stNome)}</h2>
+   <p>${contatti||'Lo studio ti contatterà per il ritiro.'}</p>
+  </div>
+ </div>`;
 }
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
