@@ -6,15 +6,15 @@
 <title>AppCenterStudio Premium - Selezione per Album</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
+:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e2e4e9}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfondo);min-height:100vh;color:var(--testo)}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#fafafb 0%,#eef0f3 100%);background-attachment:fixed;min-height:100vh;color:var(--testo)}
 .container{max-width:1100px;margin:0 auto;padding:20px}
-.app-header{text-align:center;margin-bottom:26px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.app-header{text-align:center;margin-bottom:26px;padding:20px;background:var(--carta);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 .app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
 .app-header h1{font-family:Georgia,serif;font-size:28px}
 .subtitle{color:var(--soft)}
-.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 .card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
 .topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
 .btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
@@ -26,7 +26,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--sfo
 .btn-del{padding:7px 14px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
 .btn-del:hover{background:#111;color:#fff}
 textarea{width:100%;padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:13px;font-family:inherit}
-details{background:#f5f5f5;border:1px solid var(--bordo);border-radius:10px;padding:12px;font-size:13px;margin-top:14px}
+details{background:#f5f6f8;border:1px solid var(--bordo);border-radius:10px;padding:12px;font-size:13px;margin-top:14px}
 summary{cursor:pointer;font-weight:700}
 .g-row{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:13px}
 .g-row .code{font-family:monospace;font-weight:700}
@@ -34,9 +34,9 @@ summary{cursor:pointer;font-weight:700}
 .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#111;color:#fff}
 .badge.off{background:#fff;color:#888;border:1px solid #ccc}
 select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;font-size:12px;background:#fff}
-.warn{color:var(--soft);font-size:13px}
+.warn{color:#7a4a10;background:#fff4e0;border:1px solid #f0b050;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center}
+.lock-card{background:#fff;border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 .c-head{background:#fff;border-bottom:1px solid var(--bordo);padding:16px;text-align:center;position:relative;top:0;z-index:5}
 .c-head img{height:44px;border-radius:50%;filter:grayscale(100%);margin-bottom:6px}
 .c-head h1{font-family:Georgia,serif;font-size:18px}
@@ -133,9 +133,10 @@ function renderAdmin(codice){
    </details>
   </div>
   <div class="card">
-   <h2>GRU per il tuo computer</h2>
-   <div class="warn" style="margin-bottom:10px">Scarica GRU sul PC che userai per prelevare gli originali alta risoluzione con il text Gru.<br>Mac: decomprimi lo zip e al primo avvio apri l'app con tasto destro → "Apri".<br>Windows: decomprimi lo zip in una cartella e avvia il file .bat con doppio click.</div>
-   <button class="btn-primary" onclick="location.href='../gru/gru-mac.zip'">GRU per Mac</button>
+   <h2>GRU: copia gli originali alta risoluzione</h2>
+   <button class="btn-primary" onclick="apriGruBrowser()">GRU nel browser (consigliato)</button>
+   <p class="warn" style="margin-top:12px">Il GRU nel browser funziona con <b>Chrome</b> o <b>Edge</b> sul computer e non installa niente. Scarica il programma qui sotto <b>SOLO se usi un altro browser</b> (Firefox, Safari).</p>
+   <button class="btn-secondary" onclick="location.href='../gru/gru-mac.zip'">GRU per Mac</button>
    <button class="btn-secondary" onclick="location.href='../gru/gru-windows.zip'">GRU per Windows</button>
   </div>
   <div class="card">
@@ -144,6 +145,10 @@ function renderAdmin(codice){
   </div>
  </div>`;
  renderSelezioni();loadArchivio(codice);
+}
+function apriGruBrowser(){
+ const c=param('studio')||sessionStorage.getItem('studio')||'';
+ location.href='../gru/?studio='+encodeURIComponent(c);
 }
 async function aggiornaSelezioni(){
  const tok=localStorage.getItem('netlify_token'),site=localStorage.getItem('netlify_site');
