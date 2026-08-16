@@ -1,3 +1,12 @@
 {
-  "offerte": []
+  "offerte": [
+    {
+      "codice": "st-001",
+      "prezzo": 150,
+      "durata": 12,
+      "descrizione": "1 mese di prova omaggio",
+      "attiva": true,
+      "creata": "2026-08-16"
+    }
+  ]
 }
