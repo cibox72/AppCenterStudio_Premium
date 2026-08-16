@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>05 Clienti & Foto - AppCenterStudio Premium</title>
+<title>03 Clienti & Foto - AppCenterStudio Premium</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -57,6 +57,7 @@ summary { cursor:pointer; font-weight:bold; }
 .hidden { display:none !important; }
 .status { font-size:13px; color:#555; margin:8px 0; font-style:italic; }
 .logoPreview { max-height:80px; max-width:200px; border:1px solid #e0e0e0; padding:5px; margin-top:10px; background:#fff; border-radius:6px; }
+.chip { display:inline-block; padding:3px 10px; border:1px solid #ccc; border-radius:999px; font-size:11px; color:#555; margin:3px; background:#fff; }
 </style>
 </head>
 <body>
@@ -64,12 +65,8 @@ summary { cursor:pointer; font-weight:bold; }
 <div class="topbar">
   <button class="btn btn-secondary" onclick="history.back()">← Indietro</button>
   <button class="btn btn-secondary" onclick="location.href='../'">Home</button>
-  <button class="btn btn-secondary" onclick="backupGlobale()">Backup Globale</button>
-  <button class="btn btn-secondary" onclick="ripristinoGlobale()">Ripristino Globale</button>
-  <button class="btn" id="btnPubblicaComune">Pubblica archivio comune</button>
-  <button class="btn" id="btnScaricaComune">Scarica e unisci archivio</button>
-  <button class="btn" id="btnPubblicaGlobale" style="background:#004d40">Pubblica backup globale</button>
-  <button class="btn" id="btnScaricaGlobale" style="background:#004d40">Scarica e unisci globale</button>
+  <button class="btn btn-secondary" onclick="backupGlobale()">Backup locale</button>
+  <button class="btn btn-secondary" onclick="ripristinoGlobale()">Ripristino locale</button>
   <span id="licenzaStatus" style="margin-left:auto;align-self:center;font-size:13px;"></span>
 </div>
 
@@ -82,40 +79,24 @@ summary { cursor:pointer; font-weight:bold; }
 </div>
 
 <div class="container hidden" id="adminView">
-  <h1>05 Clienti & Foto</h1>
+  <h1>03 Clienti & Foto</h1>
 
   <div class="card">
-    <h2>Spazio foto</h2>
-    <div id="netlifyStatus"></div>
-    <button class="btn" id="btnAttiva" onclick="attivaNetlify()">Attiva con Netlify</button>
-    <details>
-      <summary>Modalità manuale</summary>
-      <label>Netlify Token</label>
-      <input type="text" id="manualToken" placeholder="token...">
-      <label>Site URL esistente (senza slash finale)</label>
-      <input type="text" id="manualSiteUrl" placeholder="https://nome-sito.netlify.app">
-      <label>Site ID</label>
-      <input type="text" id="manualSiteId" placeholder="...">
-      <button class="btn" onclick="salvaEMostraConfigurazione()">Salva e verifica configurazione</button>
-    </details>
-    <details>
-      <summary>Collegamento rapido per lo studio</summary>
-      <p class="status">Admin: genera il codice e invialo allo studio. Studio: incolla il codice ricevuto e premi Collega.</p>
-      <button class="btn btn-secondary" onclick="generaCodiceCollegamento()">Genera codice collegamento (admin)</button>
-      <label>Codice ricevuto (per lo studio)</label>
-      <input type="text" id="codiceCollegamento" placeholder="Incolla qui il codice ACS-...">
-      <button class="btn" onclick="applicaCodiceCollegamento()">Collega</button>
-    </details>
+    <h2>Come funziona</h2>
+    <p style="font-size:13px;color:#666;line-height:1.7">
+    Qui aggiungi i clienti e carichi le foto. Poi apri <b>04 Selezione per Album</b> per creare il link da casa (valido 7 giorni) o registrare la selezione in studio. Le foto non scelte si eliminano da sole; le ritoccate restano in gallery 6 mesi con proroga +6 mesi.
+    </p>
   </div>
 
   <div class="card">
     <h2>Identità studio</h2>
+    <p style="font-size:12px;color:#666">Questi dati compaiono nelle pagine del cliente (intestazione, logo, WhatsApp per la notifica selezione).</p>
     <label>Nome studio</label><input type="text" id="idNome">
-    <label>WhatsApp</label><input type="text" id="idWhatsapp" placeholder="393447507656">
+    <label>WhatsApp (solo numeri, es. 393447507656)</label><input type="text" id="idWhatsapp" placeholder="393447507656">
     <label>Messaggio di benvenuto</label><textarea id="idMessaggio" rows="3"></textarea>
     <label>Logo (file immagine)</label><input type="file" id="idLogo" accept="image/*">
     <div id="logoPreviewBox"></div>
-    <button class="btn" onclick="salvaIdentita()">Salva e pubblica</button>
+    <button class="btn" onclick="salvaIdentita()">Salva identità</button>
   </div>
 
   <div class="card">
@@ -127,11 +108,16 @@ summary { cursor:pointer; font-weight:bold; }
   </div>
 
   <div class="card">
-    <h2>Carica foto</h2>
+    <h2>Carica foto nel magazzino</h2>
     <label>Cliente</label><select id="cfCliente"></select>
-    <label>Cartella foto</label><input type="file" id="cfCartella" webkitdirectory directory multiple accept="image/*">
+    <label>Cartella foto (seleziona la cartella intera)</label>
+    <input type="file" id="cfCartella" webkitdirectory directory multiple accept="image/*">
     <div id="cfProgress" class="status"></div>
-    <button class="btn" onclick="caricaFoto()">Carica e pubblica</button>
+    <button class="btn" onclick="caricaFoto()">Carica nel magazzino</button>
+    <details>
+      <summary>Come funziona il caricamento</summary>
+      <p style="font-size:13px;color:#666">Le foto vengono inviate al magazzino Cloudflare del fornitore. Sono visibili solo a chi ha il link selezione (o allo studio). Il magazzino viene pulito automaticamente dopo la selezione o dopo 6 mesi di inattività.</p>
+    </details>
   </div>
 
   <div class="card">
@@ -141,531 +127,209 @@ summary { cursor:pointer; font-weight:bold; }
 </div>
 
 <script>
-const NETLIFY_CLIENT_ID = 'oZbkOnllMEQRkSNb7rBNAVIYr4dO7OKHSsVaaQ_RCpo';
-const REDIRECT_URI = 'https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/';
-let studioCodice = null;
-let clientiFotoData = JSON.parse(localStorage.getItem('clientiFotoData') || '{"clients":[]}');
-let studioIdent = JSON.parse(localStorage.getItem('studioIdent') || '{}');
+const WORKER='https://acs-api.mairaluigi.workers.dev';
 
-(function handleOAuth() {
-  const hash = window.location.hash;
-  if (hash && hash.includes('access_token=')) {
-    const match = hash.match(/access_token=([^&]+)/);
-    if (match) {
-      localStorage.setItem('netlify_token', match[1]);
-      history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
+let studioCodice=null;
+let clientiFotoData=JSON.parse(localStorage.getItem('clientiFotoData')||'{"clients":[]}');
+let studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+let MANIFESTI={};
+
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
+
+function $(id){return document.getElementById(id);}
+function show(id){$(id).classList.remove('hidden');}
+function hide(id){$(id).classList.add('hidden');}
+
+async function checkLicenza(){
+ const params=new URLSearchParams(location.search);
+ studioCodice=params.get('studio')||sessionStorage.getItem('studio');
+ if(studioCodice)sessionStorage.setItem('studio',studioCodice);
+ try{
+  const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+  const s=(l.studi||[]).find(x=>x.codice===studioCodice);
+  if(!s||!s.attivo||s.scadenza<todayStr()){
+   show('licenzaGate');
+   $('licenzaStatus').textContent='Licenza non valida';
+   return false;
   }
-})();
-
-async function checkLicenza() {
-  const params = new URLSearchParams(window.location.search);
-  studioCodice = params.get('studio') || sessionStorage.getItem('studio');
-  if (studioCodice) sessionStorage.setItem('studio', studioCodice);
-  try {
-    const resp = await fetch('../licenses.json');
-    const data = await resp.json();
-    const studio = (data.studi || []).find(s => s.codice === studioCodice);
-    if (!studio || !studio.attivo) {
-      document.getElementById('licenzaGate').classList.remove('hidden');
-      document.getElementById('licenzaStatus').textContent = 'Licenza non valida';
-      return false;
-    }
-    if (studio.scadenza && new Date(studio.scadenza) < new Date()) {
-      document.getElementById('licenzaGate').classList.remove('hidden');
-      document.getElementById('licenzaStatus').textContent = 'Licenza scaduta';
-      return false;
-    }
-    document.getElementById('licenzaGate').classList.add('hidden');
-    document.getElementById('adminView').classList.remove('hidden');
-    document.getElementById('licenzaStatus').textContent = 'Studio: ' + (studio.nome || studio.codice);
-    return true;
-  } catch(e) {
-    document.getElementById('licenzaGate').classList.remove('hidden');
-    return false;
-  }
+  hide('licenzaGate');
+  show('adminView');
+  $('licenzaStatus').textContent='Studio: '+(s.nome||s.codice);
+  return true;
+ }catch(e){
+  show('licenzaGate');
+  return false;
+ }
 }
 
-function refreshStatus() { aggiornaStatoNetlify(); renderClienti(); renderArchivio(); }
+function refreshStatus(){renderClienti();renderArchivio();renderLogoPreview();caricaIdentitaUI();}
 
-(async () => {
-  const ok = await checkLicenza();
-  if (ok) refreshStatus();
-})();
+(async()=>{const ok=await checkLicenza();if(ok){refreshStatus();await caricaStato();}})();
 
-async function sha1(str) {
-  const buf = new TextEncoder().encode(str);
-  const h = await crypto.subtle.digest('SHA-1', buf);
-  return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function sha1ArrayBuffer(ab) {
-  const h = await crypto.subtle.digest('SHA-1', ab);
-  return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-async function getDeployFiles(siteId) {
-  const token = localStorage.getItem('netlify_token');
-  try {
-    const r = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/files`, {
-      headers: {'Authorization':'Bearer '+token}
-    });
-    if (!r.ok) return {};
-    const arr = await r.json();
-    const map = {};
-    (arr||[]).forEach(f => { if (f.path && f.sha) map[f.path]=f.sha; });
-    return map;
-  } catch(e) { return {}; }
+async function caricaStato(){
+ if(!clientiFotoData.clients.length)return;
+ MANIFESTI={};
+ const prog=$('archivioLista');
+ if(prog)prog.innerHTML='<p class="status">Caricamento stato magazzino...</p>';
+ await Promise.all(clientiFotoData.clients.map(async c=>{
+  try{MANIFESTI[c.codice]=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(c.codice)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MANIFESTI[c.codice]={};}
+ }));
+ renderArchivio();
 }
 
-async function deployWithMerge(newFiles, contents, shaToPath, progress) {
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  const existing = await getDeployFiles(siteId);
-  const merged = Object.assign({}, existing, newFiles);
-  const dep = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}/deploys`, {
-    method:'POST',
-    headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-    body: JSON.stringify({files: merged})
-  }).then(r=>r.json());
-  if (dep.error) throw new Error(dep.error);
-  if (!shaToPath) {
-    shaToPath = {};
-    Object.entries(newFiles).forEach(([p,s]) => { if (!shaToPath[s]) shaToPath[s]=p; });
-  }
-  const required = dep.required || [];
-  let up = 0;
-  for (const sha of required) {
-    if (contents[sha] === undefined) continue;
-    const path = shaToPath[sha];
-    if (!path) continue;
-    if (progress) progress.textContent = 'Upload ' + (++up) + '/' + required.length;
-    await fetch(`https://api.netlify.com/api/v1/deploys/${dep.id}/files${path}`, {
-      method:'PUT',
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/octet-stream'},
-      body: contents[sha]
-    });
-  }
-  return dep;
+function slugify(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'x';}
+
+function aggiungiCliente(){
+ const nome=$('ncNome').value.trim();
+ const cognome=$('ncCognome').value.trim();
+ if(!nome||!cognome)return alert('Nome e cognome obbligatori');
+ const base=slugify(cognome)+'-'+slugify(nome);
+ const usati=clientiFotoData.clients.map(c=>c.codice);
+ let n=1,codice=base+'-001';
+ while(usati.includes(codice)){n++;codice=base+'-'+String(n).padStart(3,'0');}
+ clientiFotoData.clients.push({codice,nome,cognome,note:$('ncNote').value,creato:todayStr()});
+ localStorage.setItem('clientiFotoData',JSON.stringify(clientiFotoData));
+ $('ncNome').value='';$('ncCognome').value='';$('ncNote').value='';
+ renderClienti();renderArchivio();
+ alert('Cliente aggiunto: '+codice);
 }
 
-async function deployFileNetlify(path, content, isBinary) {
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) throw new Error('Netlify non configurato: collega prima il sito.');
-  const resp = await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files', {
-    headers:{'Authorization':'Bearer '+token}
-  });
-  const existing = resp.ok ? await resp.json() : [];
-  const files = {};
-  existing.forEach(f => { files[f.path] = f; });
-  let ab, hash;
-  if (isBinary) { ab = content; hash = await sha1ArrayBuffer(ab); }
-  else { const bin = new TextEncoder().encode(content); ab = bin.buffer; hash = await sha1(bin); }
-  files[path] = { path: path, hash: hash };
-  const dep = await (await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys', {
-    method:'POST',
-    headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-    body: JSON.stringify({files: files})
-  })).json();
-  if (dep.required && dep.required.includes(path)) {
-    await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path, {
-      method:'PUT',
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/octet-stream'},
-      body: ab
-    });
-  }
+function renderClienti(){
+ const sel=$('cfCliente');
+ if(!sel)return;
+ sel.innerHTML='<option value="">-- seleziona --</option>'+clientiFotoData.clients.map(c=>'<option value="'+c.codice+'">'+c.codice+' - '+c.nome+' '+c.cognome+'</option>').join('');
 }
 
-async function leggiFileNetlify(path) {
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) throw new Error('Netlify non configurato.');
-  const siteUrl = localStorage.getItem('netlify_siteurl');
-  if (!siteUrl) throw new Error('Site URL mancante.');
-  const r = await fetch(siteUrl + path + '?t=' + Date.now(), { cache: 'no-store' });
-  if (!r.ok) return null;
-  return await r.json();
+async function caricaFoto(){
+ const codice=$('cfCliente').value;
+ if(!codice)return alert('Seleziona un cliente');
+ const files=[...($('cfCartella').files||[])];
+ if(!files.length)return alert('Nessuna cartella selezionata');
+ const images=files.filter(f=>f.type.startsWith('image/'));
+ if(!images.length)return alert('Nessuna immagine nella cartella.');
+ const prog=$('cfProgress');
+ prog.textContent='Caricamento di '+images.length+' foto in corso...';
+ const fd=new FormData();
+ fd.append('studio',studioCodice);
+ fd.append('cliente',codice);
+ images.forEach(f=>fd.append('file',f));
+ try{
+  const r=await(await fetch(WORKER+'/upload',{method:'POST',body:fd})).json();
+  if(r.error)return alert('Errore caricamento: '+r.error);
+  prog.textContent='Completato: '+r.caricate+' foto caricate.';
+ }catch(e){prog.textContent='Errore: '+e.message;return;}
+ await caricaStato();
 }
 
-async function rendiSitoPubblico() {
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) return false;
-  try {
-    const r = await fetch(`https://api.netlify.com/api/v1/sites/${siteId}`, {
-      method: 'PATCH',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ password: null, visibility: 'public' })
-    });
-    return r.ok;
-  } catch(e) {
-    console.warn('Errore rendiSitoPubblico:', e);
-    return false;
-  }
+function renderArchivio(){
+ const box=$('archivioLista');
+ if(!clientiFotoData.clients.length){box.innerHTML='<p class="status">Nessun cliente in archivio.</p>';return;}
+ box.innerHTML=clientiFotoData.clients.slice().reverse().map(c=>{
+  const man=MANIFESTI[c.codice]||{};
+  return '<div class="client-row"><h3>'+c.nome+' '+c.cognome+' <span class="badge">'+c.codice+'</span></h3>'+
+   '<div style="margin:6px 0">'+statoHtml(man)+'</div>'+
+   '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">'+
+   '<button class="btn" onclick="location.href=\'../selezione-album/?studio='+encodeURIComponent(studioCodice)+'\'">Apri Selezione per Album</button>'+
+   '<button class="btn btn-danger" onclick="eliminaCliente(\''+c.codice+'\')">Elimina cliente</button>'+
+   '</div></div>';
+ }).join('');
 }
 
-function mergeClientsList(localArr, remoteArr) {
-  const map = {};
-  (localArr || []).forEach(c => { if (c.codice) map[c.codice] = c; });
-  let added = 0;
-  (remoteArr || []).forEach(r => {
-    if (!r.codice) return;
-    if (!map[r.codice]) { map[r.codice] = r; added++; }
-    else {
-      const l = map[r.codice];
-      const ps = new Set(l.photos || []); (r.photos || []).forEach(p => ps.add(p));
-      const fs = new Set(l.folders || []); (r.folders || []).forEach(f => fs.add(f));
-      l.photos = Array.from(ps); l.folders = Array.from(fs);
-      if (r.latestFolder) l.latestFolder = r.latestFolder;
-      if (r.note && !l.note) l.note = r.note;
-    }
-  });
-  return { list: Object.values(map), added: added };
+function statoHtml(man){
+ const chips=[];
+ if(man.basse&&man.basse.length)chips.push('<span class="chip">'+man.basse.length+' foto nel magazzino</span>');
+ else chips.push('<span class="chip">magazzino vuoto</span>');
+ if(man.selezione){
+  const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
+  chips.push('<span class="chip">Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' · '+n+' foto':'')+'</span>');
+ }else chips.push('<span class="chip">selezione non ancora fatta</span>');
+ if(man.scadenza_gallery)chips.push('<span class="chip">gallery fino al '+fmtData(man.scadenza_gallery)+'</span>');
+ return chips.join('');
 }
 
-async function pubblicaArchivioComune() {
-  try {
-    const data = {
-      clients: clientiFotoData.clients || [],
-      studioIdent: studioIdent,
-      exportedAt: new Date().toISOString()
-    };
-    await deployFileNetlify('/archivio-comune-clienti.json', JSON.stringify(data, null, 2), false);
-    alert('Archivio comune pubblicato su Netlify.');
-  } catch(e) {
-    alert('Errore pubblicazione: ' + e.message);
-  }
+function eliminaCliente(codice){
+ const man=MANIFESTI[codice]||{};
+ const msg='Eliminare il cliente '+codice+' dall\'archivio locale?';
+ const msgExtra=(man.basse&&man.basse.length)?'\n\nAttenzione: nel magazzino restano '+man.basse.length+' foto. Per eliminarle contatta il fornitore.':'\n\nIl magazzino è vuoto, nessun problema.';
+ if(!confirm(msg+msgExtra))return;
+ clientiFotoData.clients=clientiFotoData.clients.filter(c=>c.codice!==codice);
+ localStorage.setItem('clientiFotoData',JSON.stringify(clientiFotoData));
+ delete MANIFESTI[codice];
+ renderClienti();renderArchivio();
 }
 
-async function scaricaEUnisciArchivio() {
-  try {
-    const data = await leggiFileNetlify('/archivio-comune-clienti.json');
-    if (!data || !data.clients) throw new Error('Archivio comune vuoto o non trovato.');
-    if (!confirm('Unire ' + data.clients.length + ' clienti ai ' + (clientiFotoData.clients||[]).length + ' locali?')) return;
-    const m = mergeClientsList(clientiFotoData.clients, data.clients);
-    clientiFotoData.clients = m.list;
-    localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
-    refreshStatus();
-    alert('Unione completata: ' + m.added + ' clienti aggiunti.');
-  } catch(e) {
-    alert('Errore: ' + e.message);
-  }
-}
-
-const GLOBAL_KEYS = ['clientiFotoData','appcenter_db_v1','gl_services','selezioniRicevute','ordiniRicevuti','studioIdent','negozioConfig'];
-
-async function pubblicaBackupGlobale() {
-  try {
-    const data = {};
-    GLOBAL_KEYS.forEach(k => {
-      const v = localStorage.getItem(k);
-      if (v) { try { data[k] = JSON.parse(v); } catch(e) {} }
-    });
-    data.exportedAt = new Date().toISOString();
-    await deployFileNetlify('/backup-globale-comune.json', JSON.stringify(data, null, 2), false);
-    alert('Backup globale pubblicato su Netlify.');
-  } catch(e) {
-    alert('Errore: ' + e.message);
-  }
-}
-
-async function scaricaEUnisciGlobale() {
-  try {
-    const remote = await leggiFileNetlify('/backup-globale-comune.json');
-    if (!remote) throw new Error('Backup globale non trovato.');
-    if (!confirm('Scaricare e UNIRE il backup globale?')) return;
-    const mc = mergeClientsList((clientiFotoData || {}).clients, (remote.clientiFotoData || {}).clients);
-    localStorage.setItem('clientiFotoData', JSON.stringify({ clients: mc.list }));
-    alert('Unione globale completata. La pagina si ricarica.');
-    location.reload();
-  } catch(e) {
-    alert('Errore: ' + e.message);
-  }
-}
-
-document.getElementById('btnPubblicaComune').onclick = pubblicaArchivioComune;
-document.getElementById('btnScaricaComune').onclick = scaricaEUnisciArchivio;
-document.getElementById('btnPubblicaGlobale').onclick = pubblicaBackupGlobale;
-document.getElementById('btnScaricaGlobale').onclick = scaricaEUnisciGlobale;
-
-function aggiornaStatoNetlify() {
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  const siteUrl = localStorage.getItem('netlify_siteurl');
-  const siteName = localStorage.getItem('netlify_sitename');
-  const box = document.getElementById('netlifyStatus');
-  if (!token) {
-    box.innerHTML = '<p class="status">Nessun token Netlify configurato.</p>';
-    document.getElementById('btnAttiva').classList.remove('hidden');
-    return;
-  }
-  if (siteId && siteUrl) {
-    box.innerHTML = '<span class="badge ok">Sito attivo</span> <a href="' + siteUrl + '" target="_blank" class="badge">' + (siteName || siteUrl) + '</a>';
-    document.getElementById('btnAttiva').classList.add('hidden');
-  } else {
-    box.innerHTML = '<span class="badge warn">Token presente, sito mancante</span>';
-    document.getElementById('btnAttiva').classList.add('hidden');
-  }
-}
-
-function attivaNetlify() {
-  window.location.href = 'https://app.netlify.com/authorize?response_type=token&client_id=' + NETLIFY_CLIENT_ID + '&redirect_uri=' + encodeURIComponent(REDIRECT_URI);
-}
-
-async function salvaEMostraConfigurazione() {
-  const token = document.getElementById('manualToken').value.trim();
-  const siteUrl = document.getElementById('manualSiteUrl').value.trim();
-  const siteId = document.getElementById('manualSiteId').value.trim();
-  if (!token || !siteUrl || !siteId) return alert('Compila tutti e tre i campi.');
-  if (siteUrl.endsWith('/')) return alert('Site URL senza slash finale.');
-  try {
-    const r = await fetch('https://api.netlify.com/api/v1/sites/' + siteId, {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (!r.ok) throw new Error('Site ID non valido o token errato');
-    const site = await r.json();
-    localStorage.setItem('netlify_token', token);
-    localStorage.setItem('netlify_site', siteId);
-    localStorage.setItem('netlify_sitename', site.name);
-    localStorage.setItem('netlify_siteurl', siteUrl);
-    await rendiSitoPubblico();
-    await pubblicaBase();
-    alert('Configurazione verificata e salvata.\nSito: ' + site.name + '\nSito impostato come pubblico.');
-    refreshStatus();
-  } catch(e) {
-    alert('Errore verifica: ' + e.message);
-  }
-}
-
-async function pubblicaBase() {
-  const headers = '/*\n  Access-Control-Allow-Origin: *\n  Access-Control-Allow-Methods: GET, POST, OPTIONS\n  Access-Control-Allow-Headers: Content-Type\n*/\n';
-  const forms = '<!DOCTYPE html><html><body><form name="selezioni" netlify><input name="tipo"><input name="codice"><input name="cliente"><textarea name="dati"></textarea></form></body></html>';
-  const newFiles={}, contents={}, shaToPath={};
-  const add = async (path, content) => {
-    const sh = await sha1(content);
-    newFiles[path]=sh; contents[sh]=content; shaToPath[sh]=path;
+function salvaIdentita(){
+ const logoFile=$('idLogo').files[0];
+ const nuova={
+  nome:$('idNome').value,
+  whatsapp:$('idWhatsapp').value.replace(/\D/g,''),
+  messaggio:$('idMessaggio').value,
+  logoData:studioIdent.logoData||''
+ };
+ if(logoFile){
+  const r=new FileReader();
+  r.onload=()=>{
+   nuova.logoData=r.result;
+   studioIdent=nuova;
+   localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
+   renderLogoPreview();
+   alert('Identità salvata. Il logo verrà inviato al magazzino al prossimo "Link da casa" creato dall\'app Selezione per Album.');
   };
-  await add('/_headers', headers);
-  await add('/forms.html', forms);
-  await add('/studio.json', JSON.stringify(studioIdent || {}, null, 2));
-  await deployWithMerge(newFiles, contents, shaToPath);
-}
-
-function generaCodiceCollegamento() {
-  const token = localStorage.getItem('netlify_token');
-  const site = localStorage.getItem('netlify_site');
-  const sitename = localStorage.getItem('netlify_sitename');
-  const siteurl = localStorage.getItem('netlify_siteurl');
-  if (!token || !site) { alert('Collega prima Netlify (Attiva o modalità manuale).'); return; }
-  const obj = { token, site, sitename, siteurl };
-  const code = 'ACS-' + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-  navigator.clipboard.writeText(code).then(()=>alert('Codice collegamento copiato.'));
-}
-
-async function applicaCodiceCollegamento() {
-  const code = document.getElementById('codiceCollegamento').value.trim();
-  if (!code) return alert('Incolla il codice ricevuto.');
-  try {
-    let json = code;
-    if (code.startsWith('ACS-')) json = code.slice(4);
-    const obj = JSON.parse(decodeURIComponent(escape(atob(json))));
-    if (obj.token) localStorage.setItem('netlify_token', obj.token);
-    if (obj.site) localStorage.setItem('netlify_site', obj.site);
-    if (obj.sitename) localStorage.setItem('netlify_sitename', obj.sitename);
-    if (obj.siteurl) localStorage.setItem('netlify_siteurl', obj.siteurl);
-    document.getElementById('codiceCollegamento').value = '';
-    await rendiSitoPubblico();
-    await pubblicaBase();
-    alert('Collegamento completato. Sito impostato come pubblico.');
-    refreshStatus();
-  } catch(e) { alert('Codice non valido.'); }
-}
-
-async function salvaIdentita() {
-  studioIdent = {
-    nome: document.getElementById('idNome').value,
-    whatsapp: document.getElementById('idWhatsapp').value,
-    messaggio: document.getElementById('idMessaggio').value,
-    logoData: studioIdent.logoData || ''
-  };
-  const logoFile = document.getElementById('idLogo').files[0];
-  const newFiles={}, contents={}, shaToPath={};
-  if (logoFile) {
-    const dataURL = await new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result);
-      r.onerror = reject;
-      r.readAsDataURL(logoFile);
-    });
-    studioIdent.logoData = dataURL;
-    const bin = atob(dataURL.split(',')[1]);
-    const ab = new ArrayBuffer(bin.length);
-    const u8 = new Uint8Array(ab);
-    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
-    const lh = await sha1ArrayBuffer(ab);
-    newFiles['/logo.png']=lh; contents[lh]=ab; shaToPath[lh]='/logo.png';
-    studioIdent.logo = '/logo.png';
-  }
-  localStorage.setItem('studioIdent', JSON.stringify(studioIdent));
-  const s = JSON.stringify(studioIdent, null, 2);
-  const sh = await sha1(s);
-  newFiles['/studio.json']=sh; contents[sh]=s; shaToPath[sh]='/studio.json';
+  r.readAsDataURL(logoFile);
+ }else{
+  studioIdent=nuova;
+  localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
   renderLogoPreview();
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) { alert('Identità salvata in locale.'); return; }
-  await deployWithMerge(newFiles, contents, shaToPath);
-  alert('Identità salvata e pubblicata');
+  alert('Identità salvata.');
+ }
 }
 
-function slugify(s) {
-  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'x';
-}
-function aggiungiCliente() {
-  const nome = document.getElementById('ncNome').value.trim();
-  const cognome = document.getElementById('ncCognome').value.trim();
-  if (!nome || !cognome) return alert('Nome e cognome obbligatori');
-  const base = slugify(cognome) + '-' + slugify(nome);
-  const usati = clientiFotoData.clients.map(c=>c.codice);
-  let n = 1, codice = base + '-001';
-  while (usati.includes(codice)) { n++; codice = base + '-' + String(n).padStart(3,'0'); }
-  clientiFotoData.clients.push({codice, nome, cognome, note: document.getElementById('ncNote').value, photos: [], folders: [], latestFolder: ''});
-  localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
-  document.getElementById('ncNome').value=''; document.getElementById('ncCognome').value=''; document.getElementById('ncNote').value='';
-  renderClienti(); renderArchivio();
-  alert('Cliente aggiunto: ' + codice);
-}
-function renderClienti() {
-  const sel = document.getElementById('cfCliente');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">-- seleziona --</option>' +
-    clientiFotoData.clients.map(c =>
-      `<option value="${c.codice}">${c.codice} - ${c.nome} ${c.cognome}</option>`
-    ).join('');
+function renderLogoPreview(){
+ const box=$('logoPreviewBox');
+ if(studioIdent.logoData)box.innerHTML='<img class="logoPreview" src="'+studioIdent.logoData+'" alt="Logo">';
+ else box.innerHTML='';
 }
 
-async function caricaFoto() {
-  const codice = document.getElementById('cfCliente').value;
-  if (!codice) return alert('Seleziona un cliente');
-  const files = document.getElementById('cfCartella').files;
-  if (!files || !files.length) return alert('Nessuna cartella selezionata');
-  const token = localStorage.getItem('netlify_token');
-  const siteId = localStorage.getItem('netlify_site');
-  if (!token || !siteId) return alert('Configura prima il sito Netlify');
-  const cliente = clientiFotoData.clients.find(c => c.codice === codice);
-  const progress = document.getElementById('cfProgress');
-  const newFiles={}, contents={}, shaToPath={};
-  const photoSet = new Set(cliente.photos || []);
-  const folderSet = new Set(cliente.folders || []);
-  let latest = cliente.latestFolder || '';
-  let i = 0;
-  for (const f of files) {
-    if (!f.type.startsWith('image/')) continue;
-    progress.textContent = 'Hashing ' + (++i) + '/' + files.length + ': ' + f.name;
-    const ab = await f.arrayBuffer();
-    const sha = await sha1ArrayBuffer(ab);
-    const rel = f.webkitRelativePath || f.name;
-    const folder = rel.includes('/') ? rel.split('/')[0] : 'root';
-    const path = '/' + codice + '/' + rel;
-    newFiles[path]=sha; contents[sha]=ab; shaToPath[sha]=path;
-    photoSet.add(rel);
-    folderSet.add(folder);
-    latest = folder;
-  }
-  cliente.photos = Array.from(photoSet);
-  cliente.folders = Array.from(folderSet);
-  cliente.latestFolder = latest;
-  const manifest = {codice, nome: cliente.nome, cognome: cliente.cognome, photos: cliente.photos, folders: cliente.folders, latestFolder: cliente.latestFolder};
-  const manStr = JSON.stringify(manifest, null, 2);
-  const manSha = await sha1(manStr);
-  const manPath = '/' + codice + '/manifest.json';
-  newFiles[manPath]=manSha; contents[manSha]=manStr; shaToPath[manSha]=manPath;
-  progress.textContent = 'Deploy con merge...';
-  await deployWithMerge(newFiles, contents, shaToPath, progress);
-  localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
-  progress.textContent = 'Completato';
-  renderArchivio();
+function caricaIdentitaUI(){
+ $('idNome').value=studioIdent.nome||'';
+ $('idWhatsapp').value=studioIdent.whatsapp||'';
+ $('idMessaggio').value=studioIdent.messaggio||'';
+ renderLogoPreview();
 }
 
-function renderArchivio() {
-  const box = document.getElementById('archivioLista');
-  const siteName = localStorage.getItem('netlify_sitename') || '';
-  if (!clientiFotoData.clients || !clientiFotoData.clients.length) { box.innerHTML = '<p class="status">Nessun cliente in archivio.</p>'; return; }
-  box.innerHTML = clientiFotoData.clients.map(c => {
-    const token = siteName + '/' + c.codice;
-    return `<div class="client-row"><h3>${c.nome} ${c.cognome} <span class="badge">${c.codice}</span></h3>
-    <small>${(c.photos||[]).length} foto · ${(c.folders||[]).length} cartelle</small>
-    <div style="margin-top:8px;">
-      <button class="btn" onclick="copyLink('../gallery/?g=${encodeURIComponent(token)}')">Gallery</button>
-      <button class="btn" onclick="copyLink('../selezione-album/?s=${encodeURIComponent(token)}')">Selezione</button>
-      <button class="btn" onclick="copyLink('../negozio/?n=${encodeURIComponent(token)}')">Negozio</button>
-      <button class="btn btn-danger" onclick="eliminaCliente('${c.codice}')">Elimina</button>
-    </div></div>`;
-  }).join('');
+function backupGlobale(){
+ const dump={
+  timestamp:new Date().toISOString(),
+  clientiFotoData:clientiFotoData,
+  studioIdent:studioIdent
+ };
+ const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='backup_clienti-foto_'+todayStr()+'.json';
+ a.click();
+ URL.revokeObjectURL(a.href);
 }
 
-function copyLink(rel) {
-  const url = new URL(rel, window.location.href).href;
-  navigator.clipboard.writeText(url).then(()=>alert('Copiato: ' + url));
-}
-
-function eliminaCliente(codice) {
-  if (!confirm('Eliminare il cliente ' + codice + '?')) return;
-  clientiFotoData.clients = clientiFotoData.clients.filter(c => c.codice !== codice);
-  localStorage.setItem('clientiFotoData', JSON.stringify(clientiFotoData));
-  renderClienti(); renderArchivio();
-}
-
-function backupGlobale() {
-  const keys = ['clientiFotoData','studioIdent','netlify_site','netlify_sitename','netlify_siteurl','ordiniRicevuti','negozioConfig','selezioniRicevute','netlify_token'];
-  const dump = {timestamp:new Date().toISOString()};
-  keys.forEach(k => dump[k] = localStorage.getItem(k));
-  const blob = new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'backup_clienti-foto_' + Date.now() + '.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function ripristinoGlobale() {
-  const input = document.createElement('input');
-  input.type='file'; input.accept='.json';
-  input.onchange = e => {
-    const r = new FileReader();
-    r.onload = ev => {
-      try {
-        const d = JSON.parse(ev.target.result);
-        Object.keys(d).forEach(k => { if (k!=='timestamp') localStorage.setItem(k, typeof d[k]==='string'?d[k]:JSON.stringify(d[k])); });
-        clientiFotoData = JSON.parse(localStorage.getItem('clientiFotoData')||'{"clients":[]}');
-        studioIdent = JSON.parse(localStorage.getItem('studioIdent')||'{}');
-        caricaIdentitaUI(); refreshStatus();
-        alert('Ripristino completato');
-      } catch(err){ alert('File non valido: '+err.message); }
-    };
-    r.readAsText(e.target.files[0]);
+function ripristinoGlobale(){
+ const input=document.createElement('input');
+ input.type='file';input.accept='.json';
+ input.onchange=e=>{
+  const r=new FileReader();
+  r.onload=ev=>{
+   try{
+    const d=JSON.parse(ev.target.result);
+    if(d.clientiFotoData){clientiFotoData=d.clientiFotoData;localStorage.setItem('clientiFotoData',JSON.stringify(clientiFotoData));}
+    if(d.studioIdent){studioIdent=d.studioIdent;localStorage.setItem('studioIdent',JSON.stringify(studioIdent));}
+    refreshStatus();
+    alert('Ripristino completato.');
+   }catch(err){alert('File non valido: '+err.message);}
   };
-  input.click();
+  r.readAsText(e.target.files[0]);
+ };
+ input.click();
 }
-
-function renderLogoPreview() {
-  const box = document.getElementById('logoPreviewBox');
-  if (studioIdent.logoData) {
-    box.innerHTML = '<img class="logoPreview" src="' + studioIdent.logoData + '" alt="Logo">';
-  } else {
-    box.innerHTML = '';
-  }
-}
-
-function caricaIdentitaUI() {
-  document.getElementById('idNome').value = studioIdent.nome || '';
-  document.getElementById('idWhatsapp').value = studioIdent.whatsapp || '393447507656';
-  document.getElementById('idMessaggio').value = studioIdent.messaggio || '';
-  renderLogoPreview();
-}
-caricaIdentitaUI();
 </script>
 </body>
 </html>
