@@ -90,6 +90,7 @@ const param=n=>new URLSearchParams(location.search).get(n);
 const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 const WORKER='https://acs-api.mairaluigi.workers.dev';
 function todayStr(){return new Date().toISOString().slice(0,10);}
+function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 
 const HEART_EMPTY='<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
@@ -144,7 +145,7 @@ async function renderStudio(){
    1. <b>Carica foto</b>: manda nel magazzino le foto basse risoluzioni del cliente.<br>
    2. <b>Selezione in studio</b>: falla come hai sempre fatto davanti al computer; poi premi "Selezione in studio" per registrarla.<br>
    3. <b>Link da casa</b>: solo per chi non pu&ograve; venire; il link vale 7 giorni; le foto non scelte si eliminano da sole alla selezione.<br>
-   4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi, poi si eliminano da sole (proroga con un click).</p>
+   4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi, poi si eliminano da sole (con "Gallery +6 mesi" allunghi quando serve).</p>
   </div>
   <div class="card">
    <h2>Clienti</h2>
@@ -166,7 +167,7 @@ async function renderStudio(){
    <button class="btn-link" onclick="creaLink('${c.codice}')">Link da casa</button>
    <button class="btn-link" onclick="regStudio('${c.codice}')">Selezione in studio</button>
    <button class="btn-link" onclick="scegliFile('ritoccate','${c.codice}')">Carica ritoccate</button>
-   <button class="btn-link" onclick="proroga('${c.codice}')">Proroga +6 mesi</button>
+   <button class="btn-link" onclick="proroga('${c.codice}')">Gallery +6 mesi</button>
    <button class="btn-link" onclick="gruText('${c.codice}')">Text Gru</button>
    <button class="btn-link" onclick="pdfSel('${c.codice}')">PDF stampa</button>
   </div></div>`;
@@ -177,11 +178,11 @@ function statoHtml(man){
  const t=[];
  if(man.selezione){
   const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
-  t.push('Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+man.selezione.data+(n!=null?' &middot; '+n+' foto':''));
+  t.push('Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' &middot; '+n+' foto':''));
  }else t.push('Selezione: non ancora fatta');
- if(man.scadenza_link)t.push(man.scadenza_link>=todayStr()?'Link casa attivo fino al '+man.scadenza_link:'Link casa scaduto il '+man.scadenza_link);
+ if(man.scadenza_link)t.push(man.scadenza_link>=todayStr()?'Link casa attivo fino al '+fmtData(man.scadenza_link):'Link casa scaduto il '+fmtData(man.scadenza_link));
  if(man.basse&&man.basse.length)t.push(man.basse.length+' foto nel magazzino');
- if(man.scadenza_gallery)t.push('Gallery fino al '+man.scadenza_gallery);
+ if(man.scadenza_gallery)t.push('Gallery fino al '+fmtData(man.scadenza_gallery));
  return t.map(x=>'<span class="chip">'+x+'</span>').join('');
 }
 
@@ -214,7 +215,7 @@ async function creaLink(codice){
   const r=await(await fetch(WORKER+'/link',{method:'POST',body:fd})).json();
   if(r.error)return alert('Errore link: '+r.error);
   copiaTesto(linkSel(codice));
-  alert('Link creato, valido fino al '+r.scadenza_link+'.\nLink copiato: incollalo nel WhatsApp del cliente.');
+  alert('Link creato, valido fino al '+fmtData(r.scadenza_link)+'.\nLink copiato: incollalo nel WhatsApp del cliente.');
  }catch(e){alert('Errore link: '+e.message);}
  renderStudio();
 }
@@ -230,11 +231,11 @@ async function regStudio(codice){
 }
 
 async function proroga(codice){
- if(!confirm('Estendere la gallery di questo cliente di 6 mesi?'))return;
+ if(!confirm('Allungare la gallery di questo cliente di 6 mesi?'))return;
  try{
   const r=await(await fetch(WORKER+'/proroga',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:STUDIO_CODE,cliente:codice})})).json();
   if(r.error)return alert('Errore: '+r.error);
-  alert('Gallery estesa fino al '+r.scadenza_gallery+'.');
+  alert('Gallery allungata fino al '+fmtData(r.scadenza_gallery)+'.');
  }catch(e){alert('Errore: '+e.message);}
  renderStudio();
 }
@@ -260,7 +261,7 @@ function pdfSel(codice){
   doc.setTextColor(255);doc.setFontSize(18);doc.setFont('helvetica','bold');
   doc.text('Selezione Album - '+((cli?cli.nome+' '+cli.cognome:'Cliente')),105,15,{align:'center'});
   doc.setFontSize(10);doc.setFont('helvetica','normal');
-  doc.text(codice+' - '+(sel.metodo==='studio'?'selezione in studio':'selezione tramite link')+' - '+(sel.data||''),105,24,{align:'center'});
+  doc.text(codice+' - '+(sel.metodo==='studio'?'selezione in studio':'selezione tramite link')+' - '+fmtData(sel.data||''),105,24,{align:'center'});
   doc.setTextColor(17);
   let y=50;
   if(photos.length){photos.forEach((p,i)=>{doc.text((i+1)+') '+p,15,y);y+=7;if(y>280){doc.addPage();y=15;}});}
@@ -285,7 +286,7 @@ async function clientMode(s){
  <div class="c-head">${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'"><br>`:''}
   <h1>${esc(MAN.nome_studio||'Studio Fotografico')}</h1>
   <p>${esc(MAN.messaggio||'Tocca una foto per aprirla, usa il cuore per sceglierla.')}</p>
-  <span class="c-folder-badge">Link valido fino al ${esc(MAN.scadenza_link)}</span>
+  <span class="c-folder-badge">Link valido fino al ${esc(fmtData(MAN.scadenza_link))}</span>
  </div>
  <div class="count-bar" id="countBar"><span class="n">0</span> foto selezionate</div>
  <div class="ph-grid" id="grid"></div>
