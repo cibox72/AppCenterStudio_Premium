@@ -20,23 +20,11 @@ body{
   color:var(--testo)
 }
 .container{max-width:1100px;margin:0 auto;padding:20px}
-.app-header{
-  text-align:center;margin-bottom:26px;padding:20px;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--bordo);border-radius:14px;
-  box-shadow:0 6px 18px rgba(15,20,40,.07)
-}
+.app-header{text-align:center;margin-bottom:26px;padding:20px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 .app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
 .app-header h1{font-family:Georgia,serif;font-size:28px}
 .subtitle{color:var(--soft)}
-.card{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--bordo);border-radius:14px;
-  padding:22px;margin-bottom:22px;
-  box-shadow:0 6px 18px rgba(15,20,40,.07)
-}
+.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 .card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
 .topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
 .btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
@@ -45,54 +33,22 @@ body{
 .btn-secondary:hover{background:#111;color:#fff}
 .btn-link{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
 .btn-link:hover{border-color:#111;background:#fff}
-.btn-del{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-del:hover{background:#111;color:#fff}
-textarea{width:100%;padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:13px;font-family:inherit;background:#fff}
-details{
-  background:rgba(245,246,248,0.85);
-  backdrop-filter:blur(4px);
-  border:1px solid var(--bordo);border-radius:10px;
-  padding:12px;font-size:13px;margin-top:14px
-}
+details{background:rgba(245,246,248,0.85);backdrop-filter:blur(4px);border:1px solid var(--bordo);border-radius:10px;padding:12px;font-size:13px;margin-top:14px}
 summary{cursor:pointer;font-weight:700}
-.g-row{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(4px);
-  border:1px solid var(--bordo);border-radius:10px;
-  padding:14px 16px;margin-bottom:12px;font-size:13px;
-  box-shadow:0 2px 8px rgba(15,20,40,.04)
-}
+.g-row{background:rgba(255,255,255,0.92);backdrop-filter:blur(4px);border:1px solid var(--bordo);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:13px;box-shadow:0 2px 8px rgba(15,20,40,.04)}
 .g-row .code{font-family:monospace;font-weight:700}
 .chip{display:inline-block;padding:2px 10px;border:1px solid #ccc;border-radius:999px;font-size:11px;color:#555;margin:2px}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#111;color:#fff}
-.badge.off{background:#fff;color:#888;border:1px solid #ccc}
-select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;font-size:12px;background:#fff}
 .warn{color:#7a4a10;background:#fff4e0;border:1px solid #f0b050;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600}
+.status{margin:8px 0}
+.rowbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(10px);
-  border:1px solid var(--bordo);border-radius:14px;
-  padding:36px;max-width:430px;width:100%;text-align:center;
-  box-shadow:0 10px 30px rgba(15,20,40,.12)
-}
-.c-head{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--bordo);
-  padding:16px;text-align:center;position:relative;top:0;z-index:5
-}
+.lock-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(15,20,40,.12)}
+.c-head{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--bordo);padding:16px;text-align:center;position:relative;top:0;z-index:5}
 .c-head img{height:44px;border-radius:50%;filter:grayscale(100%);margin-bottom:6px}
 .c-head h1{font-family:Georgia,serif;font-size:18px}
 .c-head p{font-size:13px;color:var(--soft);margin-top:4px}
 .c-folder-badge{display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:999px;font-size:13px;font-weight:600;margin-top:8px}
-.count-bar{
-  position:sticky;top:0;z-index:6;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--bordo);
-  text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif
-}
+.count-bar{position:sticky;top:0;z-index:6;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif}
 .count-bar .n{font-family:monospace}
 .ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:14px;max-width:1100px;margin:0 auto}
 .ph{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--bordo);background:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(15,20,40,.04)}
@@ -127,18 +83,25 @@ select.stato{padding:6px 10px;border:1px solid var(--bordo);border-radius:8px;fo
 </head>
 <body>
 <div id="root"></div>
+<input type="file" id="filePicker" multiple accept="image/*" style="display:none" onchange="onFile(event)">
 <script>
 const $=id=>document.getElementById(id);
 const param=n=>new URLSearchParams(location.search).get(n);
+const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
+const WORKER='https://acs-api.mairaluigi.workers.dev';
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 
-/* ===== CUORI SVG ===== */
-const HEART_EMPTY = '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_FILLED = '<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_EMPTY_LB = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_FILLED_LB = '<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_EMPTY='<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_FILLED='<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_EMPTY_LB='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+const HEART_FILLED_LB='<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
 
 window.addEventListener('DOMContentLoaded',()=>{const s=param('s');if(s)return clientMode(s);adminGate();});
-function blocca(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">&#x1f512;</div><h2 style="font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+
+function blocca(msg){document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">'+esc(msg)+'</p></div></div>'}
+function errPage(msg){document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif">Selezione non disponibile</h2><p style="color:var(--soft)">'+esc(msg)+'</p></div></div>'}
+
 async function adminGate(){
  const codice=param('studio')||sessionStorage.getItem('studio');
  if(!codice)return blocca('Accedi da AppCenterStudio-Premium per aprire le applicazioni.');
@@ -146,19 +109,25 @@ async function adminGate(){
  try{
   const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
   const s=(l.studi||[]).find(x=>x.codice===codice);
-  const oggi=new Date().toISOString().slice(0,10);
+  const oggi=todayStr();
   if(!s)return blocca('Codice studio non riconosciuto.');
   if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
   if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
  }catch(e){return blocca('Verifica licenza non riuscita.');}
- renderAdmin(codice);
+ STUDIO_CODE=codice;
+ renderStudio();
 }
-function leggiClienti(){try{return JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]}}catch(e){return{clients:[]}}}
-function leggiSel(){try{return JSON.parse(localStorage.getItem('selezioniRicevute'))||[]}catch(e){return[]}}
-function scriviSel(a){localStorage.setItem('selezioniRicevute',JSON.stringify(a))}
 
-/* ===== ADMIN ===== */
-function renderAdmin(codice){
+let STUDIO_CODE='',MANIFESTI={},pendingAzione='',pendingCliente='';
+function leggiClienti(){try{return JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]}}catch(e){return{clients:[]}}}
+function leggiIdent(){try{return JSON.parse(localStorage.getItem('studioIdent'))||{}}catch(e){return{}}}
+function leggiContatti(){try{return JSON.parse(localStorage.getItem('studioContatti'))||{}}catch(e){return{}}}
+function dataUrlToBlob(d){try{const p=d.split(',');const bin=atob(p[0].split('base64,')[1]);const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return new Blob([ab],{type:p[0].split(';')[0].replace('data:','')});}catch(e){return null}}
+function linkSel(codice){return location.origin+location.pathname+'?s='+encodeURIComponent(STUDIO_CODE+'/'+codice)}
+function copiaTesto(t){if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});}
+
+async function renderStudio(){
+ const data=leggiClienti();
  document.getElementById('root').innerHTML=`
  <div class="container">
   <div class="topbar">
@@ -166,199 +135,157 @@ function renderAdmin(codice){
     <button class="btn-secondary" onclick="history.back()">&#x2190; Indietro</button>
     <button class="btn-secondary" onclick="location.href='../index.html'">Home</button>
    </div>
-   <div style="display:flex;gap:8px">
-    <button class="btn-primary" onclick="backupGlobale()">Backup Globale</button>
-    <label class="btn-secondary" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
-   </div>
+   <button class="btn-primary" onclick="renderStudio()">Aggiorna stato</button>
   </div>
-  <header class="app-header"><img src="../logo.png" alt="logo" onerror="this.style.display='none'"><h1>Selezione per Album</h1><p class="subtitle">Selezioni ricevute, file Gru e PDF per stampa</p></header>
+  <header class="app-header"><h1>Selezione per Album</h1><p class="subtitle">Selezione in studio o da casa, pulizia automatica, gallery con scadenza</p></header>
   <div class="card">
-   <h2>Selezioni ricevute</h2>
-   <div class="warn" style="margin-bottom:10px">Quando il cliente invia la selezione, qui arriva da sola. Premi "Aggiorna" per leggere le nuove.</div>
-   <button class="btn-primary" onclick="aggiornaSelezioni()">Aggiorna</button>
-   <div id="archSel" style="margin-top:16px"></div>
-   <details><summary>Aggiunta manuale (emergenza)</summary>
-    <textarea id="incollaSel" rows="4" style="margin-top:10px" placeholder="Incolla qui il messaggio WhatsApp della selezione..."></textarea>
-    <button class="btn-secondary" style="margin-top:8px" onclick="aggiungiManuale()">Aggiungi all'archivio</button>
-   </details>
+   <h2>Come funziona</h2>
+   <p style="font-size:13px;color:var(--soft);line-height:1.7">
+   1. <b>Carica foto</b>: manda nel magazzino le foto basse risoluzioni del cliente.<br>
+   2. <b>Selezione in studio</b>: falla come hai sempre fatto davanti al computer; poi premi "Selezione in studio" per registrarla.<br>
+   3. <b>Link da casa</b>: solo per chi non pu&ograve; venire; il link vale 7 giorni; le foto non scelte si eliminano da sole alla selezione.<br>
+   4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi, poi si eliminano da sole (proroga con un click).</p>
   </div>
   <div class="card">
-   <h2>GRU: copia gli originali alta risoluzione</h2>
-   <button class="btn-primary" onclick="apriGruBrowser()">GRU nel browser (consigliato)</button>
-   <p class="warn" style="margin-top:12px">Il GRU nel browser funziona con <b>Chrome</b> o <b>Edge</b> sul computer e non installa niente. Scarica il programma qui sotto <b>SOLO se usi un altro browser</b> (Firefox, Safari).</p>
-   <button class="btn-secondary" onclick="location.href='../gru/gru-mac.zip'">GRU per Mac</button>
-   <button class="btn-secondary" onclick="location.href='../gru/gru-windows.zip'">GRU per Windows</button>
-  </div>
-  <div class="card">
-   <h2>Link selezione per cliente</h2>
-   <div id="archivio"><p class="warn">Caricamento...</p></div>
+   <h2>Clienti</h2>
+   <div id="listaClienti"><p class="warn">Caricamento stato...</p></div>
   </div>
  </div>`;
- renderSelezioni();loadArchivio(codice);
+ const box=$('listaClienti');
+ if(!data.clients.length){box.innerHTML='<p class="warn">Nessun cliente. Aggiungili nell\'app Clienti &amp; Foto.</p>';return;}
+ MANIFESTI={};
+ await Promise.all(data.clients.map(async c=>{
+  try{MANIFESTI[c.codice]=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(STUDIO_CODE)+'&cliente='+encodeURIComponent(c.codice)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MANIFESTI[c.codice]={};}
+ }));
+ box.innerHTML=data.clients.slice().reverse().map(c=>{
+  const man=MANIFESTI[c.codice]||{};
+  return `<div class="g-row"><b>${esc(c.nome)} ${esc(c.cognome)}</b> &middot; <span class="code">${esc(c.codice)}</span>
+  <div class="status">${statoHtml(man)}</div>
+  <div class="rowbtns">
+   <button class="btn-link" onclick="scegliFile('upload','${c.codice}')">Carica foto</button>
+   <button class="btn-link" onclick="creaLink('${c.codice}')">Link da casa</button>
+   <button class="btn-link" onclick="regStudio('${c.codice}')">Selezione in studio</button>
+   <button class="btn-link" onclick="scegliFile('ritoccate','${c.codice}')">Carica ritoccate</button>
+   <button class="btn-link" onclick="proroga('${c.codice}')">Proroga +6 mesi</button>
+   <button class="btn-link" onclick="gruText('${c.codice}')">Text Gru</button>
+   <button class="btn-link" onclick="pdfSel('${c.codice}')">PDF stampa</button>
+  </div></div>`;
+ }).join('');
 }
-function apriGruBrowser(){
- const c=param('studio')||sessionStorage.getItem('studio')||'';
- location.href='../gru/?studio='+encodeURIComponent(c);
+
+function statoHtml(man){
+ const t=[];
+ if(man.selezione){
+  const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
+  t.push('Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+man.selezione.data+(n!=null?' &middot; '+n+' foto':''));
+ }else t.push('Selezione: non ancora fatta');
+ if(man.scadenza_link)t.push(man.scadenza_link>=todayStr()?'Link casa attivo fino al '+man.scadenza_link:'Link casa scaduto il '+man.scadenza_link);
+ if(man.basse&&man.basse.length)t.push(man.basse.length+' foto nel magazzino');
+ if(man.scadenza_gallery)t.push('Gallery fino al '+man.scadenza_gallery);
+ return t.map(x=>'<span class="chip">'+x+'</span>').join('');
 }
-async function aggiornaSelezioni(){
- const tok=localStorage.getItem('netlify_token'),site=localStorage.getItem('netlify_site');
- if(!tok||!site)return alert('Collega prima Netlify in Clienti & Foto.');
+
+function scegliFile(azione,codice){pendingAzione=azione;pendingCliente=codice;const inp=$('filePicker');inp.value='';inp.click();}
+async function onFile(e){
+ const files=[...e.target.files];if(!files.length)return;
+ const fd=new FormData();
+ fd.append('studio',STUDIO_CODE);fd.append('cliente',pendingCliente);
+ files.forEach(f=>fd.append('file',f));
+ const url=pendingAzione==='upload'?WORKER+'/upload':WORKER+'/ritoccate';
+ alert('Caricamento di '+files.length+' file in corso...');
  try{
-  const fr=await fetch('https://api.netlify.com/api/v1/forms?site_id='+site,{headers:{Authorization:'Bearer '+tok}});
-  if(!fr.ok)throw new Error('Errore '+fr.status);
-  const forms=await fr.json();
-  const f=(forms||[]).find(x=>x.name==='selezioni');
-  if(!f)return alert('Modulo non trovato sul sito. Controlla la configurazione in Clienti & Foto.');
-  const sr=await fetch('https://api.netlify.com/api/v1/forms/'+f.id+'/submissions',{headers:{Authorization:'Bearer '+tok}});
-  const subs=await sr.json();
-  const imported=JSON.parse(localStorage.getItem('importedSubIds')||'[]');
-  const a=leggiSel();let nuovi=0;
-  (subs||[]).forEach(s=>{
-   if(imported.includes(String(s.id)))return;
-   const d=s.data||{};
-   if((d.tipo||'')!=='selezione')return;
-   let photos=[];try{photos=(JSON.parse(d.dati||'{}').photos)||[]}catch(e){}
-   if(!photos.length)return;
-   a.push({id:Date.now()+Math.floor(Math.random()*10000),codice:d.codice||'',cliente:d.cliente||'Cliente',cartella:d.cartella||'',photos:photos,status:'effettuata',date:s.created_at?new Date(s.created_at).toLocaleString('it-IT'):new Date().toLocaleString('it-IT')});
-   imported.push(String(s.id));nuovi++;
-  });
-  localStorage.setItem('importedSubIds',JSON.stringify(imported));
-  scriviSel(a);renderSelezioni();
-  alert(nuovi?nuovi+' nuova/e selezione/i importata/e.':'Nessuna nuova selezione.');
- }catch(e){alert('Errore aggiornamento: '+e.message);}
+  const r=await(await fetch(url,{method:'POST',body:fd})).json();
+  if(r.error)return alert('Errore caricamento: '+r.error);
+  alert('Caricati '+r.caricate+' file.');
+ }catch(err){alert('Errore caricamento: '+err.message);}
+ renderStudio();
+ e.target.value='';
 }
-function aggiungiManuale(){
- const t=$('incollaSel').value.trim();
- if(!t)return alert('Incolla prima il messaggio della selezione.');
- const cod=(t.match(/Codice:\s*([\w-]+)/i)||[])[1]||'';
- const nomi=[...t.matchAll(/•\s*(.+)/g)].map(m=>m[1].trim()).filter(n=>n&&n.length<80);
- if(!nomi.length)return alert('Messaggio non riconosciuto: nessuna foto trovata.');
- const cli=leggiClienti().clients.find(c=>c.codice===cod);
- const a=leggiSel();
- a.push({id:Date.now(),codice:cod,cliente:cli?cli.nome+' '+cli.cognome:(t.split('\n')[0].replace('SELEZIONE ALBUM -','').trim()||'Cliente'),cartella:'',photos:nomi,status:'effettuata',date:new Date().toLocaleString('it-IT')});
- scriviSel(a);$('incollaSel').value='';renderSelezioni();
+
+async function creaLink(codice){
+ const ident=leggiIdent(),cont=leggiContatti();
+ const fd=new FormData();
+ fd.append('studio',STUDIO_CODE);fd.append('cliente',codice);fd.append('giorni','7');
+ fd.append('nome_studio',ident.nome||'');
+ fd.append('whatsapp',ident.telefono||cont.whatsapp||'');
+ fd.append('messaggio','Tocca una foto per aprirla, usa il cuore per sceglierla.');
+ if(ident.logoData&&ident.logoData.startsWith('data:')){const b=dataUrlToBlob(ident.logoData);if(b)fd.append('logo',b,'logo.png');}
+ try{
+  const r=await(await fetch(WORKER+'/link',{method:'POST',body:fd})).json();
+  if(r.error)return alert('Errore link: '+r.error);
+  copiaTesto(linkSel(codice));
+  alert('Link creato, valido fino al '+r.scadenza_link+'.\nLink copiato: incollalo nel WhatsApp del cliente.');
+ }catch(e){alert('Errore link: '+e.message);}
+ renderStudio();
 }
-function setStatusSel(id,v){const a=leggiSel();const r=a.find(x=>x.id===id);if(r){r.status=v;scriviSel(a);renderSelezioni();}}
-function eliminaSel(id){if(!confirm('Eliminare questa selezione dall\'archivio?'))return;scriviSel(leggiSel().filter(x=>x.id!==id));renderSelezioni();}
-function scaricaGruSel(id){
- const r=leggiSel().find(x=>x.id===id);if(!r)return;
- const blob=new Blob([r.photos.join('\n')],{type:'text/plain'});
+
+async function regStudio(codice){
+ if(!confirm('Registrare che la selezione di questo cliente e\' stata fatta in studio?'))return;
+ try{
+  const r=await(await fetch(WORKER+'/registra-studio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:STUDIO_CODE,cliente:codice})})).json();
+  if(r.error)return alert('Errore: '+r.error);
+  alert('Selezione in studio registrata.');
+ }catch(e){alert('Errore: '+e.message);}
+ renderStudio();
+}
+
+async function proroga(codice){
+ if(!confirm('Estendere la gallery di questo cliente di 6 mesi?'))return;
+ try{
+  const r=await(await fetch(WORKER+'/proroga',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:STUDIO_CODE,cliente:codice})})).json();
+  if(r.error)return alert('Errore: '+r.error);
+  alert('Gallery estesa fino al '+r.scadenza_gallery+'.');
+ }catch(e){alert('Errore: '+e.message);}
+ renderStudio();
+}
+
+function gruText(codice){
+ const man=MANIFESTI[codice]||{};
+ const photos=(man.selezione&&Array.isArray(man.selezione.photos))?man.selezione.photos:[];
+ if(!photos.length)return alert('Nessuna selezione con elenco foto per questo cliente.');
+ const blob=new Blob([photos.join('\n')],{type:'text/plain'});
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
- a.download='GRU_SELEZIONE_'+(r.codice||'cliente')+'.txt';a.click();
+ a.download='GRU_SELEZIONE_'+codice+'.txt';a.click();
  setTimeout(()=>URL.revokeObjectURL(a.href),2000);
- if(r.status==='effettuata')setStatusSel(id,'text');
 }
-function imgToJpeg(url){return new Promise((res,rej)=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{try{const c=document.createElement('canvas');const s=Math.min(1,900/img.width);c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.82));}catch(e){rej(e)}};img.onerror=rej;img.src=url;});}
-async function pdfSel(id){
- const r=leggiSel().find(x=>x.id===id);if(!r)return;
- alert('Generazione PDF...');
- const site=localStorage.getItem('netlify_sitename');
+
+function pdfSel(codice){
+ const man=MANIFESTI[codice]||{};
+ const sel=man.selezione||{};
+ const photos=Array.isArray(sel.photos)?sel.photos:[];
+ const cli=leggiClienti().clients.find(c=>c.codice===codice);
  try{
   const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');
   doc.setFillColor(17,17,17);doc.rect(0,0,210,35,'F');
   doc.setTextColor(255);doc.setFontSize(18);doc.setFont('helvetica','bold');
-  doc.text('Selezione Album - '+r.cliente,105,15,{align:'center'});
+  doc.text('Selezione Album - '+((cli?cli.nome+' '+cli.cognome:'Cliente')),105,15,{align:'center'});
   doc.setFontSize(10);doc.setFont('helvetica','normal');
-  const sub=r.cartella?r.cartella+' - ':'';
-  doc.text((r.codice||'')+' - '+sub+r.date+' - '+r.photos.length+' foto scelte',105,24,{align:'center'});
-  let y=45;
-  if(site&&r.codice){
-   const X=[15,107],W=88,H=55;let x=0;
-   for(const p of r.photos){
-    const url='https://'+site+'.netlify.app/'+r.codice+'/'+p.split('/').map(encodeURIComponent).join('/');
-    try{doc.addImage(await imgToJpeg(url),'JPEG',X[x],y,W,H);}catch(e){doc.setDrawColor(150);doc.rect(X[x],y,W,H);}
-    doc.setFontSize(8);doc.setTextColor(60);doc.text(p.split('/').pop(),X[x],y+H+5);doc.setTextColor(17);doc.setFontSize(10);
-    x++;if(x>1){x=0;y+=H+12;}
-    if(y>230){doc.addPage();y=15;x=0;}
-   }
-  }else{
-   doc.setTextColor(17);
-   r.photos.forEach((p,i)=>{doc.text((i+1)+') '+p,15,y);y+=7;if(y>280){doc.addPage();y=15;}});
-  }
-  doc.save('SELEZIONE_'+(r.codice||'cliente')+'.pdf');
+  doc.text(codice+' - '+(sel.metodo==='studio'?'selezione in studio':'selezione tramite link')+' - '+(sel.data||''),105,24,{align:'center'});
+  doc.setTextColor(17);
+  let y=50;
+  if(photos.length){photos.forEach((p,i)=>{doc.text((i+1)+') '+p,15,y);y+=7;if(y>280){doc.addPage();y=15;}});}
+  else{doc.text('Elenco foto non disponibile (selezione registrata in studio).',15,y);}
+  doc.save('SELEZIONE_'+codice+'.pdf');
  }catch(e){alert('Errore PDF: '+e.message);}
-}
-function renderSelezioni(){
- const a=leggiSel();
- const box=$('archSel');
- if(!a.length){box.innerHTML='<p class="warn">Nessuna selezione ricevuta.</p>';return;}
- box.innerHTML=a.slice().reverse().map(r=>`
-  <div class="g-row"><b>${esc(r.cliente)}</b> · <span class="code">${esc(r.codice||'-')}</span>${r.cartella?` · <span class="chip">${esc(r.cartella)}</span>`:''} · <span class="warn">${r.date}</span><br>
-  <span class="chip">${r.photos.length} foto</span> <span class="badge ${r.status==='effettuata'?'':'off'}">${r.status==='text'?'TEXT SCARICATO':'SELEZIONE EFFETTUATA'}</span>
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center">
-   <select class="stato" onchange="setStatusSel(${r.id},this.value)">
-    <option value="effettuata" ${r.status==='effettuata'?'selected':''}>Selezione effettuata</option>
-    <option value="text" ${r.status==='text'?'selected':''}>Text scaricato</option>
-   </select>
-   <button class="btn-link" onclick="scaricaGruSel(${r.id})">Scarica text Gru</button>
-   <button class="btn-link" onclick="pdfSel(${r.id})">PDF per stampa</button>
-   <button class="btn-del" onclick="eliminaSel(${r.id})">Elimina</button>
-  </div></div>`).join('');
-}
-async function loadArchivio(codice){
- const data=leggiClienti();
- const site=localStorage.getItem('netlify_sitename');
- const box=$('archivio');
- if(!data.clients.length){box.innerHTML=`<p class="warn">Nessun cliente.</p><button class="btn-primary" style="margin-top:10px" onclick="location.href='../clienti-foto/?studio=${codice}'">Vai a Clienti & Foto</button>`;return;}
- if(!site){box.innerHTML='<p class="warn">Collega prima il sito Netlify nell\'app Clienti & Foto.</p>';return;}
- box.innerHTML=data.clients.slice().reverse().map(c=>`
-  <div class="g-row"><b>${esc(c.nome)} ${esc(c.cognome)}</b> · <span class="code">${c.codice}</span>
-  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-   <button class="btn-link" onclick="copiaSel('${c.codice}',this)">Copia link selezione</button>
-   <button class="btn-link" onclick="window.open(linkSel('${c.codice}'),'_blank')">Apri selezione</button>
-  </div></div>`).join('');
-}
-function linkSel(codice){
- const site=localStorage.getItem('netlify_sitename');
- return new URL('../selezione-album/?s='+encodeURIComponent(site+'/'+codice),location.href).href;
-}
-function copiaSel(codice,btn){
- navigator.clipboard.writeText(linkSel(codice)).then(()=>{const t=btn.textContent;btn.textContent='Copiato!';setTimeout(()=>btn.textContent=t,1500);});
-}
-function backupGlobale(){
- const d={};
- for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
- const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);
- a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
- alert('Backup globale scaricato.');
-}
-function restoreGlobale(e){
- const f=e.target.files[0];if(!f)return;
- const r=new FileReader();
- r.onload=ev=>{try{
-  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-  if(typeof d!=='object')throw new Error('File non valido.');
-  if(!confirm(`Ripristinare il backup globale (${Object.keys(d).length} voci)?\nI dati attuali di TUTTE le app verranno sostituiti.`))return;
-  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
- }catch(err){alert('Errore: '+err.message)}};
- r.readAsText(f);e.target.value='';
 }
 
 /* ===== CLIENTE ===== */
-let PH=[],BASE='',STUDIO=null,MAN=null,SEL=new Set(),ACTIVE_FOLDER='',LB=0;
-function errPage(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">&#x274C;</div><h2 style="font-family:Georgia,serif">Selezione non disponibile</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
+let PH=[],SEL=new Set(),LB=0,MAN=null,C_STUDIO='',C_CLIENTE='';
 async function clientMode(s){
  const parts=decodeURIComponent(s).split('/');
  if(parts.length<2)return errPage('Link non valido. Contatta lo studio.');
- const site=parts[0],code=parts.slice(1).join('/');
- BASE='https://'+site+'.netlify.app/'+code;
- try{MAN=await(await fetch(BASE+'/manifest.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){}
- if(!MAN||!MAN.photos||!MAN.photos.length)return errPage('Nessuna foto pubblicata. Contatta lo studio.');
- try{STUDIO=await(await fetch('https://'+site+'.netlify.app/studio.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){STUDIO={}}
- if(MAN.latestFolder){
-  ACTIVE_FOLDER=MAN.latestFolder;
-  PH=MAN.photos.filter(p=>p.startsWith(ACTIVE_FOLDER+'/'));
-  if(!PH.length){PH=MAN.photos;ACTIVE_FOLDER='';}
- }else{ACTIVE_FOLDER='';PH=MAN.photos;}
- document.title='Selezione foto - '+(MAN.nome||'');
- const logo=STUDIO.logo?'https://'+site+'.netlify.app/'+STUDIO.logo:'';
+ C_STUDIO=parts[0];C_CLIENTE=parts.slice(1).join('/');
+ try{MAN=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(C_STUDIO)+'&cliente='+encodeURIComponent(C_CLIENTE)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MAN=null;}
+ if(!MAN||!MAN.basse||!MAN.basse.length)return errPage('Nessuna foto pubblicata. Contatta lo studio.');
+ if(!MAN.scadenza_link||MAN.scadenza_link<todayStr())return errPage('Il link selezione e\' scaduto. Contatta lo studio.');
+ PH=MAN.basse;
+ document.title='Selezione foto'+(MAN.nome_studio?' - '+MAN.nome_studio:'');
+ const logo=MAN.logo?R2_BASE+'/'+C_STUDIO+'/'+C_CLIENTE+'/'+MAN.logo:'';
  document.getElementById('root').innerHTML=`
  <div class="c-head">${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'"><br>`:''}
-  <h1>${esc(STUDIO.nome||'Studio Fotografico')}</h1>
-  <p>${esc(STUDIO.messaggio||'Tocca una foto per aprirla, usa il cuore per sceglierla.')}</p>
-  ${ACTIVE_FOLDER?`<span class="c-folder-badge">Servizio: ${esc(ACTIVE_FOLDER)}</span>`:''}
+  <h1>${esc(MAN.nome_studio||'Studio Fotografico')}</h1>
+  <p>${esc(MAN.messaggio||'Tocca una foto per aprirla, usa il cuore per sceglierla.')}</p>
+  <span class="c-folder-badge">Link valido fino al ${esc(MAN.scadenza_link)}</span>
  </div>
  <div class="count-bar" id="countBar"><span class="n">0</span> foto selezionate</div>
  <div class="ph-grid" id="grid"></div>
@@ -385,13 +312,13 @@ async function clientMode(s){
  </div>`;
  draw();setupLb();
 }
-function photoUrl(i){return BASE+'/'+PH[i].split('/').map(encodeURIComponent).join('/')}
+function photoUrl(i){return R2_BASE+'/'+C_STUDIO+'/'+C_CLIENTE+'/basse/'+encodeURIComponent(PH[i])}
 function draw(){
  $('grid').innerHTML=PH.map((p,i)=>`
   <div class="ph ${SEL.has(p)?'sel':''}" onclick="openLb(${i})">
    <img src="${photoUrl(i)}" loading="lazy" alt="">
    <div class="heart" onclick="event.stopPropagation();toggle(${i})">${SEL.has(p)?HEART_FILLED:HEART_EMPTY}</div>
-   <div class="fname">${esc(p.split('/').pop())}</div>
+   <div class="fname">${esc(p)}</div>
   </div>`).join('');
  $('selCount').textContent=SEL.size+' selezionate';
  const cb=$('countBar');if(cb)cb.innerHTML='<span class="n">'+SEL.size+'</span> foto selezionate';
@@ -401,10 +328,9 @@ function openLb(i){LB=i;renderLb();$('lb').classList.add('open');document.body.s
 function closeLb(){$('lb').classList.remove('open');document.body.style.overflow='';}
 function renderLb(){
  $('lbImg').src=photoUrl(LB);
- $('lbName').textContent=PH[LB].split('/').pop();
+ $('lbName').textContent=PH[LB];
  $('lbCount').textContent=(LB+1)+' / '+PH.length;
- const sel=SEL.has(PH[LB]);
- $('lbHeart').innerHTML=sel?HEART_FILLED_LB:HEART_EMPTY_LB;
+ $('lbHeart').innerHTML=SEL.has(PH[LB])?HEART_FILLED_LB:HEART_EMPTY_LB;
  $('lbSel').textContent=SEL.size+' selezionate';
 }
 function lbPrev(e){if(e)e.stopPropagation();LB=(LB-1+PH.length)%PH.length;renderLb();}
@@ -422,29 +348,24 @@ function setupLb(){
   if(e.key==='Escape')closeLb();
  });
 }
-function inviaFormNetlify(site,tipo,codice,cliente,dati){
- const f=document.createElement('form');
- f.method='POST';f.action='https://'+site+'.netlify.app/';
- f.target='nframe';f.style.display='none';
- const add=(n,v)=>{const i=document.createElement('input');i.type='hidden';i.name=n;i.value=v;f.appendChild(i);};
- add('form-name','selezioni');add('tipo',tipo);add('codice',codice);add('cliente',cliente);if(ACTIVE_FOLDER)add('cartella',ACTIVE_FOLDER);add('dati',JSON.stringify(dati));
- const ifr=document.createElement('iframe');ifr.name='nframe';ifr.style.display='none';
- document.body.appendChild(ifr);document.body.appendChild(f);f.submit();
- setTimeout(()=>{ifr.remove();f.remove();},4000);
-}
-function inviaSel(){
+async function inviaSel(){
  if(!SEL.size)return alert('Nessuna foto selezionata: tocca il cuore sulle foto che vuoi.');
  if(!confirm('Inviare la selezione di '+SEL.size+' foto allo studio?'))return;
- const site=BASE.split('/')[2];
- const nomi=[...SEL].map(p=>p.split('/').pop());
- inviaFormNetlify(site,'selezione',MAN.codice||'',(MAN.nome||'')+' '+(MAN.cognome||''),{photos:nomi,cartella:ACTIVE_FOLDER||''});
- const sub=ACTIVE_FOLDER?ACTIVE_FOLDER+' - ':'';
- const testo='NUOVA SELEZIONE da '+(MAN.nome||'')+' '+(MAN.cognome||'')+' ('+(MAN.codice||'')+').\n'+sub+SEL.size+' foto scelte.\nApri Selezione per Album - Selezioni ricevute.';
- if(STUDIO.whatsapp)window.open('https://wa.me/'+STUDIO.whatsapp+'?text='+encodeURIComponent(testo),'_blank');
- const logo=STUDIO.logo?'https://'+site+'/'+STUDIO.logo:'';
- document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card">${logo?`<img src="${logo}" alt="logo" style="height:64px;border-radius:50%;filter:grayscale(100%);margin-bottom:10px" onerror="this.style.display='none'">`:''}<h2 style="font-family:Georgia,serif;margin:10px 0">Selezione inviata!</h2><p style="color:var(--soft)">Lo studio ha ricevuto le tue foto scelte e ti contatterà presto.</p></div></div>`;
+ const fd=new FormData();
+ fd.append('studio',C_STUDIO);fd.append('cliente',C_CLIENTE);
+ fd.append('photos',JSON.stringify([...SEL]));
+ fd.append('metodo','link');
+ fd.append('cliente_nome',(MAN.cliente_nome||''));
+ try{
+  const r=await(await fetch(WORKER+'/selezione',{method:'POST',body:fd})).json();
+  if(r.error)return alert('Errore invio: '+r.error);
+  if(MAN.whatsapp){
+   const testo='NUOVA SELEZIONE da '+(MAN.nome_studio||'studio')+' - cliente '+C_CLIENTE+'. '+SEL.size+' foto scelte. Le foto non scelte sono state eliminate dal magazzino.';
+   window.open('https://wa.me/'+MAN.whatsapp+'?text='+encodeURIComponent(testo),'_blank');
+  }
+  document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif;margin:10px 0">Selezione inviata!</h2><p style="color:var(--soft)">Lo studio ha ricevuto le tue foto scelte e ti contatter&agrave; presto.</p></div></div>';
+ }catch(e){alert('Errore invio: '+e.message);}
 }
-function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
 </body>
 </html>
