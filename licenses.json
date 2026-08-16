@@ -1,7 +1,7 @@
 {
   "studi": [
     {
-      "codice": "st-001",
+      "codice": "ACS-001",
       "nome": "G&LStudio",
       "attivo": true,
       "scadenza": "2026-09-14"
