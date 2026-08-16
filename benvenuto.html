@@ -32,15 +32,6 @@ body{
 .hbadge.ok{background:#fff;color:var(--nero);border-color:#fff;font-weight:700}
 .hbadge.ko{background:#7a1010;border-color:#7a1010;color:#fff;font-weight:700}
 .container{max-width:1040px;margin:0 auto;padding:40px 20px 70px}
-.notice{border-radius:16px;padding:18px 22px;margin-bottom:26px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 6px 18px rgba(15,20,40,.08)}
-.notice .ico{font-size:22px;line-height:1}
-.notice .txt{flex:1;font-size:14px}
-.notice .txt b{display:block;font-family:Georgia,serif;font-size:16px;margin-bottom:2px}
-.notice button{border:none;border-radius:999px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.04em;text-transform:uppercase}
-.notice.info{background:#eef4ff;border:1px solid #b9cdf5;color:#1c3fae}
-.notice.info button{background:#1c3fae;color:#fff}
-.notice.warn{background:#fff4e0;border:1px solid #f0b050;color:#7a4a10}
-.notice.warn button{background:#7a4a10;color:#fff}
 .step-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 18px}
 .step-head .n{font-family:Georgia,serif;font-size:15px;color:#fff;background:var(--nero);width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .step-head h2{font-family:Georgia,serif;font-size:24px;font-weight:400}
@@ -72,6 +63,13 @@ input:focus,textarea:focus{outline:2px solid var(--nero)}
 .offerta .btn{background:#fff;color:var(--nero)}
 .offerta .btn.ghost{background:transparent;color:#fff;border-color:#5a5a5a}
 .logoPreview{max-height:70px;max-width:180px;border:1px solid var(--bordo);border-radius:10px;padding:4px;background:#fff;margin-top:10px}
+.adminbox{border:2px solid var(--nero);border-radius:16px;padding:24px;margin-bottom:26px;background:#fff}
+.adminbox h3{font-family:Georgia,serif;font-size:18px;margin-bottom:10px}
+.adminbox table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.adminbox th,.adminbox td{border:1px solid var(--bordo);padding:8px 10px;text-align:left}
+.adminbox th{background:#f2f2f2;font-family:Georgia,serif;letter-spacing:.05em}
+.adminbox .riga{margin:6px 0;font-size:13px}
+.adminbox a{color:var(--nero);font-weight:700}
 footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;color:#9a9a9a;font-size:12px;letter-spacing:.06em;background:rgba(255,255,255,0.5);backdrop-filter:blur(6px)}
 .hidden{display:none}
 </style>
@@ -89,93 +87,97 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 <section class="hero">
   <div class="eyebrow">AppCenter Studio Premium</div>
   <h1>Benvenuto, <em id="heroNome">Studio</em></h1>
-  <p id="heroSub">Il tuo spazio di lavoro professionale e' pronto. Segui i tre passaggi per configurarlo.</p>
+  <p id="heroSub">Il tuo spazio di lavoro professionale e' pronto.</p>
   <div class="badges" id="heroBadges"></div>
 </section>
 
 <div class="container">
 
-  <div class="notice info" id="chromeNotice" style="display:none">
-    <span class="ico">&#x1f4bb;</span>
-    <span class="txt"><b>Consiglio per un uso ottimale</b>
-    Ti consigliamo vivamente di utilizzare <strong>Google Chrome</strong> (o Microsoft Edge) sul computer. Alcune funzioni &mdash; copia dei file originali (GRU), caricamento foto e notifiche &mdash; rendono al meglio con questi browser.</span>
-    <button onclick="chiudiNotice()">Ho capito</button>
+  <div class="adminbox hidden" id="adminPanel"></div>
+
+  <div class="step-head"><span class="n">0</span><h2>Collega il tuo studio</h2><span class="line"></span></div>
+  <div class="card" id="collegaCard">
+    <p class="hint">Incolla il codice ricevuto dal fornitore (formato ACS-…) e premi Collega. Il codice resta memorizzato in questo browser.</p>
+    <label>Codice studio</label>
+    <input id="acsInput" placeholder="ACS-">
+    <button class="btn" onclick="collega()">Collega</button>
   </div>
 
   <div class="offerta hidden" id="offertaCard"></div>
 
-  <div class="step-head"><span class="n">1</span><h2>Dati di contatto</h2><span class="line"></span></div>
-  <div class="card">
-    <p class="hint">Servono al fornitore per assisterti. Li invii una volta sola e restano modificabili.</p>
-    <div class="grid">
-      <div><label>Referente</label><input id="cReferente"></div>
-      <div><label>WhatsApp</label><input id="cWhatsapp" placeholder="39..."></div>
-      <div><label>Email</label><input id="cEmail"></div>
-      <div><label>Citta'</label><input id="cCitta"></div>
-    </div>
-    <label>Note</label><textarea id="cNote" rows="2"></textarea>
-    <button class="btn" onclick="inviaDatiFornitore()">Invia i dati al fornitore</button>
-  </div>
+  <div id="areaRiservata" class="hidden">
 
-  <div class="step-head"><span class="n">2</span><h2>Identita' dello studio</h2><span class="line"></span></div>
-  <div class="card">
-    <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti. Se oggi ti manca la P.IVA o il logo, potrai completare questa sezione in qualsiasi momento: salva e pubblica di nuovo.</p>
-    <div class="grid">
-      <div><label>Nome Studio</label><input id="sNome"></div>
-      <div><label>P.IVA</label><input id="sPiva"></div>
-      <div><label>Indirizzo</label><input id="sIndirizzo"></div>
-      <div><label>Telefono</label><input id="sTelefono"></div>
-      <div><label>Email</label><input id="sEmail"></div>
-      <div><label>Note fisse su PDF</label><input id="sNote"></div>
+    <div class="step-head"><span class="n">1</span><h2>Dati di contatto</h2><span class="line"></span></div>
+    <div class="card">
+      <p class="hint">Servono al fornitore per assisterti. Li invii una volta sola e restano modificabili.</p>
+      <div class="grid">
+        <div><label>Referente</label><input id="cReferente"></div>
+        <div><label>WhatsApp</label><input id="cWhatsapp" placeholder="39..."></div>
+        <div><label>Email</label><input id="cEmail"></div>
+        <div><label>Citta'</label><input id="cCitta"></div>
+      </div>
+      <label>Note</label><textarea id="cNote" rows="2"></textarea>
+      <button class="btn" onclick="inviaDatiFornitore()">Invia i dati al fornitore</button>
     </div>
-    <label>Logo dello studio</label>
-    <input type="file" id="sLogo" accept="image/*">
-    <div id="logoPrev"></div>
-    <button class="btn" onclick="salvaEPubblicaIdent()">Salva e pubblica</button>
-  </div>
 
-  <div class="step-head"><span class="n">3</span><h2>Le tue applicazioni</h2><span class="line"></span></div>
-  <div class="apps" id="appsGrid"></div>
+    <div class="step-head"><span class="n">2</span><h2>Identita' dello studio</h2><span class="line"></span></div>
+    <div class="card">
+      <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti. Il logo resta salvato in questo browser: alla pubblicazione pensera' il fornitore.</p>
+      <div class="grid">
+        <div><label>Nome Studio</label><input id="sNome"></div>
+        <div><label>P.IVA</label><input id="sPiva"></div>
+        <div><label>Indirizzo</label><input id="sIndirizzo"></div>
+        <div><label>Telefono</label><input id="sTelefono"></div>
+        <div><label>Email</label><input id="sEmail"></div>
+        <div><label>Note fisse su PDF</label><input id="sNote"></div>
+      </div>
+      <label>Logo dello studio</label>
+      <input type="file" id="sLogo" accept="image/*">
+      <div id="logoPrev"></div>
+      <button class="btn" onclick="salvaEPubblicaIdent()">Salva e invia al fornitore</button>
+    </div>
+
+    <div class="step-head"><span class="n">3</span><h2>Le tue applicazioni</h2><span class="line"></span></div>
+    <div class="apps" id="appsGrid"></div>
+
+  </div>
 
 </div>
 
 <footer>AppCenter Studio Premium &middot; Suite gestionale per studi fotografici &middot; Assistenza dedicata inclusa</footer>
 
 <script>
+const NETLIFY_BASE='https://dashing-florentine-9b905e.netlify.app';
+const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
+const FORNITORE_WA='393447507656';
+const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
+
 const param=n=>new URLSearchParams(location.search).get(n);
 let studioCode=param('studio')||'';
 if(!studioCode&&location.hash)studioCode=decodeURIComponent(location.hash.replace(/^#/,''));
 if(!studioCode)studioCode=sessionStorage.getItem('studio')||'';
-if(studioCode)sessionStorage.setItem('studio',studioCode);
+if(!studioCode)studioCode=localStorage.getItem('studioCodeSalvato')||'';
+if(param('admin')==='1')sessionStorage.setItem('admin','1');
+
 let studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
 let contatti=JSON.parse(localStorage.getItem('studioContatti')||'{}');
 let licenza=null;
-const FORNITORE_WA='393447507656';
-const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
 
-async function sha1(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest('SHA-1',b);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-async function sha1Buf(ab){const h=await crypto.subtle.digest('SHA-1',ab);return Array.from(new Uint8Array(h)).map(x=>x.toString(16).padStart(2,'0')).join('');}
-
-function mostraNotice(){
- if(sessionStorage.getItem('noticeChrome')==='1')return;
- const ua=navigator.userAgent;
- const ok=/Chrome\/|Edg\//.test(ua);
- const el=document.getElementById('chromeNotice');
- el.style.display='flex';
- if(!ok){el.classList.remove('info');el.classList.add('warn');}
-}
-function chiudiNotice(){
- sessionStorage.setItem('noticeChrome','1');
- document.getElementById('chromeNotice').style.display='none';
+function collega(){
+  const code=document.getElementById('acsInput').value.trim();
+  if(!code){alert('Incolla il tuo codice ACS-');return;}
+  localStorage.setItem('studioCodeSalvato',code);
+  sessionStorage.setItem('studio',code);
+  location.href='benvenuto.html?studio='+encodeURIComponent(code);
 }
 
 async function init(){
   await renderHero();
-  mostraNotice();
   renderOfferta();
   loadContatti();
   loadIdent();
   renderApps();
+  renderAdmin();
 }
 
 async function renderHero(){
@@ -183,7 +185,6 @@ async function renderHero(){
   if(!studioCode){
     document.getElementById('heroNome').textContent='Studio';
     badges.innerHTML='<span class="hbadge ko">Nessun codice studio</span>';
-    document.getElementById('appsGrid').innerHTML='';
     return;
   }
   try{
@@ -194,10 +195,12 @@ async function renderHero(){
   document.getElementById('heroNome').textContent=nome;
   document.title=nome+' - AppCenter Studio Premium';
   const oggi=new Date().toISOString().slice(0,10);
-  if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';document.getElementById('appsGrid').innerHTML='';return;}
-  if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso sospeso</span>';document.getElementById('appsGrid').innerHTML='';return;}
-  if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';document.getElementById('appsGrid').innerHTML='';return;}
+  if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';return;}
+  if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso sospeso</span>';return;}
+  if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';return;}
   badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+licenza.scadenza+'</span>';
+  document.getElementById('areaRiservata').classList.remove('hidden');
+  document.getElementById('collegaCard').classList.add('hidden');
 }
 
 async function renderOfferta(){
@@ -257,7 +260,7 @@ function renderLogoPrev(){
   document.getElementById('logoPrev').innerHTML=studioIdent.logoData?'<img class="logoPreview" src="'+studioIdent.logoData+'">':'';
 }
 
-async function salvaEPubblicaIdent(){
+function salvaEPubblicaIdent(){
   studioIdent.nome=document.getElementById('sNome').value.trim();
   studioIdent.piva=document.getElementById('sPiva').value.trim();
   studioIdent.indirizzo=document.getElementById('sIndirizzo').value.trim();
@@ -265,34 +268,9 @@ async function salvaEPubblicaIdent(){
   studioIdent.email=document.getElementById('sEmail').value.trim();
   studioIdent.note=document.getElementById('sNote').value.trim();
   localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
-  const tok=localStorage.getItem('netlify_token'),site=localStorage.getItem('netlify_site');
-  if(!tok||!site){alert('Dati salvati in questo browser.\nVerranno pubblicati sul sito clienti dopo il collegamento dello spazio foto.');return;}
-  try{
-    if(studioIdent.logoData&&studioIdent.logoData.startsWith('data:'))studioIdent.logo='/logo.png';
-    const entries=[{path:'/studio.json',data:JSON.stringify(studioIdent,null,2)}];
-    if(studioIdent.logoData&&studioIdent.logoData.startsWith('data:')){
-      const bin=atob(studioIdent.logoData.split(',')[1]);
-      const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);
-      for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
-      entries.push({path:'/logo.png',data:ab});
-    }
-    const existing=await fetch('https://api.netlify.com/api/v1/sites/'+site+'/files',{headers:{'Authorization':'Bearer '+tok}}).then(r=>r.ok?r.json():[]);
-    const merged={};(existing||[]).forEach(f=>{if(f.path&&f.sha)merged[f.path]=f.sha;});
-    const contents={},shaToPath={};
-    for(const e of entries){
-      let ab,hash;
-      if(typeof e.data==='string'){const b=new TextEncoder().encode(e.data);ab=b.buffer;hash=await sha1(b);}
-      else{ab=e.data;hash=await sha1Buf(ab);}
-      merged[e.path]=hash;contents[hash]=ab;shaToPath[hash]=e.path;
-    }
-    const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+site+'/deploys',{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:merged})})).json();
-    if(dep.error)throw new Error(dep.error);
-    for(const sh of (dep.required||[])){
-      if(contents[sh]===undefined)continue;
-      await fetch('https://api.netlify.com/api/v1/deploys/'+dep.id+'/files'+shaToPath[sh],{method:'PUT',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/octet-stream'},body:contents[sh]});
-    }
-    alert('Identita\' dello studio salvata e pubblicata.');
-  }catch(e){alert('Dati salvati in locale. Errore pubblicazione: '+e.message);}
+  const q=new URLSearchParams({studio:studioCode,nome:studioIdent.nome,piva:studioIdent.piva,indirizzo:studioIdent.indirizzo,telefono:studioIdent.telefono,email:studioIdent.email,note:studioIdent.note});
+  window.open(NETLIFY_BASE+'/form-identita.html?'+q.toString(),'_blank');
+  alert('Dati salvati in questo browser.\nNella nuova scheda premi INVIA per spedirli al fornitore.');
 }
 
 function renderApps(){
@@ -319,6 +297,24 @@ function renderApps(){
     <p>${a.d}</p>
     <a href="${a.u}">Apri &rarr;</a>
    </div>`).join('');
+}
+
+async function renderAdmin(){
+  if(sessionStorage.getItem('admin')!=='1')return;
+  const box=document.getElementById('adminPanel');
+  box.classList.remove('hidden');
+  let righe='';
+  try{
+    const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+    const oggi=new Date().toISOString().slice(0,10);
+    righe=(l.studi||[]).map(s=>'<tr><td>'+s.codice+'</td><td>'+(s.nome||'')+'</td><td>'+s.scadenza+'</td><td>'+(s.attivo?'SI':'NO')+'</td><td>'+(s.scadenza<oggi?'SCADUTA':'valida')+'</td></tr>').join('');
+  }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
+  box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
+   '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
+   '<div class="riga">Netlify (forms + JSON): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
+   '<div class="riga">R2 foto (pubblico): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; Bucket: <a href="https://dash.cloudflare.com" target="_blank">dashboard</a></div>'+
+   '<div class="riga">JSON stato selezioni: <a href="'+NETLIFY_BASE+'/stato-selezioni.json" target="_blank">apri</a></div>'+
+   '<table><tr><th>Codice</th><th>Nome</th><th>Scadenza</th><th>Attivo</th><th>Stato</th></tr>'+righe+'</table>';
 }
 
 function backupGlobale(){
