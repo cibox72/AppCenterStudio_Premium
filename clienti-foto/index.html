@@ -83,7 +83,7 @@ label { display:block; margin-top:10px; font-size:14px; font-weight:bold; }
     <h2>Identità studio</h2>
     <p style="font-size:12px;color:#666">Questi dati compaiono nelle pagine del cliente (intestazione, logo, WhatsApp per la notifica selezione).</p>
     <label>Nome studio</label><input type="text" id="idNome">
-    <label>WhatsApp (solo numeri, es. 393447507656)</label><input type="text" id="idWhatsapp" placeholder="393447507656">
+    <label>WhatsApp (UN SOLO numero: se ne scrivi altri, vale il primo)</label><input type="text" id="idWhatsapp" placeholder="es. 393447507656">
     <label>Messaggio di benvenuto</label><textarea id="idMessaggio" rows="3"></textarea>
     <label>Logo (file immagine)</label><input type="file" id="idLogo" accept="image/*">
     <div id="logoPreviewBox"></div>
@@ -125,6 +125,7 @@ let MANIFESTI={};
 
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
+function primoNumero(s){const m=String(s||'').match(/\d{6,15}/);return m?m[0]:'';}
 function $(id){return document.getElementById(id);}
 function show(id){$(id).classList.remove('hidden');}
 function hide(id){$(id).classList.add('hidden');}
@@ -258,7 +259,7 @@ function salvaIdentita(){
  const logoFile=$('idLogo').files[0];
  const nuova={
   nome:$('idNome').value,
-  whatsapp:$('idWhatsapp').value.replace(/\D/g,''),
+  whatsapp:primoNumero($('idWhatsapp').value),
   messaggio:$('idMessaggio').value,
   logoData:studioIdent.logoData||''
  };
