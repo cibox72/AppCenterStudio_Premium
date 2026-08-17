@@ -127,6 +127,7 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold;color:#3d342
 <div class="topbar">
 <button onclick="history.back()">← Indietro</button>
 <button onclick="goHome()">Home</button>
+<button onclick="promemoriaWA()">Promemoria WhatsApp</button>
 <button onclick="backupGlobale()">Backup globale</button>
 <label class="btn btn-secondary" style="cursor:pointer;margin:0">Ripristino globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
 </div>
@@ -146,7 +147,7 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold;color:#3d342
  </div>
  <div class="cal-grid" id="calDow"></div>
  <div class="cal-grid" id="calGrid" style="margin-top:4px"></div>
- <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno.</p>
+ <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno. Il pulsante <b>Promemoria WhatsApp</b> manda al numero dello studio l'elenco degli impegni di oggi.</p>
 </div>
 
 <div id="dayPanel"></div>
@@ -165,158 +166,5 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
-function backupGlobale(){
- const d={};
- for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
- const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);
- a.download='AppCenterStudio_BACKUP_GLOBALE_'+today()+'.json';a.click();
- alert('Backup globale scaricato: contiene tutti i dati di tutte le app.');
-}
-function ripristinoGlobale(e){
- const f=e.target.files[0];if(!f)return;
- const r=new FileReader();
- r.onload=ev=>{try{
-  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-  if(typeof d!=='object')throw new Error('File non valido.');
-  if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
-  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
- }catch(err){alert('Errore: '+err.message)}};
- r.readAsText(f);e.target.value='';
-}
-
-/* ===== CALENDARIO ===== */
-let calYear,calMonth,calSelected=null;
-
-function eventiDi(d){
- const lista=[];
- (DB.preventivi||[]).forEach(p=>{
-  if(!p.dataServizio||p.dataServizio!==d)return;
-  lista.push({
-   tipo:p.stato==='contratto'?'contratto':'preventivo',
-   titolo:(p.tipoServizio||'Servizio')+' — '+[p.clienteA.nome,p.clienteA.cognome].filter(Boolean).join(' '),
-   ora:'',
-   note:(p.numero||'')+(p.chiesa?' · '+p.chiesa:'')+(p.location?' · '+p.location:''),
-   readOnly:true,refId:p.id,stato:p.stato
-  });
- });
- (agenda||[]).forEach(a=>{
-  if(!a.data||a.data!==d)return;
-  lista.push({tipo:a.tipo||'appuntamento',titolo:a.titolo||'(senza titolo)',ora:a.ora||'',note:a.note||'',readOnly:false,refId:a.id});
- });
- lista.sort((a,b)=>(a.ora||'').localeCompare(b.ora||''));
- return lista;
-}
-
-function initCal(){
- const now=new Date();
- calYear=now.getFullYear();calMonth=now.getMonth();calSelected=today();
- document.getElementById('calDow').innerHTML=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'].map(d=>'<div class="cal-dow">'+d+'</div>').join('');
-}
-function renderCalendario(){
- if(calYear===undefined)initCal();
- const mesi=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
- document.getElementById('calMese').textContent=mesi[calMonth]+' '+calYear;
- const primo=new Date(calYear,calMonth,1);
- let dow0=primo.getDay();dow0=(dow0===0?6:dow0-1);
- const giorniMese=new Date(calYear,calMonth+1,0).getDate();
- const giorniMesePrec=new Date(calYear,calMonth,0).getDate();
- const celle=[];
- const oggiStr=today();
- for(let i=dow0-1;i>=0;i--){
-  const d=giorniMesePrec-i;
-  celle.push({n:d,date:new Date(calYear,calMonth-1,d).toISOString().slice(0,10),other:true});
- }
- for(let d=1;d<=giorniMese;d++){
-  celle.push({n:d,date:new Date(calYear,calMonth,d).toISOString().slice(0,10),other:false});
- }
- const resto=celle.length%7;
- if(resto){for(let i=1;i<=7-resto;i++){celle.push({n:i,date:new Date(calYear,calMonth+1,i).toISOString().slice(0,10),other:true});}}
- document.getElementById('calGrid').innerHTML=celle.map(c=>{
-  const ev=eventiDi(c.date);
-  const contratti=ev.filter(e=>e.tipo==='contratto');
-  const appunt=ev.filter(e=>e.tipo==='appuntamento'||e.tipo==='altro');
-  const preventivi=ev.filter(e=>e.tipo==='preventivo');
-  let cls='cal-day';if(c.other)cls+=' other';if(c.date===oggiStr)cls+=' today';if(c.date===calSelected)cls+=' selected';
-  const MAX=3;let evHtml='';let shown=0;
-  contratti.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row contratto"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
-  appunt.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row '+(e.tipo==='altro'?'altro':'appuntamento')+'"><span class="ev-dot"></span>'+(e.ora?e.ora+' ':'')+esc(e.titolo)+'</div>';shown++;});
-  preventivi.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row contratto" style="opacity:.55"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
-  if(ev.length>MAX)evHtml+='<div class="cal-more">+'+(ev.length-MAX)+'</div>';
-  return '<div class="'+cls+'" onclick="selectDay(\''+c.date+'\')"><div class="cal-n">'+c.n+'</div><div class="cal-ev">'+evHtml+'</div></div>';
- }).join('');
-}
-function selectDay(d){calSelected=d;renderCalendario();renderDayPanel();}
-function calPrecedente(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalendario();}
-function calSuccessivo(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalendario();}
-function calOggi(){const now=new Date();calYear=now.getFullYear();calMonth=now.getMonth();calSelected=today();renderCalendario();renderDayPanel();}
-
-function renderDayPanel(){
- const box=document.getElementById('dayPanel');if(!box)return;
- if(!calSelected){box.innerHTML='';return;}
- const ev=eventiDi(calSelected);
- const dt=new Date(calSelected+'T00:00:00');
- const giorni=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
- const mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
- const label=giorni[dt.getDay()]+' '+dt.getDate()+' '+mesi[dt.getMonth()]+' '+dt.getFullYear();
- let warn='';
- const contratti=ev.filter(e=>e.tipo==='contratto');
- if(contratti.length)warn='<div class="warn-box"><b>Data impegnata:</b> ci '+(contratti.length===1?"è un contratto":"sono "+contratti.length+" contratti")+' in questo giorno. Puoi comunque aggiungere altri appuntamenti (secondo/terzo evento).</div>';
- const listHtml=ev.length?ev.map(e=>{
-  const acts=e.readOnly
-   ?'<button class="mini" data-openprev="'+e.refId+'">Apri contratto</button>'
-   :'<button class="mini" data-editapp="'+e.refId+'">Modifica</button> <button class="mini" data-delapp="'+e.refId+'">Elimina</button>';
-  return '<div class="day-item"><div class="ora">'+(e.ora||'—')+'</div><div class="info"><div class="titolo">'+esc(e.titolo)+'</div><span class="tipo '+e.tipo+'">'+(e.tipo==='contratto'?'Contratto':e.tipo==='preventivo'?'Preventivo':e.tipo==='appuntamento'?'Appuntamento':'Altro')+'</span>'+(e.note?'<div class="note">'+esc(e.note)+'</div>':'')+'</div><div class="acts">'+acts+'</div></div>';
- }).join(''):'<p class="hint">Nessun impegno in questa giornata.</p>';
- box.innerHTML='<div class="day-panel"><h3>'+label+'<span>'+ev.length+' impegno/i</span></h3>'+warn+'<div class="day-list">'+listHtml+'</div>'+
-  '<div style="margin-top:18px;border-top:1px solid #e6dfd2;padding-top:16px"><h3 style="margin-top:0">+ Nuovo appuntamento</h3>'+
-  '<div class="form-row"><div><label>Data</label><input type="date" id="appData" value="'+calSelected+'"></div><div><label>Ora (opzionale)</label><input type="time" id="appOra"></div></div>'+
-  '<div class="form-row"><div><label>Titolo</label><input id="appTitolo" placeholder="Es. Sopralluogo, incontro cliente..."></div><div><label>Tipo</label><select id="appTipo"><option value="appuntamento">Appuntamento</option><option value="altro">Altro impegno</option></select></div></div>'+
-  '<div class="form-row full"><div><label>Note</label><textarea id="appNote" rows="2" placeholder="Dettagli..."></textarea></div></div>'+
-  '<button class="btn" onclick="salvaAppuntamento()">Aggiungi al giorno</button></div></div>';
- box.onclick=e=>{
-  if(e.target.dataset.openprev){location.href='../preventivi-contratti/?studio='+studioCodice;}
-  if(e.target.dataset.editapp){modificaAppuntamento(e.target.dataset.editapp);}
-  if(e.target.dataset.delapp){if(confirm('Eliminare questo appuntamento?')){agenda=agenda.filter(a=>a.id!==e.target.dataset.delapp);saveAgenda();renderDayPanel();renderCalendario();}}
- };
-}
-function salvaAppuntamento(){
- const data=document.getElementById('appData').value;
- const titolo=document.getElementById('appTitolo').value.trim();
- if(!data||!titolo)return alert('Data e titolo sono obbligatori.');
- agenda.push({id:uid(),data,ora:document.getElementById('appOra').value,titolo,tipo:document.getElementById('appTipo').value,note:document.getElementById('appNote').value.trim()});
- saveAgenda();calSelected=data;renderDayPanel();renderCalendario();
-}
-function modificaAppuntamento(id){
- const a=agenda.find(x=>x.id===id);if(!a)return;
- const titolo=prompt('Titolo:',a.titolo);if(titolo===null)return;
- const data=prompt('Data (AAAA-MM-DD):',a.data);if(!data)return;
- a.titolo=titolo;a.data=data;
- a.ora=prompt('Ora (HH:MM, vuoto se senza):',a.ora||'');
- a.note=prompt('Note:',a.note||'');
- saveAgenda();calSelected=data;renderDayPanel();renderCalendario();
-}
-
-function checkPromemoria(){
- const oggi=today();
- const prom=agenda.filter(a=>a.data===oggi);
- const contratti=(DB.preventivi||[]).filter(p=>p.stato==='contratto'&&p.dataServizio===oggi);
- if(!prom.length&&!contratti.length)return;
- if('Notification' in window&&Notification.permission==='granted'){
-  let msg='Oggi: ';
-  prom.forEach(p=>{msg+=p.titolo+' '+(p.ora||'')+', ';});
-  contratti.forEach(c=>{msg+=c.tipoServizio+' ('+c.clienteA.nome+') ';});
-  new Notification('AppCenterStudio Premium - Agenda',{body:msg});
- }else if('Notification' in window&&Notification.permission!=='denied'){
-  Notification.requestPermission();
- }
-}
-
-initCal();
-renderCalendario();
-renderDayPanel();
-checkPromemoria();
-</script>
-</body>
-</html>
+function promemoriaWA(){
+ const oggi
