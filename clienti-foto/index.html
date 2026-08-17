@@ -116,7 +116,7 @@ label { display:block; margin-top:10px; font-size:14px; font-weight:bold; }
 
 <script>
 const WORKER='https://acs-api.mairaluigi.workers.dev';
-const GLOBAL_KEYS=['clientiFotoData','studioIdent','appcenter_db_v1','gl_services','selezioniRicevute','ordiniRicevuti','negozioConfig','agendaData','emailArchivio'];
+const GLOBAL_KEYS=['clientiFotoData','studioIdent','appcenter_db_v1','appcenter_agenda','gl_services','selezioniRicevute','ordiniRicevuti','negozioConfig','emailArchivio'];
 
 let studioCodice=null;
 let clientiFotoData=JSON.parse(localStorage.getItem('clientiFotoData')||'{"clients":[]}');
@@ -193,7 +193,13 @@ async function caricaFoto(){
  const fd=new FormData();
  fd.append('studio',studioCodice);
  fd.append('cliente',codice);
- images.forEach(f=>fd.append('file',f));
+ const meta=[];
+ images.forEach(f=>{
+  fd.append('file',f);
+  const rel=f.webkitRelativePath||'';
+  meta.push({name:f.name,folder:rel.includes('/')?rel.split('/')[0]:'varie'});
+ });
+ fd.append('meta',JSON.stringify(meta));
  try{
   const r=await(await fetch(WORKER+'/upload',{method:'POST',body:fd})).json();
   if(r.error)return alert('Errore caricamento: '+r.error);
@@ -230,6 +236,7 @@ function statoHtml(man){
  const chips=[];
  if(man.basse&&man.basse.length)chips.push('<span class="chip">'+man.basse.length+' foto nel magazzino</span>');
  else chips.push('<span class="chip">magazzino vuoto</span>');
+ if(man.folders){const k=Object.keys(man.folders);if(k.length)chips.push('<span class="chip">Cartelle: '+k.map(x=>x+' ('+man.folders[x]+')').join(', ')+'</span>');}
  if(man.gallery&&man.gallery.length)chips.push('<span class="chip">'+man.gallery.length+' ritoccate in gallery</span>');
  if(man.selezione){
   const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
