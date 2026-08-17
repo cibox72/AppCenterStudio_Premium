@@ -9,105 +9,101 @@
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   background:
-    radial-gradient(ellipse at center, rgba(255,253,249,0.95) 0%, rgba(250,247,242,0.85) 40%, rgba(235,228,216,0.5) 100%),
-    linear-gradient(180deg,#faf7f2 0%,#ebe4d8 100%);
+    radial-gradient(ellipse at top, rgba(255,255,255,0.9) 0%, rgba(250,247,240,0.6) 45%, rgba(240,233,220,0.4) 100%),
+    linear-gradient(180deg,#fdfcf9 0%,#f2ede4 100%);
   background-attachment:fixed;
-  color:#3d342a;line-height:1.6
+  color:#3a3226;line-height:1.6
 }
-h1,h2,h3{font-family:Georgia,serif;font-weight:normal;margin-bottom:1rem;color:#2a231a}
+h1,h2,h3{font-family:Georgia,serif;font-weight:normal;margin-bottom:1rem;color:#2b2418}
 .topbar{
-  display:flex;gap:10px;padding:15px;
-  background:rgba(255,253,249,0.9);
+  display:flex;gap:10px;padding:14px 18px;
+  background:rgba(255,255,255,0.95);
   backdrop-filter:blur(10px);
-  border-bottom:1px solid #e6dfd2;
-  position:sticky;top:0;z-index:100;flex-wrap:wrap
+  border-bottom:1px solid #eae3d5;
+  position:sticky;top:0;z-index:100;flex-wrap:wrap;
+  box-shadow:0 2px 10px rgba(120,100,70,.06)
 }
 .topbar button, .topbar label{
-  padding:8px 16px;
-  background:rgba(255,253,249,0.95);
-  border:1px solid #a89a82;
-  cursor:pointer;font-size:14px;border-radius:999px;
-  font-family:inherit;color:#3d342a;margin:0
+  padding:8px 18px;
+  background:#fff;
+  border:1px solid #d5c9ae;
+  cursor:pointer;font-size:13px;border-radius:999px;
+  font-family:inherit;color:#4a4030;margin:0;font-weight:600
 }
-.topbar button:hover, .topbar label:hover{background:#3d342a;color:#faf7f2;border-color:#3d342a}
+.topbar button:hover, .topbar label:hover{background:#6b5d4a;color:#fff;border-color:#6b5d4a}
 .container{max-width:1180px;margin:0 auto;padding:30px 20px}
 .card{
-  background:rgba(255,253,249,0.95);
-  backdrop-filter:blur(8px);
-  border:1px solid #e6dfd2;padding:25px;margin-bottom:25px;border-radius:14px;
-  box-shadow:0 4px 14px rgba(120,100,70,.08)
+  background:#fff;
+  border:1px solid #eae3d5;padding:26px;margin-bottom:25px;border-radius:16px;
+  box-shadow:0 6px 20px rgba(120,100,70,.08)
 }
-.card h2{padding-bottom:10px;border-bottom:1px solid #e6dfd2}
-.btn{display:inline-block;padding:8px 18px;background:#3d342a;color:#faf7f2;border:none;cursor:pointer;font-size:14px;border-radius:20px;margin:4px 2px}
-.btn:hover{background:#2a231a}
-.btn-secondary{background:rgba(255,253,249,0.95);color:#3d342a;border:1px solid #a89a82}
-.btn-secondary:hover{background:#3d342a;color:#faf7f2}
-.mini{border:1px solid #c9bea6;background:rgba(255,253,249,0.95);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px;color:#3d342a}
-.mini:hover{background:#ebe4d8}
-input,select,textarea{width:100%;padding:10px;border:1px solid #e6dfd2;margin:5px 0;font-family:inherit;border-radius:6px;background:#fffdf9;color:#3d342a}
-input:focus,select:focus,textarea:focus{outline:2px solid #a89a82}
-label{display:block;margin-top:10px;font-size:14px;font-weight:bold;color:#3d342a}
-.hint{font-size:12px;color:#8a7c66}
+.card h2{padding-bottom:10px;border-bottom:1px solid #efe8da}
+.btn{display:inline-block;padding:9px 20px;background:#6b5d4a;color:#fff;border:none;cursor:pointer;font-size:14px;border-radius:20px;margin:4px 2px;font-weight:600}
+.btn:hover{background:#55483a}
+.btn-secondary{background:#fff;color:#4a4030;border:1px solid #d5c9ae}
+.btn-secondary:hover{background:#6b5d4a;color:#fff}
+.mini{border:1px solid #d5c9ae;background:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;color:#4a4030}
+.mini:hover{background:#f2ede4}
+input,select,textarea{width:100%;padding:10px;border:1px solid #e3dbc9;margin:5px 0;font-family:inherit;border-radius:8px;background:#fffdf9;color:#3a3226}
+input:focus,select:focus,textarea:focus{outline:2px solid #c9b98f}
+label{display:block;margin-top:10px;font-size:14px;font-weight:bold;color:#4a4030}
+.hint{font-size:12px;color:#9a8d74}
 .hidden{display:none}
 .cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap}
 .cal-head h2{margin:0;border:none;padding:0;font-size:22px}
 .cal-nav{display:flex;gap:6px;align-items:center}
-.cal-nav .mese{font-family:Georgia,serif;font-size:18px;font-weight:700;min-width:170px;text-align:center;text-transform:capitalize;color:#3d342a}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal-dow{font-size:11px;font-weight:700;text-align:center;padding:6px 0;color:#8a7c66;letter-spacing:.08em;text-transform:uppercase}
+.cal-nav .mese{font-family:Georgia,serif;font-size:19px;font-weight:700;min-width:170px;text-align:center;text-transform:capitalize;color:#3a3226}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-dow{font-size:11px;font-weight:700;text-align:center;padding:6px 0;color:#9a8d74;letter-spacing:.08em;text-transform:uppercase}
 .cal-day{
   min-height:88px;
-  background:rgba(255,253,249,0.9);
-  backdrop-filter:blur(4px);
-  border:1px solid #e6dfd2;border-radius:8px;padding:6px;cursor:pointer;position:relative;display:flex;flex-direction:column;transition:all .15s;
-  box-shadow:0 2px 6px rgba(120,100,70,.04)
+  background:#fff;
+  border:1px solid #eae3d5;border-radius:10px;padding:6px;cursor:pointer;position:relative;display:flex;flex-direction:column;transition:all .15s;
+  box-shadow:0 1px 4px rgba(120,100,70,.05)
 }
-.cal-day:hover{background:#f3ecdf;border-color:#a89a82}
-.cal-day.other{background:rgba(245,240,233,0.7);color:#b5a88e}
-.cal-day.today{background:#fffdf9;border:2px solid #a89a82}
-.cal-day.selected{background:#3d342a;color:#faf7f2;border-color:#3d342a}
-.cal-day.selected .cal-n{color:#faf7f2}
-.cal-n{font-size:13px;font-weight:700;margin-bottom:4px;color:#3d342a}
+.cal-day:hover{background:#faf6ee;border-color:#c9b98f}
+.cal-day.other{background:#f7f4ec;color:#c0b49a;border-color:#efe9dc}
+.cal-day.today{background:#fbf6ea;border:2px solid #d9c9a3}
+.cal-day.selected{background:#fff;border:2px solid #8a7c66;box-shadow:0 4px 14px rgba(120,100,70,.18)}
+.cal-day.selected .cal-n{color:#2b2418}
+.cal-n{font-size:13px;font-weight:700;margin-bottom:4px;color:#3a3226}
 .cal-ev{flex:1;display:flex;flex-direction:column;gap:2px;overflow:hidden}
-.ev-row{font-size:10px;line-height:1.2;padding:2px 4px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
+.ev-row{font-size:10px;line-height:1.25;padding:2px 5px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center;font-weight:600}
 .ev-row .ev-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.ev-row.contratto{background:rgba(61,52,42,.1);color:#3d342a;font-weight:600}
-.ev-row.contratto .ev-dot{background:#3d342a}
-.ev-row.appuntamento{background:rgba(120,150,100,.15);color:#3d5a2a}
-.ev-row.appuntamento .ev-dot{background:#6b8a55}
-.ev-row.altro{background:rgba(180,140,80,.15);color:#7a4a10}
+.ev-row.contratto{background:#3a3226;color:#fff}
+.ev-row.contratto .ev-dot{background:#d9c9a3}
+.ev-row.appuntamento{background:#eaf3e4;color:#3f6b2e}
+.ev-row.appuntamento .ev-dot{background:#5c8a4a}
+.ev-row.altro{background:#f7ecd9;color:#8a5a1a}
 .ev-row.altro .ev-dot{background:#b48840}
-.cal-more{font-size:10px;color:#8a7c66;padding:1px 4px}
+.cal-more{font-size:10px;color:#9a8d74;padding:1px 4px}
 .day-panel{
-  background:rgba(255,253,249,0.95);
-  backdrop-filter:blur(8px);
-  border:1px solid #e6dfd2;border-radius:12px;padding:20px;margin-top:18px;
-  box-shadow:0 4px 14px rgba(120,100,70,.08)
+  background:#fff;
+  border:1px solid #eae3d5;border-radius:16px;padding:22px;margin-top:18px;
+  box-shadow:0 6px 20px rgba(120,100,70,.08)
 }
 .day-panel h3{margin-top:0;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.day-panel h3 span{font-size:13px;color:#8a7c66;font-weight:400;text-transform:none}
+.day-panel h3 span{font-size:13px;color:#9a8d74;font-weight:400;text-transform:none}
 .day-list{margin:12px 0}
 .day-item{
-  display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px;
-  background:rgba(255,253,249,0.95);
-  backdrop-filter:blur(4px);
-  border:1px solid #e6dfd2;border-radius:8px;margin-bottom:8px;
-  box-shadow:0 2px 6px rgba(120,100,70,.04)
+  display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:14px;
+  background:#fffdf9;
+  border:1px solid #eae3d5;border-radius:10px;margin-bottom:8px;
+  box-shadow:0 1px 4px rgba(120,100,70,.05)
 }
-.day-item .ora{font-family:monospace;font-weight:700;font-size:14px;min-width:50px;color:#3d342a}
+.day-item .ora{font-family:monospace;font-weight:700;font-size:14px;min-width:50px;color:#3a3226}
 .day-item .info{flex:1}
-.day-item .info .titolo{font-weight:700;font-size:14px;font-family:Georgia,serif;color:#2a231a}
-.day-item .info .tipo{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
-.day-item .info .tipo.contratto{background:#3d342a;color:#faf7f2}
-.day-item .info .tipo.preventivo{background:#8a7c66;color:#faf7f2}
-.day-item .info .tipo.appuntamento{background:#6b8a55;color:#fff}
+.day-item .info .titolo{font-weight:700;font-size:15px;font-family:Georgia,serif;color:#2b2418}
+.day-item .info .tipo{display:inline-block;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:700;margin-top:3px;text-transform:uppercase;letter-spacing:.06em}
+.day-item .info .tipo.contratto{background:#3a3226;color:#fff}
+.day-item .info .tipo.preventivo{background:#8a7c66;color:#fff}
+.day-item .info .tipo.appuntamento{background:#5c8a4a;color:#fff}
 .day-item .info .tipo.altro{background:#b48840;color:#fff}
-.day-item .info .note{font-size:12px;color:#5a4f3e;margin-top:4px;white-space:pre-wrap}
+.day-item .info .note{font-size:12px;color:#6b5f4c;margin-top:4px;white-space:pre-wrap}
 .day-item .acts{display:flex;gap:4px}
 .warn-box{
-  background:rgba(255,245,225,0.95);
-  backdrop-filter:blur(4px);
-  border:1px solid #e8c98a;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;color:#7a5a20
+  background:#fdf6e8;
+  border:1px solid #e8d5a8;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:12px;color:#7a5a20
 }
 .warn-box b{color:#5a3a10}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
@@ -256,7 +252,7 @@ function renderCalendario(){
   const MAX=3;let evHtml='';let shown=0;
   contratti.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row contratto"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
   appunt.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row '+(e.tipo==='altro'?'altro':'appuntamento')+'"><span class="ev-dot"></span>'+(e.ora?e.ora+' ':'')+esc(e.titolo)+'</div>';shown++;});
-  preventivi.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row contratto" style="opacity:.55"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
+  preventivi.slice(0,MAX-shown).forEach(e=>{evHtml+='<div class="ev-row appuntamento" style="opacity:.6"><span class="ev-dot"></span>'+esc(e.titolo)+'</div>';shown++;});
   if(ev.length>MAX)evHtml+='<div class="cal-more">+'+(ev.length-MAX)+'</div>';
   return '<div class="'+cls+'" onclick="selectDay(\''+c.date+'\')"><div class="cal-n">'+c.n+'</div><div class="cal-ev">'+evHtml+'</div></div>';
  }).join('');
@@ -284,7 +280,7 @@ function renderDayPanel(){
   return '<div class="day-item"><div class="ora">'+(e.ora||'—')+'</div><div class="info"><div class="titolo">'+esc(e.titolo)+'</div><span class="tipo '+e.tipo+'">'+(e.tipo==='contratto'?'Contratto':e.tipo==='preventivo'?'Preventivo':e.tipo==='appuntamento'?'Appuntamento':'Altro')+'</span>'+(e.note?'<div class="note">'+esc(e.note)+'</div>':'')+'</div><div class="acts">'+acts+'</div></div>';
  }).join(''):'<p class="hint">Nessun impegno in questa giornata.</p>';
  box.innerHTML='<div class="day-panel"><h3>'+label+'<span>'+ev.length+' impegno/i</span></h3>'+warn+'<div class="day-list">'+listHtml+'</div>'+
-  '<div style="margin-top:18px;border-top:1px solid #e6dfd2;padding-top:16px"><h3 style="margin-top:0">+ Nuovo appuntamento</h3>'+
+  '<div style="margin-top:18px;border-top:1px solid #efe8da;padding-top:16px"><h3 style="margin-top:0">+ Nuovo appuntamento</h3>'+
   '<div class="form-row"><div><label>Data</label><input type="date" id="appData" value="'+calSelected+'"></div><div><label>Ora (opzionale)</label><input type="time" id="appOra"></div></div>'+
   '<div class="form-row"><div><label>Titolo</label><input id="appTitolo" placeholder="Es. Sopralluogo, incontro cliente..."></div><div><label>Tipo</label><select id="appTipo"><option value="appuntamento">Appuntamento</option><option value="altro">Altro impegno</option></select></div></div>'+
   '<div class="form-row full"><div><label>Note</label><textarea id="appNote" rows="2" placeholder="Dettagli..."></textarea></div></div>'+
