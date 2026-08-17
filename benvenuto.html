@@ -149,6 +149,7 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 <script>
 const NETLIFY_BASE='https://dashing-florentine-9b905e.netlify.app';
 const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
+const WORKER='https://acs-api.mairaluigi.workers.dev';
 const FORNITORE_WA='393447507656';
 const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
 
@@ -287,12 +288,12 @@ function renderApps(){
   const apps=[
     {n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, acconti con ricevute, piani di pagamento e PDF con la tua intestazione.',u:'preventivi-contratti/'+q},
     {n:'02',t:'Workflow Foto & Video',d:'Stato di avanzamento di ogni servizio, tabella clienti e PDF di produzione.',u:'workflow/'+q},
-    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto nel magazzino temporaneo, gallery con scadenza automatica.',u:'clienti-foto/'+q},
-    {n:'04',t:'Selezione per Album',d:'Selezione in studio o da casa (link valido 7 giorni). Pulizia automatica e gallery 6 mesi.',u:'selezione-album/'+q},
-    {n:'05',t:'Gallery',d:'Galleria elegante per i tuoi clienti con scadenza automatica e proroga.',u:'gallery/'+q},
+    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto nel magazzino temporaneo, link gallery al cliente.',u:'clienti-foto/'+q},
+    {n:'04',t:'Selezione per Album',d:'Selezione in studio o da casa (link 7 giorni). Pulizia automatica e gallery 6 mesi.',u:'selezione-album/'+q},
+    {n:'05',t:'Gallery',d:'Galleria elegante per i clienti con scadenza automatica e proroga.',u:'gallery/'+q},
     {n:'06',t:'Negozio Online',d:'Prodotti con foto e prezzi, carrello, ordini e pagamenti al tuo studio.',u:'negozio/'+q},
-    {n:'07',t:'Agenda',d:'Calendario sfogliabile: contratti in automatico, appuntamenti e promemoria.',u:'agenda/'+q},
-    {n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo per qualsiasi servizio o stampa, con PDF e firme.',u:'ricevute/'+q},
+    {n:'07',t:'Agenda',d:'Calendario sfogliabile: contratti automatici, appuntamenti e promemoria.',u:'agenda/'+q},
+    {n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo per qualsiasi servizio, con PDF e firme.',u:'ricevute/'+q},
     {n:'09',t:'Email',d:'Scrivi e invia email o PEC dall\'indirizzo dello studio, con modelli pronti.',u:'email/'+q},
     {n:'10',t:'Assistenza Online',d:'Chat dedicata con il fornitore e codice AnyDesk per il controllo remoto.',u:'assistenza.html'+q}
   ];
@@ -317,9 +318,9 @@ async function renderAdmin(){
   }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
   box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
    '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
-   '<div class="riga">Netlify (forms + JSON): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
-   '<div class="riga">R2 foto (pubblico): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; Bucket: <a href="https://dash.cloudflare.com" target="_blank">dashboard</a></div>'+
-   '<div class="riga">JSON stato selezioni: <a href="'+NETLIFY_BASE+'/stato-selezioni.json" target="_blank">apri</a></div>'+
+   '<div class="riga">Cervello Cloudflare (worker): <a href="'+WORKER+'/health" target="_blank">health check</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard worker</a></div>'+
+   '<div class="riga">Magazzino R2 (foto clienti): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard bucket</a></div>'+
+   '<div class="riga">Netlify (forms dati studio + identità): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
    '<table><tr><th>Codice</th><th>Nome</th><th>Scadenza</th><th>Attivo</th><th>Stato</th></tr>'+righe+'</table>';
 }
 
