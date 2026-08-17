@@ -143,7 +143,7 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold;color:#4a403
  </div>
  <div class="cal-grid" id="calDow"></div>
  <div class="cal-grid" id="calGrid" style="margin-top:4px"></div>
- <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno. Il pulsante <b>Promemoria WhatsApp</b> manda al numero dello studio l'elenco degli impegni di oggi.</p>
+ <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno. Il pulsante <b>Promemoria WhatsApp</b> copia il promemoria e apre WhatsApp al numero dello studio: se il messaggio non compare da solo, incollalo con Cmd+V e invia.</p>
 </div>
 
 <div id="dayPanel"></div>
@@ -172,7 +172,9 @@ function promemoriaWA(){
  if(!num)return alert('Numero dello studio mancante: salvalo in Identità studio (app 03 Clienti & Foto).');
  let msg='AGENDA '+fmtData(oggi)+'\n';
  ev.forEach(e=>{msg+=(e.ora?e.ora+' ':'')+'- '+e.titolo+(e.tipo?' ('+e.tipo+')':'')+'\n';});
+ if(navigator.clipboard)navigator.clipboard.writeText(msg).catch(()=>{});
  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+ alert('Promemoria copiato e WhatsApp aperto.\nSe il messaggio non compare da solo nella chat, incollalo con Cmd+V e premi invia.');
 }
 
 function backupGlobale(){
