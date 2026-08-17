@@ -89,7 +89,7 @@ async function impostaTema(id){
   });
   const j=await r.json();
   if(!r.ok)return alert('Errore GitHub: '+(j.message||r.status));
-  shaAttuale=j.content?j.content.sha:shaAttuale;
+  if(j.content&&j.content.sha)shaAttuale=j.content.sha;
   esito.textContent='Tema "'+id+'" pubblicato. Tra ~1 minuto tutte le app cambiano grafica.';
   renderGrid(id);
  }catch(e){alert('Errore: '+e.message);}
