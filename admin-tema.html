@@ -6,18 +6,19 @@
 <title>Pannello Tema - AppCenterStudio Premium</title>
 <style>
 body{font-family:Georgia,'Segoe UI',sans-serif;background:#f4efe7;color:#4a4237;margin:0;padding:30px}
-.wrap{max-width:760px;margin:0 auto}
+.wrap{max-width:860px;margin:0 auto}
 h1{letter-spacing:.15em;text-transform:uppercase;font-weight:400}
 .card{background:#fbf9f5;border:1px solid #e2d7c3;border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 6px 18px rgba(120,100,70,.08)}
 input{width:100%;padding:10px;border:1px solid #e2d7c3;border-radius:10px;margin:6px 0;font-family:inherit}
 .btn{background:#a3937d;color:#fff;border:none;padding:10px 20px;border-radius:999px;cursor:pointer;font-weight:600}
 .btn:hover{background:#6f6353}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-.tema{border:2px solid #e2d7c3;border-radius:14px;padding:16px;cursor:pointer;text-align:center;background:#fff}
-.tema:hover{border-color:#a3937d}
-.tema .sw{height:34px;border-radius:8px;margin-bottom:8px}
-.tema .nome{font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:12px}
-.tema.attivo{border-color:#6f6353;box-shadow:0 4px 12px rgba(111,99,83,.3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.tema-btn{background:#fff;border:2px solid #ddd;border-radius:12px;padding:14px 10px;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
+.tema-btn:hover{border-color:#a3937d;transform:translateY(-1px)}
+.tema-btn .sw{display:block;height:8px;border-radius:99px;margin-bottom:10px}
+.tema-btn .nome{font-family:Georgia,serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:#4a4237}
+.tema-btn.attivo{border-color:#6f6353;box-shadow:0 4px 14px rgba(111,99,83,.3)}
+.tema-btn.attivo .nome{font-weight:700}
 .hint{font-size:12px;color:#9b8f7d}
 #esito{margin-top:10px;font-weight:700}
 </style>
@@ -26,7 +27,7 @@ input{width:100%;padding:10px;border:1px solid #e2d7c3;border-radius:10px;margin
 <div class="wrap">
 <h1>Tema grafico stagionale</h1>
 <div class="card">
- <p class="hint">Il token GitHub serve solo per scrivere il file tema.json. Crealo su GitHub: Settings → Developer settings → Personal access tokens → token (classic) con spunta "repo". Dopo il cambio tema attendi ~1 minuto per la pubblicazione.</p>
+ <p class="hint">Il token GitHub serve solo per scrivere il file tema.json. Dopo il cambio tema attendi ~1 minuto per la pubblicazione.</p>
  <input id="token" type="password" placeholder="Incolla qui il tuo GitHub token">
  <button class="btn" onclick="salvaToken()">Salva token</button>
 </div>
@@ -40,25 +41,26 @@ input{width:100%;padding:10px;border:1px solid #e2d7c3;border-radius:10px;margin
 <script>
 const REPO='cibox72/AppCenterStudio_Premium';
 const TEMI=[
- {id:'classico',nome:'Classico',c1:'#f4efe7',c2:'#a3937d',e:'🌿'},
- {id:'wedding',nome:'Wedding',c1:'#faf8f3',c2:'#9caf88',e:'🕊️'},
- {id:'natale',nome:'Natale',c1:'#f7f2ec',c2:'#8c2f2f',e:'🎄'},
- {id:'carnevale',nome:'Carnevale',c1:'#faf4ff',c2:'#8e4fa8',e:'🎭'},
- {id:'pasqua',nome:'Pasqua',c1:'#fdf8f4',c2:'#c98ba0',e:'🌸'},
- {id:'estate',nome:'Estate',c1:'#f2f8fa',c2:'#2a7f9e',e:'🌊'},
- {id:'inverno',nome:'Inverno',c1:'#f2f5f8',c2:'#5b7f99',e:'❄️'}
+ {id:'classico',nome:'Classico',c1:'#f4efe7',c2:'#a3937d'},
+ {id:'wedding',nome:'Wedding',c1:'#faf8f3',c2:'#9caf88'},
+ {id:'natale',nome:'Natale',c1:'#f7f2ec',c2:'#8c2f2f'},
+ {id:'carnevale',nome:'Carnevale',c1:'#faf4ff',c2:'#8e4fa8'},
+ {id:'pasqua',nome:'Pasqua',c1:'#fdf8f4',c2:'#c98ba0'},
+ {id:'estate',nome:'Estate',c1:'#f2f8fa',c2:'#2a7f9e'},
+ {id:'inverno',nome:'Inverno',c1:'#f2f5f8',c2:'#5b7f99'}
 ];
 let shaAttuale=null;
 document.getElementById('token').value=localStorage.getItem('gh_token')||'';
 function salvaToken(){localStorage.setItem('gh_token',document.getElementById('token').value.trim());alert('Token salvato in questo browser.');}
 
+function temaBtnHtml(t,attivo){
+ return '<button class="tema-btn'+(attivo?' attivo':'')+'" onclick="impostaTema(\''+t.id+'\')">'+
+  '<span class="sw" style="background:linear-gradient(90deg,'+t.c1+' 50%,'+t.c2+' 50%)"></span>'+
+  '<span class="nome">'+t.nome+'</span></button>';
+}
 function renderGrid(attuale){
  document.getElementById('attuale').textContent=attuale;
- document.getElementById('grid').innerHTML=TEMI.map(t=>
-  '<div class="tema '+(t.id===attuale?'attivo':'')+'" onclick="impostaTema(\''+t.id+'\')">'+
-  '<div class="sw" style="background:linear-gradient(90deg,'+t.c1+' 50%,'+t.c2+' 50%)"></div>'+
-  '<div class="nome">'+t.e+' '+t.nome+'</div></div>'
- ).join('');
+ document.getElementById('grid').innerHTML=TEMI.map(t=>temaBtnHtml(t,t.id===attuale)).join('');
 }
 
 async function leggiStato(){
