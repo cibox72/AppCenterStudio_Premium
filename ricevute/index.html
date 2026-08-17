@@ -4,30 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>08 Ricevute - AppCenterStudio Premium</title>
-<script src="../licenza.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Georgia,'Segoe UI',Tahoma,sans-serif;
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
-    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
-    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
-  background-attachment:fixed;
-  color:var(--nero);
-  min-height:100vh
-}
-.topbar{
-  display:flex;gap:6px;padding:8px 14px;
-  background:rgba(255,255,255,0.85);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--bordo);
-  flex-wrap:wrap;align-items:center
-}
+body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);background-attachment:fixed;color:var(--nero);min-height:100vh}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
 .topbar .pill{background:rgba(255,255,255,0.8);color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .topbar .pill:hover{background:#111;color:#fff}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
@@ -43,13 +25,7 @@ button{font-family:inherit}
 .mini{border:1px solid #ccc;background:rgba(255,255,255,0.9);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:12px}
 .mini:hover{background:#eee}
 main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
-.card{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--bordo);border-radius:12px;
-  padding:18px;margin-bottom:16px;
-  box-shadow:0 6px 18px rgba(15,20,40,.07)
-}
+.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{font-size:11px;color:#666;display:block;margin-bottom:3px}
@@ -64,17 +40,26 @@ th{background:#111;color:#fff}
 .badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
 .modal.active{display:flex}
-.modal-content{
-  background:rgba(255,255,255,0.98);
-  backdrop-filter:blur(10px);
-  border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;
-  padding:24px;border:1px solid var(--bordo);
-  box-shadow:0 20px 60px rgba(0,0,0,.25)
-}
+.modal-content{background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;border:1px solid var(--bordo);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .riga{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px;border-bottom:1px dashed #e0e0e0}
-.firma{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:30px}
-.firma div{border-top:1px solid #111;padding-top:6px;font-size:12px;text-align:center}
-@media(max-width:800px){.grid{grid-template-columns:1fr}}
+/* ===== layout blocchetto ===== */
+.blocchetto{background:#fffef5;border:2px dashed #111;border-radius:8px;padding:20px;font-family:'Courier New',monospace;color:#111;margin:10px 0}
+.blocchetto .b-top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #111;padding-bottom:10px;margin-bottom:12px}
+.blocchetto .b-num{font-size:24px;font-weight:900;letter-spacing:.05em}
+.blocchetto .b-num small{font-size:12px;font-weight:400;display:block;letter-spacing:.1em}
+.blocchetto .b-data{text-align:right;font-size:14px;font-weight:700}
+.blocchetto .b-data small{display:block;font-size:10px;font-weight:400;color:#666}
+.blocchetto .b-row{display:grid;grid-template-columns:160px 1fr;gap:10px;padding:8px 0;border-bottom:1px dotted #999}
+.blocchetto .b-row:last-child{border-bottom:none}
+.blocchetto .b-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#666;font-weight:700}
+.blocchetto .b-value{font-size:14px;font-weight:600}
+.blocchetto .b-value.big{font-size:20px;font-weight:900;color:#111}
+.blocchetto .b-footer{margin-top:14px;border-top:2px solid #111;padding-top:10px;font-size:10px;color:#666;text-align:center;text-transform:uppercase;letter-spacing:.1em}
+.blocchetto .b-firme{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:20px}
+.blocchetto .b-firma{border-top:1px solid #111;padding-top:6px;font-size:11px;text-align:center;text-transform:uppercase;letter-spacing:.1em}
+.sync-status{font-size:11px;color:#2e7d32;margin-left:10px}
+.sync-status.ko{color:#b00020}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.blocchetto .b-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -82,10 +67,9 @@ th{background:#111;color:#fff}
 <div class="topbar">
   <button class="pill" onclick="history.back()">← Indietro</button>
   <button class="pill" onclick="goHome()">Home</button>
-  <button class="pill" onclick="backupGlobale()">Backup Globale</button>
-  <label class="pill" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
-  <button class="pill" style="background:#111;color:#fff" onclick="pubblicaArchivioComune()">Pubblica archivio comune</button>
-  <button class="pill" style="background:#111;color:#fff" onclick="scaricaEUnisciArchivio()">Scarica e unisci archivio</button>
+  <button class="pill" onclick="backupGlobale()">Backup globale</button>
+  <label class="pill" style="cursor:pointer">Ripristino globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+  <span class="sync-status" id="syncStatus">Sync cloud: --</span>
 </div>
 
 <header>
@@ -99,13 +83,13 @@ th{background:#111;color:#fff}
 <main>
   <div class="card">
     <h2 id="formTitle">Nuova ricevuta</h2>
-    <p class="hint">Ricevuta valida per qualsiasi servizio: servizio fotografico, stampa, video. Compila, salva e stampa il PDF con data e firme.</p>
+    <p class="hint">Ricevuta valida per qualsiasi servizio: fotografico, stampa, video. Salva e stampa il PDF con data e firme.</p>
     <div class="grid">
       <div><label>Nome cliente *</label><input id="r_cliente" placeholder="Es. Mario Rossi"></div>
-      <div><label>Tipo di servizio *</label><input id="r_servizio" placeholder="Es. Matrimonio, Stampa album, Video..."></div>
+      <div><label>Tipo di servizio *</label><input id="r_servizio" placeholder="Es. Matrimonio, Stampa album..."></div>
     </div>
     <div class="grid">
-      <div><label>Ricevo &euro; *</label><input id="r_importo" type="number" step="0.01" class="importo" placeholder="0,00"></div>
+      <div><label>Ricevo € *</label><input id="r_importo" type="number" step="0.01" class="importo" placeholder="0,00"></div>
       <div><label>Data</label><input id="r_data" type="date"></div>
     </div>
     <label>A titolo di acconto / saldo per...</label>
@@ -136,17 +120,55 @@ th{background:#111;color:#fff}
 
 <script>
 const KEY='appcenter_ricevute';
+const WORKER='https://acs-api.mairaluigi.workers.dev';
 const $=s=>document.querySelector(s);
 const fmt=n=>(isNaN(+n)?0:+n).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtData=d=>{if(!d)return'';const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');};
+const fmtData=d=>{if(!d)return '';const p=String(d).split('-');if(p.length!==3){const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');}return p[2]+'/'+p[1]+'/'+p[0].slice(2);};
 const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let studioCode=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCode)sessionStorage.setItem('studio',studioCode);
+
 let store=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.list)return d;}catch(e){}return{seq:1,list:[]};})();
 let ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
 let editingId=null;
-function save(){localStorage.setItem(KEY,JSON.stringify(store));}
-function goHome(){const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');}
+function save(){localStorage.setItem(KEY,JSON.stringify(store));syncCloud();}
+function goHome(){location.href='../benvenuto.html'+(studioCode?'?studio='+studioCode:'');}
+
+async function syncCloud(){
+ if(!studioCode)return;
+ const box=$('#syncStatus');
+ try{
+  const fd=new FormData();
+  fd.append('studio',studioCode);fd.append('cliente','__db__');
+  fd.append('chiave','ricevute');fd.append('data',JSON.stringify(store));
+  const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});
+  const j=await r.json();
+  if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+  else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
+
+async function loadCloud(){
+ if(!studioCode)return;
+ const box=$('#syncStatus');
+ box.textContent='Sync cloud: carico...';
+ try{
+  const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCode)+'&chiave=ricevute&t='+Date.now(),{cache:'no-store'});
+  const cloud=await r.json();
+  if(cloud&&cloud.list&&cloud.list.length){
+   const map={};store.list.forEach(x=>{map[x.id]=x;});
+   let add=0;
+   cloud.list.forEach(x=>{if(!x.id)x.id=uid();if(!map[x.id]){map[x.id]=x;add++;}});
+   store.list=Object.values(map);
+   if(cloud.seq>store.seq)store.seq=cloud.seq;
+   save();
+   box.textContent='Sync: '+add+' aggiunte';
+  }
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
 
 function refreshHead(){
  $('#studioNameHead').textContent=ident.nome||'Ricevute';
@@ -164,11 +186,9 @@ function salvaRicevuta(){
  const cliente=$('#r_cliente').value.trim();
  const servizio=$('#r_servizio').value.trim();
  const importo=parseFloat($('#r_importo').value);
- if(!cliente||!servizio||isNaN(importo))return alert('Cliente, tipo di servizio e importo sono obbligatori.');
+ if(!cliente||!servizio||isNaN(importo))return alert('Cliente, servizio e importo obbligatori.');
  const dati={
-  cliente:cliente,
-  servizio:servizio,
-  importo:importo,
+  cliente,servizio,importo,
   titolo:$('#r_titolo').value.trim(),
   data:$('#r_data').value||today(),
   note:$('#r_note').value.trim()
@@ -188,29 +208,34 @@ function salvaRicevuta(){
 
 function renderLista(){
  const box=$('#listaBox');
- if(!store.list.length){box.innerHTML='<p class="hint">Nessuna ricevuta salvata.</p>';return;}
+ if(!store.list.length){box.innerHTML='<p class="hint">Nessuna ricevuta.</p>';return;}
  box.innerHTML='<table><tr><th>N.</th><th>Cliente</th><th>Servizio</th><th>Importo</th><th>Data</th><th>Azioni</th></tr>'+
- store.list.map(r=>'<tr><td><b>'+esc(r.numero)+'</b></td><td>'+esc(r.cliente)+'</td><td>'+esc(r.servizio)+'</td><td><b>'+fmt(r.importo)+' &euro;</b></td><td>'+fmtData(r.data)+'</td><td>'+
+ store.list.map(r=>'<tr><td><b>'+esc(r.numero)+'</b></td><td>'+esc(r.cliente)+'</td><td>'+esc(r.servizio)+'</td><td><b>'+fmt(r.importo)+' €</b></td><td>'+fmtData(r.data)+'</td><td>'+
  '<button class="mini" onclick="makePDF(\''+r.id+'\')">PDF</button> '+
  '<button class="mini" onclick="visualizza(\''+r.id+'\')">Visualizza</button> '+
  '<button class="mini" onclick="modifica(\''+r.id+'\')">Modifica</button> '+
- '<button class="mini" onclick="elimina(\''+r.id+'\')">Elimina</button></td></tr>').join('')+'</table>';
+ '<button class="mini" onclick="elimina(\''+r.id+'\')">🗑</button></td></tr>').join('')+'</table>';
 }
 
 function trova(id){return store.list.find(x=>x.id===id);}
 
+function htmlBlocchetto(r){
+ return '<div class="blocchetto">'+
+  '<div class="b-top"><div class="b-num">'+esc(r.numero)+'<small>RICEVUTA N.</small></div><div class="b-data">'+fmtData(r.data)+'<small>DATA</small></div></div>'+
+  '<div class="b-row"><div class="b-label">Ricevuto da</div><div class="b-value">'+esc(r.cliente)+'</div></div>'+
+  '<div class="b-row"><div class="b-label">Servizio</div><div class="b-value">'+esc(r.servizio)+'</div></div>'+
+  '<div class="b-row"><div class="b-label">A titolo di</div><div class="b-value">'+esc(r.titolo||'acconto')+'</div></div>'+
+  '<div class="b-row"><div class="b-label">Importo</div><div class="b-value big">€ '+fmt(r.importo)+'</div></div>'+
+  (r.note?'<div class="b-row"><div class="b-label">Note</div><div class="b-value">'+esc(r.note)+'</div></div>':'')+
+  '<div class="b-firme"><div class="b-firma">Firma Studio</div><div class="b-firma">Firma Cliente</div></div>'+
+  '<div class="b-footer">Soggetta a bollo vigente se dovuta</div>'+
+  '</div>';
+}
+
 function visualizza(id){
  const r=trova(id);if(!r)return;
- $('#viewBody').innerHTML=
- '<div class="riga"><span>Ricevuta N.</span><b>'+esc(r.numero)+'</b></div>'+
- '<div class="riga"><span>Data</span><b>'+fmtData(r.data)+'</b></div>'+
- '<div class="riga"><span>Cliente</span><b>'+esc(r.cliente)+'</b></div>'+
- '<div class="riga"><span>Tipo di servizio</span><b>'+esc(r.servizio)+'</b></div>'+
- '<div class="riga"><span>Ricevo &euro;</span><b>'+fmt(r.importo)+' &euro;</b></div>'+
- '<div class="riga"><span>A titolo di</span><b>'+esc(r.titolo||'acconto')+'</b></div>'+
- (r.note?'<div class="riga"><span>Note</span><b>'+esc(r.note)+'</b></div>':'')+
- '<div class="firma"><div>Firma Studio</div><div>Firma Cliente</div></div>'+
- '<p style="margin-top:16px"><button class="btn" onclick="makePDF(\''+r.id+'\')">Stampa PDF</button></p>';
+ $('#viewBody').innerHTML=htmlBlocchetto(r)+
+  '<p style="margin-top:16px"><button class="btn" onclick="makePDF(\''+r.id+'\')">Stampa PDF</button></p>';
  $('#viewModal').classList.add('active');
 }
 function chiudiModal(){$('#viewModal').classList.remove('active');}
@@ -224,93 +249,83 @@ function modifica(id){
  $('#r_titolo').value=r.titolo||'';
  $('#r_data').value=r.data;
  $('#r_note').value=r.note||'';
- $('#formTitle').textContent='Modifica ricevuta '+r.numero;
+ $('#formTitle').textContent='Modifica '+r.numero;
  window.scrollTo(0,0);
 }
 
 function elimina(id){
  const r=trova(id);if(!r)return;
- if(!confirm('Eliminare la ricevuta '+r.numero+'?'))return;
+ if(!confirm('Eliminare '+r.numero+'?'))return;
  store.list=store.list.filter(x=>x.id!==id);
  save();renderLista();
 }
 
 function makePDF(id){
  const r=trova(id);if(!r)return;
- if(!window.jspdf)return alert('Libreria PDF non caricata: serve connessione internet.');
- const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');const W=210;let y=0;
- doc.setFillColor(20,20,20);doc.rect(0,0,W,32,'F');doc.setTextColor(255,255,255);
- doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text(ident.nome||'Studio Fotografico',10,11);
- doc.setFont('helvetica','normal');doc.setFontSize(8);
- doc.text([ident.indirizzo,ident.telefono?'Tel. '+ident.telefono:'',ident.email,ident.piva?'P.IVA '+ident.piva:''].filter(Boolean).join('  ·  '),10,17);
- doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('AppCenterStudio Premium',W-10,11,{align:'right'});
- y=45;doc.setTextColor(0,0,0);
- doc.setFont('helvetica','bold');doc.setFontSize(16);doc.text('RICEVUTA N. '+r.numero,10,y);
- doc.setFont('helvetica','normal');doc.setFontSize(10);doc.text('Data: '+fmtData(r.data),W-10,y,{align:'right'});y+=12;
- doc.setFontSize(12);
- doc.text('Ricevo da '+r.cliente,10,y);y+=8;
- doc.setFont('helvetica','bold');doc.setFontSize(14);
- doc.text('la somma di  Euro '+fmt(r.importo),10,y);y+=8;
- doc.setFont('helvetica','normal');doc.setFontSize(12);
- doc.text('a titolo di '+(r.titolo||'acconto')+' per il seguente servizio:',10,y);y+=8;
- doc.setFont('helvetica','bold');
- doc.text('- '+r.servizio,14,y);y+=10;
- doc.setFont('helvetica','normal');doc.setFontSize(10);
- if(r.note){const nl=doc.splitTextToSize('Note: '+r.note,W-20);doc.text(nl,10,y);y+=nl.length*5+6;}
- y+=10;
- doc.setDrawColor(0);doc.line(10,y,90,y);doc.line(W-90,y,W-10,y);y+=5;
- doc.setFontSize(9);doc.text('Firma Studio',10,y);doc.text('Firma Cliente',W-90,y);
- const pages=doc.getNumberOfPages();
- for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(7);doc.setTextColor(120);doc.text('Generato con AppCenterStudio Premium',10,292);doc.text('Pag. '+i+'/'+pages,W-10,292,{align:'right'});}
- doc.save('Ricevuta_'+r.numero+'.pdf');
-}
-
-/* ===== archivio comune (sync tra PC) ===== */
-async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function deployFileNetlify(path,content){
- const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
- if(!tok||!siteId)throw new Error('Netlify non configurato.');
- const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{Authorization:'Bearer '+tok}});
- const existing=resp.ok?await resp.json():[];
- const files={};existing.forEach(f=>{files[f.path]=f;});
- const bin=new TextEncoder().encode(content);const ab=bin.buffer;const hash=await sha1(bin);
- files[path]={path:path,hash:hash};
- const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
- if(dep.required&&dep.required.includes(path)){
-  await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
- }
-}
-async function leggiFileNetlify(path){
- const siteUrl=localStorage.getItem('netlify_siteurl');
- if(!siteUrl)throw new Error('Site URL mancante.');
- const r=await fetch(siteUrl+path+'?t='+Date.now(),{cache:'no-store'});
- if(!r.ok)return null;
- return await r.json();
-}
-async function pubblicaArchivioComune(){
+ if(!window.jspdf)return alert('Libreria PDF non caricata.');
  try{
-  await deployFileNetlify('/archivio-comune-ricevute.json',JSON.stringify({list:store.list,exportedAt:new Date().toISOString()},null,2));
-  alert('Archivio ricevute pubblicato.');
- }catch(e){alert('Errore: '+e.message);}
-}
-async function scaricaEUnisciArchivio(){
- try{
-  const data=await leggiFileNetlify('/archivio-comune-ricevute.json');
-  if(!data||!data.list)throw new Error('Archivio vuoto o non trovato.');
-  if(!confirm('Unire '+data.list.length+' ricevute remote alle '+store.list.length+' locali?'))return;
-  const map={};store.list.forEach(r=>{map[r.id]=r;});
-  let added=0;
-  data.list.forEach(r=>{if(!r.id)r.id=uid();if(!map[r.id]){map[r.id]=r;added++;}});
-  store.list=Object.values(map);
-  save();renderLista();
-  alert('Unione completata: '+added+' ricevute aggiunte.');
- }catch(e){alert('Errore: '+e.message);}
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:[80,200],orientation:'portrait'});
+  const W=80,H=200;
+  // bordo tratteggiato
+  doc.setLineDashPattern([1,1],0);
+  doc.setDrawColor(80);
+  doc.rect(2,2,W-4,H-4);
+  doc.setLineDashPattern([],0);
+  doc.setTextColor(0,0,0);
+  let y=10;
+  // Intestazione
+  doc.setFont('courier','bold');doc.setFontSize(10);
+  doc.text(ident.nome||'STUDIO FOTOGRAFICO',W/2,y,{align:'center'});y+=4;
+  doc.setFont('courier','normal');doc.setFontSize(7);
+  doc.text([ident.indirizzo,ident.telefono,ident.email,ident.piva?'P.IVA '+ident.piva:''].filter(Boolean).join(' · '),W/2,y,{align:'center'});y+=6;
+  doc.setLineWidth(0.3);doc.line(5,y,W-5,y);y+=5;
+  // Numero e data
+  doc.setFont('courier','bold');doc.setFontSize(16);
+  doc.text(r.numero,7,y);
+  doc.setFontSize(8);doc.setFont('courier','normal');
+  doc.text('RICEVUTA N.',7,y+3);
+  doc.setFont('courier','bold');doc.setFontSize(11);
+  doc.text(fmtData(r.data),W-7,y,{align:'right'});
+  doc.setFontSize(8);doc.setFont('courier','normal');
+  doc.text('DATA',W-7,y+3,{align:'right'});
+  y+=10;
+  doc.setLineWidth(0.1);doc.setLineDashPattern([0.5,0.5],0);
+  doc.line(5,y,W-5,y);doc.setLineDashPattern([],0);y+=5;
+  // Righe
+  const addRow=(lbl,val,big)=>{
+   doc.setFont('courier','normal');doc.setFontSize(7);
+   doc.setTextColor(100);doc.text(lbl.toUpperCase(),7,y);
+   doc.setTextColor(0);
+   doc.setFont('courier',big?'bold':'normal');
+   doc.setFontSize(big?14:10);
+   doc.text(String(val||'—'),7,y+5);
+   y+=big?10:8;
+   doc.setLineDashPattern([0.5,0.5],0);doc.line(5,y-2,W-5,y-2);doc.setLineDashPattern([],0);
+  };
+  addRow('Ricevuto da',r.cliente);
+  addRow('Servizio',r.servizio);
+  addRow('A titolo di',r.titolo||'acconto');
+  addRow('Importo','€ '+fmt(r.importo),true);
+  if(r.note)addRow('Note',r.note);
+  y+=5;
+  // Bollo
+  doc.setFont('courier','italic');doc.setFontSize(7);doc.setTextColor(80);
+  doc.text('Soggetta a bollo vigente se dovuta',W/2,y,{align:'center'});
+  y+=8;
+  // Firme
+  doc.setTextColor(0);doc.setFont('courier','normal');doc.setFontSize(8);
+  doc.line(7,y,35,y);doc.line(W-35,y,W-7,y);y+=3;
+  doc.text('Firma Studio',7,y);doc.text('Firma Cliente',W-35,y);
+  doc.save('Ricevuta_'+r.numero+'.pdf');
+ }catch(e){alert('Errore PDF: '+e.message);}
 }
 
 function backupGlobale(){
  const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+today()+'.json';a.click();
+ alert('Backup globale scaricato.');
 }
 function ripristinoGlobale(e){
  const f=e.target.files[0];if(!f)return;
@@ -318,7 +333,7 @@ function ripristinoGlobale(e){
  r.onload=ev=>{try{
   const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
   if(typeof d!=='object')throw new Error('File non valido.');
-  if(!confirm('Ripristinare il backup? I dati attuali verranno sostituiti.'))return;
+  if(!confirm('Ripristinare? I dati attuali verranno sostituiti.'))return;
   Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
   alert('Ripristinato. Ricarico.');location.reload();
  }catch(err){alert('Errore: '+err.message);}};
@@ -328,6 +343,7 @@ function ripristinoGlobale(e){
 refreshHead();
 $('#r_data').value=today();
 renderLista();
+loadCloud().then(renderLista);
 </script>
 </body>
 </html>
