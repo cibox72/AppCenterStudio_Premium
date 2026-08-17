@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guida Completa di Test v8 - AppCenter Studio Premium</title>
+<style>
+body{font-family:Georgia,'Segoe UI',sans-serif;background:#f4efe7;color:#4a4237;margin:0;line-height:1.7}
+.wrap{max-width:900px;margin:0 auto;padding:30px 20px 90px}
+h1{letter-spacing:.1em;text-transform:uppercase;font-weight:400;border-bottom:3px solid #a3937d;padding-bottom:12px}
+h2{color:#6f6353;margin-top:44px;border-left:5px solid #a3937d;padding-left:12px}
+h3{color:#6f6353;margin-top:22px}
+.card{background:#fbf9f5;border:1px solid #e2d7c3;border-radius:14px;padding:18px 24px;margin:14px 0;box-shadow:0 4px 14px rgba(120,100,70,.08)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th,td{border:1px solid #e2d7c3;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#e9dfcd}
+code{background:#efe8da;padding:2px 6px;border-radius:6px;font-family:monospace;font-size:13px}
+ul,ol{padding-left:24px}
+li{margin:7px 0}
+.toc{columns:2;column-gap:30px}
+@media(max-width:700px){.toc{columns:1}}
+.btn{background:#a3937d;color:#fff;border:none;padding:10px 22px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px}
+.btn:hover{background:#6f6353}
+textarea{width:100%;min-height:320px;font-family:monospace;font-size:12px;border:1px solid #e2d7c3;border-radius:10px;padding:12px;background:#fff;color:#333}
+.warn{background:#fdf6e8;border:1px solid #e8d5a8;border-radius:10px;padding:10px 14px;color:#6b4d1a}
+.ok{background:#eaf3e4;border:1px solid #bcd3a8;border-radius:10px;padding:10px 14px;color:#3f6b2e}
+@media print{.btn{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Guida Completa di Test v8 — AppCenter Studio Premium</h1>
+<p><b>Repository:</b> cibox72/AppCenterStudio_Premium · <code>https://cibox72.github.io/AppCenterStudio_Premium/</code><br>
+<b>Versione 8.0</b> · Firefox = ADMIN · Chrome = STUDIO · DuckDuckGo = CLIENTE · Pronta per la stampa</p>
+<p><button class="btn" onclick="window.print()">Stampa la guida</button></p>
+
+<div class="card">
+<b>Regole del test</b>
+<ul>
+<li>Tre personaggi, tre browser DIVERSI: <b>Firefox = ADMIN</b> (fornitore), <b>Chrome = STUDIO</b> (fotografo), <b>DuckDuckGo = CLIENTE</b>.</li>
+<li>Ogni codice che copi va scritto anche sul Blocco Note. Le parole tra virgolette sono i pulsanti esatti da cliccare.</li>
+<li>Leggi un passo alla volta e non saltare nulla.</li>
+<li>NOVITA' rispetto alla v6: le foto NON vanno piu' su Netlify ma nel magazzino del fornitore (Cloudflare), che le salva temporaneamente e le cancella da solo dopo un determinato periodo. Netlify resta solo per il modulo identita'.</li>
+</ul>
+</div>
+
+<h2>0. Preparazione (10 minuti)</h2>
+<div class="card">
+<ol>
+<li>Apri Firefox, Chrome e DuckDuckGo. In tutti e tre scrivi <code>https://cibox72.github.io/AppCenterStudio_Premium/</code> e premi INVIO.</li>
+<li>Apri il Blocco Note e scrivi queste righe vuote: TOKEN GITHUB = / CODICE STUDIO = / LINK BENVENUTO = / LINK SELEZIONE CLIENTE = / LINK GALLERY CLIENTE = / CLIENTE 1 =</li>
+<li>Sul Desktop crea una cartella <code>ORIGINALI</code> con 10 foto AD ALTA risoluzione (nomi tipo IMG_6202.jpg).</li>
+<li>Da ORIGINALI crea la copia A BASSA risoluzione in una cartella <code>Matrimonio</code> e una <code>Battesimo</code> (riquadro sotto).</li>
+</ol>
+<p class="warn"><b>REGOLA D'ORO DELLE FOTO (per GRU):</b> esporta a BASSA risoluzione (<b>Lightroom: Esporta → JPEG → qualita' 20 → sRGB → lato lungo 1600–2000 px</b>) e carica SOLO quelle. NON rinominare MAI ne' i file ne' le cartelle: ogni file deve avere NOME ed ESTENSIONE IDENTICI all'originale (es. IMG_6202.jpg). Il text Gru usa quei nomi per prendere gli originali AD ALTA: se i nomi sono diversi, GRU non li trova.</p>
+</div>
+
+<h2>1. ADMIN su Firefox: account GitHub e token</h2>
+<div class="card">
+<ol>
+<li>Vai su <code>github.com</code> → "Sign up" → email, password, username → "Continue" → "Create account".</li>
+<li>Apri l'email di GitHub, copia il codice di 8 cifre, incollalo e clicca "Verify".</li>
+<li>Immagine profilo → "Settings" → in fondo "Developer settings" → "Personal access tokens" → "Tokens (classic)".</li>
+<li>"Generate new token" → "Generate new token (classic)".</li>
+<li>"Note" = <code>AppCenterStudio</code>; "Expiration" = "No expiration"; spunta "repo" (la prima casella).</li>
+<li>Clicca "Generate token" e copia SUBITO la stringa <code>ghp_...</code> nel Blocco Note. Non la rivedrai piu'.</li>
+</ol>
+</div>
+
+<h2>2. ADMIN su Firefox: studio e licenza (NUOVO, senza Netlify)</h2>
+<div class="card">
+<ol>
+<li>Apri <code>https://cibox72.github.io/AppCenterStudio_Premium/admin-offerte.html</code>.</li>
+<li>Incolla il token nel campo → "Salva token" → "Aggiorna elenco".</li>
+<li>Card "Crea nuovo studio": scrivi il codice (es. <code>st-001</code>), il nome (es. G&amp;L Studio), i mesi di prova → "Crea studio".</li>
+<li>Lo studio compare SUBITO nella tabella sotto: NON serve uscire e rientrare (problema 1 risolto).</li>
+<li>Sulla riga dello studio hai i pulsanti: "Estendi" (aggiunge mesi), "Sospendi/Attiva", "Rimuovi".</li>
+<li>Scrivi nel Blocco Note: CODICE STUDIO = e LINK BENVENUTO = <code>https://cibox72.github.io/AppCenterStudio_Premium/benvenuto.html?studio=IL-CODICE</code>. Manda allo studio il link su WhatsApp.</li>
+</ol>
+<p class="ok">Gli errori "offers.json does not match..." NON ci sono piu': questa pagina riscrive i file correttamente (problema 2 risolto).</p>
+</div>
+
+<h2>3. ADMIN su Firefox: tema grafico stagionale</h2>
+<div class="card">
+<ol>
+<li>Apri <code>admin-tema.html</code> (stesso token del passo 2).</li>
+<li>Clicca un periodo: "Classico / Wedding / Natale / Carnevale / Pasqua / Estate / Inverno".</li>
+<li>Attendi circa 1 minuto: TUTTE le app di TUTTI gli studi cambiano colori e decorazioni.</li>
+</ol>
+</div>
+
+<h2>4. STUDIO su Chrome: benvenuto e identita'</h2>
+<div class="card">
+<ol>
+<li>Apri il LINK BENVENUTO ricevuto. Vedi i badge "Licenza attiva", il codice studio e la scadenza nel formato gg/mm/aa (problema 5 risolto).</li>
+<li>Sezione 1: compila Referente, WhatsApp (solo cifre con prefisso), Email, Citta', Note → "Invia i dati al fornitore". (Nel test NON inviare.)</li>
+<li>Sezione 2 "Identita' dello studio": Nome Studio, P.IVA, Indirizzo, <b>Telefono = UN SOLO numero WhatsApp</b> (se ne scrivi di piu' vale il primo), Email, Note fisse + logo → "Salva e invia al fornitore". Sezione sempre modificabile: se ti manca la P.IVA oggi, torni domani.</li>
+<li>Sezione 3: le tue app. Clicca "03 Clienti &amp; Foto".</li>
+</ol>
+</div>
+
+<h2>5. STUDIO su Chrome: cliente e foto basse (app 03)</h2>
+<div class="card">
+<ol>
+<li>Sezione "Nuovo cliente": Nome = Mario, Cognome = Rossi → "Aggiungi cliente" → nasce il codice <code>rossi-mario-001</code>. Scrivilo nel Blocco Note.</li>
+<li>Sezione "Carica foto nel magazzino": menu "Cliente" = Mario Rossi → "Cartella foto" → entra in <code>Matrimonio</code>, seleziona tutte le foto (prima foto, MAIUSC, ultima) → "Apri" → "Carica nel magazzino" → aspetta "Completato: N foto caricate".</li>
+<li>Ripeti con la cartella <code>Battesimo</code>.</li>
+<li>Sezione "Archivio clienti": ora vedi le chip "10 foto nel magazzino" E "Cartelle: Matrimonio (5), Battesimo (5)" (problema 10 risolto).</li>
+</ol>
+<p class="warn">Le foto sono salvate temporaneamente e cancellate automaticamente dopo un determinato periodo: nei testi al cliente non nominare mai le piattaforme (problema 9 risolto).</p>
+</div>
+
+<h2>6. STUDIO su Chrome: selezione e link (app 04)</h2>
+<div class="card">
+<ol>
+<li>Dall'archivio di 03 clicca "Apri Selezione per Album" (oppure apri <code>selezione-album/?studio=IL-CODICE</code>).</li>
+<li><b>Selezione in studio</b> (caso normale): fai la scelta al PC come sempre → premi "Selezione in studio" per registrarla.</li>
+<li><b>Link da casa</b> (solo chi non puo' venire): premi "Link da casa" → il link (valido 7 giorni) viene copiato → incollalo nel Blocco Note dopo LINK SELEZIONE CLIENTE = e mandalo al cliente.</li>
+<li><b>Sbagliato qualcosa?</b> Premi "X selezione" o "X link casa" e conferma: la registrazione sparisce (problema 12 risolto).</li>
+<li><b>Carica ritoccate</b>: seleziona le foto finali → carica. Poi torna in 03 e premi "Link gallery cliente": il link viene copiato → Blocco Note dopo LINK GALLERY CLIENTE = (problema 13 risolto: la gallery ora e' collegata).</li>
+<li>"Gallery +6 mesi": allunga la scadenza quando il cliente chiede piu' tempo.</li>
+<li>"Text Gru": scarica il txt con i NOMI ESATTI delle foto scelte (per GRU). "PDF stampa": scarica l'elenco per la stampa.</li>
+</ol>
+</div>
+
+<h2>7. CLIENTE su DuckDuckGo: selezione e gallery</h2>
+<div class="card">
+<h3>Selezione da casa</h3>
+<ol>
+<li>Apri il LINK SELEZIONE. Vedi intestazione studio, logo, messaggio e "Link valido fino al gg/mm/aa".</li>
+<li>Tocca una foto: si apre GRANDE; frecce ai lati, swipe col dito o frecce tastiera; "Chiudi" o Esc.</li>
+<li>Il cuore e' BIANCO se non scelta, ROSSO se scelta; il contatore in alto si aggiorna.</li>
+<li>Scegli 4-5 foto col cuore → "Invia selezione" → conferma: allo studio arriva il messaggio WhatsApp e le foto NON scelte si eliminano da sole. (Nel test NON inviare.)</li>
+</ol>
+<h3>Gallery</h3>
+<ol>
+<li>Apri il LINK GALLERY: pagina pulita con logo e nome studio, "Disponibile fino al gg/mm/aa".</li>
+<li>Sfoglia le foto; toccane una per ingrandirla. Scaduta la data, il cliente vede "contatta lo studio" (tu puoi prorogare).</li>
+</ol>
+<p class="warn">Se DuckDuckGo non carica le foto: tocca l'icona SCUDO nella barra, disattiva la protezione per il sito e ricarica.</p>
+</div>
+
+<h2>8. STUDIO su Chrome: preventivi, contratti, ricevute acconto (app 01)</h2>
+<div class="card">
+<ol>
+<li>Apri <code>preventivi-contratti/?studio=IL-CODICE</code>.</li>
+<li>Compila: anagrafiche cliente A (e B se serve), <b>DATA DEL SERVIZIO</b> e <b>TIPO</b> in evidenza, chiesa/location, spunta i SERVIZI dal listino (prezzi modificabili), sconto/buono.</li>
+<li>"Acconti ricevuti" → "+ Aggiungi acconto" (data, importo, nota es. caparra) → accanto premi "Ricevuta": scarica il PDF della ricevuta.</li>
+<li>"Piano di pagamento": aggiungi le voci; in basso vedi sempre Pianificato/Non pianificato, TOTALE, acconti, SALDO RESIDUO.</li>
+<li>"Salva in archivio" → numero automatico P-2026-XXX.</li>
+<li>"Crea PDF da inviare": il PDF SI SCARICA con intestazione studio e riquadri firma (problemi 6-7 risolti). Se non parte: serve connessione internet, riprova.</li>
+<li>Quando il cliente firma: spunta "ACCETTATO E FIRMATO DAL CLIENTE" → "Trasforma in Contratto": da ora compare DA SOLO nell'agenda.</li>
+<li>Tab "Listini &amp; Studio" (sezione UNICA, problema 8 risolto): dati studio per i PDF + modifica listini/categorie.</li>
+</ol>
+</div>
+
+<h2>9. STUDIO su Chrome: ricevute a blocchetto (app 08)</h2>
+<div class="card">
+<ol>
+<li>Apri <code>ricevute/?studio=IL-CODICE</code>.</li>
+<li>Compila: "Nome cliente", "Tipo di servizio", "Ricevo €", "Data", "A titolo di...", "Note" → "Salva ricevuta".</li>
+<li>"Visualizza": vedi il layout a BLOCCHETTO (numero grande a sinistra, data a destra, importo in grande, firme, "Soggetta a bollo vigente") come da tuo esempio (problema 14 risolto).</li>
+<li>"PDF": scarica il formato stretto tipo scontrino/blocchetto, pronto da stampare e firmare.</li>
+</ol>
+</div>
+
+<h2>10. STUDIO su Chrome: agenda, promemoria e due PC (app 07)</h2>
+<div class="card">
+<ol>
+<li>Apri <code>agenda/?studio=IL-CODICE</code>: calendario sfogliabile (frecce mese, "Oggi").</li>
+<li>I CONTRATTI compaiono DA SOLI nel giorno del servizio; i preventivi futuri in verde chiaro.</li>
+<li>Clicca un giorno → modulo "+ Nuovo appuntamento" (data, ora, titolo, tipo, note) → "Aggiungi al giorno". Se c'e' gia' un contratto vedi "Data impegnata" ma puoi aggiungere un secondo evento.</li>
+<li>"Promemoria WhatsApp": copia l'elenco impegni di OGGI e apre WhatsApp al numero dello studio; se il testo non entra da solo, incollalo con Cmd+V (problema 16 risolto).</li>
+<li>Ogni mattina, aprendo l'app, i due PC mostrano il promemoria del giorno (notifica desktop se consentita).</li>
+<li><b>DUE PC</b> (problema 17 risolto): in alto a destra vedi "Sync cloud: ✓". Ogni salvataggio (preventivi, contratti, appuntamenti, ricevute, email) va nel cloud: l'altro PC, aprendo l'app, vede TUTTO l'insieme senza pulsanti manuali.</li>
+</ol>
+</div>
+
+<h2>11. STUDIO su Chrome: email (app 09)</h2>
+<div class="card">
+<ol>
+<li>Apri <code>email/?studio=IL-CODICE</code>. Card "Mittente": email studio + PEC facoltativa → "Salva mittente" (problema 15: l'email parte da qui).</li>
+<li>"Modello rapido" (appuntamento, pronto, saldo, grazie, ricevuta) oppure testo libero; destinatario e oggetto.</li>
+<li>"Invia con app email" (si apre il tuo programma di posta) / "Invia con PEC" / "Copia oggetto + testo" per la webmail. "Salva in archivio" tiene la copia.</li>
+</ol>
+</div>
+
+<h2>12. Backup: cloud automatico + file sul PC</h2>
+<div class="card">
+<table>
+<tr><th>Cosa</th><th>Dove va</th><th>A cosa serve</th></tr>
+<tr><td>Sync cloud (automatico, "Sync cloud: ✓")</td><td>Magazzino del fornitore</td><td>Allinea i due PC senza fare nulla</td></tr>
+<tr><td>"Backup globale" (in ogni app)</td><td>File .json nei Download</td><td>La tua cassaforte: chiavetta o cloud personale</td></tr>
+<tr><td>"Ripristino globale"</td><td>Da file al browser</td><td>Ricarica un vecchio backup (sostituisce i dati)</td></tr>
+</table>
+</div>
+
+<h2>13. ADMIN: offerte e fine prova</h2>
+<div class="card">
+<ol>
+<li>Apri <code>admin-offerte.html</code> → "Crea offerta": scegli studio, prezzo, mesi, descrizione → "Crea offerta" → "Copia link" → manda allo studio.</li>
+<li>Studio: apre il link benvenuto → riquadro nero con l'offerta → "Paga ora con PayPal" → ti manda la ricevuta.</li>
+<li>Tu: verifica su PayPal → "Estendi" sulla riga dello studio: la scadenza si allunga.</li>
+</ol>
+</div>
+
+<h2>14. Salvare le configurazioni sul tuo PC (cartella ACS-BACKUP)</h2>
+<div class="card">
+<ul>
+<li><b>Worker Cloudflare</b>: dash.cloudflare.com → Workers &amp; Pages → acs-api → "Edit code" → copia tutto → salva come <code>acs-api.js</code> (rifallo dopo ogni aggiornamento).</li>
+<li><b>GitHub</b>: scarica lo zip del repo quando vuoi.</li>
+<li><b>Netlify</b> (solo modulo identita'): dashboard → Deploys → ultimo deploy → "Download deploy".</li>
+<li><b>R2</b>: dashboard → R2 → acs-foto → scarica i file che vuoi (backup foto clienti).</li>
+</ul>
+</div>
+
+<h2>15. Risoluzione problemi</h2>
+<div class="card">
+<table>
+<tr><th>Problema</th><th>Soluzione</th></tr>
+<tr><td>"Licenza non attiva"</td><td>Apri le app dal link benvenuto con il codice giusto; controlla scadenza in admin-offerte.html</td></tr>
+<tr><td>Errore offers.json / hash</td><td>Non usare vecchie pagine: usa SOLO admin-offerte.html</td></tr>
+<tr><td>WhatsApp non si apre o numero sbagliato</td><td>In Identita' studio metti UN SOLO numero, solo cifre con prefisso</td></tr>
+<tr><td>PDF non scarica</td><td>Serve connessione internet (libreria PDF online); riprova</td></tr>
+<tr><td>Messaggio WhatsApp senza testo</td><td>Incolla con Cmd+V: il testo e' comunque copiato</td></tr>
+<tr><td>DuckDuckGo non carica le foto</td><td>Scudo → disattiva protezione → ricarica</td></tr>
+<tr><td>GitHub "error loading page"</td><td>Problema temporaneo di GitHub: il sito pubblicato funziona; attendi e riprova</td></tr>
+<tr><td>"Sync cloud: offline"</td><td>Controlla connessione e ricarica la pagina</td></tr>
+<tr><td>GRU: "NON TROVATO"</td><td>Nomi bassi diversi dagli originali: riesporta SENZA rinominare (passo 0)</td></tr>
+<tr><td>Caricamento lento</td><td>Stai caricando gli originali: esporta a qualita' 20 e ricarica</td></tr>
+</table>
+</div>
+
+<h2>16. Checklist finale</h2>
+<div class="card">
+<ul>
+<li>GitHub: token con "repo" salvato in admin-offerte/admin-tema</li>
+<li>Admin: studio creato e visibile subito; link benvenuto mandato; tema stagionale provato</li>
+<li>Studio: benvenuto con badge licenza e data gg/mm/aa; identita' con UN numero salvata</li>
+<li>Cartelle basse qualita' 20 con nomi identici agli originali</li>
+<li>Cliente rossi-mario-001 con Matrimonio (5) + Battesimo (5) e chip cartelle</li>
+<li>App 04: link casa 7 giorni copiato; selezione studio registrata; X selezione/X link provati; ritoccate caricate; link gallery copiato; +6 mesi provato; Text Gru e PDF stampa scaricati</li>
+<li>Cliente DuckDuckGo: selezione con cuori e invio; gallery con scadenza</li>
+<li>Preventivi: PDF scaricato; contratto trasformato; ricevuta acconto; listino/studio unificati</li>
+<li>Ricevute: blocchetto visualizzato e PDF 80mm scaricato</li>
+<li>Agenda: appuntamento aggiunto; contratto automatico; promemoria WhatsApp; sync tra due PC con avviso mattutino</li>
+<li>Email: mittente salvato; modello inviato</li>
+<li>Backup globale scaricato; configurazioni in ACS-BACKUP</li>
+</ul>
+</div>
+
+<h2>17. Prompt di ripristino (se la chat si blocca)</h2>
+<div class="card">
+<p>Copia questo testo e incollalo in una NUOVA chat per riprendere il lavoro da qui:</p>
+<button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('prompt').value).then(()=>alert('Prompt copiato.'))">Copia prompt</button>
+<textarea id="prompt" readonly>
+Sei l'assistente che sviluppa "AppCenterStudio Premium", suite gestionale web in italiano per studi fotografici, pubblicata su GitHub Pages (repo cibox72/AppCenterStudio_Premium). Utente NON tecnico: istruzioni semplici, SEMPRE file completi pronti da incollare (mai patch parziali), date gg/mm/aa, testi verso i clienti senza nominare le piattaforme ("salvate temporaneamente e cancellate dopo un determinato periodo").
+
+ARCHITETTURA ATTUALE (funzionante): app statiche su https://cibox72.github.io/AppCenterStudio_Premium/ ; worker Cloudflare acs-api v4 (https://acs-api.mairaluigi.workers.dev) con endpoint /health, /manifest, /db-load, POST /upload (campo meta per cartelle), /link (7gg+logo+whatsapp), /selezione (elimina non scelte), /registra-studio, /reset, /ritoccate, /proroga, /db-save; cron notturno di pulizia alla scadenza gallery; bucket R2 pubblico https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev con struttura STUDIO/CLIENTE/basse|gallery e STUDIO/_db/*.json; licenze da licenses.json; root: offers.json, tema.json+tema.js (temi stagionali), admin-tema.html, admin-offerte.html (crea studio/offerte/estendi via API GitHub, senza hash), benvenuto.html (?studio= e &admin=1). App aggiornate con sync cloud multi-PC: clienti-foto, selezione-album (X annulla, Text Gru, PDF), gallery (cliente con scadenza), agenda (journal taupe, promemoria WhatsApp, sync), preventivi-contratti (PDF ok, listini+studio unificati), ricevute (blocchetto+PDF 80mm), email. Ruoli: ADMIN=Firefox, STUDIO=Chrome, CLIENTE=DuckDuckGo. Export basse: Lightroom JPEG qualita' 20, lato 1600-2000px, nomi IDENTICI agli originali (GRU).
+
+STATO: tutti i 17 punti del documento "Problemi durante test" implementati; guida v8 consegnata. Resta il TEST COMPLETO dell'utente con elenco esiti. NON ancora modernizzate: workflow/, negozio/, assistenza.html, index.html vetrina (vecchie, con Netlify/licenza.js).
+
+REGOLE: consegna solo file completi; una modifica alla volta; backup in cartella ACS-BACKUP (acs-api.js, zip repo, download deploy Netlify).
+
+COMPITO: riprendi da qui. Chiedi prima l'esito del test completo (elenco si/no). Poi sistema cio' che non va e, se richiesto, modernizza workflow/negozio/assistenza/index allo stesso modello (worker+R2+tema.js, senza Netlify).
+</textarea>
+</div>
+
+<p style="text-align:center;color:#9b8f7d">Fine della guida v8 — AppCenter Studio Premium</p>
+</div>
+</body>
+</html>
