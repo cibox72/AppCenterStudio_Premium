@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AppCenterStudio Premium</title>
+<script src="tema.js"></script>
 <style>
 :root{--b:#e2e4e9;--s:#8a8f98;--nero:#111;--ombra:0 6px 18px rgba(15,20,40,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -48,6 +49,14 @@ background-attachment:fixed;}
 .bl-danger:hover{background:#a33;color:#fff}
 .bl-toggle{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
 .bl-toggle:hover{background:#111;color:#fff}
+.tema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:14px}
+.tema-btn{padding:14px 10px;background:#fff;border:2px solid #ccc;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;text-align:center;transition:all .15s}
+.tema-btn:hover{border-color:#111;transform:translateY(-1px)}
+.tema-btn.attivo{background:#111;color:#fff;border-color:#111;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.tema-btn .emoji{display:block;font-size:22px;margin-bottom:4px}
+.tema-btn .nome{display:block}
+#temaStatus{font-size:12px;color:#2e7d32;margin-top:8px;font-weight:600}
+#temaStatus.ko{color:#a33}
 </style>
 </head>
 <body>
@@ -56,6 +65,18 @@ background-attachment:fixed;}
 const OWNER='cibox72',REPO='AppCenterStudio_Premium';
 const BASE='https://'+OWNER+'.github.io/'+REPO+'/';
 const $=id=>document.getElementById(id);
+
+const TEMI=[
+ {id:'classico',nome:'Classico',emoji:'🌿'},
+ {id:'wedding',nome:'Wedding',emoji:'🕊️'},
+ {id:'natale',nome:'Natale',emoji:'🎄'},
+ {id:'carnevale',nome:'Carnevale',emoji:'🎭'},
+ {id:'pasqua',nome:'Pasqua',emoji:'🌸'},
+ {id:'estate',nome:'Estate',emoji:'🌊'},
+ {id:'inverno',nome:'Inverno',emoji:'❄️'}
+];
+let temaAttuale='classico';
+
 window.addEventListener('DOMContentLoaded',()=>{sessionStorage.getItem('admin')?renderDash():renderLogin();});
 function renderLogin(){
 $('root').innerHTML=`<div class="lw"><div class="lc">
@@ -74,6 +95,7 @@ else $('lerr').textContent='Credenziali non valide.';
 }
 async function leggiLicenze(){try{const r=await fetch(BASE+'licenses.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{studi:[]}}}
 async function leggiOfferte(){try{const r=await fetch(BASE+'offers.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{offerte:[]}}}
+async function leggiTema(){try{const r=await fetch(BASE+'tema.json?t='+Date.now(),{cache:'no-store'});const j=await r.json();return j.tema||'classico';}catch(e){return 'classico';}}
 async function ghPut(path,content){
 const tok=localStorage.getItem('gh_token');
 if(!tok)throw new Error('Token GitHub mancante: inseriscilo nella card "Token GitHub".');
@@ -95,6 +117,10 @@ $('root').innerHTML=`<div class="wrap">
 <div class="ib">Serve per creare studi e scrivere licenses.json. Lo trovi su GitHub → Settings → Developer settings → Personal access tokens.</div>
 <div class="fg"><input id="ghTok" type="password" placeholder="ghp_…"></div>
 <button class="bs" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());alert('Token salvato.');">Salva token</button></div>
+<div class="card"><h2>Cambia stile app (tutti gli studi)</h2>
+<div class="ib">Scegli un tema stagionale: il tema si applica a <b>TUTTE</b> le app del portale (Preventivi, Workflow, Agenda, Ricevute, Email, ecc.). Tra circa 1 minuto dalla pubblicazione GitHub, tutti gli studi vedranno la nuova grafica. Il pulsante del tema attivo resta scuro.</div>
+<div class="tema-grid" id="temaGrid"></div>
+<div id="temaStatus">Caricamento tema attuale...</div></div>
 <div class="card"><h2>Studi & Licenze</h2>
 <div class="fr"><div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio"></div>
 <div class="fg"><label>Giorni di prova</label><input id="stGiorni" type="number" value="30"></div></div>
@@ -113,7 +139,34 @@ $('root').innerHTML=`<div class="wrap">
 <div class="grid" id="appGrid"></div></div>
 </div>`;
 $('ghTok').value=localStorage.getItem('gh_token')||'';
-renderStudi();renderOfferte();renderApps();
+renderTemi();renderStudi();renderOfferte();renderApps();caricaTemaAttuale();
+}
+function renderTemi(){
+const grid=$('temaGrid');if(!grid)return;
+grid.innerHTML=TEMI.map(t=>`<button class="tema-btn ${t.id===temaAttuale?'attivo':''}" onclick="cambiaTema('${t.id}')"><span class="emoji">${t.emoji}</span><span class="nome">${t.nome}</span></button>`).join('');
+}
+async function caricaTemaAttuale(){
+const s=$('temaStatus');if(!s)return;
+temaAttuale=await leggiTema();
+renderTemi();
+s.textContent='Tema attuale: '+TEMI.find(t=>t.id===temaAttuale)?.nome||temaAttuale;
+s.classList.remove('ko');
+}
+async function cambiaTema(id){
+const tok=localStorage.getItem('gh_token');
+if(!tok){alert('Prima salva il token GitHub nella card "Token GitHub" qui sopra.');return;}
+if(!confirm('Applicare il tema "'+TEMI.find(t=>t.id===id).nome+'" a TUTTE le app di TUTTI gli studi? La pubblicazione richiede circa 1 minuto.'))return;
+const s=$('temaStatus');
+s.textContent='Pubblicazione in corso...';s.classList.remove('ko');
+try{
+ await ghPut('tema.json',JSON.stringify({tema:id},null,2));
+ temaAttuale=id;
+ renderTemi();
+ s.textContent='✓ Tema "'+TEMI.find(t=>t.id===id).nome+'" pubblicato. Tra circa 1 minuto tutte le app (incluse quelle degli studi) cambieranno grafica. Ricarica una qualsiasi app per vedere il nuovo tema.';
+}catch(e){
+ s.textContent='✗ Errore: '+e.message;s.classList.add('ko');
+ alert('Errore pubblicazione: '+e.message);
+}
 }
 async function creaStudio(){
 const nome=$('stNome').value.trim();if(!nome)return alert('Nome studio obbligatorio.');
