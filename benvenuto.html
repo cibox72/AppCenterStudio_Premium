@@ -71,6 +71,9 @@ input:focus,textarea:focus{outline:2px solid var(--nero)}
 .adminbox th{background:#f2f2f2;font-family:Georgia,serif;letter-spacing:.05em}
 .adminbox .riga{margin:6px 0;font-size:13px}
 .adminbox a{color:var(--nero);font-weight:700}
+.tema-btn{display:inline-block;margin:2px;padding:5px 12px;border:1px solid #bbb;border-radius:999px;background:#fff;cursor:pointer;font-size:12px;font-family:inherit}
+.tema-btn:hover{background:var(--nero);color:#fff}
+.tema-btn.attivo{background:var(--nero);color:#fff;border-color:var(--nero);font-weight:700}
 footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;color:#9a9a9a;font-size:12px;letter-spacing:.06em;background:rgba(255,255,255,0.5);backdrop-filter:blur(6px)}
 .hidden{display:none}
 </style>
@@ -151,8 +154,18 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 const NETLIFY_BASE='https://dashing-florentine-9b905e.netlify.app';
 const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 const WORKER='https://acs-api.mairaluigi.workers.dev';
+const REPO='cibox72/AppCenterStudio_Premium';
 const FORNITORE_WA='393447507656';
 const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
+const TEMI_ADMIN=[
+ {id:'classico',nome:'🌿 Classico'},
+ {id:'wedding',nome:'🕊️ Wedding'},
+ {id:'natale',nome:'🎄 Natale'},
+ {id:'carnevale',nome:'🎭 Carnevale'},
+ {id:'pasqua',nome:'🌸 Pasqua'},
+ {id:'estate',nome:'🌊 Estate'},
+ {id:'inverno',nome:'❄️ Inverno'}
+];
 
 const param=n=>new URLSearchParams(location.search).get(n);
 let studioCode=param('studio')||'';
@@ -307,6 +320,23 @@ function renderApps(){
    </div>`).join('');
 }
 
+async function cambiaTema(id){
+ const tok=localStorage.getItem('gh_token');
+ if(!tok){alert('Token GitHub mancante: apri una volta admin-tema.html, salva il token e poi torna qui.');return;}
+ try{
+  const g=await fetch('https://api.github.com/repos/'+REPO+'/contents/tema.json',{headers:{Authorization:'Bearer '+tok}});
+  let sha=null;
+  if(g.ok){const j=await g.json();sha=j.sha;}
+  const b64=btoa(unescape(encodeURIComponent(JSON.stringify({tema:id},null,2))));
+  const body={message:'Tema: '+id,content:b64};
+  if(sha)body.sha=sha;
+  const r=await fetch('https://api.github.com/repos/'+REPO+'/contents/tema.json',{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok){const j=await r.json();alert('Errore GitHub: '+(j.message||r.status));return;}
+  alert('Tema "'+id+'" pubblicato: tra ~1 minuto TUTTE le app cambiano grafica.');
+  renderAdmin();
+ }catch(e){alert('Errore: '+e.message);}
+}
+
 async function renderAdmin(){
   if(sessionStorage.getItem('admin')!=='1')return;
   const box=document.getElementById('adminPanel');
@@ -317,10 +347,13 @@ async function renderAdmin(){
     const oggi=new Date().toISOString().slice(0,10);
     righe=(l.studi||[]).map(s=>'<tr><td>'+s.codice+'</td><td>'+(s.nome||'')+'</td><td>'+fmtData(s.scadenza)+'</td><td>'+(s.attivo?'SI':'NO')+'</td><td>'+(s.scadenza<oggi?'SCADUTA':'valida')+'</td></tr>').join('');
   }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
+  let temaAttuale='classico';
+  try{const t=await(await fetch('tema.json?t='+Date.now(),{cache:'no-store'})).json();temaAttuale=t.tema||'classico';}catch(e){}
   box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
+   '<div class="riga"><b>CAMBIA STILE APP (tutti gli studi):</b> '+TEMI_ADMIN.map(t=>'<button class="tema-btn'+(t.id===temaAttuale?' attivo':'')+'" onclick="cambiaTema(\''+t.id+'\')">'+t.nome+'</button>').join(' ')+'</div>'+
    '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
    '<div class="riga">Gestione studi & offerte: <a href="admin-offerte.html" target="_blank">apri pannello studi</a></div>'+
-   '<div class="riga">Tema grafico stagionale: <a href="admin-tema.html" target="_blank">apri pannello tema</a></div>'+
+   '<div class="riga">Tema grafico stagionale (pagina dedicata): <a href="admin-tema.html" target="_blank">apri pannello tema</a></div>'+
    '<div class="riga">Cervello Cloudflare (worker): <a href="'+WORKER+'/health" target="_blank">health check</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard worker</a></div>'+
    '<div class="riga">Magazzino R2 (foto clienti): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard bucket</a></div>'+
    '<div class="riga">Netlify (forms dati studio + identità): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
