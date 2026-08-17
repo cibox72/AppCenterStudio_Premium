@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AppCenter Studio Premium - Benvenuto</title>
+<script src="tema.js"></script>
 <style>
 :root{--nero:#0e0e0e;--grigio:#6b6b6b;--bordo:#e6e6e6;--sfondo:#fbfbfb;--carta:#fff}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -318,6 +319,8 @@ async function renderAdmin(){
   }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
   box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
    '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
+   '<div class="riga">Gestione studi & offerte: <a href="admin-offerte.html" target="_blank">apri pannello studi</a></div>'+
+   '<div class="riga">Tema grafico stagionale: <a href="admin-tema.html" target="_blank">apri pannello tema</a></div>'+
    '<div class="riga">Cervello Cloudflare (worker): <a href="'+WORKER+'/health" target="_blank">health check</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard worker</a></div>'+
    '<div class="riga">Magazzino R2 (foto clienti): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard bucket</a></div>'+
    '<div class="riga">Netlify (forms dati studio + identità): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
