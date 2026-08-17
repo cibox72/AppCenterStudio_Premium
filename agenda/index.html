@@ -4,13 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>07 Agenda - AppCenterStudio Premium</title>
+<script src="../tema.js"></script>
 <style>
 :root{--crema:#f4efe7;--carta:#fbf9f5;--taupe:#a3937d;--taupe-scuro:#6f6353;--beige:#e9dfcd;--testo:#4a4237;--soft:#9b8f7d;--bordo:#e5dccb;--salvia:#7d8a5f}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--crema);color:var(--testo);line-height:1.6;min-height:100vh}
-.topbar{display:flex;gap:8px;padding:12px 18px;background:rgba(251,249,245,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.topbar{display:flex;gap:8px;padding:12px 18px;background:rgba(251,249,245,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
 .topbar button,.topbar label{padding:8px 18px;background:#fff;border:1px solid var(--taupe);cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;color:var(--taupe-scuro);margin:0;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
 .topbar button:hover,.topbar label:hover{background:var(--taupe);color:#fff}
+.sync-status{font-size:11px;color:#2e7d32;margin-left:auto;font-weight:700}
+.sync-status.ko{color:#b00020}
 .hero-agenda{position:relative;overflow:hidden;text-align:center;padding:44px 20px 26px}
 .hero-agenda .blob{position:absolute;opacity:.65;z-index:0}
 .blob.b1{width:280px;height:230px;top:-70px;left:-80px;background:var(--beige);border-radius:60% 40% 55% 45%/50% 60% 40% 50%}
@@ -88,6 +91,7 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
 <button onclick="promemoriaWA()">Promemoria WhatsApp</button>
 <button onclick="backupGlobale()">Backup globale</button>
 <label style="cursor:pointer">Ripristino globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+<span class="sync-status" id="syncStatus">Sync cloud: --</span>
 </div>
 
 <div class="hero-agenda">
@@ -115,23 +119,57 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
  </div>
  <div class="cal-grid" id="calDow"></div>
  <div class="cal-grid" id="calGrid" style="margin-top:4px"></div>
- <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati compaiono automaticamente. I <b>preventivi</b> futuri in verde salvia chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno. <b>Promemoria WhatsApp</b> manda al numero dello studio gli impegni di oggi.</p>
+ <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati compaiono automaticamente. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno e sono sincronizzati tra tutti i computer dello studio. <b>Promemoria WhatsApp</b> manda al numero dello studio gli impegni di oggi.</p>
 </div>
 
 <div id="dayPanel"></div>
 </div>
 
 <script>
+const WORKER='https://acs-api.mairaluigi.workers.dev';
 let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
 if(studioCodice)sessionStorage.setItem('studio',studioCodice);
 let DB=JSON.parse(localStorage.getItem('appcenter_db_v1')||'null')||{preventivi:[],clienti:[]};
 let agenda=JSON.parse(localStorage.getItem('appcenter_agenda')||'[]');
-function saveAgenda(){localStorage.setItem('appcenter_agenda',JSON.stringify(agenda));}
+function saveAgenda(){localStorage.setItem('appcenter_agenda',JSON.stringify(agenda));syncCloud();}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const fmtData=d=>{if(!d)return'';const p=String(d).split('-');if(p.length!==3){const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');}return p[2]+'/'+p[1]+'/'+p[0].slice(2);};
 const today=()=>new Date().toISOString().slice(0,10);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function primoNumero(s){const m=String(s||'').match(/\d{6,15}/);return m?m[0]:'';}
+
+async function syncCloud(){
+ if(!studioCodice)return;
+ const box=document.getElementById('syncStatus');
+ try{
+  const fd=new FormData();
+  fd.append('studio',studioCodice);fd.append('cliente','__db__');
+  fd.append('chiave','agenda');fd.append('data',JSON.stringify(agenda));
+  const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});
+  const j=await r.json();
+  if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+  else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
+
+async function loadCloud(){
+ if(!studioCodice)return;
+ const box=document.getElementById('syncStatus');
+ box.textContent='Sync cloud: carico...';
+ try{
+  const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=agenda&t='+Date.now(),{cache:'no-store'});
+  const cloud=await r.json();
+  if(cloud&&Array.isArray(cloud)&&cloud.length){
+   const ma={};agenda.forEach(a=>{ma[a.id]=a;});
+   let add=0;
+   cloud.forEach(a=>{if(!a.id)a.id=uid();if(!ma[a.id]){ma[a.id]=a;add++;}});
+   agenda=Object.values(ma);
+   localStorage.setItem('appcenter_agenda',JSON.stringify(agenda));
+   box.textContent='Sync: '+add+' aggiunti';
+  }else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+ renderCalendario();renderDayPanel();
+}
 
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
@@ -302,7 +340,7 @@ initCal();
 renderCalendario();
 renderDayPanel();
 checkPromemoria();
+loadCloud();
 </script>
 </body>
 </html>
-
