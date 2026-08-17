@@ -2,368 +2,118 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AppCenterStudio Premium - Gallery</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery - AppCenterStudio Premium</title>
 <style>
-:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
-    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
-    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
-  background-attachment:fixed;
-  min-height:100vh;
-  color:var(--testo)
-}
-.container{max-width:1100px;margin:0 auto;padding:20px}
-.app-header{
-  text-align:center;margin-bottom:26px;padding:22px;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--bordo);border-radius:14px;
-  box-shadow:0 6px 18px rgba(15,20,40,.07)
-}
-.app-header img{filter:grayscale(100%);height:56px;border-radius:12px;margin-bottom:8px}
-.app-header h1{font-family:Georgia,serif;font-size:28px}
-.subtitle{color:var(--soft)}
-.card{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--bordo);border-radius:14px;
-  padding:22px;margin-bottom:22px;
-  box-shadow:0 6px 18px rgba(15,20,40,.07)
-}
-.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
-.topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
-.btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
-.btn-primary:hover{background:#333}
-.btn-secondary{padding:10px 18px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
-.btn-secondary:hover{background:#111;color:#fff}
-.btn-link{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-link:hover{border-color:#111;background:#fff}
-.g-row{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(4px);
-  border:1px solid var(--bordo);border-radius:10px;
-  padding:14px 16px;margin-bottom:12px;
-  box-shadow:0 2px 8px rgba(15,20,40,.04)
-}
-.g-row .info{font-size:13px;line-height:1.7}
-.g-row .code{font-family:monospace;font-weight:700}
-.chip{display:inline-block;padding:2px 10px;border:1px solid #ccc;border-radius:999px;font-size:11px;color:#555;margin:2px}
-.warn{color:var(--soft);font-size:13px}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#faf9f7 0%,#ece7de 100%);background-attachment:fixed;min-height:100vh;color:#111}
+.g-head{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid #e2ddd3;padding:22px 16px;text-align:center}
+.g-head img{height:52px;border-radius:50%;filter:grayscale(100%);margin-bottom:8px}
+.g-head h1{font-family:Georgia,serif;font-size:20px}
+.g-head p{font-size:13px;color:#8a8578;margin-top:4px}
+.g-badge{display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:999px;font-size:12px;font-weight:600;margin-top:10px}
+.count-bar{position:sticky;top:0;z-index:6;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid #e2ddd3;text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:14px;max-width:1100px;margin:0 auto}
+.ph{border-radius:10px;overflow:hidden;border:1px solid #e2ddd3;background:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(40,30,10,.05)}
+.ph img{width:100%;height:160px;object-fit:cover;display:block}
+.ph .fname{font-size:10px;color:#8a8578;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(10px);
-  border:1px solid var(--bordo);border-radius:14px;
-  padding:36px;max-width:430px;width:100%;text-align:center;
-  box-shadow:0 10px 30px rgba(15,20,40,.12)
-}
-/* ===== VISTA CLIENTE ===== */
-.viewer{position:fixed;inset:0;background:#14141a;display:flex;flex-direction:column}
-.v-top{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;color:#eee;background:rgba(0,0,0,.55);flex-wrap:wrap;gap:8px}
-.v-top .studio{font-family:Georgia,serif;font-size:15px}
-.v-top .count{font-family:monospace;font-size:13px;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:999px}
-.v-folders{display:flex;gap:6px;padding:8px 14px;background:rgba(0,0,0,.75);overflow-x:auto;flex-wrap:nowrap}
-.v-folder-chip{padding:6px 14px;background:transparent;color:#ccc;border:1px solid rgba(255,255,255,.3);border-radius:999px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit}
-.v-folder-chip:hover{background:rgba(255,255,255,.1);color:#fff}
-.v-folder-chip.active{background:#fff;color:#111;border-color:#fff;font-weight:600}
-.v-stage{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;touch-action:pan-y}
-.v-stage img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;transition:opacity .25s}
-.v-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.5);padding:8px 18px;border-radius:999px;font-size:13px;pointer-events:none}
-.v-bar{display:flex;justify-content:center;gap:14px;padding:12px;background:rgba(0,0,0,.55)}
-.v-btn{width:52px;height:52px;border-radius:50%;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:22px;cursor:pointer}
-.v-btn:active{background:rgba(255,255,255,.3)}
-.v-btn.dl{background:#fff;color:#111;font-size:20px}
-.thanks{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;padding:20px;text-align:center
-}
-.thanks .box{
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:blur(10px);
-  border:1px solid var(--bordo);border-radius:16px;
-  padding:36px 26px;max-width:460px;width:100%;
-  box-shadow:0 10px 30px rgba(15,20,40,.12)
-}
-.thanks img{height:64px;border-radius:50%;object-fit:cover;margin-bottom:10px;filter:grayscale(100%)}
-.thanks h1{font-family:Georgia,serif;font-size:26px;margin-bottom:10px}
-.thanks p{color:var(--soft);font-size:15px;line-height:1.6}
-.btn-wa{padding:14px 28px;background:#111;color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;margin-top:12px}
+.lock-card{background:#fff;border:1px solid #e2ddd3;border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(40,30,10,.10)}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:50;display:none;flex-direction:column}
+.lb.open{display:flex}
+.lb-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;color:#fff}
+.lb-count{font-family:monospace;font-size:14px}
+.lb-btn{background:transparent;border:1px solid #fff;color:#fff;border-radius:999px;padding:6px 16px;cursor:pointer;font-size:14px}
+.lb-btn:hover{background:#fff;color:#111}
+.lb-imgwrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:0 60px;min-height:0}
+.lb-imgwrap img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;background:#fff}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid #fff;background:rgba(0,0,0,.55);color:#fff;font-size:20px;cursor:pointer}
+.lb-nav:hover{background:#fff;color:#111}
+.lb-nav.prev{left:10px}.lb-nav.next{right:10px}
+.lb-bottom{text-align:center;padding:10px;color:#bbb;font-size:12px;font-family:monospace}
+@media(max-width:640px){.lb-imgwrap{padding:0 8px}.lb-nav{width:38px;height:38px;font-size:16px}}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
-const $=id=>document.getElementById(id);
+const WORKER='https://acs-api.mairaluigi.workers.dev';
+const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 const param=n=>new URLSearchParams(location.search).get(n);
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
+function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function errPage(msg){document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif">Gallery</h2><p style="color:#8a8578">'+esc(msg)+'</p></div></div>'}
+
+let PH=[],LB=0,MAN=null,G_STUDIO='',G_CLIENTE='';
+
 window.addEventListener('DOMContentLoaded',()=>{
- const g=param('g');
- if(g)return clientMode(g);
- adminGate();
-});
-function blocca(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">&#x1f512;</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
-async function adminGate(){
- const codice=param('studio')||sessionStorage.getItem('studio');
- if(!codice)return blocca('Accedi da AppCenterStudio-Premium per aprire le applicazioni.');
- sessionStorage.setItem('studio',codice);
- try{
-  const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-  const s=(l.studi||[]).find(x=>x.codice===codice);
-  const oggi=new Date().toISOString().slice(0,10);
-  if(!s)return blocca('Codice studio non riconosciuto.');
-  if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
-  if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
- }catch(e){return blocca('Verifica licenza non riuscita.');}
- renderAdmin(codice);
-}
-/* ===== ADMIN: ARCHIVIO GALLERY ===== */
-function renderAdmin(codice){
- document.getElementById('root').innerHTML=`
- <div class="container">
-  <div class="topbar">
-   <div style="display:flex;gap:8px">
-    <button class="btn-secondary" onclick="history.back()">← Indietro</button>
-    <button class="btn-secondary" onclick="location.href='../index.html'">Home</button>
-   </div>
-   <div style="display:flex;gap:8px">
-    <button class="btn-primary" onclick="backupGlobale()">Backup Globale</button>
-    <label class="btn-secondary" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
-   </div>
-  </div>
-  <header class="app-header"><img src="../logo.png" alt="logo" onerror="this.style.display='none'"><h1>Gallery</h1><p class="subtitle">Archivio gallerie clienti su Netlify</p></header>
-  <div class="card">
-   <h2>Archivio Gallery</h2>
-   <div id="archivio"><p class="warn">Caricamento...</p></div>
-  </div>
- </div>`;
- loadArchivio(codice);
-}
-function leggiClienti(){try{return JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]}}catch(e){return{clients:[]}}}
-async function loadArchivio(codice){
- const data=leggiClienti();
- const site=localStorage.getItem('netlify_sitename');
- const box=$('archivio');
- if(!data.clients.length){
-  box.innerHTML=`<p class="warn">Nessuna gallery ancora.</p><button class="btn-primary" style="margin-top:10px" onclick="location.href='../clienti-foto/?studio=${codice}'">Vai a Clienti & Foto</button>`;
-  return;
- }
- if(!site){box.innerHTML='<p class="warn">Collega prima il sito Netlify nell\'app Clienti & Foto.</p>';return;}
- box.innerHTML=data.clients.slice().reverse().map(c=>`
-  <div class="g-row">
-   <div class="info"><b>${esc(c.nome)} ${esc(c.cognome)}</b> · <span class="code">${c.codice}</span><br>
-   <span id="fold-${c.codice}"><span class="chip">cartelle: ...</span></span></div>
-   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
-    <button class="btn-link" onclick="apriGallery('${c.codice}')">Apri Gallery</button>
-    <button class="btn-link" onclick="copiaLink('${c.codice}',this)">Copia link</button>
-    <button class="btn-link" onclick="stampaPDF('${c.codice}')">PDF per stampa</button>
-    <button class="btn-link" onclick="location.href='../clienti-foto/?studio=${codice}'">Gestisci foto</button>
-   </div>
-  </div>`).join('');
- for(const c of data.clients){
-  try{
-   const m=await(await fetch(`https://${site}.netlify.app/${c.codice}/manifest.json?t=${Date.now()}`,{cache:'no-store'})).json();
-   const folders=(m.folders&&m.folders.length)?m.folders:[...new Set((m.photos||[]).map(p=>p.includes('/')?p.split('/')[0]:'root'))];
-   $('fold-'+c.codice).innerHTML=`<span class="chip">${(m.photos||[]).length} foto</span>`+folders.map(f=>`<span class="chip">${esc(f)}</span>`).join('');
-  }catch(e){$('fold-'+c.codice).innerHTML='<span class="chip">nessuna foto pubblicata</span>';}
- }
-}
-function linkGallery(codice){
- const site=localStorage.getItem('netlify_sitename');
- return new URL('../gallery/?g='+encodeURIComponent(site+'/'+codice),location.href).href;
-}
-function apriGallery(codice){window.open(linkGallery(codice),'_blank')}
-function copiaLink(codice,btn){
- navigator.clipboard.writeText(linkGallery(codice)).then(()=>{const t=btn.textContent;btn.textContent='Copiato!';setTimeout(()=>btn.textContent=t,1500);});
-}
-/* ===== PDF PER STAMPA ===== */
-function imgToJpeg(url){return new Promise((res,rej)=>{const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{try{const c=document.createElement('canvas');const s=Math.min(1,900/img.width);c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.82));}catch(e){rej(e)}};img.onerror=rej;img.src=url;});}
-async function stampaPDF(codice){
- const site=localStorage.getItem('netlify_sitename');
- const data=leggiClienti();
- const c=data.clients.find(x=>x.codice===codice);if(!c)return;
- let ident={};try{ident=JSON.parse(localStorage.getItem('studioIdent'))||{}}catch(e){}
- alert('Generazione PDF in corso... può richiedere qualche minuto con molte foto.');
- try{
-  const m=await(await fetch(`https://${site}.netlify.app/${codice}/manifest.json?t=${Date.now()}`,{cache:'no-store'})).json();
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF('p','mm','a4');
-  doc.setFillColor(17,17,17);doc.rect(0,0,210,40,'F');
-  doc.setTextColor(255);doc.setFontSize(20);doc.setFont('helvetica','bold');
-  doc.text(ident.nome||'Studio Fotografico',105,16,{align:'center'});
-  doc.setFontSize(11);doc.setFont('helvetica','normal');
-  doc.text('Gallery fotografica - '+c.nome+' '+c.cognome,105,25,{align:'center'});
-  doc.text('Codice '+codice+' - '+new Date().toLocaleDateString('it-IT')+' - '+((m.photos||[]).length)+' foto',105,32,{align:'center'});
-  const X=[15,107],W=88,H=58,CAP=6;
-  let x=0,y=50,n=0;
-  for(const p of (m.photos||[])){
-   const url=`https://${site}.netlify.app/${codice}/`+p.split('/').map(encodeURIComponent).join('/');
-   try{
-    const d=await imgToJpeg(url);
-    doc.addImage(d,'JPEG',X[x],y,W,H,'','FAST');
-   }catch(e){
-    doc.setDrawColor(150);doc.rect(X[x],y,W,H);
-    doc.setTextColor(120);doc.setFontSize(9);doc.text('foto non disponibile',X[x]+W/2,y+H/2,{align:'center'});
-   }
-   doc.setTextColor(60);doc.setFontSize(8);
-   doc.text(p.split('/').pop(),X[x],y+H+CAP);
-   n++;
-   x++;
-   if(x>1){x=0;y+=H+CAP+6;}
-   if(y>230&&n<(m.photos||[]).length){doc.addPage();y=15;x=0;}
-  }
-  doc.save('GALLERY_'+codice+'.pdf');
-  alert('PDF scaricato: GALLERY_'+codice+'.pdf');
- }catch(e){alert('Errore PDF: '+e.message);}
-}
-/* ===== BACKUP GLOBALE ===== */
-function backupGlobale(){
- const data={};
- for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
- const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);
- a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
- alert('Backup globale scaricato.');
-}
-function restoreGlobale(e){
- const f=e.target.files[0];if(!f)return;
- const r=new FileReader();
- r.onload=ev=>{try{
-  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-  if(typeof d!=='object')throw new Error('File non valido.');
-  if(!confirm(`Ripristinare il backup globale (${Object.keys(d).length} voci)?\nI dati attuali di TUTTE le app verranno sostituiti.`))return;
-  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
- }catch(err){alert('Errore: '+err.message)}};
- r.readAsText(f);e.target.value='';
-}
-/* ===== VISTA CLIENTE ===== */
-function errPage(msg){document.getElementById('root').innerHTML=`<div class="lock-wrap"><div class="lock-card"><div style="font-size:34px">&#x274C;</div><h2 style="margin:10px 0 6px;font-family:Georgia,serif">Galleria non disponibile</h2><p style="color:var(--soft)">${msg}</p></div></div>`}
-let MANIFEST=null;
-async function clientMode(g){
+ const g=param('g')||param('s');
+ if(!g)return errPage('Link non valido. Contatta lo studio.');
  const parts=decodeURIComponent(g).split('/');
  if(parts.length<2)return errPage('Link non valido. Contatta lo studio.');
- const site=parts[0],code=parts.slice(1).join('/');
- const base='https://'+site+'.netlify.app/'+code;
- let manifest=null,studio=null;
- try{manifest=await(await fetch(base+'/manifest.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){}
- if(!manifest||!manifest.photos||!manifest.photos.length)return errPage('Nessuna foto pubblicata. Contatta lo studio.');
- try{studio=await(await fetch('https://'+site+'.netlify.app/studio.json?t='+Date.now(),{cache:'no-store'})).json();}catch(e){}
- document.title=(studio&&studio.nome?studio.nome:'Gallery')+' - '+(manifest.nome||'')+' '+(manifest.cognome||'');
- MANIFEST=manifest;
- if(!manifest.folders||!manifest.folders.length){
-  const inferred=[...new Set(manifest.photos.map(p=>p.includes('/')?p.split('/')[0]:'root'))];
-  manifest.folders=inferred.length?inferred:['root'];
- }
- if(!manifest.latestFolder)manifest.latestFolder=manifest.folders[manifest.folders.length-1];
- renderViewer(base,manifest,studio);
-}
-let ALL_PH=[],PH=[],BASE='',IDX=0,STUDIO=null,touchX=null,ACTIVE_FOLDER='__all__';
-function folderOf(path){return path.includes('/')?path.split('/')[0]:'root';}
-function filterByFolder(folder){
- if(folder==='__all__')return ALL_PH.slice();
- return ALL_PH.filter(p=>folderOf(p)===folder);
-}
-function photoUrl(i){return BASE+'/'+PH[i].split('/').map(encodeURIComponent).join('/')}
-function renderViewer(base,manifest,studio){
- BASE=base;ALL_PH=manifest.photos;STUDIO=studio||{};
- const multiFolder=(manifest.folders||[]).length>1;
+ G_STUDIO=parts[0];G_CLIENTE=parts.slice(1).join('/');
+ avvia();
+});
+
+async function avvia(){
+ try{MAN=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(G_STUDIO)+'&cliente='+encodeURIComponent(G_CLIENTE)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MAN=null;}
+ if(!MAN||!MAN.gallery||!MAN.gallery.length)return errPage('La gallery non e\' ancora pronta. Contatta lo studio.');
+ if(MAN.scadenza_gallery&&MAN.scadenza_gallery<todayStr())return errPage('Questa gallery e\' scaduta. Contatta lo studio per una proroga.');
+ PH=MAN.gallery;
+ document.title='Gallery'+(MAN.nome_studio?' - '+MAN.nome_studio:'');
+ const logo=MAN.logo?R2_BASE+'/'+G_STUDIO+'/'+G_CLIENTE+'/'+MAN.logo:'';
  document.getElementById('root').innerHTML=`
- <div class="viewer">
-  <div class="v-top"><span class="studio">${esc(STUDIO.nome||'Gallery')}</span><span class="count" id="cnt"></span></div>
-  ${multiFolder?`<div class="v-folders" id="folderBar">
-   <button class="v-folder-chip" data-f="__all__">Tutte</button>
-   ${manifest.folders.map(f=>`<button class="v-folder-chip" data-f="${esc(f)}">${esc(f)}</button>`).join('')}
-  </div>`:''}
-  <div class="v-stage" id="stage"><img id="ph" alt="Foto"><div class="v-hint" id="hint">← scorri per sfogliare →</div></div>
-  <div class="v-bar">
-   <button class="v-btn" onclick="prev()">&#x2039;</button>
-   <button class="v-btn dl" onclick="scarica()" title="Scarica foto">&#x2193;</button>
-   <button class="v-btn" onclick="next()">&#x203A;</button>
+ <div class="g-head">${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'"><br>`:''}
+  <h1>${esc(MAN.nome_studio||'Studio Fotografico')}</h1>
+  <p>Le vostre foto pronte da sfogliare</p>
+  ${MAN.scadenza_gallery?`<span class="g-badge">Disponibile fino al ${esc(fmtData(MAN.scadenza_gallery))}</span>`:''}
+ </div>
+ <div class="count-bar">${PH.length} foto nella vostra gallery</div>
+ <div class="grid" id="grid"></div>
+ <div class="lb" id="lb">
+  <div class="lb-top">
+   <span class="lb-count" id="lbCount"></span>
+   <button class="lb-btn" onclick="closeLb()">Chiudi &#x2715;</button>
   </div>
+  <div class="lb-imgwrap" id="lbWrap">
+   <button class="lb-nav prev" onclick="lbPrev(event)">&#x2190;</button>
+   <img id="lbImg" src="" alt="">
+   <button class="lb-nav next" onclick="lbNext(event)">&#x2192;</button>
+  </div>
+  <div class="lb-bottom" id="lbName"></div>
  </div>`;
- if(multiFolder){
-  document.querySelectorAll('.v-folder-chip').forEach(btn=>{
-   btn.onclick=()=>{
-    document.querySelectorAll('.v-folder-chip').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    ACTIVE_FOLDER=btn.dataset.f;
-    PH=filterByFolder(ACTIVE_FOLDER);
-    IDX=0;
-    show(0);
-   };
-  });
-  const initialFolder=(manifest.folders||[]).length>1?'__all__':manifest.folders[0];
-  document.querySelector(`.v-folder-chip[data-f="${initialFolder}"]`).classList.add('active');
-  ACTIVE_FOLDER=initialFolder;
-  PH=filterByFolder(ACTIVE_FOLDER);
- }else{
-  PH=ALL_PH.slice();
- }
- IDX=0;
- const st=$('stage');
- st.addEventListener('touchstart',e=>{touchX=e.touches[0].clientX;},{passive:true});
- st.addEventListener('touchend',e=>{
-  if(touchX===null)return;
-  const dx=e.changedTouches[0].clientX-touchX;touchX=null;
-  if(dx<-40)next();else if(dx>40)prev();
- },{passive:true});
- document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev();});
- show(0);
+ draw();setupLb();
 }
-function show(i){
- if(!PH.length){
-  $('cnt').textContent='0 foto';
-  $('ph').style.opacity=0;
-  if($('hint'))$('hint').style.display='none';
-  return;
- }
- if(i>=PH.length)return thanks();
- if(i<0)i=0;
- IDX=i;
- const img=$('ph');
- img.style.opacity=.3;
- img.onload=()=>{img.style.opacity=1;};
- img.src=photoUrl(i);
- $('cnt').textContent=(i+1)+' / '+PH.length+(ACTIVE_FOLDER!=='__all__'?' ('+ACTIVE_FOLDER+')':'');
- if($('hint'))$('hint').style.display=(i===0&&PH.length>1)?'block':'none';
- if(i+1<PH.length){const p=new Image();p.src=photoUrl(i+1);}
+function photoUrl(i){return R2_BASE+'/'+G_STUDIO+'/'+G_CLIENTE+'/gallery/'+encodeURIComponent(PH[i])}
+function draw(){
+ document.getElementById('grid').innerHTML=PH.map((p,i)=>`
+  <div class="ph" onclick="openLb(${i})">
+   <img src="${photoUrl(i)}" loading="lazy" alt="">
+   <div class="fname">${esc(p)}</div>
+  </div>`).join('');
 }
-function next(){if(IDX+1<PH.length)show(IDX+1);else thanks();}
-function prev(){if(IDX>0)show(IDX-1)}
-async function scarica(){
- if(!PH.length)return;
- const url=photoUrl(IDX);
- const name=PH[IDX].split('/').pop();
- try{
-  const r=await fetch(url);
-  const b=await r.blob();
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(b);
-  a.download=name;
-  document.body.appendChild(a);a.click();a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
- }catch(e){window.open(url,'_blank');}
+function openLb(i){LB=i;renderLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+function renderLb(){
+ document.getElementById('lbImg').src=photoUrl(LB);
+ document.getElementById('lbName').textContent=PH[LB];
+ document.getElementById('lbCount').textContent=(LB+1)+' / '+PH.length;
 }
-function thanks(){
- const logo=STUDIO.logo?'https://'+BASE.split('/')[2]+'/'+STUDIO.logo:'';
- const wa=STUDIO.whatsapp?`https://wa.me/${STUDIO.whatsapp}?text=`+encodeURIComponent('Ciao! Ho visto le mie foto, grazie!'):'';
- document.getElementById('root').innerHTML=`
- <div class="thanks"><div class="box">
-  ${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'">`:''}
-  <h1>Grazie per averci scelto!</h1>
-  <p>${esc(STUDIO.messaggio||'Le vostre foto, con amore.')}</p>
-  <p style="margin-top:14px;font-size:13px">- ${esc(STUDIO.nome||'Lo Studio')}</p>
-  ${wa?`<a class="btn-wa" href="${wa}" target="_blank">Scrivici su WhatsApp</a>`:''}
-  <br><button class="btn-primary" style="margin-top:14px" onclick="show(0)">Rivedi le foto</button>
- </div></div>`;
+function lbPrev(e){if(e)e.stopPropagation();LB=(LB-1+PH.length)%PH.length;renderLb();}
+function lbNext(e){if(e)e.stopPropagation();LB=(LB+1)%PH.length;renderLb();}
+function setupLb(){
+ const w=document.getElementById('lbWrap');if(!w)return;
+ let tx=0,ty=0;
+ w.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+ w.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){dx<0?lbNext():lbPrev();}},{passive:true});
+ document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open'))return;
+  if(e.key==='ArrowLeft'){e.preventDefault();lbPrev();}
+  if(e.key==='ArrowRight'){e.preventDefault();lbNext();}
+  if(e.key==='Escape')closeLb();
+ });
 }
-function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 </script>
 </body>
 </html>
