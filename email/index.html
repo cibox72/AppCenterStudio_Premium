@@ -4,29 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>09 Email - AppCenterStudio Premium</title>
-<script src="../licenza.js"></script>
 <style>
 :root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Georgia,'Segoe UI',Tahoma,sans-serif;
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
-    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
-    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
-  background-attachment:fixed;
-  color:var(--nero);
-  min-height:100vh
-}
-.topbar{
-  display:flex;gap:6px;padding:8px 14px;
-  background:rgba(255,255,255,0.85);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--bordo);
-  flex-wrap:wrap;align-items:center
-}
+body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);background-attachment:fixed;color:var(--nero);min-height:100vh}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
 .topbar .pill{background:rgba(255,255,255,0.8);color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .topbar .pill:hover{background:#111;color:#fff}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
@@ -42,13 +24,7 @@ button{font-family:inherit}
 .mini{border:1px solid #ccc;background:rgba(255,255,255,0.9);border-radius:6px;padding:4px 9px;cursor:pointer;font-size:12px}
 .mini:hover{background:#eee}
 main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
-.card{
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:blur(8px);
-  border:1px solid var(--bordo);border-radius:12px;
-  padding:18px;margin-bottom:16px;
-  box-shadow:0 6px 18px rgba(15,20,40,.07)
-}
+.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
 h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 label{font-size:11px;color:#666;display:block;margin-bottom:3px}
@@ -62,22 +38,11 @@ th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:
 th{background:#111;color:#fff}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center;padding:20px}
 .modal.active{display:flex}
-.modal-content{
-  background:rgba(255,255,255,0.98);
-  backdrop-filter:blur(10px);
-  border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;
-  padding:24px;border:1px solid var(--bordo);
-  box-shadow:0 20px 60px rgba(0,0,0,.25)
-}
+.modal-content{background:rgba(255,255,255,0.98);backdrop-filter:blur(10px);border-radius:14px;max-width:640px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;border:1px solid var(--bordo);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 .riga{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px;border-bottom:1px dashed #e0e0e0}
-.testo{
-  white-space:pre-wrap;
-  background:rgba(250,250,250,0.85);
-  backdrop-filter:blur(4px);
-  border:1px solid #e0e0e0;border-radius:8px;
-  padding:12px;font-size:13px;margin-top:10px;
-  box-shadow:0 2px 6px rgba(15,20,40,.04)
-}
+.testo{white-space:pre-wrap;background:rgba(250,250,250,0.85);backdrop-filter:blur(4px);border:1px solid #e0e0e0;border-radius:8px;padding:12px;font-size:13px;margin-top:10px;box-shadow:0 2px 6px rgba(15,20,40,.04)}
+.sync-status{font-size:11px;color:#2e7d32;margin-left:10px}
+.sync-status.ko{color:#b00020}
 @media(max-width:800px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -86,10 +51,9 @@ th{background:#111;color:#fff}
 <div class="topbar">
   <button class="pill" onclick="history.back()">← Indietro</button>
   <button class="pill" onclick="goHome()">Home</button>
-  <button class="pill" onclick="backupGlobale()">Backup Globale</button>
-  <label class="pill" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
-  <button class="pill" style="background:#111;color:#fff" onclick="pubblicaArchivioComune()">Pubblica archivio comune</button>
-  <button class="pill" style="background:#111;color:#fff" onclick="scaricaEUnisciArchivio()">Scarica e unisci archivio</button>
+  <button class="pill" onclick="backupGlobale()">Backup globale</button>
+  <label class="pill" style="cursor:pointer">Ripristino globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
+  <span class="sync-status" id="syncStatus">Sync cloud: --</span>
 </div>
 
 <header>
@@ -103,7 +67,7 @@ th{background:#111;color:#fff}
 <main>
   <div class="card">
     <h2>Mittente (indirizzo dello studio)</h2>
-    <p class="hint">Questi sono gli indirizzi DA cui scrivi. Il messaggio parte davvero dal tuo account quando usi "Invia con app email" (il programma di posta o la PEC configurati su questo dispositivo) oppure quando incolli il testo nella tua webmail / PEC web.</p>
+    <p class="hint">Il messaggio parte dal tuo programma di posta o dalla tua webmail quando usi "Invia con app email" o "Invia con PEC".</p>
     <div class="grid">
       <div><label>Email dello studio</label><input id="cfgEmail" placeholder="studio@esempio.it"></div>
       <div><label>PEC dello studio (facoltativa)</label><input id="cfgPec" placeholder="studio@pec.it"></div>
@@ -123,7 +87,7 @@ th{background:#111;color:#fff}
       <option value="ricevuta">Conferma ricevuta acconto</option>
     </select>
     <div class="grid">
-      <div><label>A: email o PEC destinatario *</label><input id="e_a" placeholder="cliente@esempio.it / cliente@pec.it"></div>
+      <div><label>A: email o PEC destinatario *</label><input id="e_a" placeholder="cliente@esempio.it"></div>
       <div><label>Oggetto *</label><input id="e_oggetto" placeholder="Es. Conferma appuntamento"></div>
     </div>
     <label>Messaggio</label>
@@ -155,16 +119,54 @@ th{background:#111;color:#fff}
 <script>
 const KEY='appcenter_email';
 const CFG='emailStudioCfg';
+const WORKER='https://acs-api.mairaluigi.workers.dev';
 const $=s=>document.querySelector(s);
+const fmtData=d=>{if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);};
 const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let studioCode=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCode)sessionStorage.setItem('studio',studioCode);
+
 let store=(()=>{try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.list)return d;}catch(e){}return{list:[]};})();
 let cfg=JSON.parse(localStorage.getItem(CFG)||'{}');
 let ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
 let editingId=null;
-function save(){localStorage.setItem(KEY,JSON.stringify(store));}
-function goHome(){const studio=sessionStorage.getItem('studio')||new URLSearchParams(location.search).get('studio')||'';location.href='../benvenuto.html'+(studio?'?studio='+studio:'');}
+function save(){localStorage.setItem(KEY,JSON.stringify(store));syncCloud();}
+function goHome(){location.href='../benvenuto.html'+(studioCode?'?studio='+studioCode:'');}
+
+async function syncCloud(){
+ if(!studioCode)return;
+ const box=$('#syncStatus');
+ try{
+  const fd=new FormData();
+  fd.append('studio',studioCode);fd.append('cliente','__db__');
+  fd.append('chiave','email');fd.append('data',JSON.stringify(store));
+  const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});
+  const j=await r.json();
+  if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+  else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
+
+async function loadCloud(){
+ if(!studioCode)return;
+ const box=$('#syncStatus');
+ box.textContent='Sync cloud: carico...';
+ try{
+  const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCode)+'&chiave=email&t='+Date.now(),{cache:'no-store'});
+  const cloud=await r.json();
+  if(cloud&&cloud.list&&cloud.list.length){
+   const map={};store.list.forEach(x=>{map[x.id]=x;});
+   let add=0;
+   cloud.list.forEach(x=>{if(!x.id)x.id=uid();if(!map[x.id]){map[x.id]=x;add++;}});
+   store.list=Object.values(map);
+   save();
+   box.textContent='Sync: '+add+' aggiunte';
+  }
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
 
 function refreshHead(){
  $('#studioNameHead').textContent=ident.nome||'Email';
@@ -179,11 +181,11 @@ function salvaConfig(){
 }
 
 const TEMPLATES={
- appuntamento:a=>('Gentile '+a+',\n\nle ricordiamo l\'appuntamento concordato con '+ (ident.nome||'il nostro studio') +'.\nRestiamo a disposizione per qualsiasi necessita\'.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
- pronto:a=>('Gentile '+a+',\n\nil suo ordine / album e\' pronto per la consegna presso il nostro studio.\nLa aspettiamo negli orari di apertura.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
- saldo:a=>('Gentile '+a+',\n\nle ricordiamo il saldo residuo relativo al servizio effettuato.\nRestiamo a disposizione per concordare il pagamento.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
- grazie:a=>('Gentile '+a+',\n\ngrazie per aver scelto '+ (ident.nome||'il nostro studio') +'.\nE\' stato un piacere raccontare il suo giorno speciale.\n\nCordiali saluti,\n'+(ident.nome||'Studio')),
- ricevuta:a=>('Gentile '+a+',\n\nconfermiamo la ricezione dell\'acconto versato.\nLa ricevuta e\' disponibile in studio.\n\nCordiali saluti,\n'+(ident.nome||'Studio'))
+ appuntamento:a=>'Gentile '+a+',\n\nle ricordiamo l\'appuntamento concordato con '+(ident.nome||'il nostro studio')+'.\n\nCordiali saluti,\n'+(ident.nome||'Studio'),
+ pronto:a=>'Gentile '+a+',\n\nil suo ordine / album e\' pronto per la consegna.\nLa aspettiamo negli orari di apertura.\n\nCordiali saluti,\n'+(ident.nome||'Studio'),
+ saldo:a=>'Gentile '+a+',\n\nle ricordiamo il saldo residuo relativo al servizio effettuato.\n\nCordiali saluti,\n'+(ident.nome||'Studio'),
+ grazie:a=>'Gentile '+a+',\n\ngrazie per aver scelto '+(ident.nome||'il nostro studio')+'.\nE\' stato un piacere raccontare il suo giorno speciale.\n\nCordiali saluti,\n'+(ident.nome||'Studio'),
+ ricevuta:a=>'Gentile '+a+',\n\nconfermiamo la ricezione dell\'acconto versato.\n\nCordiali saluti,\n'+(ident.nome||'Studio')
 };
 function applicaTemplate(){
  const t=$('#template').value;
@@ -194,9 +196,7 @@ function applicaTemplate(){
  $('#e_testo').value=TEMPLATES[t](nome);
 }
 
-function mittente(pec){
- return pec?(cfg.pec||cfg.email||''):(cfg.email||'');
-}
+function mittente(pec){return pec?(cfg.pec||cfg.email||''):(cfg.email||'');}
 
 function inviaMail(pec){
  const a=$('#e_a').value.trim();
@@ -215,7 +215,7 @@ function copiaTutto(){
  const testo=$('#e_testo').value;
  if(!oggetto&&!testo)return alert('Niente da copiare.');
  const txt='Oggetto: '+oggetto+'\n\n'+testo;
- navigator.clipboard.writeText(txt).then(()=>alert('Oggetto e testo copiati. Incollali nella tua webmail o PEC web.'));
+ navigator.clipboard.writeText(txt).then(()=>alert('Oggetto e testo copiati.'));
 }
 
 function salvaInArchivio(silenzioso){
@@ -223,7 +223,7 @@ function salvaInArchivio(silenzioso){
  const oggetto=$('#e_oggetto').value.trim();
  const testo=$('#e_testo').value;
  if(!a||!oggetto)return silenzioso?null:alert('Inserisci destinatario e oggetto.');
- const dati={a:a,oggetto:oggetto,testo:testo,data:today(),da:mittente(false)};
+ const dati={a,oggetto,testo,data:fmtData(today()),da:mittente(false)};
  if(editingId){
   const m=store.list.find(x=>x.id===editingId);
   if(m)Object.assign(m,dati);
@@ -282,52 +282,11 @@ function elimina(id){
  save();renderLista();
 }
 
-/* ===== archivio comune ===== */
-async function sha1(str){const buf=new TextEncoder().encode(str);const h=await crypto.subtle.digest('SHA-1',buf);return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');}
-async function deployFileNetlify(path,content){
- const tok=localStorage.getItem('netlify_token'),siteId=localStorage.getItem('netlify_site');
- if(!tok||!siteId)throw new Error('Netlify non configurato.');
- const resp=await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/files',{headers:{Authorization:'Bearer '+tok}});
- const existing=resp.ok?await resp.json():[];
- const files={};existing.forEach(f=>{files[f.path]=f;});
- const bin=new TextEncoder().encode(content);const ab=bin.buffer;const hash=await sha1(bin);
- files[path]={path:path,hash:hash};
- const dep=await(await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
- if(dep.required&&dep.required.includes(path)){
-  await fetch('https://api.netlify.com/api/v1/sites/'+siteId+'/deploys/'+dep.id+'/files'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
- }
-}
-async function leggiFileNetlify(path){
- const siteUrl=localStorage.getItem('netlify_siteurl');
- if(!siteUrl)throw new Error('Site URL mancante.');
- const r=await fetch(siteUrl+path+'?t='+Date.now(),{cache:'no-store'});
- if(!r.ok)return null;
- return await r.json();
-}
-async function pubblicaArchivioComune(){
- try{
-  await deployFileNetlify('/archivio-comune-email.json',JSON.stringify({list:store.list,exportedAt:new Date().toISOString()},null,2));
-  alert('Archivio email pubblicato.');
- }catch(e){alert('Errore: '+e.message);}
-}
-async function scaricaEUnisciArchivio(){
- try{
-  const data=await leggiFileNetlify('/archivio-comune-email.json');
-  if(!data||!data.list)throw new Error('Archivio vuoto o non trovato.');
-  if(!confirm('Unire '+data.list.length+' email remote alle '+store.list.length+' locali?'))return;
-  const map={};store.list.forEach(m=>{map[m.id]=m;});
-  let added=0;
-  data.list.forEach(m=>{if(!m.id)m.id=uid();if(!map[m.id]){map[m.id]=m;added++;}});
-  store.list=Object.values(map);
-  save();renderLista();
-  alert('Unione completata: '+added+' email aggiunte.');
- }catch(e){alert('Errore: '+e.message);}
-}
-
 function backupGlobale(){
  const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+today()+'.json';a.click();
+ alert('Backup globale scaricato.');
 }
 function ripristinoGlobale(e){
  const f=e.target.files[0];if(!f)return;
@@ -335,7 +294,7 @@ function ripristinoGlobale(e){
  r.onload=ev=>{try{
   const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
   if(typeof d!=='object')throw new Error('File non valido.');
-  if(!confirm('Ripristinare il backup? I dati attuali verranno sostituiti.'))return;
+  if(!confirm('Ripristinare? I dati attuali verranno sostituiti.'))return;
   Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
   alert('Ripristinato. Ricarico.');location.reload();
  }catch(err){alert('Errore: '+err.message);}};
@@ -346,6 +305,7 @@ refreshHead();
 $('#cfgEmail').value=cfg.email||ident.email||'';
 $('#cfgPec').value=cfg.pec||'';
 renderLista();
+loadCloud().then(renderLista);
 </script>
 </body>
 </html>
