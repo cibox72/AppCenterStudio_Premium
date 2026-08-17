@@ -143,7 +143,7 @@ label{display:block;margin-top:10px;font-size:14px;font-weight:bold;color:#4a403
  </div>
  <div class="cal-grid" id="calDow"></div>
  <div class="cal-grid" id="calGrid" style="margin-top:4px"></div>
- <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno. Il pulsante <b>Promemoria WhatsApp</b> copia il promemoria e apre WhatsApp al numero dello studio: se il messaggio non compare da solo, incollalo con Cmd+V e invia.</p>
+ <p class="hint" style="margin-top:12px">I <b>contratti</b> firmati (data del servizio) compaiono automaticamente. I <b>preventivi</b> con data futura appaiono in grigio chiaro. Gli <b>appuntamenti</b> li aggiungi tu cliccando su un giorno. Il pulsante <b>Promemoria WhatsApp</b> copia il promemoria e apre WhatsApp al numero dello studio (vale il primo numero salvato): se il messaggio non compare da solo, incollalo con Cmd+V e invia.</p>
 </div>
 
 <div id="dayPanel"></div>
@@ -159,6 +159,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const fmtData=d=>{if(!d)return'';const p=String(d).split('-');if(p.length!==3){const dt=new Date(d+'T00:00:00');return isNaN(dt)?d:dt.toLocaleDateString('it-IT');}return p[2]+'/'+p[1]+'/'+p[0].slice(2);};
 const today=()=>new Date().toISOString().slice(0,10);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function primoNumero(s){const m=String(s||'').match(/\d{6,15}/);return m?m[0]:'';}
 
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
@@ -168,7 +169,7 @@ function promemoriaWA(){
  if(!ev.length)return alert('Nessun impegno per oggi.');
  const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
  const cont=JSON.parse(localStorage.getItem('studioContatti')||'{}');
- const num=String(ident.telefono||cont.whatsapp||'').replace(/\D/g,'');
+ const num=primoNumero(ident.whatsapp)||primoNumero(ident.telefono)||primoNumero(cont.whatsapp);
  if(!num)return alert('Numero dello studio mancante: salvalo in Identità studio (app 03 Clienti & Foto).');
  let msg='AGENDA '+fmtData(oggi)+'\n';
  ev.forEach(e=>{msg+=(e.ora?e.ora+' ':'')+'- '+e.titolo+(e.tipo?' ('+e.tipo+')':'')+'\n';});
