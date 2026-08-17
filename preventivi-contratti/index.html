@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>01 Preventivi & Contratti - AppCenterStudio Premium</title>
+<script src="../tema.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7;--bg:#fbfbfb}
@@ -403,7 +404,7 @@ function renderAcconti(){const box=$('#accontiBox');box.innerHTML='';if(!P.accon
 $('#accontiBox').addEventListener('input',e=>{const i=e.target.dataset.i,f=e.target.dataset.f;if(i===undefined||!f)return;P.acconti[+i][f]=f==='importo'?(+e.target.value||0):e.target.value;recalc();});
 $('#accontiBox').addEventListener('click',e=>{
  if(e.target.dataset.del!==undefined){P.acconti.splice(+e.target.dataset.del,1);renderAcconti();recalc();}
- if(e.target.dataset.act==='ricevuta'){salvaPreventivo();stampaRicevutaAcconto(+e.target.dataset.i);}
+ if(e.target.dataset.act==='ricevuta'){assignNum();commit();stampaRicevutaAcconto(+e.target.dataset.i);}
 });
 $('#btnAddAcconto').onclick=()=>{P.acconti.push({data:today(),importo:0,nota:''});renderAcconti();recalc();};
 
@@ -517,7 +518,7 @@ if(b.dataset.cprev){const c=DB.clienti.find(x=>x.id===b.dataset.cprev);P=emptyP(
 function renderListini(){['nome','indirizzo','telefono','email','piva','note'].forEach(k=>$('#s_'+k).value=DB.studio[k]||'');
 ['nome','indirizzo','telefono','email','piva','note'].forEach(k=>{$('#s_'+k).oninput=e=>{DB.studio[k]=e.target.value;save();refreshHead();};});
 renderLogoPreview();
-const v=$('#view-listini');const box=$('#catBox');box.innerHTML='';
+const box=$('#catBox');box.innerHTML='';
 DB.categorie.forEach((cat,ci)=>{const c=document.createElement('div');c.className='card inner';c.innerHTML='<div class="servRow"><span>📁</span><input class="catNome" data-ci="'+ci+'" value="'+esc(cat.nome)+'"><span></span><span></span><button class="mini" data-delcat="'+ci+'">🗑</button></div>';
 cat.servizi.forEach((s,si)=>{const r=document.createElement('div');r.className='servRow';r.innerHTML='<span>•</span><input class="servNome" data-ci="'+ci+'" data-si="'+si+'" value="'+esc(s.nome)+'"><input type="number" step="0.01" class="servPrezzo" data-ci="'+ci+'" data-si="'+si+'" value="'+s.prezzo+'"><span style="font-size:11px">€</span><button class="mini" data-delserv="'+ci+':'+si+'">✕</button>';c.appendChild(r);});
 const add=document.createElement('button');add.className='btn secondary';add.dataset.addserv=ci;add.textContent='+ Servizio';c.appendChild(add);box.appendChild(c);});
