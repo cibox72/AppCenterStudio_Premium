@@ -79,8 +79,8 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 <div class="topbar">
   <button onclick="history.back()">Indietro</button>
   <button onclick="location.href='index.html'">Home</button>
-  <button onclick="backupGlobale()">Backup Globale</button>
-  <button onclick="ripristinoGlobale()">Ripristino Globale</button>
+  <button onclick="backupGlobale()">Backup globale</button>
+  <button onclick="ripristinoGlobale()">Ripristino globale</button>
   <span class="brand">AppCenter Studio Premium</span>
 </div>
 
@@ -95,8 +95,8 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 
   <div class="adminbox hidden" id="adminPanel"></div>
 
-  <div class="step-head"><span class="n">0</span><h2>Collega il tuo studio</h2><span class="line"></span></div>
-  <div class="card" id="collegaCard">
+  <div class="step-head hidden" id="stepCollegaHead"><span class="n">0</span><h2>Collega il tuo studio</h2><span class="line"></span></div>
+  <div class="card hidden" id="collegaCard">
     <p class="hint">Incolla il codice ricevuto dal fornitore (formato ACS-…) e premi Collega. Il codice resta memorizzato in questo browser.</p>
     <label>Codice studio</label>
     <input id="acsInput" placeholder="ACS-">
@@ -122,7 +122,7 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 
     <div class="step-head"><span class="n">2</span><h2>Identita' dello studio</h2><span class="line"></span></div>
     <div class="card">
-      <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti. Il logo resta salvato in questo browser: alla pubblicazione pensera' il fornitore.</p>
+      <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti. Il logo resta salvato in questo browser.</p>
       <div class="grid">
         <div><label>Nome Studio</label><input id="sNome"></div>
         <div><label>P.IVA</label><input id="sPiva"></div>
@@ -158,10 +158,13 @@ if(!studioCode&&location.hash)studioCode=decodeURIComponent(location.hash.replac
 if(!studioCode)studioCode=sessionStorage.getItem('studio')||'';
 if(!studioCode)studioCode=localStorage.getItem('studioCodeSalvato')||'';
 if(param('admin')==='1')sessionStorage.setItem('admin','1');
+if(param('admin')==='0')sessionStorage.removeItem('admin');
 
 let studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
 let contatti=JSON.parse(localStorage.getItem('studioContatti')||'{}');
 let licenza=null;
+
+function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
 
 function collega(){
   const code=document.getElementById('acsInput').value.trim();
@@ -185,6 +188,8 @@ async function renderHero(){
   if(!studioCode){
     document.getElementById('heroNome').textContent='Studio';
     badges.innerHTML='<span class="hbadge ko">Nessun codice studio</span>';
+    document.getElementById('collegaCard').classList.remove('hidden');
+    document.getElementById('stepCollegaHead').classList.remove('hidden');
     return;
   }
   try{
@@ -195,12 +200,13 @@ async function renderHero(){
   document.getElementById('heroNome').textContent=nome;
   document.title=nome+' - AppCenter Studio Premium';
   const oggi=new Date().toISOString().slice(0,10);
-  if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';return;}
-  if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso sospeso</span>';return;}
-  if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';return;}
-  badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+licenza.scadenza+'</span>';
+  if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+  if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso sospeso</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+  if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+  badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+fmtData(licenza.scadenza)+'</span>';
   document.getElementById('areaRiservata').classList.remove('hidden');
   document.getElementById('collegaCard').classList.add('hidden');
+  document.getElementById('stepCollegaHead').classList.add('hidden');
 }
 
 async function renderOfferta(){
@@ -281,9 +287,9 @@ function renderApps(){
   const apps=[
     {n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, acconti con ricevute, piani di pagamento e PDF con la tua intestazione.',u:'preventivi-contratti/'+q},
     {n:'02',t:'Workflow Foto & Video',d:'Stato di avanzamento di ogni servizio, tabella clienti e PDF di produzione.',u:'workflow/'+q},
-    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto, gallery e spazio di pubblicazione.',u:'clienti-foto/'+q},
-    {n:'04',t:'Selezione per Album',d:'Il cliente sceglie le foto; tu ricevi selezione, text Gru e PDF per la stampa.',u:'selezione-album/'+q},
-    {n:'05',t:'Gallery',d:'Galleria elegante per i tuoi clienti con selettore di servizio.',u:'gallery/'+q},
+    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto nel magazzino temporaneo, gallery con scadenza automatica.',u:'clienti-foto/'+q},
+    {n:'04',t:'Selezione per Album',d:'Selezione in studio o da casa (link valido 7 giorni). Pulizia automatica e gallery 6 mesi.',u:'selezione-album/'+q},
+    {n:'05',t:'Gallery',d:'Galleria elegante per i tuoi clienti con scadenza automatica e proroga.',u:'gallery/'+q},
     {n:'06',t:'Negozio Online',d:'Prodotti con foto e prezzi, carrello, ordini e pagamenti al tuo studio.',u:'negozio/'+q},
     {n:'07',t:'Agenda',d:'Calendario sfogliabile: contratti in automatico, appuntamenti e promemoria.',u:'agenda/'+q},
     {n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo per qualsiasi servizio o stampa, con PDF e firme.',u:'ricevute/'+q},
@@ -307,7 +313,7 @@ async function renderAdmin(){
   try{
     const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
     const oggi=new Date().toISOString().slice(0,10);
-    righe=(l.studi||[]).map(s=>'<tr><td>'+s.codice+'</td><td>'+(s.nome||'')+'</td><td>'+s.scadenza+'</td><td>'+(s.attivo?'SI':'NO')+'</td><td>'+(s.scadenza<oggi?'SCADUTA':'valida')+'</td></tr>').join('');
+    righe=(l.studi||[]).map(s=>'<tr><td>'+s.codice+'</td><td>'+(s.nome||'')+'</td><td>'+fmtData(s.scadenza)+'</td><td>'+(s.attivo?'SI':'NO')+'</td><td>'+(s.scadenza<oggi?'SCADUTA':'valida')+'</td></tr>').join('');
   }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
   box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
    '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
