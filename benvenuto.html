@@ -3,389 +3,1262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppCenter Studio Premium - Benvenuto</title>
-<script src="tema.js"></script>
+<title>02 Workflow Foto & Video - AppCenterStudio Premium</title>
+<script src="../tema.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
-:root{--nero:#0e0e0e;--grigio:#6b6b6b;--bordo:#e6e6e6;--sfondo:#fbfbfb;--carta:#fff}
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
-    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
-    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
-  background-attachment:fixed;
-  color:var(--nero);
-  line-height:1.6
-}
-.topbar{display:flex;gap:8px;padding:12px 20px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
-.topbar button{padding:7px 16px;background:var(--carta);border:1px solid #bbb;cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;letter-spacing:.02em}
-.topbar button:hover{background:var(--nero);color:#fff;border-color:var(--nero)}
-.topbar .brand{margin-left:auto;font-family:Georgia,serif;font-size:12px;letter-spacing:.18em;color:var(--grigio);text-transform:uppercase}
-.hero{background:var(--nero);color:#fff;text-align:center;padding:70px 20px 60px}
-.hero .eyebrow{font-size:11px;letter-spacing:.35em;color:#9a9a9a;text-transform:uppercase;margin-bottom:18px}
-.hero h1{font-family:Georgia,serif;font-weight:400;font-size:42px;line-height:1.15;margin-bottom:10px}
-.hero h1 em{font-style:italic}
-.hero p{color:#bdbdbd;font-size:15px;max-width:560px;margin:0 auto}
-.hero .badges{margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.hbadge{display:inline-block;padding:7px 18px;border:1px solid #3d3d3d;border-radius:999px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d6d6d6}
-.hbadge.ok{background:#fff;color:var(--nero);border-color:#fff;font-weight:700}
-.hbadge.ko{background:#7a1010;border-color:#7a1010;color:#fff;font-weight:700}
-.container{max-width:1040px;margin:0 auto;padding:40px 20px 70px}
-.step-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 18px}
-.step-head .n{font-family:Georgia,serif;font-size:15px;color:#fff;background:var(--nero);width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.step-head h2{font-family:Georgia,serif;font-size:24px;font-weight:400}
-.step-head .line{flex:1;border-top:1px solid var(--bordo);transform:translateY(-6px)}
-.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:16px;padding:28px;margin-bottom:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
-.card .hint{font-size:13px;color:var(--grigio);margin-bottom:14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.hero h1{font-size:32px}}
-label{display:block;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a}
-input,textarea{width:100%;padding:11px 12px;border:1px solid var(--bordo);margin-top:4px;border-radius:10px;font-family:inherit;font-size:14px;background:#fff}
-input:focus,textarea:focus{outline:2px solid var(--nero)}
-.btn{display:inline-block;padding:12px 26px;background:var(--nero);color:#fff;border:none;cursor:pointer;font-size:13px;letter-spacing:.06em;border-radius:999px;margin-top:16px;font-family:inherit;text-transform:uppercase;font-weight:600}
-.btn:hover{background:#333}
-.btn.ghost{background:var(--carta);color:var(--nero);border:1px solid var(--nero)}
-.btn.ghost:hover{background:var(--nero);color:#fff}
-.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
-.app{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s, transform .2s;box-shadow:0 6px 18px rgba(15,20,40,.06)}
-.app:hover{border-color:var(--nero);transform:translateY(-2px)}
-.app .num{font-family:Georgia,serif;font-size:13px;letter-spacing:.25em;color:#9a9a9a}
-.app h3{font-family:Georgia,serif;font-size:19px;font-weight:400}
-.app p{font-size:13px;color:var(--grigio);flex:1}
-.app a{align-self:flex-start;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--nero);text-decoration:none;border-bottom:1px solid var(--nero);padding-bottom:2px}
-.app a:hover{opacity:.7}
-.offerta{background:var(--nero);color:#fff;border-radius:16px;padding:30px;margin-bottom:20px;box-shadow:0 8px 25px rgba(0,0,0,0.2)}
-.offerta h2{font-family:Georgia,serif;font-weight:400;font-size:24px;margin-bottom:8px}
-.offerta p{color:#c9c9c9;font-size:14px}
-.offerta .prezzo{font-family:Georgia,serif;font-size:34px;margin:14px 0}
-.offerta .prezzo small{font-size:13px;color:#9a9a9a;font-family:-apple-system,sans-serif}
-.offerta .btn{background:#fff;color:var(--nero)}
-.offerta .btn.ghost{background:transparent;color:#fff;border-color:#5a5a5a}
-.logoPreview{max-height:70px;max-width:180px;border:1px solid var(--bordo);border-radius:10px;padding:4px;background:#fff;margin-top:10px}
-.adminbox{border:2px solid var(--nero);border-radius:16px;padding:24px;margin-bottom:26px;background:#fff}
-.adminbox h3{font-family:Georgia,serif;font-size:18px;margin-bottom:10px}
-.adminbox table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-.adminbox th,.adminbox td{border:1px solid var(--bordo);padding:8px 10px;text-align:left}
-.adminbox th{background:#f2f2f2;font-family:Georgia,serif;letter-spacing:.05em}
-.adminbox .riga{margin:6px 0;font-size:13px}
-.adminbox a{color:var(--nero);font-weight:700}
-.tema-btn{display:inline-block;margin:2px;padding:5px 12px;border:1px solid #bbb;border-radius:999px;background:#fff;cursor:pointer;font-size:12px;font-family:inherit}
-.tema-btn:hover{background:var(--nero);color:#fff}
-.tema-btn.attivo{background:var(--nero);color:#fff;border-color:var(--nero);font-weight:700}
-footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;color:#9a9a9a;font-size:12px;letter-spacing:.06em;background:rgba(255,255,255,0.5);backdrop-filter:blur(6px)}
-.hidden{display:none}
+:root{--crema:#f4efe7;--carta:#fbf9f5;--taupe:#a3937d;--taupe-scuro:#6f6353;--beige:#e9dfcd;--testo:#4a4237;--soft:#9b8f7d;--bordo:#e5dccb;--accento:#7d8a5f}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:var(--crema);color:var(--testo);min-height:100vh;padding:0}
+h1,h2,h3{font-family:Georgia,serif;font-weight:normal}
+.topbar{display:flex;gap:8px;padding:12px 18px;background:rgba(251,249,245,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
+.topbar button,.topbar label{padding:8px 18px;background:#fff;border:1px solid var(--taupe);cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;color:var(--taupe-scuro);margin:0;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.topbar button:hover,.topbar label:hover{background:var(--taupe);color:#fff}
+.sync-status{font-size:11px;color:#2e7d32;margin-left:auto;font-weight:700}
+.sync-status.ko{color:#b00020}
+.container{max-width:1600px;margin:0 auto;padding:20px}
+header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px 22px;box-shadow:0 6px 18px rgba(120,100,70,.08);margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{font-family:Georgia,serif;font-size:1.6em;color:var(--taupe-scuro);letter-spacing:.08em;text-transform:uppercase}
+.logo span{font-size:.55em;display:block;color:var(--soft);font-weight:400;text-transform:none;letter-spacing:normal}
+.actions button{margin-left:8px;padding:9px 16px;border:1px solid var(--taupe);background:#fff;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;color:var(--taupe-scuro);font-family:inherit;letter-spacing:.04em}
+.actions button:hover{background:var(--taupe);color:#fff;border-color:var(--taupe)}
+.new-service{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 6px 18px rgba(120,100,70,.08);display:none}
+.new-service.open{display:block}
+.new-service h2{color:var(--taupe-scuro);font-family:Georgia,serif;margin-bottom:14px;font-size:22px;border-left:4px solid var(--taupe);padding-left:12px}
+.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.form-row input,.form-row select{flex:1;min-width:200px;padding:10px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit;color:var(--testo)}
+.form-row input:focus,.form-row select:focus{outline:2px solid var(--taupe)}
+.form-actions{display:flex;gap:10px;justify-content:flex-end}
+.form-actions button{padding:9px 18px;border-radius:999px;cursor:pointer;font-weight:600;font-size:13px;font-family:inherit;letter-spacing:.04em}
+.btn-save{background:var(--taupe);color:#fff;border:1px solid var(--taupe)}
+.btn-save:hover{background:var(--taupe-scuro);border-color:var(--taupe-scuro)}
+.btn-cancel{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)}
+.btn-cancel:hover{background:var(--taupe);color:#fff}
+.card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 6px 18px rgba(120,100,70,.08)}
+.card-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:10px}
+.client-info{flex:1;min-width:200px}
+.client-name{font-size:1.15em;font-weight:700;color:var(--taupe-scuro);font-family:Georgia,serif}
+.client-date{font-size:.85em;color:var(--soft);margin-top:3px}
+.videographer-info{font-size:.85em;color:var(--soft);margin-top:3px;font-weight:500;font-style:italic}
+.service-badge{padding:5px 14px;border-radius:999px;font-size:.78em;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:.03em;background:var(--taupe)}
+.progress-bar{background:#e0e0e0;height:10px;border-radius:5px;margin-top:12px;overflow:hidden}
+.progress-fill{height:100%;background:var(--taupe);transition:width .4s}
+.progress-text{font-size:.85em;color:var(--soft);margin-top:5px}
+.progress-row{display:flex;gap:15px;flex-wrap:wrap;margin-top:8px}
+.progress-row>div{flex:1;min-width:180px}
+.progress-label{font-size:.75em;color:var(--soft);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.steps{margin-top:16px;display:none;padding-top:14px}
+.steps.open{display:block}
+.section-title{font-size:1em;font-weight:700;padding:9px 14px;margin:10px 0;border-radius:10px;color:#fff;background:var(--taupe);font-family:Georgia,serif;letter-spacing:.05em}
+.section-title.preview{background:var(--taupe-scuro)}
+.section-title.maternity{background:#8b7355}
+.section-title.newborn{background:#a3937d}
+.section-title.family{background:#c9b99e;color:var(--testo)}
+.step{display:flex;align-items:center;padding:10px;margin:6px 0;background:rgba(255,255,255,0.85);border:1px solid var(--bordo);border-radius:10px;gap:12px;flex-wrap:wrap}
+.step.done{background:#fff;border:2px solid var(--taupe)}
+.step input[type=checkbox]{width:20px;height:20px;cursor:pointer;accent-color:var(--taupe);flex-shrink:0}
+.step-label{flex:1;font-weight:500;min-width:200px;color:var(--testo)}
+.step input[type=date]{padding:5px 8px;border:1px solid var(--bordo);border-radius:6px;font-size:.9em;font-family:inherit;background:#fff}
+.step input[type=text]{padding:5px 8px;border:1px solid var(--bordo);border-radius:6px;font-size:.9em;width:180px;font-family:inherit;background:#fff}
+.step select{padding:5px 8px;border:1px solid var(--bordo);border-radius:6px;font-size:.9em;background:#fff;cursor:pointer;font-family:inherit}
+.step.done .step-label{text-decoration:line-through;color:var(--soft)}
+.step-extra{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;width:100%;padding-left:32px}
+.step-extra input,.step-extra select{flex:1;min-width:150px;font-family:inherit}
+.card-footer{margin-top:14px;display:flex;justify-content:flex-end;gap:8px;padding-top:14px;border-top:1px solid var(--bordo);flex-wrap:wrap}
+.btn-view,.btn-edit,.btn-pdf,.btn-del{padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600;font-size:12px;color:#fff;font-family:inherit;border:1px solid transparent;letter-spacing:.04em}
+.btn-view{background:var(--taupe);border-color:var(--taupe)}
+.btn-edit{background:#8b7355;border-color:#8b7355}
+.btn-pdf{background:#6d7f5c;border-color:#6d7f5c}
+.btn-del{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)}
+.btn-del:hover{background:var(--taupe);color:#fff}
+.empty{text-align:center;padding:50px 20px;color:var(--soft);font-size:1.1em;background:var(--carta);border:1px solid var(--bordo);border-radius:14px}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:1000;justify-content:center;align-items:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:var(--carta);border-radius:14px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(120,100,70,.25);border:1px solid var(--bordo)}
+.modal-header{background:var(--taupe-scuro);color:#fff;padding:20px 24px;border-radius:14px 14px 0 0;display:flex;justify-content:space-between;align-items:center}
+.modal-header h2{font-size:1.25em;font-family:Georgia,serif}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1.2em}
+.modal-body{padding:22px}
+.detail-row{margin-bottom:12px;padding:12px;background:rgba(251,251,251,0.9);border:1px solid var(--bordo);border-radius:10px}
+.detail-label{font-weight:600;color:var(--taupe-scuro);margin-bottom:5px;font-size:.9em}
+.detail-value{color:var(--testo);font-size:1em}
+.step-detail{padding:10px;margin:6px 0;background:#fff;border-radius:8px;border-left:4px solid var(--bordo)}
+.step-detail.completed{border-left-color:var(--taupe);background:var(--beige)}
+.step-detail .step-name{font-weight:600;margin-bottom:5px;color:var(--taupe-scuro)}
+.step-detail .step-date{color:var(--soft);font-size:.9em}
+.step-detail .step-extra-info{color:var(--soft);font-size:.85em;margin-top:3px}
+.archive-header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:18px;box-shadow:0 6px 18px rgba(120,100,70,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.archive-header h2{font-family:Georgia,serif;color:var(--taupe-scuro)}
+.search-box{flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit;background:#fff}
+.filter-select{padding:10px 14px;border:1px solid var(--bordo);border-radius:999px;font-size:14px;font-family:inherit;background:#fff}
+.table-container{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:16px;margin-bottom:18px;box-shadow:0 6px 18px rgba(120,100,70,.08);overflow-x:auto}
+.table-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:12px}
+.table-header h2{color:var(--taupe-scuro);font-size:1.2em;font-family:Georgia,serif}
+.table-toolbar{display:flex;gap:10px;flex-wrap:wrap}
+.workflow-table{width:100%;border-collapse:collapse;font-size:.95em}
+.workflow-table thead{background:var(--taupe-scuro);color:#fff;position:sticky;top:0;z-index:10}
+.workflow-table th{padding:11px 14px;text-align:left;font-weight:600;border:1px solid rgba(255,255,255,.15);font-size:.88em;white-space:nowrap}
+.workflow-table th.center{text-align:center}
+.workflow-table td{padding:11px 14px;border-bottom:1px solid var(--bordo);vertical-align:middle}
+.workflow-table tbody tr:nth-child(even){background:rgba(233,223,205,0.3)}
+.workflow-table tbody tr:nth-child(odd){background:#fff}
+.workflow-table tbody tr:hover{background:var(--beige)!important}
+.td-client{font-weight:700;color:var(--taupe-scuro);font-size:1.02em;font-family:Georgia,serif}
+.td-type{text-align:center}
+.td-center{text-align:center}
+.td-laststep{font-weight:600;color:var(--taupe-scuro)}
+.td-laststep.empty{color:var(--soft);font-weight:400;font-style:italic}
+.badge-cell{display:inline-block;padding:4px 12px;border-radius:999px;color:#fff;font-size:.8em;font-weight:600;background:var(--taupe)}
+.pct-badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:.85em;font-weight:700;color:#fff;min-width:50px;text-align:center}
+.pct-100{background:var(--taupe-scuro)}
+.pct-high{background:var(--taupe)}
+.pct-mid{background:#8b7355}
+.pct-low{background:var(--beige);color:var(--testo)}
+.pct-zero{background:#e0e0e0;color:#666}
+.cell-actions{display:flex;gap:6px;justify-content:center;flex-wrap:nowrap}
+.cell-actions button{padding:5px 10px;border:none;border-radius:999px;cursor:pointer;font-size:.85em;font-weight:600;color:#fff;font-family:inherit}
+.cell-actions button:hover{opacity:.8}
+.mini-view{background:var(--taupe)}
+.mini-edit{background:#8b7355}
+.mini-pdf{background:#6d7f5c}
+.mini-del{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)!important}
+.section-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7em;font-weight:600;color:#fff;margin-left:6px;vertical-align:middle;background:var(--taupe-scuro)}
+.license-gate{min-height:60vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.license-gate .lg-card{background:var(--carta);border:1px solid var(--bordo);border-radius:16px;padding:40px;max-width:500px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(120,100,70,.15)}
+.license-gate h2{font-family:Georgia,serif;color:var(--taupe-scuro);margin-bottom:12px}
+.license-gate p{color:var(--soft);margin-bottom:18px}
+.license-gate button{background:var(--taupe);color:#fff;border:none;padding:10px 24px;border-radius:999px;cursor:pointer;font-weight:600}
+@media(max-width:600px){.logo{font-size:1.3em}.actions button{margin:4px;padding:8px 12px;font-size:.85em}.modal-content{margin:10px}}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <button onclick="history.back()">Indietro</button>
-  <button onclick="location.href='index.html'">Home</button>
+  <button onclick="history.back()">← Indietro</button>
+  <button onclick="goHome()">Home</button>
   <button onclick="backupGlobale()">Backup globale</button>
   <button onclick="ripristinoGlobale()">Ripristino globale</button>
-  <span class="brand">AppCenter Studio Premium</span>
+  <span class="sync-status" id="syncStatus">Sync cloud: --</span>
 </div>
 
-<section class="hero">
-  <div class="eyebrow">AppCenter Studio Premium</div>
-  <h1>Benvenuto, <em id="heroNome">Studio</em></h1>
-  <p id="heroSub">Il tuo spazio di lavoro professionale e' pronto.</p>
-  <div class="badges" id="heroBadges"></div>
-</section>
-
-<div class="container">
-
-  <div class="adminbox hidden" id="adminPanel"></div>
-
-  <div class="step-head hidden" id="stepCollegaHead"><span class="n">0</span><h2>Collega il tuo studio</h2><span class="line"></span></div>
-  <div class="card hidden" id="collegaCard">
-    <p class="hint">Incolla il codice ricevuto dal fornitore (formato ACS-…) e premi Collega. Il codice resta memorizzato in questo browser.</p>
-    <label>Codice studio</label>
-    <input id="acsInput" placeholder="ACS-">
-    <button class="btn" onclick="collega()">Collega</button>
+<div id="licenseGate" class="license-gate" style="display:none">
+  <div class="lg-card">
+    <h2>Licenza non attiva</h2>
+    <p id="licenseMsg">Questo studio non ha una licenza valida.</p>
+    <button onclick="goHome()">Torna alla Home</button>
   </div>
-
-  <div class="offerta hidden" id="offertaCard"></div>
-
-  <div id="areaRiservata" class="hidden">
-
-    <div class="step-head"><span class="n">1</span><h2>Dati di contatto</h2><span class="line"></span></div>
-    <div class="card">
-      <p class="hint">Servono al fornitore per assisterti. Li invii una volta sola e restano modificabili.</p>
-      <div class="grid">
-        <div><label>Referente</label><input id="cReferente"></div>
-        <div><label>WhatsApp</label><input id="cWhatsapp" placeholder="39..."></div>
-        <div><label>Email</label><input id="cEmail"></div>
-        <div><label>Citta'</label><input id="cCitta"></div>
-      </div>
-      <label>Note</label><textarea id="cNote" rows="2"></textarea>
-      <button class="btn" onclick="inviaDatiFornitore()">Invia i dati al fornitore</button>
-    </div>
-
-    <div class="step-head"><span class="n">2</span><h2>Identita' dello studio</h2><span class="line"></span></div>
-    <div class="card">
-      <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti. Il logo resta salvato in questo browser.</p>
-      <div class="grid">
-        <div><label>Nome Studio</label><input id="sNome"></div>
-        <div><label>P.IVA</label><input id="sPiva"></div>
-        <div><label>Indirizzo</label><input id="sIndirizzo"></div>
-        <div><label>Telefono</label><input id="sTelefono"></div>
-        <div><label>Email</label><input id="sEmail"></div>
-        <div><label>Note fisse su PDF</label><input id="sNote"></div>
-      </div>
-      <label>Logo dello studio</label>
-      <input type="file" id="sLogo" accept="image/*">
-      <div id="logoPrev"></div>
-      <button class="btn" onclick="salvaEPubblicaIdent()">Salva e invia al fornitore</button>
-    </div>
-
-    <div class="step-head"><span class="n">3</span><h2>Le tue applicazioni</h2><span class="line"></span></div>
-    <div class="apps" id="appsGrid"></div>
-
-  </div>
-
 </div>
 
-<footer>AppCenter Studio Premium &middot; Suite gestionale per studi fotografici &middot; Assistenza dedicata inclusa</footer>
+<div id="app" class="app" style="display:none">
+  <div class="container">
+    <header>
+      <div class="logo">AppCenterStudio Premium<span>Workflow Foto & Video</span></div>
+      <div class="actions">
+        <button onclick="toggleNewService()">+ Nuovo Servizio</button>
+        <button onclick="showArchive()">Archivio</button>
+        <button onclick="showTable()">Tabella Clienti</button>
+      </div>
+    </header>
+
+    <div id="newService" class="new-service">
+      <h2>Nuovo Servizio</h2>
+      <div class="form-row">
+        <input type="text" id="inputClient" placeholder="Nome cliente (es. Rossi - Bianchi)">
+        <select id="inputType">
+          <option value="">-- Tipo di servizio --</option>
+          <optgroup label="Anteprima">
+            <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
+            <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
+            <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
+          </optgroup>
+          <optgroup label="Famiglia & Neonati">
+            <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
+            <option value="Maternity + New Born">Maternity + New Born</option>
+            <option value="Maternity + Family">Maternity + Family</option>
+            <option value="New Born + Family">New Born + Family</option>
+            <option value="Maternity">Maternity</option>
+            <option value="New Born">New Born</option>
+            <option value="Family">Family</option>
+          </optgroup>
+          <optgroup label="Cerimonie">
+            <option value="Matrimonio">Matrimonio</option>
+            <option value="Battesimo">Battesimo</option>
+            <option value="Comunione">Comunione</option>
+            <option value="Cresima">Cresima</option>
+          </optgroup>
+          <optgroup label="Feste & Celebrazioni">
+            <option value="1° Compleanno">1° Compleanno</option>
+            <option value="18° Compleanno">18° Compleanno</option>
+            <option value="Compleanno">Compleanno</option>
+            <option value="Anniversario">Anniversario</option>
+          </optgroup>
+          <optgroup label="Altro">
+            <option value="Evento">Evento</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="date" id="inputDate">
+        <input type="text" id="inputVideographer" placeholder="Videografo/Collega (nome)">
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="toggleNewService()">Annulla</button>
+        <button class="btn-save" onclick="saveService()">Salva</button>
+      </div>
+    </div>
+
+    <div id="archiveView" style="display:none;">
+      <div class="archive-header">
+        <h2>Archivio Servizi</h2>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input type="text" class="search-box" id="searchBox" placeholder="Cerca cliente..." oninput="filterServices()">
+          <select class="filter-select" id="filterType" onchange="filterServices()">
+            <option value="">Tutti i tipi</option>
+            <optgroup label="Anteprima"><option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option><option value="Anteprima + Battesimo">Anteprima + Battesimo</option><option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option></optgroup>
+            <optgroup label="Famiglia & Neonati"><option value="Maternity + New Born + Family">Maternity + New Born + Family</option><option value="Maternity + New Born">Maternity + New Born</option><option value="Maternity + Family">Maternity + Family</option><option value="New Born + Family">New Born + Family</option><option value="Maternity">Maternity</option><option value="New Born">New Born</option><option value="Family">Family</option></optgroup>
+            <optgroup label="Cerimonie"><option value="Matrimonio">Matrimonio</option><option value="Battesimo">Battesimo</option><option value="Comunione">Comunione</option><option value="Cresima">Cresima</option></optgroup>
+            <optgroup label="Feste & Celebrazioni"><option value="1° Compleanno">1° Compleanno</option><option value="18° Compleanno">18° Compleanno</option><option value="Compleanno">Compleanno</option><option value="Anniversario">Anniversario</option></optgroup>
+            <optgroup label="Altro"><option value="Evento">Evento</option></optgroup>
+          </select>
+          <button onclick="generateArchivePDF()" style="padding:10px 18px;border-radius:999px;background:var(--taupe);color:#fff;border:none;cursor:pointer;font-weight:600;">PDF Archivio</button>
+          <button class="btn-cancel" onclick="showMain()">Torna alla Home</button>
+        </div>
+      </div>
+      <div id="archiveList"></div>
+    </div>
+
+    <div id="tableView" style="display:none;">
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Tabella Clienti — Stato Lavori</h2>
+          <div class="table-toolbar">
+            <input type="text" class="search-box" id="tableSearch" placeholder="Cerca cliente..." oninput="renderTable()" style="min-width:200px;">
+            <button onclick="generateTablePDF()" style="padding:10px 18px;border-radius:999px;background:var(--taupe);color:#fff;border:none;cursor:pointer;font-weight:600;">PDF Tabella</button>
+            <button class="btn-cancel" onclick="showMain()">Torna alla Home</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="workflow-table" id="workflowTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <div id="servicesList"></div>
+  </div>
+</div>
+
+<div id="detailModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="detailTitle">Dettagli Servizio</h2>
+      <button class="modal-close" onclick="closeModal('detailModal')">×</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Modifica Servizio</h2>
+      <button class="modal-close" onclick="closeModal('editModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <input type="text" id="editClient" placeholder="Nome cliente">
+        <select id="editType">
+          <optgroup label="Anteprima">
+            <option value="Anteprima + Matrimonio">Anteprima + Matrimonio</option>
+            <option value="Anteprima + Battesimo">Anteprima + Battesimo</option>
+            <option value="Anteprima + 18° Compleanno">Anteprima + 18° Compleanno</option>
+          </optgroup>
+          <optgroup label="Famiglia & Neonati">
+            <option value="Maternity + New Born + Family">Maternity + New Born + Family</option>
+            <option value="Maternity + New Born">Maternity + New Born</option>
+            <option value="Maternity + Family">Maternity + Family</option>
+            <option value="New Born + Family">New Born + Family</option>
+            <option value="Maternity">Maternity</option>
+            <option value="New Born">New Born</option>
+            <option value="Family">Family</option>
+          </optgroup>
+          <optgroup label="Cerimonie">
+            <option value="Matrimonio">Matrimonio</option>
+            <option value="Battesimo">Battesimo</option>
+            <option value="Comunione">Comunione</option>
+            <option value="Cresima">Cresima</option>
+          </optgroup>
+          <optgroup label="Feste & Celebrazioni">
+            <option value="1° Compleanno">1° Compleanno</option>
+            <option value="18° Compleanno">18° Compleanno</option>
+            <option value="Compleanno">Compleanno</option>
+            <option value="Anniversario">Anniversario</option>
+          </optgroup>
+          <optgroup label="Altro">
+            <option value="Evento">Evento</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-row">
+        <input type="date" id="editDate">
+        <input type="text" id="editVideographer" placeholder="Videografo/Collega">
+      </div>
+      <div class="form-actions">
+        <button class="btn-cancel" onclick="closeModal('editModal')">Annulla</button>
+        <button class="btn-save" onclick="saveEdit()">Salva Modifiche</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-const NETLIFY_BASE='https://dashing-florentine-9b905e.netlify.app';
-const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 const WORKER='https://acs-api.mairaluigi.workers.dev';
-const REPO='cibox72/AppCenterStudio_Premium';
-const FORNITORE_WA='393447507656';
-const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
-const TEMI_ADMIN=[
- {id:'classico',nome:'🌿 Classico'},
- {id:'wedding',nome:'🕊️ Wedding'},
- {id:'natale',nome:'🎄 Natale'},
- {id:'carnevale',nome:'🎭 Carnevale'},
- {id:'pasqua',nome:'🌸 Pasqua'},
- {id:'estate',nome:'🌊 Estate'},
- {id:'inverno',nome:'❄️ Inverno'}
+let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCodice)sessionStorage.setItem('studio',studioCodice);
+function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
+
+const TYPE_ORDER = [
+  "Anteprima + Matrimonio", "Anteprima + Battesimo", "Anteprima + 18° Compleanno",
+  "Maternity + New Born + Family", "Maternity + New Born", "Maternity + Family", "New Born + Family",
+  "Maternity", "New Born", "Family",
+  "Matrimonio", "Battesimo", "Comunione", "Cresima",
+  "1° Compleanno", "18° Compleanno", "Compleanno", "Anniversario",
+  "Evento"
 ];
 
-const param=n=>new URLSearchParams(location.search).get(n);
-let studioCode=param('studio')||'';
-if(!studioCode&&location.hash)studioCode=decodeURIComponent(location.hash.replace(/^#/,''));
-if(!studioCode)studioCode=sessionStorage.getItem('studio')||'';
-if(!studioCode)studioCode=localStorage.getItem('studioCodeSalvato')||'';
-if(param('admin')==='1')sessionStorage.setItem('admin','1');
-if(param('admin')==='0')sessionStorage.removeItem('admin');
+const STEPS = [
+  { id: "download",    label: "Download schede", short: "D" },
+  { id: "backupAB",    label: "Archiviazione HD A/B", short: "A" },
+  { id: "archiveVideo",label: "Archiviazione Video", short: "V", extra: true, extraType: "archivedBy" },
+  { id: "backupAltro", label: "Archiviazione su altro", short: "O", extra: true, extraLabel: "Dove" },
+  { id: "rawToJpg",    label: "RAW → JPEG", short: "R" },
+  { id: "selection",   label: "Selezione + Copertina", short: "S", extra: true, extraType: "cover" },
+  { id: "albumEdit",   label: "Lavorazione album", short: "L" },
+  { id: "sendLab",     label: "Invio laboratorio", short: "I" },
+  { id: "labToStudio", label: "Lab → Studio", short: "B" },
+  { id: "albumClient", label: "Album al cliente", short: "C" },
+  { id: "filesClient", label: "Consegna file cliente", short: "F" },
+  { id: "videoClient", label: "Video Pronto cliente", short: "P" },
+  { id: "confirmDel",  label: "Conferma cancellazione", short: "X" }
+];
 
-let studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
-let contatti=JSON.parse(localStorage.getItem('studioContatti')||'{}');
-let licenza=null;
+const STEPS_PREVIEW = [
+  { id: "p_download",    label: "Download schede", short: "PD" },
+  { id: "p_backupAB",    label: "Archiviazione HD A/B", short: "PA" },
+  { id: "p_archiveVideo",label: "Archiviazione Video", short: "PV", extra: true, extraType: "archivedBy" },
+  { id: "p_backupAltro", label: "Archiviazione su altro", short: "PO", extra: true, extraLabel: "Dove" },
+  { id: "p_rawToJpg",    label: "RAW → JPEG", short: "PR" },
+  { id: "p_deliverPreview", label: "Consegna Anteprima al cliente", short: "PC" }
+];
 
-function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
+const COMBO_TYPES = {
+  "Maternity + New Born": ["Maternity", "New Born"],
+  "Maternity + Family": ["Maternity", "Family"],
+  "Maternity + New Born + Family": ["Maternity", "New Born", "Family"],
+  "New Born + Family": ["New Born", "Family"]
+};
 
-function collega(){
-  const code=document.getElementById('acsInput').value.trim();
-  if(!code){alert('Incolla il tuo codice ACS-');return;}
-  localStorage.setItem('studioCodeSalvato',code);
-  sessionStorage.setItem('studio',code);
-  location.href='benvenuto.html?studio='+encodeURIComponent(code);
+const SECTION_COLORS = {
+  "Maternity": { bg: "#8b7355", hex: "#8b7355" },
+  "New Born":  { bg: "#a3937d", hex: "#a3937d" },
+  "Family":    { bg: "#c9b99e", hex: "#c9b99e" }
+};
+
+const TYPE_COLORS = {
+  "Anteprima + Matrimonio": "#6f6353",
+  "Anteprima + Battesimo": "#8b7355",
+  "Anteprima + 18° Compleanno": "#a3937d",
+  "Maternity + New Born": "#8b7355",
+  "Maternity + Family": "#a3937d",
+  "Maternity + New Born + Family": "#7d8a5f",
+  "New Born + Family": "#c9b99e",
+  "Matrimonio":     "#6f6353",
+  "Battesimo":      "#8b7355",
+  "New Born":       "#a3937d",
+  "Maternity":      "#8b7355",
+  "Family":         "#c9b99e",
+  "1° Compleanno":  "#a3937d",
+  "18° Compleanno": "#8b7355",
+  "Compleanno":     "#a3937d",
+  "Anniversario":   "#6f6353",
+  "Comunione":      "#8b7355",
+  "Cresima":        "#a3937d",
+  "Evento":         "#6f6353"
+};
+
+const STEP_LABEL_CLEAN = {
+  "Download schede": "Download schede",
+  "Archiviazione HD A/B": "Archiviazione HD A/B",
+  "Archiviazione Video": "Archiviazione Video",
+  "Archiviazione su altro": "Archiviazione su altro",
+  "RAW → JPEG": "RAW -> JPEG",
+  "Selezione + Copertina": "Selezione + Copertina",
+  "Lavorazione album": "Lavorazione album",
+  "Invio laboratorio": "Invio laboratorio",
+  "Lab → Studio": "Lab -> Studio",
+  "Album al cliente": "Album al cliente",
+  "Consegna file cliente": "Consegna file cliente",
+  "Video Pronto cliente": "Video Pronto cliente",
+  "Conferma cancellazione": "Conferma cancellazione",
+  "Consegna Anteprima al cliente": "Consegna Anteprima al cliente"
+};
+
+let services = JSON.parse(localStorage.getItem("gl_services") || "[]");
+let editingId = null;
+
+function migrateService(s) {
+  if (!s) return null;
+  if (!s.client) s.client = "Cliente sconosciuto";
+  if (!s.type) s.type = "Evento";
+  if (!s.steps) s.steps = {};
+  if (!s.createdAt) s.createdAt = new Date().toISOString();
+  if (s.videographer === undefined) s.videographer = "";
+  STEPS.forEach(st => {
+    if (!s.steps[st.id]) s.steps[st.id] = { done: false, date: "", extra: {} };
+    if (!s.steps[st.id].extra) s.steps[st.id].extra = {};
+    if (s.steps[st.id].done === undefined) s.steps[st.id].done = false;
+    if (!s.steps[st.id].date) s.steps[st.id].date = "";
+  });
+  if (isPreviewType(s.type)) {
+    if (!s.previewSteps) s.previewSteps = {};
+    STEPS_PREVIEW.forEach(st => {
+      if (!s.previewSteps[st.id]) s.previewSteps[st.id] = { done: false, date: "", extra: {} };
+      if (!s.previewSteps[st.id].extra) s.previewSteps[st.id].extra = {};
+      if (s.previewSteps[st.id].done === undefined) s.previewSteps[st.id].done = false;
+      if (!s.previewSteps[st.id].date) s.previewSteps[st.id].date = "";
+    });
+  } else {
+    delete s.previewSteps;
+  }
+  if (isComboType(s.type)) {
+    if (!s.sections) s.sections = {};
+    COMBO_TYPES[s.type].forEach(secName => {
+      if (!s.sections[secName]) s.sections[secName] = {};
+      STEPS.forEach(st => {
+        if (!s.sections[secName][st.id]) s.sections[secName][st.id] = { done: false, date: "", extra: {} };
+        if (!s.sections[secName][st.id].extra) s.sections[secName][st.id].extra = {};
+        if (!s.sections[secName][st.id].date) s.sections[secName][st.id].date = "";
+      });
+    });
+  } else {
+    delete s.sections;
+  }
+  return s;
 }
 
-async function init(){
-  await renderHero();
-  renderOfferta();
-  loadContatti();
-  loadIdent();
-  renderApps();
-  renderAdmin();
+function isPreviewType(type) { return type && type.startsWith("Anteprima +"); }
+function isComboType(type) { return type && COMBO_TYPES[type]; }
+function getComboSections(type) { return COMBO_TYPES[type] || []; }
+
+function toggleNewService() { document.getElementById("newService").classList.toggle("open"); }
+function saveService() {
+  const client = document.getElementById("inputClient").value.trim();
+  const type = document.getElementById("inputType").value;
+  const date = document.getElementById("inputDate").value;
+  const videographer = document.getElementById("inputVideographer").value.trim();
+  if (!client || !type) { alert("Inserisci nome cliente e tipo di servizio"); return; }
+  const steps = {};
+  STEPS.forEach(s => steps[s.id] = { done: false, date: "", extra: {} });
+  const newService = { id: Date.now(), client, type, date, videographer, steps, createdAt: new Date().toISOString() };
+  if (isPreviewType(type)) {
+    newService.previewSteps = {};
+    STEPS_PREVIEW.forEach(s => newService.previewSteps[s.id] = { done: false, date: "", extra: {} });
+  }
+  if (isComboType(type)) {
+    newService.sections = {};
+    COMBO_TYPES[type].forEach(secName => {
+      newService.sections[secName] = {};
+      STEPS.forEach(st => newService.sections[secName][st.id] = { done: false, date: "", extra: {} });
+    });
+  }
+  services.unshift(newService);
+  save();
+  document.getElementById("inputClient").value = "";
+  document.getElementById("inputType").value = "";
+  document.getElementById("inputDate").value = "";
+  document.getElementById("inputVideographer").value = "";
+  toggleNewService();
+  renderServices();
 }
 
-async function renderHero(){
-  const badges=document.getElementById('heroBadges');
-  if(!studioCode){
-    document.getElementById('heroNome').textContent='Studio';
-    badges.innerHTML='<span class="hbadge ko">Nessun codice studio</span>';
-    document.getElementById('collegaCard').classList.remove('hidden');
-    document.getElementById('stepCollegaHead').classList.remove('hidden');
+function getArchiveByOptions(s) {
+  const options = [`<option value="Studio">Studio</option>`];
+  if (s.videographer && s.videographer.trim()) {
+    options.push(`<option value="${s.videographer}">${s.videographer} (collega)</option>`);
+  }
+  options.push(`<option value="__altro__">Altro...</option>`);
+  return options.join("");
+}
+
+function countDone(stepsObj, stepsList) {
+  return stepsList.filter(st => (stepsObj && stepsObj[st.id] && stepsObj[st.id].done)).length;
+}
+
+function getLastMainStepInfo(s) {
+  const completed = [];
+  const mainSteps = s.steps || {};
+  STEPS.forEach((st, idx) => {
+    const d = mainSteps[st.id];
+    if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx, section: null });
+  });
+  if (isComboType(s.type) && s.sections) {
+    Object.keys(s.sections).forEach(secName => {
+      const secSteps = s.sections[secName];
+      STEPS.forEach((st, idx) => {
+        const d = secSteps[st.id];
+        if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx, section: secName });
+      });
+    });
+  }
+  if (completed.length === 0) return null;
+  completed.sort((a, b) => {
+    if (a.date && b.date) { const cmp = a.date.localeCompare(b.date); if (cmp !== 0) return cmp; }
+    else if (a.date && !b.date) return -1;
+    else if (!a.date && b.date) return 1;
+    return a.order - b.order;
+  });
+  return completed[completed.length - 1];
+}
+
+function getLastPreviewStepInfo(s) {
+  if (!isPreviewType(s.type) || !s.previewSteps) return null;
+  const completed = [];
+  STEPS_PREVIEW.forEach((st, idx) => {
+    const d = s.previewSteps[st.id];
+    if (d && d.done) completed.push({ label: st.label, date: d.date, order: idx });
+  });
+  if (completed.length === 0) return null;
+  completed.sort((a, b) => {
+    if (a.date && b.date) { const cmp = a.date.localeCompare(b.date); if (cmp !== 0) return cmp; }
+    else if (a.date && !b.date) return -1;
+    else if (!a.date && b.date) return 1;
+    return a.order - b.order;
+  });
+  return completed[completed.length - 1];
+}
+
+function getVideoReadyDate(s) {
+  const mainSteps = s.steps || {};
+  const videoStep = mainSteps["videoClient"];
+  if (videoStep && videoStep.done && videoStep.date) return videoStep.date;
+  if (isComboType(s.type) && s.sections) {
+    for (let secName of Object.keys(s.sections)) {
+      const secSteps = s.sections[secName];
+      const secVideoStep = secSteps["videoClient"];
+      if (secVideoStep && secVideoStep.done && secVideoStep.date) return secVideoStep.date;
+    }
+  }
+  return null;
+}
+
+function renderServices(data = services) {
+  const list = document.getElementById("servicesList");
+  if (data.length === 0) {
+    list.innerHTML = '<div class="empty">Nessun servizio. Clicca su "+ Nuovo Servizio" per iniziare.</div>';
     return;
   }
-  try{
-    const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-    licenza=(l.studi||[]).find(s=>s.codice===studioCode);
-  }catch(e){}
-  const nome=(licenza&&licenza.nome)?licenza.nome:(studioIdent.nome||'Studio');
-  document.getElementById('heroNome').textContent=nome;
-  document.title=nome+' - AppCenter Studio Premium';
-  const oggi=new Date().toISOString().slice(0,10);
-  if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
-  if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso sospeso</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
-  if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
-  badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+fmtData(licenza.scadenza)+'</span>';
-  document.getElementById('areaRiservata').classList.remove('hidden');
-  document.getElementById('collegaCard').classList.add('hidden');
-  document.getElementById('stepCollegaHead').classList.add('hidden');
+  list.innerHTML = data.map(s => {
+    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
+    const videoInfo = s.videographer ? `<div class="videographer-info">Videografo: ${s.videographer}</div>` : '';
+    let progressHtml = '';
+    if (isPreviewType(s.type)) {
+      const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW);
+      const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
+      const serviceDone = countDone(s.steps, STEPS);
+      const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+      progressHtml = `<div class="progress-row">
+        <div><div class="progress-label">ANTEPRIMA</div><div class="progress-bar"><div class="progress-fill" style="width:${previewPct}%; background:var(--taupe-scuro);"></div></div><div class="progress-text">${previewDone}/${STEPS_PREVIEW.length} (${previewPct}%)</div></div>
+        <div><div class="progress-label">SERVIZIO</div><div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">${serviceDone}/${STEPS.length} (${servicePct}%)</div></div>
+      </div>`;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      progressHtml = '<div class="progress-row">';
+      sections.forEach(secName => {
+        const secSteps = s.sections?.[secName] || {};
+        const done = countDone(secSteps, STEPS);
+        const pct = Math.round((done / STEPS.length) * 100);
+        const secColor = SECTION_COLORS[secName]?.bg || '#111';
+        progressHtml += `<div><div class="progress-label">${secName}</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%; background:${secColor};"></div></div><div class="progress-text">${done}/${STEPS.length} (${pct}%)</div></div>`;
+      });
+      progressHtml += '</div>';
+    } else {
+      const serviceDone = countDone(s.steps, STEPS);
+      const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+      progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">Avanzamento: ${serviceDone}/${STEPS.length} (${servicePct}%)</div>`;
+    }
+    return `<div class="card">
+      <div class="card-header" onclick="toggleSteps(${s.id})">
+        <div class="client-info"><div class="client-name">${s.client}</div><div class="client-date">${s.date ? s.date : ''}</div>${videoInfo}</div>
+        <div class="service-badge" style="background:${color}">${s.type}</div>
+      </div>
+      ${progressHtml}
+      <div class="steps" id="steps-${s.id}">${renderSteps(s)}</div>
+      <div class="card-footer">
+        <button class="btn-view" onclick="viewService(${s.id})">Visualizza</button>
+        <button class="btn-edit" onclick="editService(${s.id})">Modifica</button>
+        <button class="btn-pdf" onclick="generatePDF(${s.id})">PDF</button>
+        <button class="btn-del" onclick="deleteService(${s.id})">Elimina</button>
+      </div>
+    </div>`;
+  }).join("");
 }
 
-async function renderOfferta(){
-  if(!studioCode)return;
-  let off=null;
-  try{
-    const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();
-    off=(o.offerte||[]).find(x=>x.studio===studioCode&&x.attiva);
-  }catch(e){}
-  if(!off)return;
-  const card=document.getElementById('offertaCard');
-  card.classList.remove('hidden');
-  card.innerHTML='<h2>Un\'offerta riservata al tuo studio</h2><p>'+(off.descrizione||'')+'</p>'+
-  '<div class="prezzo">&euro; '+off.prezzo+' <small>per '+off.mesi+' mesi di licenza completa</small></div>'+
-  '<a class="btn" style="text-decoration:none" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(FORNITORE_PAYPAL)+'&currency_code=EUR&amount='+off.prezzo+'&item_name=Offerta+'+encodeURIComponent(studioCode)+'">Paga ora con PayPal</a> '+
-  '<a class="btn ghost" style="text-decoration:none" href="assistenza.html?studio='+encodeURIComponent(studioCode)+'">Manda ricevuta via Assistenza</a>'+
-  '<p style="margin-top:12px;font-size:12px;color:#8a8a8a">Dopo il pagamento il fornitore estende la tua licenza.</p>';
+function renderSteps(s) {
+  let html = '';
+  if (isPreviewType(s.type)) {
+    html += `<div class="section-title preview">ANTEPRIMA</div>`;
+    html += STEPS_PREVIEW.map(st => renderStepRow(s, st, 'preview')).join('');
+  }
+  if (isComboType(s.type)) {
+    const sections = getComboSections(s.type);
+    sections.forEach(secName => {
+      html += `<div class="section-title ${secName.toLowerCase().replace(' ', '')}">${secName.toUpperCase()}</div>`;
+      html += STEPS.map(st => renderComboStepRow(s, st, secName)).join('');
+    });
+    return html;
+  }
+  const serviceTitle = isPreviewType(s.type) ? `SERVIZIO (${s.type.replace("Anteprima + ", "")})` : 'WORKFLOW SERVIZIO';
+  html += `<div class="section-title service">${serviceTitle}</div>`;
+  html += STEPS.map(st => renderStepRow(s, st, 'service')).join('');
+  return html;
 }
 
-function loadContatti(){
-  document.getElementById('cReferente').value=contatti.referente||'';
-  document.getElementById('cWhatsapp').value=contatti.whatsapp||'';
-  document.getElementById('cEmail').value=contatti.email||'';
-  document.getElementById('cCitta').value=contatti.citta||'';
-  document.getElementById('cNote').value=contatti.note||'';
-}
-function inviaDatiFornitore(){
-  contatti={
-    referente:document.getElementById('cReferente').value.trim(),
-    whatsapp:document.getElementById('cWhatsapp').value.trim(),
-    email:document.getElementById('cEmail').value.trim(),
-    citta:document.getElementById('cCitta').value.trim(),
-    note:document.getElementById('cNote').value.trim()
-  };
-  localStorage.setItem('studioContatti',JSON.stringify(contatti));
-  const testo='DATI STUDIO '+studioCode+'\nReferente: '+contatti.referente+'\nWhatsApp: '+contatti.whatsapp+'\nEmail: '+contatti.email+'\nCitta\': '+contatti.citta+'\nNote: '+contatti.note;
-  window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(testo),'_blank');
-}
-
-function loadIdent(){
-  if(!studioIdent.nome&&licenza&&licenza.nome)studioIdent.nome=licenza.nome;
-  document.getElementById('sNome').value=studioIdent.nome||'';
-  document.getElementById('sPiva').value=studioIdent.piva||'';
-  document.getElementById('sIndirizzo').value=studioIdent.indirizzo||'';
-  document.getElementById('sTelefono').value=studioIdent.telefono||'';
-  document.getElementById('sEmail').value=studioIdent.email||'';
-  document.getElementById('sNote').value=studioIdent.note||'';
-  renderLogoPrev();
-}
-document.getElementById('sLogo').addEventListener('change',e=>{
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{studioIdent.logoData=r.result;renderLogoPrev();};
-  r.readAsDataURL(f);
-});
-function renderLogoPrev(){
-  document.getElementById('logoPrev').innerHTML=studioIdent.logoData?'<img class="logoPreview" src="'+studioIdent.logoData+'">':'';
+function renderStepRow(s, st, section) {
+  const stepsObj = section === 'preview' ? (s.previewSteps || {}) : (s.steps || {});
+  const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
+  let extraHtml = "";
+  if (st.extra) {
+    if (st.extraType === "archivedBy") {
+      const currentVal = d.extra?.archivedBy || "Studio";
+      const isAltro = currentVal && !["Studio", s.videographer].includes(currentVal);
+      const displayVal = isAltro ? currentVal : "";
+      extraHtml = `<div class="step-extra"><select onchange="handleArchiveByChange(${s.id}, '${st.id}', this.value, '${section}')">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateExtra(${s.id},'${st.id}','archivedBy',this.value,'${section}')">` : ''}</div>`;
+    } else if (st.extraType === "cover") {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="Fornitore copertina" value="${d.extra?.supplier || ''}" onchange="updateExtra(${s.id},'${st.id}','supplier',this.value,'${section}')"><input type="text" placeholder="Articolo prodotto" value="${d.extra?.article || ''}" onchange="updateExtra(${s.id},'${st.id}','article',this.value,'${section}')"></div>`;
+    } else if (st.extraLabel) {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="${st.extraLabel}" value="${d.extra?.luogo || ''}" onchange="updateExtra(${s.id},'${st.id}','luogo',this.value,'${section}')" style="flex:2;"></div>`;
+    }
+  }
+  return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleStep(${s.id},'${st.id}',this.checked,'${section}')"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateDate(${s.id},'${st.id}',this.value,'${section}')">${extraHtml}</div>`;
 }
 
-function salvaEPubblicaIdent(){
-  studioIdent.nome=document.getElementById('sNome').value.trim();
-  studioIdent.piva=document.getElementById('sPiva').value.trim();
-  studioIdent.indirizzo=document.getElementById('sIndirizzo').value.trim();
-  studioIdent.telefono=document.getElementById('sTelefono').value.trim();
-  studioIdent.email=document.getElementById('sEmail').value.trim();
-  studioIdent.note=document.getElementById('sNote').value.trim();
-  localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
-  const q=new URLSearchParams({studio:studioCode,nome:studioIdent.nome,piva:studioIdent.piva,indirizzo:studioIdent.indirizzo,telefono:studioIdent.telefono,email:studioIdent.email,note:studioIdent.note});
-  window.open(NETLIFY_BASE+'/form-identita.html?'+q.toString(),'_blank');
-  alert('Dati salvati in questo browser.\nNella nuova scheda premi INVIA per spedirli al fornitore.');
+function renderComboStepRow(s, st, sectionName) {
+  const stepsObj = s.sections?.[sectionName] || {};
+  const d = stepsObj[st.id] || { done: false, date: "", extra: {} };
+  let extraHtml = "";
+  if (st.extra) {
+    if (st.extraType === "archivedBy") {
+      const currentVal = d.extra?.archivedBy || "Studio";
+      const isAltro = currentVal && !["Studio", s.videographer].includes(currentVal);
+      const displayVal = isAltro ? currentVal : "";
+      extraHtml = `<div class="step-extra"><select onchange="handleComboArchiveByChange(${s.id}, '${sectionName}', '${st.id}', this.value)">${getArchiveByOptions(s).replace(`value="${currentVal}"`, `value="${currentVal}" selected`)}</select>${isAltro ? `<input type="text" placeholder="Nome collega..." value="${displayVal}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','archivedBy',this.value)">` : ''}</div>`;
+    } else if (st.extraType === "cover") {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="Fornitore copertina" value="${d.extra?.supplier || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','supplier',this.value)"><input type="text" placeholder="Articolo prodotto" value="${d.extra?.article || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','article',this.value)"></div>`;
+    } else if (st.extraLabel) {
+      extraHtml = `<div class="step-extra"><input type="text" placeholder="${st.extraLabel}" value="${d.extra?.luogo || ''}" onchange="updateComboExtra(${s.id},'${sectionName}','${st.id}','luogo',this.value)" style="flex:2;"></div>`;
+    }
+  }
+  return `<div class="step ${d.done ? 'done' : ''}"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleComboStep(${s.id},'${sectionName}','${st.id}',this.checked)"><div class="step-label">${st.label}</div><input type="date" value="${d.date || ''}" onchange="updateComboDate(${s.id},'${sectionName}','${st.id}',this.value)">${extraHtml}</div>`;
 }
 
-function renderApps(){
-  if(!studioCode||!licenza||!licenza.attivo)return;
-  const oggi=new Date().toISOString().slice(0,10);
-  if(licenza.scadenza<oggi)return;
-  const q='?studio='+encodeURIComponent(studioCode);
-  const apps=[
-    {n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, acconti con ricevute, piani di pagamento e PDF con la tua intestazione.',u:'preventivi-contratti/'+q},
-    {n:'02',t:'Workflow Foto & Video',d:'Stato di avanzamento di ogni servizio, tabella clienti e PDF di produzione.',u:'workflow/'+q},
-    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto nel magazzino temporaneo, link gallery al cliente.',u:'clienti-foto/'+q},
-    {n:'04',t:'Selezione per Album',d:'Selezione in studio o da casa (link 7 giorni). Pulizia automatica e gallery 6 mesi.',u:'selezione-album/'+q},
-    {n:'05',t:'Gallery',d:'Galleria elegante per i clienti con scadenza automatica e proroga.',u:'gallery/'+q},
-    {n:'06',t:'Negozio Online',d:'Prodotti con foto e prezzi, carrello, ordini e pagamenti al tuo studio.',u:'negozio/'+q},
-    {n:'07',t:'Agenda',d:'Calendario sfogliabile: contratti automatici, appuntamenti e promemoria.',u:'agenda/'+q},
-    {n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo per qualsiasi servizio, con PDF e firme.',u:'ricevute/'+q},
-    {n:'09',t:'Email',d:'Scrivi e invia email o PEC dall\'indirizzo dello studio, con modelli pronti.',u:'email/'+q},
-    {n:'10',t:'Assistenza Online',d:'Chat dedicata con il fornitore e codice AnyDesk per il controllo remoto.',u:'assistenza.html'+q}
-  ];
-  document.getElementById('appsGrid').innerHTML=apps.map(a=>`
-   <div class="app">
-    <div class="num">${a.n}</div>
-    <h3>${a.t}</h3>
-    <p>${a.d}</p>
-    <a href="${a.u}">Apri &rarr;</a>
-   </div>`).join('');
+function ensureStep(stepsObj, stepId) {
+  if (!stepsObj[stepId]) stepsObj[stepId] = { done: false, date: "", extra: {} };
+  if (!stepsObj[stepId].extra) stepsObj[stepId].extra = {};
+  return stepsObj[stepId];
 }
 
-async function cambiaTema(id){
- const tok=localStorage.getItem('gh_token');
- if(!tok){alert('Token GitHub mancante: apri una volta admin-tema.html, salva il token e poi torna qui.');return;}
+function handleArchiveByChange(serviceId, stepId, value, section) {
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (value === "__altro__") return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  ensureStep(stepsObj, stepId).extra.archivedBy = value;
+  save(); renderServices();
+  document.getElementById("steps-" + serviceId).classList.add("open");
+}
+function handleComboArchiveByChange(serviceId, sectionName, stepId, value) {
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (value === "__altro__") return;
+  if (!s.sections) s.sections = {};
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  ensureStep(s.sections[sectionName], stepId).extra.archivedBy = value;
+  save(); renderServices();
+  document.getElementById("steps-" + serviceId).classList.add("open");
+}
+
+function toggleSteps(id) { document.getElementById("steps-" + id).classList.toggle("open"); }
+function toggleStep(id, stepId, checked, section) {
+  const s = services.find(x => x.id === id); if (!s) return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  const st = ensureStep(stepsObj, stepId);
+  st.done = checked;
+  if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
+  if ((stepId === "archiveVideo" && section === 'service') || (stepId === "p_archiveVideo" && section === 'preview')) {
+    if (!st.extra.archivedBy) st.extra.archivedBy = "Studio";
+  }
+  save(); renderServices();
+  document.getElementById("steps-" + id).classList.add("open");
+  renderTable();
+}
+function toggleComboStep(serviceId, sectionName, stepId, checked) {
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (!s.sections) s.sections = {};
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  const st = ensureStep(s.sections[sectionName], stepId);
+  st.done = checked;
+  if (checked && !st.date) st.date = new Date().toISOString().slice(0,10);
+  if (stepId === "archiveVideo" && !st.extra.archivedBy) st.extra.archivedBy = "Studio";
+  save(); renderServices();
+  document.getElementById("steps-" + serviceId).classList.add("open");
+  renderTable();
+}
+function updateDate(id, stepId, val, section) {
+  const s = services.find(x => x.id === id); if (!s) return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  ensureStep(stepsObj, stepId).date = val; save();
+}
+function updateComboDate(serviceId, sectionName, stepId, val) {
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (!s.sections) s.sections = {};
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  ensureStep(s.sections[sectionName], stepId).date = val; save();
+}
+function updateExtra(id, stepId, field, val, section) {
+  const s = services.find(x => x.id === id); if (!s) return;
+  const stepsObj = section === 'preview' ? (s.previewSteps || (s.previewSteps = {})) : (s.steps || (s.steps = {}));
+  ensureStep(stepsObj, stepId).extra[field] = val; save();
+}
+function updateComboExtra(serviceId, sectionName, stepId, field, val) {
+  const s = services.find(x => x.id === serviceId); if (!s) return;
+  if (!s.sections) s.sections = {};
+  if (!s.sections[sectionName]) s.sections[sectionName] = {};
+  ensureStep(s.sections[sectionName], stepId).extra[field] = val; save();
+}
+function deleteService(id) {
+  if (!confirm("Eliminare questo servizio?")) return;
+  services = services.filter(x => x.id !== id);
+  save(); renderServices(); renderTable();
+}
+function save() { localStorage.setItem("gl_services", JSON.stringify(services)); syncCloud(); }
+
+function viewService(id) {
+  const s = services.find(x => x.id === id); if (!s) return;
+  let html = `<div class="detail-row"><div class="detail-label">Cliente</div><div class="detail-value">${s.client}</div></div>
+    <div class="detail-row"><div class="detail-label">Tipo Servizio</div><div class="detail-value">${s.type}</div></div>
+    <div class="detail-row"><div class="detail-label">Data Evento</div><div class="detail-value">${s.date || 'Non specificata'}</div></div>
+    <div class="detail-row"><div class="detail-label">Videografo/Collega</div><div class="detail-value">${s.videographer || 'Non specificato'}</div></div>`;
+  if (isPreviewType(s.type)) {
+    const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW);
+    const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
+    const serviceDone = countDone(s.steps, STEPS);
+    const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+    html += `<div class="detail-row" style="background:#f0f0f0;"><div class="detail-label">Avanzamento ANTEPRIMA</div><div class="detail-value">${previewDone}/${STEPS_PREVIEW.length} completati (${previewPct}%)</div></div>`;
+    html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
+    html += `<h3 style="margin:20px 0 10px; padding:10px; background:#999; color:white; border-radius:10px;">ANTEPRIMA</h3>`;
+    STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+    html += `<h3 style="margin:20px 0 10px; padding:10px; background:#444; color:white; border-radius:10px;">SERVIZIO</h3>`;
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+  } else if (isComboType(s.type)) {
+    const sections = getComboSections(s.type);
+    sections.forEach(secName => {
+      const secSteps = s.sections?.[secName] || {};
+      const done = countDone(secSteps, STEPS);
+      const pct = Math.round((done / STEPS.length) * 100);
+      const secColor = SECTION_COLORS[secName]?.bg || '#111';
+      html += `<div class="detail-row" style="background:${secColor};color:#fff;"><div class="detail-label">Avanzamento ${secName}</div><div class="detail-value">${done}/${STEPS.length} completati (${pct}%)</div></div>`;
+    });
+    sections.forEach(secName => {
+      const secColor = SECTION_COLORS[secName]?.bg || '#111';
+      html += `<h3 style="margin:20px 0 10px; padding:10px; background:${secColor}; color:white; border-radius:10px;">${secName.toUpperCase()}</h3>`;
+      const secSteps = s.sections?.[secName] || {};
+      STEPS.forEach(st => { const d = secSteps[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+    });
+  } else {
+    const serviceDone = countDone(s.steps, STEPS);
+    const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+    html += `<div class="detail-row"><div class="detail-label">Avanzamento SERVIZIO</div><div class="detail-value">${serviceDone}/${STEPS.length} completati (${servicePct}%)</div></div>`;
+    html += `<h3 style="margin:20px 0 10px; padding:10px; background:#444; color:white; border-radius:10px;">SERVIZIO</h3>`;
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; html += renderStepDetail(st, d); });
+  }
+  document.getElementById("detailTitle").textContent = `${s.client} - ${s.type}`;
+  document.getElementById("detailBody").innerHTML = html;
+  document.getElementById("detailModal").classList.add("active");
+}
+
+function renderStepDetail(st, d) {
+  const status = d.done ? 'Completato' : 'In attesa';
+  const dateStr = d.date ? ` - ${d.date}` : '';
+  const extraInfo = [];
+  if (st.extraType === "archivedBy" && d.extra?.archivedBy) extraInfo.push(`Archiviato da: ${d.extra.archivedBy}`);
+  if (st.extraType === "cover") {
+    if (d.extra?.supplier) extraInfo.push(`Fornitore: ${d.extra.supplier}`);
+    if (d.extra?.article) extraInfo.push(`Articolo: ${d.extra.article}`);
+  }
+  if (st.extraLabel && d.extra?.luogo) extraInfo.push(`Luogo: ${d.extra.luogo}`);
+  return `<div class="step-detail ${d.done ? 'completed' : ''}"><div class="step-name">${status} - ${st.label}${dateStr}</div>${extraInfo.length ? `<div class="step-extra-info">${extraInfo.join(' | ')}</div>` : ''}</div>`;
+}
+
+function editService(id) {
+  const s = services.find(x => x.id === id); if (!s) return;
+  editingId = id;
+  document.getElementById("editClient").value = s.client;
+  document.getElementById("editType").value = s.type;
+  document.getElementById("editDate").value = s.date || '';
+  document.getElementById("editVideographer").value = s.videographer || '';
+  document.getElementById("editModal").classList.add("active");
+}
+function saveEdit() {
+  if (!editingId) return;
+  const s = services.find(x => x.id === editingId); if (!s) return;
+  const oldType = s.type;
+  s.client = document.getElementById("editClient").value.trim();
+  s.type = document.getElementById("editType").value;
+  s.date = document.getElementById("editDate").value;
+  s.videographer = document.getElementById("editVideographer").value.trim();
+  if (isPreviewType(s.type) && !s.previewSteps) { s.previewSteps = {}; STEPS_PREVIEW.forEach(st => s.previewSteps[st.id] = { done: false, date: "", extra: {} }); }
+  if (!isPreviewType(s.type) && isPreviewType(oldType)) delete s.previewSteps;
+  if (isComboType(s.type) && !s.sections) { s.sections = {}; COMBO_TYPES[s.type].forEach(secName => { s.sections[secName] = {}; STEPS.forEach(st => s.sections[secName][st.id] = { done: false, date: "", extra: {} }); }); }
+  if (!isComboType(s.type) && isComboType(oldType)) delete s.sections;
+  save(); closeModal('editModal'); renderServices(); renderTable();
+}
+
+async function generatePDF(id) {
+  const s = services.find(x => x.id === id); if (!s) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFillColor(111, 99, 83);
+  doc.rect(0, 0, 210, 40, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(24); doc.text("AppCenterStudio Premium", 15, 20);
+  doc.setFontSize(12); doc.text("Workflow Foto & Video", 15, 28);
+  doc.setTextColor(0, 0, 0); doc.setFontSize(14);
+  doc.text(`Cliente: ${s.client}`, 15, 55);
+  doc.text(`Tipo: ${s.type}`, 15, 63);
+  doc.text(`Data Evento: ${s.date || 'N/D'}`, 15, 71);
+  doc.text(`Videografo: ${s.videographer || 'N/D'}`, 15, 79);
+  let y = 92;
+  if (isPreviewType(s.type)) {
+    doc.setFillColor(153, 153, 153); doc.rect(15, y - 5, 180, 8, 'F');
+    doc.setTextColor(0, 0, 0); doc.setFontSize(12); doc.text("ANTEPRIMA", 20, y); y += 8;
+    STEPS_PREVIEW.forEach(st => { const d = (s.previewSteps || {})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+    y += 5;
+    doc.setFillColor(111, 99, 83); doc.rect(15, y - 5, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
+    doc.setTextColor(0, 0, 0); y += 8;
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+  } else if (isComboType(s.type)) {
+    const sections = getComboSections(s.type);
+    sections.forEach(secName => {
+      const secColor = SECTION_COLORS[secName]?.hex || '#111';
+      const rgb = hexToRgb(secColor);
+      doc.setFillColor(rgb.r, rgb.g, rgb.b); doc.rect(15, y - 5, 180, 8, 'F');
+      doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text(secName.toUpperCase(), 20, y);
+      doc.setTextColor(0, 0, 0); y += 8;
+      const secSteps = s.sections?.[secName] || {};
+      STEPS.forEach(st => { const d = secSteps[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+      y += 5;
+    });
+  } else {
+    doc.setFillColor(111, 99, 83); doc.rect(15, y - 5, 180, 8, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFontSize(12); doc.text("SERVIZIO", 20, y);
+    doc.setTextColor(0, 0, 0); y += 8;
+    STEPS.forEach(st => { const d = (s.steps||{})[st.id] || { done: false, date: "", extra: {} }; y = renderPDFStep(doc, st, d, y); });
+  }
+  doc.setFontSize(10); doc.setTextColor(150, 150, 150);
+  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`, 15, 285);
+  doc.save(`AppCenterStudio_${s.client.replace(/\s+/g, '_')}_${s.type.replace(/\s+/g, '_')}.pdf`);
+}
+
+function renderPDFStep(doc, st, d, y) {
+  const status = d.done ? "[X]" : "[ ]";
+  const dateStr = d.date ? ` - ${d.date}` : '';
+  const cleanLabel = STEP_LABEL_CLEAN[st.label] || st.label;
+  doc.text(`${status} ${cleanLabel}${dateStr}`, 20, y); y += 7;
+  const extra = getExtraText(st, d);
+  if (extra) { doc.setTextColor(100, 100, 100); doc.text(`    -> ${extra}`, 20, y); doc.setTextColor(0, 0, 0); y += 7; }
+  if (y > 270) { doc.addPage(); y = 20; }
+  return y;
+}
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 111, g: 99, b: 83 };
+}
+function getExtraText(st, d) {
+  const extra = [];
+  if (st.extraType === "archivedBy" && d.extra?.archivedBy) extra.push(`Archiviato da: ${d.extra.archivedBy}`);
+  if (st.extraType === "cover") { if (d.extra?.supplier) extra.push(`Fornitore: ${d.extra.supplier}`); if (d.extra?.article) extra.push(`Articolo: ${d.extra.article}`); }
+  if (st.extraLabel && d.extra?.luogo) extra.push(`Luogo: ${d.extra.luogo}`);
+  return extra.join(' | ');
+}
+
+function showArchive() { document.getElementById("servicesList").style.display = "none"; document.getElementById("tableView").style.display = "none"; document.getElementById("newService").classList.remove("open"); document.getElementById("archiveView").style.display = "block"; filterServices(); }
+function showTable() { document.getElementById("servicesList").style.display = "none"; document.getElementById("archiveView").style.display = "none"; document.getElementById("newService").classList.remove("open"); document.getElementById("tableView").style.display = "block"; renderTable(); }
+function showMain() { document.getElementById("archiveView").style.display = "none"; document.getElementById("tableView").style.display = "none"; document.getElementById("servicesList").style.display = "block"; renderServices(); }
+
+function filterServices() {
+  const search = document.getElementById("searchBox").value.toLowerCase();
+  const type = document.getElementById("filterType").value;
+  let filtered = services;
+  if (search) filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
+  if (type) filtered = filtered.filter(s => s.type === type);
+  const list = document.getElementById("archiveList");
+  if (filtered.length === 0) { list.innerHTML = '<div class="empty">Nessun servizio trovato</div>'; return; }
+  list.innerHTML = filtered.map(s => {
+    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
+    const videoInfo = s.videographer ? `<div class="videographer-info">Videografo: ${s.videographer}</div>` : '';
+    let progressHtml = '';
+    if (isPreviewType(s.type)) {
+      const previewDone = countDone(s.previewSteps || {}, STEPS_PREVIEW); const previewPct = Math.round((previewDone / STEPS_PREVIEW.length) * 100);
+      const serviceDone = countDone(s.steps, STEPS); const servicePct = Math.round((serviceDone / STEPS.length) * 100);
+      progressHtml = `<div class="progress-row"><div><div class="progress-label">ANTEPRIMA</div><div class="progress-bar"><div class="progress-fill" style="width:${previewPct}%; background:var(--taupe-scuro);"></div></div><div class="progress-text">${previewDone}/${STEPS_PREVIEW.length} (${previewPct}%)</div></div><div><div class="progress-label">SERVIZIO</div><div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">${serviceDone}/${STEPS.length} (${servicePct}%)</div></div></div>`;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type); progressHtml = '<div class="progress-row">';
+      sections.forEach(secName => { const secSteps = s.sections?.[secName] || {}; const done = countDone(secSteps, STEPS); const pct = Math.round((done / STEPS.length) * 100); const secColor = SECTION_COLORS[secName]?.bg || '#111'; progressHtml += `<div><div class="progress-label">${secName}</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%; background:${secColor};"></div></div><div class="progress-text">${done}/${STEPS.length} (${pct}%)</div></div>`; });
+      progressHtml += '</div>';
+    } else { const serviceDone = countDone(s.steps, STEPS); const servicePct = Math.round((serviceDone / STEPS.length) * 100); progressHtml = `<div class="progress-bar"><div class="progress-fill" style="width:${servicePct}%"></div></div><div class="progress-text">Completamento: ${servicePct}%</div>`; }
+    return `<div class="card"><div class="card-header"><div class="client-info"><div class="client-name">${s.client}</div><div class="client-date">${s.date ? s.date : ''}</div>${videoInfo}</div><div class="service-badge" style="background:${color}">${s.type}</div></div>${progressHtml}<div class="card-footer"><button class="btn-view" onclick="viewService(${s.id})">Visualizza</button><button class="btn-edit" onclick="editService(${s.id})">Modifica</button><button class="btn-pdf" onclick="generatePDF(${s.id})">PDF</button><button class="btn-del" onclick="deleteService(${s.id})">Elimina</button></div></div>`;
+  }).join("");
+}
+
+function renderTable() {
+  const search = (document.getElementById("tableSearch")?.value || "").toLowerCase();
+  let filtered = services.slice();
+  if (search) {
+    filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || s.type.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
+  }
+  filtered.sort((a, b) => {
+    const orderA = TYPE_ORDER.indexOf(a.type);
+    const orderB = TYPE_ORDER.indexOf(b.type);
+    if (orderA !== orderB) return orderA - orderB;
+    return a.client.localeCompare(b.client, 'it');
+  });
+  const table = document.getElementById("workflowTable");
+  if (filtered.length === 0) {
+    table.innerHTML = '<tr><td colspan="11" style="padding:40px;text-align:center;color:#888;">Nessun servizio trovato</td></tr>';
+    return;
+  }
+  let thead = '<thead><tr>';
+  thead += '<th>#</th><th>Cliente</th><th class="center">Tipo Servizio</th><th class="center">Data Evento</th><th>Videografo</th><th class="center">Video Pronto</th><th class="center">Data Video</th><th>Ultimo Step (Servizio)</th><th class="center">Data Step</th><th class="center">Stato</th><th class="center">Azioni</th>';
+  thead += '</tr></thead>';
+  let tbody = '<tbody>';
+  filtered.forEach((s, idx) => {
+    const color = TYPE_COLORS[s.type] || TYPE_COLORS["Evento"];
+    const lastStep = getLastMainStepInfo(s);
+    const videoDate = getVideoReadyDate(s);
+    let totalDone = 0, totalSteps = 0;
+    if (isPreviewType(s.type)) {
+      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
+      totalSteps = STEPS_PREVIEW.length + STEPS.length;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
+    } else {
+      totalDone = countDone(s.steps, STEPS);
+      totalSteps = STEPS.length;
+    }
+    const pct = Math.round((totalDone / totalSteps) * 100);
+    const pctClass = pct === 100 ? 'pct-100' : pct >= 70 ? 'pct-high' : pct >= 40 ? 'pct-mid' : pct > 0 ? 'pct-low' : 'pct-zero';
+    let lastStepHtml = '';
+    if (lastStep) {
+      const sectionTag = lastStep.section ? `<span class="section-tag" style="background:${SECTION_COLORS[lastStep.section]?.hex || '#111'}">${lastStep.section}</span>` : '';
+      lastStepHtml = `<span class="td-laststep">${lastStep.label}${sectionTag}</span>`;
+    } else {
+      lastStepHtml = `<span class="td-laststep empty">Nessuno step completato</span>`;
+    }
+    const dateDisplay = lastStep?.date ? formatDate(lastStep.date) : '-';
+    const videoDisplay = videoDate ? formatDate(videoDate) : '-';
+    const videoDone = videoDate ? 'OK' : '-';
+    tbody += '<tr>';
+    tbody += `<td style="color:#888;font-size:0.85em;">${idx + 1}</td>`;
+    tbody += `<td class="td-client">${s.client}</td>`;
+    tbody += `<td class="td-type"><span class="badge-cell" style="background:${color}">${s.type}</span></td>`;
+    tbody += `<td class="td-center">${s.date ? formatDate(s.date) : '-'}</td>`;
+    tbody += `<td>${s.videographer || '-'}</td>`;
+    tbody += `<td class="td-center">${videoDone}</td>`;
+    tbody += `<td class="td-center" style="font-weight:600;color:#444;">${videoDisplay}</td>`;
+    tbody += `<td>${lastStepHtml}</td>`;
+    tbody += `<td class="td-center" style="font-weight:600;color:#444;">${dateDisplay}</td>`;
+    tbody += `<td class="td-center"><span class="pct-badge ${pctClass}">${pct}%</span></td>`;
+    tbody += `<td><div class="cell-actions">
+      <button class="mini-view" onclick="viewService(${s.id})" title="Visualizza">V</button>
+      <button class="mini-edit" onclick="editService(${s.id})" title="Modifica">M</button>
+      <button class="mini-pdf" onclick="generatePDF(${s.id})" title="PDF">P</button>
+      <button class="mini-del" onclick="deleteService(${s.id})" title="Elimina">X</button>
+    </div></td>`;
+    tbody += '</tr>';
+  });
+  tbody += '</tbody>';
+  table.innerHTML = thead + tbody;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '-';
+  const parts = dateStr.split('-');
+  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0].slice(2)}`;
+  return dateStr;
+}
+
+function generateTablePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  doc.setFillColor(111, 99, 83);
+  doc.rect(0, 0, 297, 25, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(20);
+  doc.text("AppCenterStudio Premium - Stato Lavori Clienti", 14, 16);
+  const sorted = services.slice().sort((a, b) => {
+    const orderA = TYPE_ORDER.indexOf(a.type);
+    const orderB = TYPE_ORDER.indexOf(b.type);
+    if (orderA !== orderB) return orderA - orderB;
+    return a.client.localeCompare(b.client, 'it');
+  });
+  const head = [['#', 'Cliente', 'Tipo', 'Data Evento', 'Videografo', 'Video Pronto', 'Data Video', 'Ultimo Step', 'Data Step', 'Stato']];
+  const body = sorted.map((s, idx) => {
+    const lastStep = getLastMainStepInfo(s);
+    const videoDate = getVideoReadyDate(s);
+    let totalDone = 0, totalSteps = 0;
+    if (isPreviewType(s.type)) {
+      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
+      totalSteps = STEPS_PREVIEW.length + STEPS.length;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
+    } else {
+      totalDone = countDone(s.steps, STEPS);
+      totalSteps = STEPS.length;
+    }
+    const pct = Math.round((totalDone / totalSteps) * 100);
+    const cleanLabel = lastStep ? (STEP_LABEL_CLEAN[lastStep.label] || lastStep.label) : '-';
+    return [
+      idx + 1, s.client, s.type,
+      s.date ? formatDate(s.date) : '-',
+      s.videographer || '-',
+      videoDate ? 'OK' : '-',
+      videoDate ? formatDate(videoDate) : '-',
+      cleanLabel,
+      lastStep?.date ? formatDate(lastStep.date) : '-',
+      `${pct}%`
+    ];
+  });
+  doc.autoTable({
+    startY: 30,
+    margin: { left: 8, right: 8, top: 30, bottom: 15 },
+    head: head,
+    body: body,
+    theme: 'grid',
+    headStyles: { fillColor: [111, 99, 83], textColor: 255, fontSize: 7, halign: 'center' },
+    bodyStyles: { fontSize: 6.5, cellPadding: 2 },
+    columnStyles: {
+      0: { cellWidth: 8, halign: 'center' },
+      1: { cellWidth: 50 },
+      2: { cellWidth: 38, halign: 'center' },
+      3: { cellWidth: 18, halign: 'center' },
+      4: { cellWidth: 38 },
+      5: { cellWidth: 18, halign: 'center' },
+      6: { cellWidth: 18, halign: 'center' },
+      7: { cellWidth: 35 },
+      8: { cellWidth: 18, halign: 'center' },
+      9: { cellWidth: 13, halign: 'center', fontStyle: 'bold' }
+    },
+    alternateRowStyles: { fillColor: [251, 251, 251] }
+  });
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text(`Pagina ${i} di ${pageCount} - Generato il ${new Date().toLocaleDateString('it-IT')}`, 14, doc.internal.pageSize.height - 10);
+  }
+  doc.save(`AppCenterStudio_Stato_Lavori_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+function generateArchivePDF() {
+  const search = (document.getElementById("searchBox")?.value || "").toLowerCase();
+  const type = document.getElementById("filterType")?.value || "";
+  let filtered = services.slice();
+  if (search) filtered = filtered.filter(s => s.client.toLowerCase().includes(search) || (s.videographer || '').toLowerCase().includes(search));
+  if (type) filtered = filtered.filter(s => s.type === type);
+  filtered.sort((a, b) => {
+    const orderA = TYPE_ORDER.indexOf(a.type);
+    const orderB = TYPE_ORDER.indexOf(b.type);
+    if (orderA !== orderB) return orderA - orderB;
+    return a.client.localeCompare(b.client, 'it');
+  });
+  if (filtered.length === 0) {
+    alert("Nessun cliente nell'archivio con i filtri attuali.");
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  doc.setFillColor(111, 99, 83);
+  doc.rect(0, 0, 297, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(22);
+  doc.text("AppCenterStudio Premium - Archivio Clienti", 14, 14);
+  doc.setFontSize(11);
+  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')} - ${filtered.length} servizi`, 14, 23);
+  const head = [['#', 'Cliente', 'Tipo', 'Data', 'Videografo', 'Video', 'Data Video', 'Ult. Step Anteprima', 'Data Anteprima', 'Ult. Step Servizio', 'Data Servizio', 'Stato']];
+  const body = filtered.map((s, idx) => {
+    const lastMainStep = getLastMainStepInfo(s);
+    const lastPreviewStep = getLastPreviewStepInfo(s);
+    const videoDate = getVideoReadyDate(s);
+    let totalDone = 0, totalSteps = 0;
+    if (isPreviewType(s.type)) {
+      totalDone = countDone(s.previewSteps || {}, STEPS_PREVIEW) + countDone(s.steps, STEPS);
+      totalSteps = STEPS_PREVIEW.length + STEPS.length;
+    } else if (isComboType(s.type)) {
+      const sections = getComboSections(s.type);
+      sections.forEach(secName => { totalDone += countDone(s.sections?.[secName] || {}, STEPS); totalSteps += STEPS.length; });
+    } else {
+      totalDone = countDone(s.steps, STEPS);
+      totalSteps = STEPS.length;
+    }
+    const pct = Math.round((totalDone / totalSteps) * 100);
+    const cleanMainLabel = lastMainStep ? (STEP_LABEL_CLEAN[lastMainStep.label] || lastMainStep.label) : '-';
+    const mainDate = lastMainStep?.date ? formatDate(lastMainStep.date) : '-';
+    const cleanPreviewLabel = lastPreviewStep ? (STEP_LABEL_CLEAN[lastPreviewStep.label] || lastPreviewStep.label) : '-';
+    const previewDate = lastPreviewStep?.date ? formatDate(lastPreviewStep.date) : '-';
+    return [
+      idx + 1, s.client, s.type,
+      s.date ? formatDate(s.date) : '-',
+      s.videographer || '-',
+      videoDate ? 'OK' : '-',
+      videoDate ? formatDate(videoDate) : '-',
+      cleanPreviewLabel, previewDate,
+      cleanMainLabel, mainDate,
+      `${pct}%`
+    ];
+  });
+  doc.autoTable({
+    startY: 35,
+    margin: { left: 6, right: 6, top: 35, bottom: 15 },
+    head: head,
+    body: body,
+    theme: 'grid',
+    headStyles: { fillColor: [111, 99, 83], textColor: 255, fontSize: 6, halign: 'center', fontStyle: 'bold' },
+    bodyStyles: { fontSize: 6, cellPadding: 1.8 },
+    columnStyles: {
+      0: { cellWidth: 7, halign: 'center' },
+      1: { cellWidth: 42 },
+      2: { cellWidth: 30, halign: 'center' },
+      3: { cellWidth: 17, halign: 'center' },
+      4: { cellWidth: 32 },
+      5: { cellWidth: 12, halign: 'center' },
+      6: { cellWidth: 17, halign: 'center' },
+      7: { cellWidth: 32 },
+      8: { cellWidth: 17, halign: 'center' },
+      9: { cellWidth: 32 },
+      10: { cellWidth: 17, halign: 'center' },
+      11: { cellWidth: 12, halign: 'center', fontStyle: 'bold' }
+    },
+    alternateRowStyles: { fillColor: [251, 251, 251] },
+    didParseCell: function(data) {
+      if (data.section === 'body' && data.column.index === 11) {
+        if (data.cell.raw === '100%') {
+          data.cell.styles.fillColor = [111, 99, 83];
+          data.cell.styles.textColor = [255, 255, 255];
+        }
+      }
+      if (data.section === 'body' && data.column.index === 5) {
+        if (data.cell.raw === 'OK') {
+          data.cell.styles.fillColor = [238, 238, 238];
+        }
+      }
+    }
+  });
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Nota: L'ultimo step del servizio principale è sempre mostrato separatamente dall'anteprima`, 14, doc.internal.pageSize.height - 15);
+    doc.text(`Pagina ${i} di ${pageCount}`, 14, doc.internal.pageSize.height - 8);
+  }
+  doc.save(`AppCenterStudio_Archivio_Clienti_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+
+/* ===== NUOVO SISTEMA: licenza + sync cloud ===== */
+async function checkLicenza(){
+ if(!studioCodice){showGate('Nessun codice studio. Torna alla home.');return false;}
  try{
-  const g=await fetch('https://api.github.com/repos/'+REPO+'/contents/tema.json',{headers:{Authorization:'Bearer '+tok}});
-  let sha=null;
-  if(g.ok){const j=await g.json();sha=j.sha;}
-  const b64=btoa(unescape(encodeURIComponent(JSON.stringify({tema:id},null,2))));
-  const body={message:'Tema: '+id,content:b64};
-  if(sha)body.sha=sha;
-  const r=await fetch('https://api.github.com/repos/'+REPO+'/contents/tema.json',{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok){const j=await r.json();alert('Errore GitHub: '+(j.message||r.status));return;}
-  alert('Tema "'+id+'" pubblicato: tra ~1 minuto TUTTE le app cambiano grafica.');
-  renderAdmin();
- }catch(e){alert('Errore: '+e.message);}
+  const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+  const s=(l.studi||[]).find(x=>x.codice===studioCodice);
+  const oggi=new Date().toISOString().slice(0,10);
+  if(!s||!s.attivo||s.scadenza<oggi){showGate('Licenza non attiva o scaduta.');return false;}
+  document.getElementById('licenseGate').style.display='none';
+  document.getElementById('app').style.display='block';
+  return true;
+ }catch(e){showGate('Impossibile verificare la licenza.');return false;}
+}
+function showGate(msg){
+ document.getElementById('licenseGate').style.display='flex';
+ document.getElementById('licenseMsg').textContent=msg;
+ document.getElementById('app').style.display='none';
 }
 
-async function renderAdmin(){
-  if(sessionStorage.getItem('admin')!=='1')return;
-  const box=document.getElementById('adminPanel');
-  box.classList.remove('hidden');
-  let righe='';
-  try{
-    const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-    const oggi=new Date().toISOString().slice(0,10);
-    righe=(l.studi||[]).map(s=>'<tr><td>'+s.codice+'</td><td>'+(s.nome||'')+'</td><td>'+fmtData(s.scadenza)+'</td><td>'+(s.attivo?'SI':'NO')+'</td><td>'+(s.scadenza<oggi?'SCADUTA':'valida')+'</td></tr>').join('');
-  }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
-  let temaAttuale='classico';
-  try{const t=await(await fetch('tema.json?t='+Date.now(),{cache:'no-store'})).json();temaAttuale=t.tema||'classico';}catch(e){}
-  box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
-   '<div class="riga"><b>CAMBIA STILE APP (tutti gli studi):</b> '+TEMI_ADMIN.map(t=>'<button class="tema-btn'+(t.id===temaAttuale?' attivo':'')+'" onclick="cambiaTema(\''+t.id+'\')">'+t.nome+'</button>').join(' ')+'</div>'+
-   '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
-   '<div class="riga">Gestione studi & offerte: <a href="admin-offerte.html" target="_blank">apri pannello studi</a></div>'+
-   '<div class="riga">Tema grafico stagionale (pagina dedicata): <a href="admin-tema.html" target="_blank">apri pannello tema</a></div>'+
-   '<div class="riga">Cervello Cloudflare (worker): <a href="'+WORKER+'/health" target="_blank">health check</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard worker</a></div>'+
-   '<div class="riga">Magazzino R2 (foto clienti): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard bucket</a></div>'+
-   '<div class="riga">Netlify (forms dati studio + identità): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
-   '<table><tr><th>Codice</th><th>Nome</th><th>Scadenza</th><th>Attivo</th><th>Stato</th></tr>'+righe+'</table>';
+async function syncCloud(){
+ if(!studioCodice)return;
+ const box=document.getElementById('syncStatus');
+ try{
+  const fd=new FormData();
+  fd.append('studio',studioCodice);fd.append('cliente','__db__');
+  fd.append('chiave','workflow');fd.append('data',JSON.stringify(services));
+  const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});
+  const j=await r.json();
+  if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+  else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
+
+async function loadCloud(){
+ if(!studioCodice)return;
+ const box=document.getElementById('syncStatus');
+ box.textContent='Sync cloud: carico...';
+ try{
+  const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=workflow&t='+Date.now(),{cache:'no-store'});
+  const cloud=await r.json();
+  if(Array.isArray(cloud)&&cloud.length){
+   const map={};services.forEach(x=>{map[x.id]=x;});
+   let add=0;
+   cloud.forEach(x=>{if(!x.id)x.id=Date.now()+Math.random();if(!map[x.id]){map[x.id]=x;add++;}});
+   services=Object.values(map).map(migrateService).filter(s=>s!==null);
+   localStorage.setItem('gl_services',JSON.stringify(services));
+   box.textContent='Sync: '+add+' aggiunti';
+   renderServices();renderTable();
+  }else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
 }
 
 function backupGlobale(){
-  const d={};
-  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
-  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
-  alert('Backup globale scaricato.');
+ const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
+ const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+ alert('Backup globale scaricato.');
 }
 function ripristinoGlobale(){
-  const input=document.createElement('input');input.type='file';input.accept='.json';
-  input.onchange=e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{try{
-      const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-      if(typeof d!=='object')throw new Error('File non valido.');
-      if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
-      Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-      alert('Backup ripristinato. La pagina si ricarica.');location.reload();
-    }catch(err){alert('Errore: '+err.message)}};
-    r.readAsText(f);
-  };
-  input.click();
+ const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+ inp.onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{try{
+   const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
+   if(typeof d!=='object')throw new Error('File non valido.');
+   if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
+   Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
+   alert('Backup ripristinato. La pagina si ricarica.');location.reload();
+  }catch(err){alert('Errore: '+err.message);}};
+  r.readAsText(f);
+ };
+ inp.click();
 }
 
-init();
+/* ===== AVVIO ===== */
+services = services.map(migrateService).filter(s => s !== null);
+save();
+renderServices();
+(async()=>{
+ const ok=await checkLicenza();
+ if(ok){loadCloud().then(()=>{renderServices();renderTable();});}
+})();
 </script>
 </body>
 </html>
