@@ -7,6 +7,14 @@
       "descrizione": "Primo mese gratis poi abbonamento annuale",
       "attiva": true,
       "creata": "2026-08-17"
+    },
+    {
+      "codice": "st-001",
+      "prezzo": 150,
+      "durata": 12,
+      "descrizione": "Primo mese gratuito",
+      "attiva": true,
+      "creata": "2026-08-17"
     }
   ]
 }
