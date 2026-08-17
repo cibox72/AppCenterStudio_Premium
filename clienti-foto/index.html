@@ -44,9 +44,7 @@ input,select,textarea { width:100%; padding:10px; border:1px solid #e0e0e0; marg
 input:focus,select:focus,textarea:focus { outline:2px solid #111; }
 label { display:block; margin-top:10px; font-size:14px; font-weight:bold; }
 .badge { display:inline-block; padding:4px 10px; background:#111; color:#fff; border-radius:10px; font-size:12px; margin:5px; }
-.badge.ok { background:#2e7d32; } .badge.warn { background:#ef6c00; }
-details { margin-top:15px; border:1px solid #e0e0e0; padding:10px; background:rgba(249,249,249,0.8); backdrop-filter:blur(4px); border-radius:8px; }
-summary { cursor:pointer; font-weight:bold; }
+.badge.ok { background:#2e7d32; }
 .client-row {
   border:1px solid #e0e0e0; padding:12px; margin:8px 0;
   background:rgba(250,250,250,0.9);
@@ -65,8 +63,8 @@ summary { cursor:pointer; font-weight:bold; }
 <div class="topbar">
   <button class="btn btn-secondary" onclick="history.back()">← Indietro</button>
   <button class="btn btn-secondary" onclick="location.href='../'">Home</button>
-  <button class="btn btn-secondary" onclick="backupGlobale()">Backup locale</button>
-  <button class="btn btn-secondary" onclick="ripristinoGlobale()">Ripristino locale</button>
+  <button class="btn btn-secondary" onclick="backupGlobale()">Backup globale</button>
+  <button class="btn btn-secondary" onclick="ripristinoGlobale()">Ripristino globale</button>
   <span id="licenzaStatus" style="margin-left:auto;align-self:center;font-size:13px;"></span>
 </div>
 
@@ -80,13 +78,6 @@ summary { cursor:pointer; font-weight:bold; }
 
 <div class="container hidden" id="adminView">
   <h1>03 Clienti & Foto</h1>
-
-  <div class="card">
-    <h2>Come funziona</h2>
-    <p style="font-size:13px;color:#666;line-height:1.7">
-    Qui aggiungi i clienti e carichi le foto. Poi apri <b>04 Selezione per Album</b> per creare il link da casa (valido 7 giorni) o registrare la selezione in studio. Le foto non scelte si eliminano da sole; le ritoccate restano in gallery 6 mesi con proroga +6 mesi.
-    </p>
-  </div>
 
   <div class="card">
     <h2>Identità studio</h2>
@@ -114,10 +105,7 @@ summary { cursor:pointer; font-weight:bold; }
     <input type="file" id="cfCartella" webkitdirectory directory multiple accept="image/*">
     <div id="cfProgress" class="status"></div>
     <button class="btn" onclick="caricaFoto()">Carica nel magazzino</button>
-    <details>
-      <summary>Come funziona il caricamento</summary>
-      <p style="font-size:13px;color:#666">Le foto vengono inviate al magazzino Cloudflare del fornitore. Sono visibili solo a chi ha il link selezione (o allo studio). Il magazzino viene pulito automaticamente dopo la selezione o dopo 6 mesi di inattività.</p>
-    </details>
+    <p style="font-size:12px;color:#666;margin-top:10px">Le foto vengono salvate temporaneamente e cancellate automaticamente dopo un determinato periodo.</p>
   </div>
 
   <div class="card">
@@ -128,6 +116,7 @@ summary { cursor:pointer; font-weight:bold; }
 
 <script>
 const WORKER='https://acs-api.mairaluigi.workers.dev';
+const GLOBAL_KEYS=['clientiFotoData','studioIdent','appcenter_db_v1','gl_services','selezioniRicevute','ordiniRicevuti','negozioConfig','agendaData','emailArchivio'];
 
 let studioCodice=null;
 let clientiFotoData=JSON.parse(localStorage.getItem('clientiFotoData')||'{"clients":[]}');
@@ -136,7 +125,6 @@ let MANIFESTI={};
 
 function todayStr(){return new Date().toISOString().slice(0,10);}
 function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
-
 function $(id){return document.getElementById(id);}
 function show(id){$(id).classList.remove('hidden');}
 function hide(id){$(id).classList.add('hidden');}
@@ -148,19 +136,11 @@ async function checkLicenza(){
  try{
   const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
   const s=(l.studi||[]).find(x=>x.codice===studioCodice);
-  if(!s||!s.attivo||s.scadenza<todayStr()){
-   show('licenzaGate');
-   $('licenzaStatus').textContent='Licenza non valida';
-   return false;
-  }
-  hide('licenzaGate');
-  show('adminView');
+  if(!s||!s.attivo||s.scadenza<todayStr()){show('licenzaGate');$('licenzaStatus').textContent='Licenza non valida';return false;}
+  hide('licenzaGate');show('adminView');
   $('licenzaStatus').textContent='Studio: '+(s.nome||s.codice);
   return true;
- }catch(e){
-  show('licenzaGate');
-  return false;
- }
+ }catch(e){show('licenzaGate');return false;}
 }
 
 function refreshStatus(){renderClienti();renderArchivio();renderLogoPreview();caricaIdentitaUI();}
@@ -222,6 +202,15 @@ async function caricaFoto(){
  await caricaStato();
 }
 
+function linkGallery(codice){return new URL('../gallery/?g='+encodeURIComponent(studioCodice+'/'+codice),location.href).href}
+function copiaLink(codice){
+ const man=MANIFESTI[codice]||{};
+ if(!man.gallery||!man.gallery.length)return alert('Nessuna ritoccata caricata: la gallery del cliente non e\' ancora pronta. Usa "Carica ritoccate" in Selezione per Album.');
+ const url=linkGallery(codice);
+ if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>alert('Link gallery copiato: incollalo nel WhatsApp del cliente.'));
+ else alert(url);
+}
+
 function renderArchivio(){
  const box=$('archivioLista');
  if(!clientiFotoData.clients.length){box.innerHTML='<p class="status">Nessun cliente in archivio.</p>';return;}
@@ -230,8 +219,9 @@ function renderArchivio(){
   return '<div class="client-row"><h3>'+c.nome+' '+c.cognome+' <span class="badge">'+c.codice+'</span></h3>'+
    '<div style="margin:6px 0">'+statoHtml(man)+'</div>'+
    '<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">'+
-   '<button class="btn" onclick="location.href=\'../selezione-album/?studio='+encodeURIComponent(studioCodice)+'\'">Apri Selezione per Album</button>'+
-   '<button class="btn btn-danger" onclick="eliminaCliente(\''+c.codice+'\')">Elimina cliente</button>'+
+   '<button class="btn" onclick="copiaLink(\''+c.codice+'\')">Link gallery cliente</button>'+
+   '<button class="btn btn-secondary" onclick="location.href=\'../selezione-album/?studio='+encodeURIComponent(studioCodice)+'\'">Apri Selezione per Album</button>'+
+   '<button class="btn btn-danger" onclick="eliminaCliente(\''+c.codice+'\')">Elimina</button>'+
    '</div></div>';
  }).join('');
 }
@@ -240,6 +230,7 @@ function statoHtml(man){
  const chips=[];
  if(man.basse&&man.basse.length)chips.push('<span class="chip">'+man.basse.length+' foto nel magazzino</span>');
  else chips.push('<span class="chip">magazzino vuoto</span>');
+ if(man.gallery&&man.gallery.length)chips.push('<span class="chip">'+man.gallery.length+' ritoccate in gallery</span>');
  if(man.selezione){
   const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
   chips.push('<span class="chip">Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' · '+n+' foto':'')+'</span>');
@@ -249,10 +240,7 @@ function statoHtml(man){
 }
 
 function eliminaCliente(codice){
- const man=MANIFESTI[codice]||{};
- const msg='Eliminare il cliente '+codice+' dall\'archivio locale?';
- const msgExtra=(man.basse&&man.basse.length)?'\n\nAttenzione: nel magazzino restano '+man.basse.length+' foto. Per eliminarle contatta il fornitore.':'\n\nIl magazzino è vuoto, nessun problema.';
- if(!confirm(msg+msgExtra))return;
+ if(!confirm('Eliminare il cliente '+codice+' dall\'archivio locale?'))return;
  clientiFotoData.clients=clientiFotoData.clients.filter(c=>c.codice!==codice);
  localStorage.setItem('clientiFotoData',JSON.stringify(clientiFotoData));
  delete MANIFESTI[codice];
@@ -299,17 +287,15 @@ function caricaIdentitaUI(){
 }
 
 function backupGlobale(){
- const dump={
-  timestamp:new Date().toISOString(),
-  clientiFotoData:clientiFotoData,
-  studioIdent:studioIdent
- };
+ const dump={timestamp:new Date().toISOString()};
+ GLOBAL_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v)dump[k]=v;});
  const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
  const a=document.createElement('a');
  a.href=URL.createObjectURL(blob);
- a.download='backup_clienti-foto_'+todayStr()+'.json';
+ a.download='AppCenterStudio_BACKUP_'+todayStr()+'.json';
  a.click();
  URL.revokeObjectURL(a.href);
+ alert('Backup globale scaricato: contiene tutti i dati di tutte le app.');
 }
 
 function ripristinoGlobale(){
@@ -320,10 +306,12 @@ function ripristinoGlobale(){
   r.onload=ev=>{
    try{
     const d=JSON.parse(ev.target.result);
-    if(d.clientiFotoData){clientiFotoData=d.clientiFotoData;localStorage.setItem('clientiFotoData',JSON.stringify(clientiFotoData));}
-    if(d.studioIdent){studioIdent=d.studioIdent;localStorage.setItem('studioIdent',JSON.stringify(studioIdent));}
-    refreshStatus();
-    alert('Ripristino completato.');
+    let n=0;
+    Object.keys(d).forEach(k=>{if(k!=='timestamp'){localStorage.setItem(k,d[k]);n++;}});
+    clientiFotoData=JSON.parse(localStorage.getItem('clientiFotoData')||'{"clients":[]}');
+    studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+    refreshStatus();caricaStato();
+    alert('Ripristino completato: '+n+' archivi ripristinati.');
    }catch(err){alert('File non valido: '+err.message);}
   };
   r.readAsText(e.target.files[0]);
