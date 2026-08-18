@@ -32,6 +32,8 @@ h1.big{font-family:Georgia,serif;font-size:54px;font-weight:400;letter-spacing:.
 .btn.danger:hover{background:#5e1f1f}
 .btn.wa{background:#25D366;color:#fff;border:none}
 .btn.wa:hover{background:#128C7E}
+.btn.primary-big{background:var(--taupe-scuro);color:#fff;font-size:15px;padding:14px 32px;box-shadow:0 4px 12px rgba(111,99,83,.3)}
+.btn.primary-big:hover{background:var(--taupe)}
 select,input,textarea{width:100%;padding:10px;border:1px solid var(--bordo);margin:5px 0;font-family:inherit;border-radius:10px;background:#fff;color:var(--testo)}
 select:focus,input:focus{outline:2px solid var(--taupe)}
 label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
@@ -39,10 +41,10 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
 .g-row{background:var(--carta);border:1px solid var(--bordo);padding:14px 18px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
 .g-row .code{font-family:monospace;color:var(--taupe-scuro);font-weight:700;background:var(--beige);padding:2px 8px;border-radius:6px;font-size:12px}
 .status{font-size:12px;color:var(--soft);margin:6px 0}
-.warn{background:var(--beige);border:1px solid #d3c3a2;border-radius:10px;padding:10px 14px;font-size:13px;color:#6b4d1a;margin:10px 0}
-.ok{background:#eaf3e4;border:1px solid #bcd3a8;border-radius:10px;padding:10px 14px;font-size:13px;color:#3f6b2e;margin:10px 0}
 .rowbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .chip{display:inline-block;background:var(--taupe);color:#fff;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;margin:2px}
+.chip.warn{background:#8c2f2f}
+.chip.ok{background:#4a7c3a}
 @media(max-width:800px){h1.big{font-size:36px;letter-spacing:.14em}}
 </style>
 </head>
@@ -67,10 +69,10 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
   <div class="card">
     <h2>Come funziona</h2>
     <p class="hint">
-    1. <b>Carica foto</b>: manda nel magazzino le foto basse risoluzioni del cliente.<br>
-    2. <b>Selezione in studio</b>: falla come hai sempre fatto davanti al computer; poi premi "Selezione in studio" per registrarla.<br>
-    3. <b>Link da casa</b>: solo per chi non può venire; il link vale 7 giorni; le foto non scelte si eliminano da sole alla selezione.<br>
-    4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi, poi si eliminano da sole (con "Gallery +6 mesi" allunghi quando serve).<br>
+    1. <b>Carica foto</b> dal "Clienti & Foto" (app 03).<br>
+    2. Clicca <b>Apri selezione Album</b> (pulsante grande) per lavorare sulle foto di quel cliente.<br>
+    3. <b>Link da casa</b>: per chi non può venire. Vale 7 giorni. Poi premi <b>Invia su WhatsApp</b> per mandarlo direttamente al cliente.<br>
+    4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi.<br>
     5. <b>Sbagliato qualcosa?</b> Usa i pulsanti rossi "X selezione" o "X link casa" per annullare.
     </p>
   </div>
@@ -84,187 +86,91 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
 
 <script>
 const WORKER='https://acs-api.mairaluigi.workers.dev';
-const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
 if(studioCodice)sessionStorage.setItem('studio',studioCodice);
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
 let clienti=JSON.parse(localStorage.getItem('appcenter_clienti')||'[]');
 let manifesti={};
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const today=()=>new Date().toISOString().slice(0,10);
 const fmtData=d=>{if(!d)return'';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);};
 
-async function refreshManifest(codice){
- try{
-  const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
-  manifesti[codice]=await r.json();
- }catch(e){manifesti[codice]={};}
-}
+async function refreshManifest(codice){try{const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});manifesti[codice]=await r.json();}catch(e){manifesti[codice]={};}}
 
 function statoHtml(man){
  const chips=[];
- if(man.selezione){
-  const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
-  chips.push('Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' · '+n+' foto':''));
- }else chips.push('Selezione: non ancora fatta');
- if(man.scadenza_link)chips.push(man.scadenza_link>=today()?'Link casa attivo fino al '+fmtData(man.scadenza_link):'Link casa scaduto il '+fmtData(man.scadenza_link));
- if(man.basse&&man.basse.length)chips.push(man.basse.length+' foto nel magazzino');
- if(man.folders){const k=Object.keys(man.folders);if(k.length)chips.push('Cartelle: '+k.map(x=>x+' ('+man.folders[x]+')').join(', '));}
- if(man.scadenza_gallery)chips.push('Gallery fino al '+fmtData(man.scadenza_gallery));
- return chips.map(x=>'<span class="chip">'+x+'</span>').join(' ');
+ if(man.selezione){const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;chips.push('<span class="chip ok">✓ Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' · '+n+' foto':'')+'</span>');}
+ else chips.push('<span class="chip warn">Selezione: non ancora fatta</span>');
+ if(man.scadenza_link){chips.push(man.scadenza_link>=today()?'<span class="chip ok">Link casa attivo fino al '+fmtData(man.scadenza_link)+'</span>':'<span class="chip warn">Link casa scaduto il '+fmtData(man.scadenza_link)+'</span>');}
+ if(man.basse&&man.basse.length)chips.push('<span class="chip">'+man.basse.length+' foto nel magazzino</span>');
+ if(man.folders){const k=Object.keys(man.folders);if(k.length)chips.push('<span class="chip">Cartelle: '+k.map(x=>x+' ('+man.folders[x]+')').join(', ')+'</span>');}
+ if(man.scadenza_gallery)chips.push('<span class="chip">Gallery fino al '+fmtData(man.scadenza_gallery)+'</span>');
+ return chips.join(' ');
 }
 
-async function resetMan(codice,cosa){
- const msg=cosa==='selezione'?'Annullare la selezione registrata per questo cliente?':'Annullare il link da casa per questo cliente?';
- if(!confirm(msg))return;
- try{
-  const r=await(await fetch(WORKER+'/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,cosa:cosa})})).json();
-  if(r.error)return alert('Errore: '+r.error);
-  await refreshManifest(codice);
-  render();
-  alert('Annullato.');
- }catch(e){alert('Errore: '+e.message);}
-}
+async function resetMan(codice,cosa){const msg=cosa==='selezione'?'Annullare la selezione registrata per questo cliente?':'Annullare il link da casa per questo cliente?';if(!confirm(msg))return;try{const r=await(await fetch(WORKER+'/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,cosa:cosa})})).json();if(r.error)return alert('Errore: '+r.error);await refreshManifest(codice);render();alert('Annullato.');}catch(e){alert('Errore: '+e.message);}}
 
-function scegliFile(azione,codice){
- const inp=document.createElement('input');
- inp.type='file';inp.multiple=true;inp.accept='image/*';
- inp.onchange=async e=>{
-  const files=[...e.target.files];if(!files.length)return;
-  const fd=new FormData();
-  fd.append('studio',studioCodice);fd.append('cliente',codice);
-  files.forEach(f=>fd.append('file',f));
-  fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:'varie'}))));
-  const url=azione==='upload'?WORKER+'/upload':WORKER+'/ritoccate';
-  alert('Caricamento di '+files.length+' file in corso...');
-  try{
-   const r=await(await fetch(url,{method:'POST',body:fd})).json();
-   if(r.error)return alert('Errore caricamento: '+r.error);
-   alert('Caricati '+r.caricate+' file.');
-   await refreshManifest(codice);
-   render();
-  }catch(err){alert('Errore caricamento: '+err.message);}
- };
- inp.click();
-}
+function scegliFile(azione,codice){const inp=document.createElement('input');inp.type='file';inp.multiple=true;inp.accept='image/*';inp.onchange=async e=>{const files=[...e.target.files];if(!files.length)return;const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);files.forEach(f=>fd.append('file',f));fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:'varie'}))));const url=azione==='upload'?WORKER+'/upload':WORKER+'/ritoccate';alert('Caricamento di '+files.length+' file in corso...');try{const r=await(await fetch(url,{method:'POST',body:fd})).json();if(r.error)return alert('Errore caricamento: '+r.error);alert('Caricati '+r.caricate+' file.');await refreshManifest(codice);render();}catch(err){alert('Errore caricamento: '+err.message);}};inp.click();}
 
 async function creaLink(codice){
- const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
- const cont=JSON.parse(localStorage.getItem('studioContatti')||'{}');
- const fd=new FormData();
- fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','7');
- fd.append('nome_studio',ident.nome||'');
- fd.append('whatsapp',ident.telefono||cont.whatsapp||'');
- fd.append('messaggio','Tocca una foto per aprirla, usa il cuore per sceglierla.');
- try{
-  const r=await(await fetch(WORKER+'/link',{method:'POST',body:fd})).json();
-  if(r.error)return alert('Errore link: '+r.error);
-  const link=location.origin+'/selezione-album/?s='+encodeURIComponent(studioCodice+'/'+codice);
-  navigator.clipboard.writeText(link).catch(()=>{});
-  await refreshManifest(codice);
-  render();
-  alert('Link creato, valido fino al '+fmtData(r.scadenza_link)+'.\nLink copiato: incollalo nel WhatsApp del cliente.');
- }catch(e){alert('Errore link: '+e.message);}
+ const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');const cont=JSON.parse(localStorage.getItem('studioContatti')||'{}');
+ const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','7');fd.append('nome_studio',ident.nome||'');fd.append('whatsapp',ident.telefono||cont.whatsapp||'');fd.append('messaggio','Tocca una foto per aprirla, usa il cuore per sceglierla.');
+ try{const r=await(await fetch(WORKER+'/link',{method:'POST',body:fd})).json();if(r.error)return alert('Errore link: '+r.error);await refreshManifest(codice);render();alert('Link creato, valido fino al '+fmtData(r.scadenza_link)+'.\n\nOra premi "Invia su WhatsApp" per mandarlo al cliente.');}catch(e){alert('Errore link: '+e.message);}
 }
 
-async function inviaLinkWhatsApp(codice){
+/* ===== CORREZIONE PROBLEMA 7: Invia WhatsApp diretto ===== */
+function inviaLinkWhatsApp(codice){
  const man=manifesti[codice]||{};
- if(!man.scadenza_link||man.scadenza_link<today()){
-  if(!confirm('Link non attivo o scaduto. Creare un nuovo link?'))return;
-  await creaLink(codice);
-  return;
- }
+ if(!man.scadenza_link||man.scadenza_link<today()){if(!confirm('Link non attivo o scaduto. Creare un nuovo link?'))return;creaLink(codice);return;}
  const link=location.origin+'/selezione-album/?s='+encodeURIComponent(studioCodice+'/'+codice);
  const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
- const num=ident.telefono||'';
- const msg='Ciao! Ecco il link per selezionare le tue foto (valido fino al '+fmtData(man.scadenza_link)+'):\n'+link;
- if(num){
-  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
- }else{
-  navigator.clipboard.writeText(msg).catch(()=>{});
-  alert('Numero WhatsApp non configurato. Messaggio copiato:\n\n'+msg);
- }
+ const cliente=clienti.find(c=>c.codice===codice);
+ const numCliente='';
+ const nomeStudio=ident.nome||'lo studio';
+ const msg='Ciao'+(cliente?' '+(cliente.nome||''):'')+'! Ecco il link per selezionare le tue foto (valido fino al '+fmtData(man.scadenza_link)+'):\n\n'+link+'\n\nTocca una foto per aprirla, usa il cuore per sceglierla.\n\n— '+nomeStudio;
+ const waNumber=ident.telefono||'';
+ if(waNumber){window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');}
+ else{navigator.clipboard.writeText(msg).catch(()=>{});alert('Numero WhatsApp dello studio non configurato in benvenuto.\n\nMessaggio copiato negli appunti. Incollalo nel WhatsApp del cliente.');}
 }
 
-async function regStudio(codice){
- if(!confirm('Registrare che la selezione di questo cliente è stata fatta in studio?'))return;
- try{
-  const r=await(await fetch(WORKER+'/registra-studio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})})).json();
-  if(r.error)return alert('Errore: '+r.error);
-  await refreshManifest(codice);
-  render();
-  alert('Selezione in studio registrata.');
- }catch(e){alert('Errore: '+e.message);}
-}
+async function regStudio(codice){if(!confirm('Registrare che la selezione di questo cliente è stata fatta in studio?'))return;try{const r=await(await fetch(WORKER+'/registra-studio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})})).json();if(r.error)return alert('Errore: '+r.error);await refreshManifest(codice);render();alert('Selezione in studio registrata.');}catch(e){alert('Errore: '+e.message);}}
 
-async function proroga(codice){
- if(!confirm('Allungare la gallery di questo cliente di 6 mesi?'))return;
- try{
-  const r=await(await fetch(WORKER+'/proroga',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})})).json();
-  if(r.error)return alert('Errore: '+r.error);
-  await refreshManifest(codice);
-  render();
-  alert('Gallery allungata fino al '+fmtData(r.scadenza_gallery)+'.');
- }catch(e){alert('Errore: '+e.message);}
-}
+async function proroga(codice){if(!confirm('Allungare la gallery di questo cliente di 6 mesi?'))return;try{const r=await(await fetch(WORKER+'/proroga',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})})).json();if(r.error)return alert('Errore: '+r.error);await refreshManifest(codice);render();alert('Gallery allungata fino al '+fmtData(r.scadenza_gallery)+'.');}catch(e){alert('Errore: '+e.message);}}
 
-function gruText(codice){
- const man=manifesti[codice]||{};
- const photos=(man.selezione&&Array.isArray(man.selezione.photos))?man.selezione.photos:[];
- if(!photos.length)return alert('Nessuna selezione con elenco foto per questo cliente.');
- const blob=new Blob([photos.join('\n')],{type:'text/plain'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);
- a.download='GRU_SELEZIONE_'+codice+'.txt';a.click();
- setTimeout(()=>URL.revokeObjectURL(a.href),2000);
-}
+function gruText(codice){const man=manifesti[codice]||{};const photos=(man.selezione&&Array.isArray(man.selezione.photos))?man.selezione.photos:[];if(!photos.length)return alert('Nessuna selezione con elenco foto per questo cliente.');const blob=new Blob([photos.join('\n')],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GRU_SELEZIONE_'+codice+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);}
 
-function pdfSel(codice){
- const man=manifesti[codice]||{};
- const sel=man.selezione||{};
- const photos=Array.isArray(sel.photos)?sel.photos:[];
- const cli=clienti.find(c=>c.codice===codice);
- try{
-  const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');
-  doc.setFillColor(17,17,17);doc.rect(0,0,210,35,'F');
-  doc.setTextColor(255);doc.setFontSize(18);doc.setFont('helvetica','bold');
-  doc.text('Selezione Album - '+((cli?cli.nome+' '+cli.cognome:'Cliente')),105,15,{align:'center'});
-  doc.setFontSize(10);doc.setFont('helvetica','normal');
-  doc.text(codice+' - '+(sel.metodo==='studio'?'selezione in studio':'selezione tramite link')+' - '+fmtData(sel.data||''),105,24,{align:'center'});
-  doc.setTextColor(17);
-  let y=50;
-  if(photos.length){photos.forEach((p,i)=>{doc.text((i+1)+') '+p,15,y);y+=7;if(y>280){doc.addPage();y=15;}});}
-  else{doc.text('Elenco foto non disponibile (selezione registrata in studio).',15,y);}
-  doc.save('SELEZIONE_'+codice+'.pdf');
- }catch(e){alert('Errore PDF: '+e.message);}
-}
+function pdfSel(codice){const man=manifesti[codice]||{};const sel=man.selezione||{};const photos=Array.isArray(sel.photos)?sel.photos:[];const cli=clienti.find(c=>c.codice===codice);try{const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');doc.setFillColor(17,17,17);doc.rect(0,0,210,35,'F');doc.setTextColor(255);doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('Selezione Album - '+((cli?cli.nome+' '+cli.cognome:'Cliente')),105,15,{align:'center'});doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text(codice+' - '+(sel.metodo==='studio'?'selezione in studio':'selezione tramite link')+' - '+fmtData(sel.data||''),105,24,{align:'center'});doc.setTextColor(17);let y=50;if(photos.length){photos.forEach((p,i)=>{doc.text((i+1)+') '+p,15,y);y+=7;if(y>280){doc.addPage();y=15;}});}else{doc.text('Elenco foto non disponibile.',15,y);}doc.save('SELEZIONE_'+codice+'.pdf');}catch(e){alert('Errore PDF: '+e.message);}}
 
 function render(){
  const box=document.getElementById('listaClienti');
  if(!clienti.length){box.innerHTML='<p class="hint">Nessun cliente. Aggiungili nell\'app Clienti & Foto.</p>';return;}
  box.innerHTML=clienti.slice().reverse().map(c=>{
   const man=manifesti[c.codice]||{};
-  return '<div class="g-row"><div><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span>'+
-   '<div class="status">'+statoHtml(man)+'</div>'+
-   '</div><div class="rowbtns">'+
+  return '<div class="g-row"><div><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span><div class="status">'+statoHtml(man)+'</div></div><div class="rowbtns" style="flex-direction:column;align-items:stretch;min-width:280px">'+
+   '<button class="btn primary-big" onclick="apriSelezioneCliente(\''+c.codice+'\')">📸 Apri selezione Album</button>'+
    '<button class="btn secondary" onclick="scegliFile(\'upload\',\''+c.codice+'\')">Carica foto</button>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
    '<button class="btn" onclick="creaLink(\''+c.codice+'\')">Link da casa</button>'+
-   '<button class="btn wa" onclick="inviaLinkWhatsApp(\''+c.codice+'\')">Invia su WhatsApp</button>'+
+   '<button class="btn wa" onclick="inviaLinkWhatsApp(\''+c.codice+'\')">📱 Invia su WhatsApp</button>'+
+   '</div>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
    '<button class="btn secondary" onclick="regStudio(\''+c.codice+'\')">Selezione in studio</button>'+
    '<button class="btn secondary" onclick="scegliFile(\'ritoccate\',\''+c.codice+'\')">Carica ritoccate</button>'+
    '<button class="btn secondary" onclick="proroga(\''+c.codice+'\')">Gallery +6 mesi</button>'+
+   '</div>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap">'+
    '<button class="btn secondary" onclick="gruText(\''+c.codice+'\')">Text Gru</button>'+
    '<button class="btn secondary" onclick="pdfSel(\''+c.codice+'\')">PDF stampa</button>'+
    '<button class="btn danger" onclick="resetMan(\''+c.codice+'\',\'selezione\')">X selezione</button>'+
    '<button class="btn danger" onclick="resetMan(\''+c.codice+'\',\'link\')">X link casa</button>'+
+   '</div>'+
    '</div></div>';
  }).join('');
 }
 
-(async()=>{
- for(const c of clienti)await refreshManifest(c.codice);
- render();
-})();
+function apriSelezioneCliente(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice),'_blank');}
+
+(async()=>{for(const c of clienti)await refreshManifest(c.codice);render();})();
 </script>
 </body>
 </html>
