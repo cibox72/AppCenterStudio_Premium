@@ -2,10 +2,11 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gallery - AppCenterStudio Premium</title>
 <script src="../tema.js"></script>
 <style>
+:root{--crema:#f4efe7;--carta:#fbf9f5;--taupe:#a3937d;--taupe-scuro:#6f6353;--beige:#e9dfcd;--testo:#4a4237;--soft:#9b8f7d;--bordo:#e5dccb}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gradient(180deg,#faf9f7 0%,#ece7de 100%);background-attachment:fixed;min-height:100vh;color:#111}
 .g-head{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid #e2ddd3;padding:22px 16px;text-align:center}
@@ -13,6 +14,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:linear-gr
 .g-head h1{font-family:Georgia,serif;font-size:20px}
 .g-head p{font-size:13px;color:#8a8578;margin-top:4px}
 .g-badge{display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:999px;font-size:12px;font-weight:600;margin-top:10px}
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);border-bottom:1px solid #e2ddd3}
+.tab-btn{padding:8px 18px;border:1px solid var(--taupe);background:#fff;border-radius:999px;cursor:pointer;font-family:Georgia,serif;font-size:13px;color:var(--taupe-scuro);letter-spacing:.05em}
+.tab-btn.active{background:var(--taupe);color:#fff;border-color:var(--taupe)}
 .count-bar{position:sticky;top:0;z-index:6;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid #e2ddd3;text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:14px;max-width:1100px;margin:0 auto}
 .ph{border-radius:10px;overflow:hidden;border:1px solid #e2ddd3;background:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(40,30,10,.05)}
@@ -46,7 +50,7 @@ function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3
 function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
 function errPage(msg){document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif">Gallery</h2><p style="color:#8a8578">'+esc(msg)+'</p></div></div>'}
 
-let PH=[],LB=0,MAN=null,G_STUDIO='',G_CLIENTE='';
+let MAN=null,PH=[],LB=0,CUR='Tutte',G_STUDIO='',G_CLIENTE='';
 
 window.addEventListener('DOMContentLoaded',()=>{
  const g=param('g')||param('s');
@@ -61,16 +65,16 @@ async function avvia(){
  try{MAN=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(G_STUDIO)+'&cliente='+encodeURIComponent(G_CLIENTE)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MAN=null;}
  if(!MAN||!MAN.gallery||!MAN.gallery.length)return errPage('La gallery non e\' ancora pronta. Contatta lo studio.');
  if(MAN.scadenza_gallery&&MAN.scadenza_gallery<todayStr())return errPage('Questa gallery e\' scaduta. Contatta lo studio per una proroga.');
- PH=MAN.gallery;
- document.title='Gallery'+(MAN.nome_studio?' - '+MAN.nome_studio:'');
  const logo=MAN.logo?R2_BASE+'/'+G_STUDIO+'/'+G_CLIENTE+'/'+MAN.logo:'';
+ document.title='Gallery'+(MAN.nome_studio?' - '+MAN.nome_studio:'');
  document.getElementById('root').innerHTML=`
  <div class="g-head">${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'"><br>`:''}
   <h1>${esc(MAN.nome_studio||'Studio Fotografico')}</h1>
   <p>Le vostre foto pronte da sfogliare</p>
   ${MAN.scadenza_gallery?`<span class="g-badge">Disponibile fino al ${esc(fmtData(MAN.scadenza_gallery))}</span>`:''}
  </div>
- <div class="count-bar">${PH.length} foto nella vostra gallery</div>
+ <div class="tabs" id="tabs"></div>
+ <div class="count-bar" id="countBar"></div>
  <div class="grid" id="grid"></div>
  <div class="lb" id="lb">
   <div class="lb-top">
@@ -84,20 +88,44 @@ async function avvia(){
   </div>
   <div class="lb-bottom" id="lbName"></div>
  </div>`;
- draw();setupLb();
+ renderTabs();draw();setupLb();
 }
-function photoUrl(i){return R2_BASE+'/'+G_STUDIO+'/'+G_CLIENTE+'/gallery/'+encodeURIComponent(PH[i])}
+
+function folders(){
+ const gbf=MAN.galleryByFolder||{};
+ const keys=Object.keys(gbf).filter(k=>gbf[k]&&gbf[k].length);
+ return keys.length?keys:null;
+}
+function currentList(){
+ const f=folders();
+ if(!f)return MAN.gallery;
+ if(CUR==='Tutte')return MAN.gallery;
+ return (MAN.galleryByFolder||{})[CUR]||[];
+}
+function renderTabs(){
+ const f=folders();
+ const box=document.getElementById('tabs');
+ if(!f){box.style.display='none';return;}
+ box.style.display='flex';
+ const all=['Tutte'].concat(f);
+ box.innerHTML=all.map(k=>`<button class="tab-btn ${k===CUR?'active':''}" onclick="setFolder('${esc(k)}')">${esc(k)}</button>`).join('');
+}
+function setFolder(k){CUR=k;LB=0;renderTabs();draw();}
+
+function photoUrl(name){return R2_BASE+'/'+G_STUDIO+'/'+G_CLIENTE+'/gallery/'+encodeURIComponent(name)}
 function draw(){
+ PH=currentList();
+ document.getElementById('countBar').textContent=PH.length+' foto'+(CUR!=='Tutte'?' in "'+CUR+'"':' nella vostra gallery');
  document.getElementById('grid').innerHTML=PH.map((p,i)=>`
   <div class="ph" onclick="openLb(${i})">
-   <img src="${photoUrl(i)}" loading="lazy" alt="">
+   <img src="${photoUrl(p)}" loading="lazy" alt="">
    <div class="fname">${esc(p)}</div>
   </div>`).join('');
 }
 function openLb(i){LB=i;renderLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
 function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
 function renderLb(){
- document.getElementById('lbImg').src=photoUrl(LB);
+ document.getElementById('lbImg').src=photoUrl(PH[LB]);
  document.getElementById('lbName').textContent=PH[LB];
  document.getElementById('lbCount').textContent=(LB+1)+' / '+PH.length;
 }
