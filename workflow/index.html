@@ -138,7 +138,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .admin-add-step{background:#fff;color:var(--taupe-scuro);border:1px dashed var(--taupe);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;margin-top:6px}
 .admin-add-step:hover{background:var(--taupe);color:#fff;border-style:solid}
 .type-hint{font-size:11px;color:var(--soft);padding:6px 10px;background:rgba(255,255,255,.5);border-radius:6px;margin-top:4px;font-style:italic}
-.warn{background:#fdf6e8;border:1px solid #e8d5a8;border-radius:8px;padding:8px 12px;color:#6b4d1a;font-size:12px;margin:6px 0}
 @media(max-width:600px){.logo{font-size:1.3em}.actions button{padding:8px 12px;font-size:.85em}.modal-content{margin:10px}.step-fields{flex-direction:column}.step-fields .field-group{min-width:100%}}
 </style>
 </head>
@@ -264,7 +263,7 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
       <button class="modal-close" onclick="closeModal('adminConfigModal')">×</button>
     </div>
     <div class="modal-body">
-      <p style="margin-bottom:14px;color:var(--soft);font-size:13px">Lo studio può aggiungere, modificare o eliminare sezioni e i relativi step.</p>
+      <p style="margin-bottom:14px;color:var(--soft);font-size:13px">Lo studio può aggiungere, modificare o eliminare sezioni e i relativi step. Le modifiche si applicano a tutti i servizi (nuovi ed esistenti).</p>
       <div id="adminSectionsBox"></div>
       <p style="margin-top:18px"><button class="btn-primary" onclick="addNewSection()">+ Aggiungi nuova sezione</button></p>
       <div class="form-actions" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--bordo)">
@@ -307,13 +306,13 @@ const DEFAULT_SECTIONS=[
 const STEP_TYPES={
  simple:{label:'Semplice (solo data e stato)',hint:'Solo checkbox fatto e data.'},
  archive:{label:'Archiviazione (NAS + 3 HD + chi)',hint:'Campi: fatto da, NAS, HD1, HD2, HD3.'},
- selection:{label:'Selezione (studio/link + copertina)',hint:'Radio: studio o link (vuoti finché non scegli). Poi articolo e azienda copertina.'},
+ selection:{label:'Selezione (studio/link + copertina)',hint:'Radio vuoti finché lo step non è spuntato; poi scegli studio o link e compila copertina.'},
  lab_send:{label:'Invio a laboratorio (azienda)',hint:'Campo: azienda di stampa.'},
  lab_receive:{label:'Ricevuto da laboratorio (azienda)',hint:'Campo: azienda consegna.'},
- music:{label:'Musiche SI/NO + 4 link',hint:'Radio vuoto finché non scegli. Se SÌ appaiono 4 campi link.'},
+ music:{label:'Musiche SI/NO + 4 link',hint:'Radio vuoti finché lo step non è spuntato; se SÌ appaiono 4 campi link.'},
  editor:{label:'Collaboratore al montaggio',hint:'Campo: nome collaboratore.'},
- video_receive:{label:'Video ricevuto (persona/link)',hint:'Radio vuoto finché non scegli. Se link, campo per link.'},
- usb_or_link:{label:'USB (1-5) oppure link',hint:'Radio vuoto finché non scegli. USB con 5 pulsanti 1-5 o link.'}
+ video_receive:{label:'Video ricevuto (persona/link)',hint:'Radio vuoti finché lo step non è spuntato; se link, campo per il link.'},
+ usb_or_link:{label:'USB (1-5) oppure link',hint:'Radio vuoti finché lo step non è spuntato; USB con 5 pulsanti 1-5 o link.'}
 };
 
 let sectionsConfig=loadSectionsConfig();
@@ -346,16 +345,17 @@ function migrateService(s){
 }
 function save(){localStorage.setItem('gl_services_v2',JSON.stringify(services));syncCloud();}
 
-/* ===== CORREZIONE PROBLEMA 3: radio NON pre-selezionati ===== */
+/* ===== CORREZIONE: i radio mostrano il pallino SOLO se lo step è spuntato (done) ===== */
 function renderStepFields(serviceId,sectionId,stepDef,stepData){
  const d=stepData||{done:false,date:'',extra:{}};
  const ex=d.extra||{};
+ const done=!!d.done;
  const F=(field,label,html)=>`<div class="field-group${field==='wide'?' wide':''}"><label>${label}</label>${html}</div>`;
  const inp=(field,ph,val)=>`<input type="text" placeholder="${ph}" value="${(val||'').replace(/"/g,'&quot;')}" onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','${field}',this.value)">`;
  const sel=(field,opts,val)=>`<select onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','${field}',this.value)">${opts.map(o=>`<option value="${o.v}" ${val===o.v?'selected':''}>${o.l}</option>`).join('')}</select>`;
  switch(stepDef.type){
   case 'archive':
-   return `${F('','Fatto da',sel('archivedBy',[{v:'',l:'-- Seleziona --'},{v:'Studio',l:'Studio'},{v:'Collaboratore esterno',l:'Collaboratore esterno'}],ex.archivedBy||''))}
+   return `${F('','Fatto da',sel('archivedBy',[{v:'',l:'-- Seleziona --'},{v:'Studio',l:'Studio'},{v:'Collaboratore esterno',l:'Collaboratore esterno'}],done?(ex.archivedBy||''):''))}
     ${F('','NAS',inp('nas','Es. NAS-01',ex.nas))}
     ${F('','HD 1',inp('hd1','Es. HD-A',ex.hd1))}
     ${F('','HD 2',inp('hd2','Es. HD-B',ex.hd2))}
@@ -363,8 +363,8 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
   case 'selection':
    return `<div class="field-group wide"><label>Selezione fatta</label>
      <div class="radio-group">
-      <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="studio" ${ex.method==='studio'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','studio')"> In studio</label>
-      <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
+      <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="studio" ${done&&ex.method==='studio'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','studio')"> In studio</label>
+      <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${done&&ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
      </div></div>
     ${F('','Copertina - articolo',inp('coverArticle','Es. ART-2024-001',ex.coverArticle))}
     ${F('','Copertina - azienda',inp('coverCompany','Es. Grafiche Rossi',ex.coverCompany))}`;
@@ -373,8 +373,8 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
   case 'music':
    return `<div class="field-group"><label>Musiche cliente</label>
      <div class="radio-group">
-      <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="no" ${ex.hasMusic==='no'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','no')"> NO</label>
-      <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="si" ${ex.hasMusic==='si'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','si')"> SÌ</label>
+      <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="no" ${done&&ex.hasMusic==='no'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','no')"> NO</label>
+      <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="si" ${done&&ex.hasMusic==='si'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','si')"> SÌ</label>
      </div></div>
     <div class="field-group wide"><label>Link musiche (max 4)</label>
      <div class="music-links">
@@ -387,16 +387,16 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
   case 'video_receive':
    return `<div class="field-group"><label>Ricevuto</label>
      <div class="radio-group">
-      <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="person" ${ex.method==='person'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','person')"> Di persona</label>
-      <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
+      <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="person" ${done&&ex.method==='person'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','person')"> Di persona</label>
+      <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${done&&ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
      </div></div>
     ${F('wide','Link (se tramite link)',inp('link','https://...',ex.link))}`;
   case 'usb_or_link':
-   const usbActive=+ex.usbCount||0;
+   const usbActive=done?(+ex.usbCount||0):0;
    return `<div class="field-group"><label>Modalità consegna</label>
      <div class="radio-group">
-      <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="usb" ${ex.method==='usb'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','usb')"> Con USB</label>
-      <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
+      <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="usb" ${done&&ex.method==='usb'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','usb')"> Con USB</label>
+      <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${done&&ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
      </div></div>
     <div class="field-group"><label>Numero USB (1-5)</label>
      <div class="usb-selector">
@@ -478,7 +478,7 @@ function toggleStep(serviceId,sectionId,stepId,checked){
 }
 function updateDate(serviceId,sectionId,stepId,val){const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;d.date=val;save();}
 function updateExtra(serviceId,sectionId,stepId,field,val){const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;d.extra[field]=val;save();}
-function setUsbCount(serviceId,sectionId,stepId,n){const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;d.extra.usbCount=n;d.extra.method='usb';save();renderServices();document.getElementById('steps-'+serviceId).classList.add('open');}
+function setUsbCount(serviceId,sectionId,stepId,n){const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;d.extra.usbCount=n;d.extra.method='usb';d.done=true;if(!d.date)d.date=new Date().toISOString().slice(0,10);save();renderServices();document.getElementById('steps-'+serviceId).classList.add('open');}
 
 function toggleNewService(){document.getElementById('newService').classList.toggle('open');}
 function saveService(){
@@ -507,8 +507,10 @@ function viewService(id){
  document.getElementById('detailBody').innerHTML=html;
  document.getElementById('detailModal').classList.add('active');
 }
+/* In Visualizza i dettagli compaiono SOLO per gli step completati */
 function renderStepDetail(st,d){
- const status=d.done?'✓ Completato':'◻ In attesa';const dateStr=d.date?` — ${formatDate(d.date)}`:'';const info=buildExtraInfo(st,d.extra||{});
+ const status=d.done?'✓ Completato':'◻ In attesa';const dateStr=d.date?` — ${formatDate(d.date)}`:'';
+ const info=d.done?buildExtraInfo(st,d.extra||{}):'';
  return `<div class="step-detail ${d.done?'completed':''}"><div class="step-name">${status} — ${st.label}${dateStr}</div>${info?`<div class="step-extra-info">${info}</div>`:''}</div>`;
 }
 function buildExtraInfo(st,ex){
@@ -560,7 +562,7 @@ async function generatePDF(id){
  const {done,total}=countAll(s);const pct=total?Math.round((done/total)*100):0;doc.text(`Avanzamento globale: ${done}/${total} (${pct}%)`,15,y);y+=10;
  sectionsConfig.forEach(sec=>{
   if(y>265){doc.addPage();y=20;}const rgb=hexToRgb(sec.color||'#a3937d');doc.setFillColor(rgb.r,rgb.g,rgb.b);doc.rect(15,y-4,180,8,'F');doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(sec.name,18,y+2);doc.setTextColor(17);y+=8;
-  sec.steps.forEach(st=>{if(y>275){doc.addPage();y=20;}const d=s.sectionsData?.[sec.id]?.[st.id]||{done:false,date:'',extra:{}};doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text(`${d.done?'✓':'◻'} ${st.label}${d.date?' — '+formatDate(d.date):''}`,18,y);y+=5;const info=buildExtraInfo(st,d.extra||{});if(info){doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(90);info.split('\n').forEach(l=>{if(y>275){doc.addPage();y=20;}doc.text('    '+l,18,y);y+=4;});doc.setTextColor(17);}y+=2;});y+=3;
+  sec.steps.forEach(st=>{if(y>275){doc.addPage();y=20;}const d=s.sectionsData?.[sec.id]?.[st.id]||{done:false,date:'',extra:{}};doc.setFont('helvetica','bold');doc.setFontSize(10);doc.text(`${d.done?'✓':'◻'} ${st.label}${d.date?' — '+formatDate(d.date):''}`,18,y);y+=5;const info=d.done?buildExtraInfo(st,d.extra||{}):'';if(info){doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(90);info.split('\n').forEach(l=>{if(y>275){doc.addPage();y=20;}doc.text('    '+l,18,y);y+=4;});doc.setTextColor(17);}y+=2;});y+=3;
  });
  doc.setFontSize(8);doc.setTextColor(150);doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`,105,290,{align:'center'});
  doc.save(`Workflow_${s.client.replace(/\s+/g,'_')}_${s.type||'servizio'}.pdf`);
@@ -574,10 +576,10 @@ let adminDraft=null;
 function openAdminConfig(){adminDraft=JSON.parse(JSON.stringify(sectionsConfig));renderAdminBox();document.getElementById('adminConfigModal').classList.add('active');}
 function renderAdminBox(){const box=document.getElementById('adminSectionsBox');box.innerHTML=adminDraft.map((sec,si)=>{const stepsHtml=sec.steps.map((st,sti)=>{const typeOpts=Object.keys(STEP_TYPES).map(k=>`<option value="${k}" ${st.type===k?'selected':''}>${STEP_TYPES[k].label}</option>`).join('');const hint=STEP_TYPES[st.type]?.hint||'';return `<div class="admin-step-row"><input type="text" value="${(st.label||'').replace(/"/g,'&quot;')}" onchange="adminDraft[${si}].steps[${sti}].label=this.value" placeholder="Nome dello step"><select onchange="adminDraft[${si}].steps[${sti}].type=this.value;renderAdminBox()">${typeOpts}</select><button onclick="adminDraft[${si}].steps.splice(${sti},1);renderAdminBox()">🗑 Rimuovi</button></div><div class="type-hint">${hint}</div>`;}).join('');return `<div class="admin-section"><div class="admin-section-head"><input type="text" value="${(sec.name||'').replace(/"/g,'&quot;')}" onchange="adminDraft[${si}].name=this.value" placeholder="Nome sezione"><input type="color" value="${sec.color||'#a3937d'}" onchange="adminDraft[${si}].color=this.value" title="Colore"><button style="background:#8c2f2f;color:#fff;border-color:#8c2f2f" onclick="if(confirm('Eliminare la sezione ${sec.name}?')){adminDraft.splice(${si},1);renderAdminBox()}">🗑 Elimina sezione</button></div>${stepsHtml}<button class="admin-add-step" onclick="adminDraft[${si}].steps.push({id:'s'+Date.now().toString(36),label:'Nuovo step',type:'simple'});renderAdminBox()">+ Aggiungi step</button></div>`;}).join('');}
 function addNewSection(){adminDraft.push({id:'sec_'+Date.now().toString(36),name:'NUOVA SEZIONE',color:'#a3937d',steps:[{id:'s1',label:'Primo step',type:'simple'}]});renderAdminBox();}
-function saveAdminConfig(){if(!adminDraft||!adminDraft.length)return alert('Almeno una sezione deve esistere.');sectionsConfig=adminDraft;saveSectionsConfig();services=services.map(migrateService).filter(s=>s!==null);save();closeModal('adminConfigModal');renderServices();renderTable();alert('Configurazione salvata.');}
+function saveAdminConfig(){if(!adminDraft||!adminDraft.length)return alert('Almeno una sezione deve esistere.');sectionsConfig=adminDraft;saveSectionsConfig();services=services.map(migrateService).filter(s=>s!==null);save();closeModal('adminConfigModal');renderServices();renderTable();alert('Configurazione salvata. Le sezioni sono state aggiornate in tutti i servizi.');}
 function closeModal(id){document.getElementById(id).classList.remove('active');if(id==='adminConfigModal')adminDraft=null;if(id==='editModal')editingId=null;}
 
-async function checkLicenza(){if(!studioCodice){showGate('Nessun codice studio.');return false;}try{const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();const s=(l.studi||[]).find(x=>x.codice===studioCodice);const oggi=new Date().toISOString().slice(0,10);if(!s||!s.attivo||s.scadenza<oggi){showGate('Licenza non attiva.');return false;}document.getElementById('licenseGate').style.display='none';document.getElementById('app').style.display='block';return true;}catch(e){showGate('Impossibile verificare la licenza.');return false;}}
+async function checkLicenza(){if(!studioCodice){showGate('Nessun codice studio. Torna alla home.');return false;}try{const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();const s=(l.studi||[]).find(x=>x.codice===studioCodice);const oggi=new Date().toISOString().slice(0,10);if(!s||!s.attivo||s.scadenza<oggi){showGate('Licenza non attiva o scaduta.');return false;}document.getElementById('licenseGate').style.display='none';document.getElementById('app').style.display='block';return true;}catch(e){showGate('Impossibile verificare la licenza.');return false;}}
 function showGate(msg){document.getElementById('licenseGate').style.display='flex';document.getElementById('licenseMsg').textContent=msg;document.getElementById('app').style.display='none';}
 
 async function syncCloud(){if(!studioCodice)return;const box=document.getElementById('syncStatus');try{const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente','__db__');fd.append('chiave','workflow');fd.append('data',JSON.stringify(services));const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});const j=await r.json();if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}else{box.textContent='Sync cloud: errore';box.classList.add('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
@@ -585,7 +587,7 @@ async function syncCloud(){if(!studioCodice)return;const box=document.getElement
 async function loadCloud(){if(!studioCodice)return;const box=document.getElementById('syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=workflow&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(Array.isArray(cloud)&&cloud.length){const map={};services.forEach(x=>{map[x.id]=x;});let add=0;cloud.forEach(x=>{if(!x.id)x.id=uid();if(!map[x.id]){map[x.id]=x;add++;}});services=Object.values(map).map(migrateService).filter(s=>s!==null);localStorage.setItem('gl_services_v2',JSON.stringify(services));box.textContent='Sync: '+add+' aggiunti';renderServices();renderTable();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
 
 function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();alert('Backup globale scaricato.');}
-function ripristinoGlobale(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(typeof d!=='object')throw new Error('File non valido.');if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Backup ripristinato.');location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);};inp.click();}
+function ripristinoGlobale(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(typeof d!=='object')throw new Error('File non valido.');if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Backup ripristinato. La pagina si ricarica.');location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);};inp.click();}
 
 services=services.map(migrateService).filter(s=>s!==null);save();
 if(isAdmin)document.getElementById('adminBanner').style.display='flex';
