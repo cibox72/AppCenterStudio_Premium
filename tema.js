@@ -1,4 +1,4 @@
-/* tema.js — grafica stagionale + SALVATAGGIO AUTOMATICO GLOBALE */
+/* tema.js — grafica stagionale + SALVATAGGIO AUTOMATICO GLOBALE (v2: profilo legato allo studio) */
 (function(){
  var WORKER='https://acs-api.mairaluigi.workers.dev';
  var THEMES={
@@ -31,7 +31,6 @@
   var od=document.getElementById('appTemaDeco');if(od)od.remove();
  }
 
- /* ===== SALVATAGGIO AUTOMATICO GLOBALE ===== */
  function studioCodeNow(){
   try{
    var u=new URLSearchParams(location.search).get('studio');
@@ -47,18 +46,19 @@
    .then(function(r){return r.json();})
    .then(function(p){
     var ident=leggiJSON('studioIdent');
+    var identMio=ident&&ident.studioCode===code&&ident.nome;
     var hasLocal=ident&&ident.nome;
-    if(!hasLocal&&p&&p.ident&&p.ident.nome){
-     /* PC vuoto: ripristina identita', logo, listini e mittente dal cloud */
+    /* RIPRISTINO: solo se il profilo cloud è dello STESSO studio e il PC è vuoto */
+    if(!hasLocal&&p&&p.ident&&p.ident.nome&&(!p.studioCode||p.studioCode===code)){
      localStorage.setItem('studioIdent',JSON.stringify(p.ident));
      if(p.categorie)localStorage.setItem('appcenter_categorie',JSON.stringify(p.categorie));
      if(p.emailCfg)localStorage.setItem('emailStudioCfg',JSON.stringify(p.emailCfg));
-    }else if(hasLocal){
-     /* PC con dati: backup automatico nel cloud */
+    }else if(identMio){
+     /* BACKUP: solo se i dati locali appartengono a questo studio */
      var fd=new FormData();
      fd.append('studio',code);fd.append('cliente','__db__');
      fd.append('chiave','profilo');
-     fd.append('data',JSON.stringify({ident:ident,categorie:leggiJSON('appcenter_categorie'),emailCfg:leggiJSON('emailStudioCfg'),ts:Date.now()}));
+     fd.append('data',JSON.stringify({ident:ident,categorie:leggiJSON('appcenter_categorie'),emailCfg:leggiJSON('emailStudioCfg'),studioCode:code,ts:Date.now()}));
      fetch(WORKER+'/db-save',{method:'POST',body:fd}).catch(function(){});
     }
    }).catch(function(){});
