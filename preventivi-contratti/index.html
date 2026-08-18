@@ -39,6 +39,7 @@ input[readonly]{background:#f0f0f0;font-weight:700}
 .rowBetween{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .badge{background:#111;color:#fff;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700}
 .badge.contratto{background:#b00020}
+.code{font-family:monospace;font-weight:700}
 .servRow{display:grid;grid-template-columns:auto 1fr 110px 70px auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed #e0e0e0}
 .locRow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-bottom:10px}
 .totCard .riga{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
@@ -73,6 +74,7 @@ th{background:#111;color:#fff}
 <nav>
   <button class="tab active" data-view="preventivo">+ Nuovo Preventivo</button>
   <button class="tab" data-view="archivio">Preventivi & Contratti</button>
+  <button class="tab" data-view="clienti">Archivio Clienti</button>
   <button class="tab" data-view="listini">Listini & Studio</button>
 </nav>
 <main>
@@ -143,7 +145,7 @@ th{background:#111;color:#fff}
   <div class="card"><h2>Accettazione</h2>
     <div class="acc-box">
       <label class="chk"><input type="checkbox" id="chkAccettato"> ACCETTATO E FIRMATO DAL CLIENTE</label>
-      <p class="hint" style="margin:8px 0 0">Se spunti, nei PDF (preventivo e ricevuta acconto) il quadratino esce PIENO; se no, esce VUOTO da firmare.</p>
+      <p class="hint" style="margin:8px 0 0">Se spunti, nei PDF il quadratino esce PIENO; se no, esce VUOTO da firmare.</p>
     </div>
   </div>
   <div class="card"><h2>Note aggiuntive</h2><textarea id="p_note"></textarea></div>
@@ -155,6 +157,7 @@ th{background:#111;color:#fff}
   </div>
 </section>
 <section id="view-archivio" hidden></section>
+<section id="view-clienti" hidden></section>
 <section id="view-listini" hidden>
   <div class="card"><h2>Dati dello Studio (compaiono su PDF)</h2>
     <div class="grid">
@@ -207,8 +210,8 @@ function nomeCliente(p){const a=p.a||p.clienteA||{};return ((a.nome||'')+' '+(a.
 db.preventivi=(db.preventivi||[]).map(migratePreventivo).filter(Boolean);
 function save(){localStorage.setItem(KEY,JSON.stringify(db));localStorage.setItem('appcenter_categorie',JSON.stringify(categorie));localStorage.setItem('studioIdent',JSON.stringify(studioIdent));syncCloud();}
 async function syncCloud(){if(!studioCode)return;const box=$('#syncStatus');try{const fd=new FormData();fd.append('studio',studioCode);fd.append('cliente','__db__');fd.append('chiave','preventivi');fd.append('data',JSON.stringify(db));const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});const j=await r.json();if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}else{box.textContent='Sync cloud: errore';box.classList.add('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
-async function loadCloud(){if(!studioCode)return;const box=$('#syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCode)+'&chiave=preventivi&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(cloud&&cloud.preventivi&&cloud.preventivi.length){const map={};db.preventivi.forEach(p=>{map[p.numero]=p;});let add=0;cloud.preventivi.forEach(p=>{p=migratePreventivo(p);if(!map[p.numero]){map[p.numero]=p;add++;}else if((p.dataModifica||0)>(map[p.numero].dataModifica||0))map[p.numero]=p;});db.preventivi=Object.values(map).map(migratePreventivo).filter(Boolean);localStorage.setItem(KEY,JSON.stringify(db));box.textContent='Sync: '+add+' aggiunti';renderArchivio();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
-$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');['preventivo','archivio','listini'].forEach(v=>$('#view-'+v).hidden=(v!==b.dataset.view));if(b.dataset.view==='archivio')renderArchivio();if(b.dataset.view==='listini')renderListini();});
+async function loadCloud(){if(!studioCode)return;const box=$('#syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCode)+'&chiave=preventivi&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(cloud&&cloud.preventivi&&cloud.preventivi.length){const map={};db.preventivi.forEach(p=>{map[p.numero]=p;});let add=0;cloud.preventivi.forEach(p=>{p=migratePreventivo(p);if(!map[p.numero]){map[p.numero]=p;add++;}else if((p.dataModifica||0)>(map[p.numero].dataModifica||0))map[p.numero]=p;});db.preventivi=Object.values(map).map(migratePreventivo).filter(Boolean);localStorage.setItem(KEY,JSON.stringify(db));box.textContent='Sync: '+add+' aggiunti';renderArchivio();renderClienti();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');['preventivo','archivio','clienti','listini'].forEach(v=>$('#view-'+v).hidden=(v!==b.dataset.view));if(b.dataset.view==='archivio')renderArchivio();if(b.dataset.view==='clienti')renderClienti();if(b.dataset.view==='listini')renderListini();});
 function nuovoPreventivo(){
  current={numero:'',dataCreazione:today(),dataServizio:'',tipo:'',a:{nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''},b:{nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''},chiesa:'',location:'',servizi:[],scontoPerc:0,sconto:0,scontoNota:'',acconti:[],piano:[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}],accettato:false,note:'',tipoDoc:'preventivo',dataModifica:Date.now()};
  $('#pBadge').textContent='Nuovo preventivo';$('#pBadge').classList.remove('contratto');
@@ -259,7 +262,7 @@ function salvaPreventivo(){
   const idx=db.preventivi.findIndex(p=>p.numero===current.numero);
   if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));else db.preventivi.unshift(JSON.parse(JSON.stringify(current)));
   db.preventivi=db.preventivi.map(migratePreventivo).filter(Boolean);
-  save();renderArchivio();
+  save();renderArchivio();renderClienti();
   alert('Salvato in archivio: '+current.numero);
  }catch(e){alert('Errore durante il salvataggio. Ricarica la pagina con Ctrl+F5 e riprova.');}
 }
@@ -283,7 +286,6 @@ function calcolaTotali(p){
  const ta=(p.acconti||[]).reduce((a,x)=>a+(+x.importo||0),0);
  return {tot,ta,saldo:tot-ta};
 }
-/* PDF del documento (senza toccare il modulo) */
 function creaPDF(tipoDoc){
  const doc=new jspdf.jsPDF();const W=doc.internal.pageSize.getWidth();
  doc.setFontSize(14);doc.setFont('helvetica','bold');doc.text(studioIdent.nome||'STUDIO FOTOGRAFICO',W/2,15,{align:'center'});
@@ -353,12 +355,10 @@ function ricevutaAcconto(idx){
  doc.line(5,y,30,y);doc.line(W-30,y,W-5,y);y+=3;doc.setFont('courier','normal');doc.setFontSize(7);doc.text('Firma Studio',5,y);doc.text('Firma Cliente',W-30,y);
  doc.save('Ricevuta_'+numR+'.pdf');
 }
-/* STAMPA DA ARCHIVIO: apre il documento e lo stampa senza passare dal modulo */
 function stampaDaArchivio(i){
  current=migratePreventivo(JSON.parse(JSON.stringify(db.preventivi[i])));
  try{creaPDF(current.tipoDoc||'preventivo');}catch(e){alert('Errore nella creazione del PDF. Ricarica con Ctrl+F5 e riprova.');}
 }
-/* PDF ELENCO ARCHIVIO */
 function pdfElenco(){
  if(!db.preventivi.length)return alert('Archivio vuoto.');
  const doc=new jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});const W=doc.internal.pageSize.getWidth();
@@ -386,15 +386,22 @@ function pdfElenco(){
 $('#btnSalva').onclick=salvaPreventivo;
 $('#btnPDF').onclick=()=>{raccogli();try{creaPDF(current.tipoDoc||'preventivo');}catch(e){alert('Errore nella creazione del PDF. Ricarica con Ctrl+F5 e riprova.');}};
 $('#btnPDFPiano').onclick=()=>{try{generaPDFPiano();}catch(e){alert('Errore nella creazione del PDF. Ricarica con Ctrl+F5 e riprova.');}};
-$('#btnContratto').onclick=()=>{raccogli();if(!current.numero){alert('Prima salva in archivio.');return;}if(!confirm('Trasformare in CONTRATTO?'))return;current.tipoDoc='contratto';current.accettato=true;$('#chkAccettato').checked=true;current.dataModifica=Date.now();const idx=db.preventivi.findIndex(p=>p.numero===current.numero);if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));db.preventivi=db.preventivi.map(migratePreventivo).filter(Boolean);save();renderArchivio();$('#pBadge').textContent='CONTRATTO';$('#pBadge').classList.add('contratto');alert('Trasformato in contratto.');};
+$('#btnContratto').onclick=()=>{raccogli();if(!current.numero){alert('Prima salva in archivio.');return;}if(!confirm('Trasformare in CONTRATTO?'))return;current.tipoDoc='contratto';current.accettato=true;$('#chkAccettato').checked=true;current.dataModifica=Date.now();const idx=db.preventivi.findIndex(p=>p.numero===current.numero);if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));db.preventivi=db.preventivi.map(migratePreventivo).filter(Boolean);save();renderArchivio();renderClienti();$('#pBadge').textContent='CONTRATTO';$('#pBadge').classList.add('contratto');alert('Trasformato in contratto.');};
 $('#btnNuovo').onclick=()=>{if(confirm('Aprire un nuovo preventivo?'))nuovoPreventivo();};
 function renderArchivio(){
  const box=$('#view-archivio');
- if(!db.preventivi.length){box.innerHTML='<div class="card"><h2>Archivio Preventivi & Contratti</h2><p class="hint">Archivio vuoto su questo PC. I dati sono legati al codice studio: usa lo stesso link benvenuto (?studio=...) del PC dove li hai creati, oppure attendi il sync cloud.</p></div>';return;}
- box.innerHTML='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Preventivi & Contratti</h2><button class="btn green" onclick="pdfElenco()">PDF elenco archivio</button></div><table style="margin-top:12px"><tr><th>Tipo</th><th>Numero</th><th>Cliente</th><th>Data serv.</th><th>Totale</th><th>Saldo</th><th>Azioni (vedi / modifica / stampa)</th></tr>'+db.preventivi.map((p,i)=>{const tipo=p.tipoDoc==='contratto'?'<span class="badge contratto">CONTRATTO</span>':'<span class="badge">Preventivo</span>';const t=calcolaTotali(p);return '<tr><td>'+tipo+'</td><td><b>'+esc(p.numero)+'</b></td><td>'+esc(nomeCliente(p))+'</td><td>'+fmtData(p.dataServizio)+'</td><td>€ '+fmt(t.tot)+'</td><td>€ '+fmt(t.saldo)+'</td><td><button class="mini" onclick="apriPreventivo('+i+')">Apri/Modifica</button> <button class="mini" onclick="stampaDaArchivio('+i+')">PDF/Stampa</button> <button class="mini" onclick="eliminaPreventivo('+i+')">Elimina</button></td></tr>';}).join('')+'</table></div>';
+ if(!db.preventivi.length){box.innerHTML='<div class="card"><h2>Archivio Preventivi & Contratti</h2><p class="hint">Archivio vuoto su questo PC. Usa lo stesso link benvenuto (?studio=...) del PC dove li hai creati e ricarica con Ctrl+F5.</p></div>';return;}
+ box.innerHTML='<div class="card"><div class="rowBetween"><h2 style="margin:0">Archivio Preventivi & Contratti</h2><button class="btn green" onclick="pdfElenco()">PDF elenco archivio</button></div><table style="margin-top:12px"><tr><th>Tipo</th><th>Numero</th><th>Cliente</th><th>Data serv.</th><th>Azioni (vedi / modifica / stampa)</th></tr>'+db.preventivi.map((p,i)=>{const tipo=p.tipoDoc==='contratto'?'<span class="badge contratto">CONTRATTO</span>':'<span class="badge">Preventivo</span>';return '<tr><td>'+tipo+'</td><td><b>'+esc(p.numero)+'</b></td><td>'+esc(nomeCliente(p))+'</td><td>'+fmtData(p.dataServizio)+'</td><td><button class="mini" onclick="apriPreventivo('+i+')">Apri/Modifica</button> <button class="mini" onclick="stampaDaArchivio('+i+')">PDF/Stampa</button> <button class="mini" onclick="eliminaPreventivo('+i+')">Elimina</button></td></tr>';}).join('')+'</table></div>';
 }
-function apriPreventivo(i){current=migratePreventivo(JSON.parse(JSON.stringify(db.preventivi[i])));$('#pBadge').textContent=current.tipoDoc==='contratto'?'CONTRATTO':'Preventivo';if(current.tipoDoc==='contratto')$('#pBadge').classList.add('contratto');else $('#pBadge').classList.remove('contratto');$('#p_numero').value=current.numero;$('#p_dataCreazione').value=current.dataCreazione;$('#p_dataServizio').value=current.dataServizio||'';$('#p_tipo').value=current.tipo||'';['a','b'].forEach(k=>{['nome','cognome','telefono','email','via','citta','cap','prov'].forEach(f=>{$('#'+k+'_'+f).value=(current[k]&&current[k][f])||'';});});$('#p_chiesa').value=current.chiesa||'';$('#p_location').value=current.location||'';$('#p_scontoPerc').value=current.scontoPerc||0;$('#p_sconto').value=current.sconto||0;$('#p_scontoNota').value=current.scontoNota||'';$('#p_note').value=current.note||'';$('#chkAccettato').checked=!!current.accettato;current.acconti=current.acconti||[];current.piano=(current.piano&&current.piano.length)?current.piano:[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}];renderAcconti();renderPiano();renderServiziBox();setTimeout(()=>{const ids=new Set(current.servizi.map(s=>s.id));$$('.servChk').forEach(c=>{if(ids.has(c.dataset.id))c.checked=true;});calcola();},50);$$('.tab').forEach(t=>t.classList.remove('active'));document.querySelector('.tab[data-view="preventivo"]').classList.add('active');['preventivo','archivio','listini'].forEach(v=>$('#view-'+v).hidden=(v!=='preventivo'));}
-function eliminaPreventivo(i){if(!confirm('Eliminare '+db.preventivi[i].numero+'?'))return;db.preventivi.splice(i,1);save();renderArchivio();}
+/* ARCHIVIO CLIENTI: solo nome, codice e tipo, con apri/modifica e stampa. NIENTE totali. */
+function renderClienti(){
+ const box=$('#view-clienti');
+ if(!db.preventivi.length){box.innerHTML='<div class="card"><h2>Archivio Clienti</h2><p class="hint">Nessun cliente: compaiono qui quando salvi un preventivo o un contratto.</p></div>';return;}
+ const list=db.preventivi.map((p,i)=>({p,i})).sort((a,b)=>nomeCliente(a.p).localeCompare(nomeCliente(b.p),'it'));
+ box.innerHTML='<div class="card"><h2>Archivio Clienti</h2><p class="hint">I contratti e i preventivi dei clienti, in ordine alfabetico: apri per modificare, stampa per il PDF.</p><table><tr><th>Cliente</th><th>Codice</th><th>Tipo</th><th>Azioni</th></tr>'+list.map(e=>{const p=e.p;const tipo=p.tipoDoc==='contratto'?'<span class="badge contratto">CONTRATTO</span>':'<span class="badge">Preventivo</span>';return '<tr><td><b>'+esc(nomeCliente(p))+'</b></td><td class="code">'+esc(p.numero)+'</td><td>'+tipo+'</td><td><button class="mini" onclick="apriPreventivo('+e.i+')">Apri/Modifica</button> <button class="mini" onclick="stampaDaArchivio('+e.i+')">PDF/Stampa</button></td></tr>';}).join('')+'</table></div>';
+}
+function apriPreventivo(i){current=migratePreventivo(JSON.parse(JSON.stringify(db.preventivi[i])));$('#pBadge').textContent=current.tipoDoc==='contratto'?'CONTRATTO':'Preventivo';if(current.tipoDoc==='contratto')$('#pBadge').classList.add('contratto');else $('#pBadge').classList.remove('contratto');$('#p_numero').value=current.numero;$('#p_dataCreazione').value=current.dataCreazione;$('#p_dataServizio').value=current.dataServizio||'';$('#p_tipo').value=current.tipo||'';['a','b'].forEach(k=>{['nome','cognome','telefono','email','via','citta','cap','prov'].forEach(f=>{$('#'+k+'_'+f).value=(current[k]&&current[k][f])||'';});});$('#p_chiesa').value=current.chiesa||'';$('#p_location').value=current.location||'';$('#p_scontoPerc').value=current.scontoPerc||0;$('#p_sconto').value=current.sconto||0;$('#p_scontoNota').value=current.scontoNota||'';$('#p_note').value=current.note||'';$('#chkAccettato').checked=!!current.accettato;current.acconti=current.acconti||[];current.piano=(current.piano&&current.piano.length)?current.piano:[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}];renderAcconti();renderPiano();renderServiziBox();setTimeout(()=>{const ids=new Set(current.servizi.map(s=>s.id));$$('.servChk').forEach(c=>{if(ids.has(c.dataset.id))c.checked=true;});calcola();},50);$$('.tab').forEach(t=>t.classList.remove('active'));document.querySelector('.tab[data-view="preventivo"]').classList.add('active');['preventivo','archivio','clienti','listini'].forEach(v=>$('#view-'+v).hidden=(v!=='preventivo'));}
+function eliminaPreventivo(i){if(!confirm('Eliminare '+db.preventivi[i].numero+'?'))return;db.preventivi.splice(i,1);save();renderArchivio();renderClienti();}
 function renderListini(){
  $('#s_nome').value=studioIdent.nome||'';$('#s_piva').value=studioIdent.piva||'';$('#s_indirizzo').value=studioIdent.indirizzo||'';$('#s_telefono').value=studioIdent.telefono||'';$('#s_email').value=studioIdent.email||'';$('#s_note').value=studioIdent.note||'';
  $('#catBox').innerHTML=categorie.map((c,ci)=>'<h3>'+esc(c.nome)+' <button class="mini" onclick="categorie.splice('+ci+',1);save();renderListini()">Elimina</button></h3>'+c.servizi.map((s,si)=>'<div style="display:grid;grid-template-columns:1fr 100px auto;gap:6px;margin-bottom:4px"><input value="'+esc(s.nome)+'" onchange="categorie['+ci+'].servizi['+si+'].nome=this.value;save()"><input type="number" step="0.01" value="'+s.prezzo+'" onchange="categorie['+ci+'].servizi['+si+'].prezzo=+this.value;save()"><button class="mini" onclick="categorie['+ci+'].servizi.splice('+si+',1);save();renderListini()">X</button></div>').join('')+'<button class="mini" onclick="categorie['+ci+'].servizi.push({id:\'s\'+Date.now(),nome:\'Nuovo\',prezzo:0});save();renderListini()">+ Servizio</button>').join('');
@@ -405,8 +412,8 @@ $('#btnResetList').onclick=()=>{if(!confirm('Ripristinare i listini default?'))r
 function refreshHead(){$('#studioNameHead').textContent=studioIdent.nome||'';}
 function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+today()+'.json';a.click();}
 function ripristinoGlobale(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(!confirm('Ripristinare?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);};inp.click();}
-refreshHead();renderServiziBox();nuovoPreventivo();renderArchivio();
-loadCloud().then(()=>{renderArchivio();});
+refreshHead();renderServiziBox();nuovoPreventivo();renderArchivio();renderClienti();
+loadCloud().then(()=>{renderArchivio();renderClienti();});
 </script>
 </body>
 </html>
