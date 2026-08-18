@@ -8,17 +8,7 @@
 <style>
 :root{--nero:#0e0e0e;--grigio:#6b6b6b;--bordo:#e6e6e6;--sfondo:#fbfbfb;--carta:#fff}
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  background:
-    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
-    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
-    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
-    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
-  background-attachment:fixed;
-  color:var(--nero);
-  line-height:1.6
-}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);background-attachment:fixed;color:var(--nero);line-height:1.6}
 .topbar{display:flex;gap:8px;padding:12px 20px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
 .topbar button{padding:7px 16px;background:var(--carta);border:1px solid #bbb;cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;letter-spacing:.02em}
 .topbar button:hover{background:var(--nero);color:#fff;border-color:var(--nero)}
@@ -47,7 +37,6 @@ input:focus,textarea:focus{outline:2px solid var(--nero)}
 .btn{display:inline-block;padding:12px 26px;background:var(--nero);color:#fff;border:none;cursor:pointer;font-size:13px;letter-spacing:.06em;border-radius:999px;margin-top:16px;font-family:inherit;text-transform:uppercase;font-weight:600}
 .btn:hover{background:#333}
 .btn.ghost{background:var(--carta);color:var(--nero);border:1px solid var(--nero)}
-.btn.ghost:hover{background:var(--nero);color:#fff}
 .apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
 .app{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s, transform .2s;box-shadow:0 6px 18px rgba(15,20,40,.06)}
 .app:hover{border-color:var(--nero);transform:translateY(-2px)}
@@ -55,31 +44,16 @@ input:focus,textarea:focus{outline:2px solid var(--nero)}
 .app h3{font-family:Georgia,serif;font-size:19px;font-weight:400}
 .app p{font-size:13px;color:var(--grigio);flex:1}
 .app a{align-self:flex-start;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--nero);text-decoration:none;border-bottom:1px solid var(--nero);padding-bottom:2px}
-.app a:hover{opacity:.7}
 .offerta{background:var(--nero);color:#fff;border-radius:16px;padding:30px;margin-bottom:20px;box-shadow:0 8px 25px rgba(0,0,0,0.2)}
 .offerta h2{font-family:Georgia,serif;font-weight:400;font-size:24px;margin-bottom:8px}
 .offerta p{color:#c9c9c9;font-size:14px}
 .offerta .prezzo{font-family:Georgia,serif;font-size:34px;margin:14px 0}
 .offerta .prezzo small{font-size:13px;color:#9a9a9a;font-family:-apple-system,sans-serif}
 .offerta .btn{background:#fff;color:var(--nero)}
-.offerta .btn.ghost{background:transparent;color:#fff;border-color:#5a5a5a}
 .logoPreview{max-height:70px;max-width:180px;border:1px solid var(--bordo);border-radius:10px;padding:4px;background:#fff;margin-top:10px}
-.adminbox{border:2px solid var(--nero);border-radius:16px;padding:24px;margin-bottom:26px;background:#fff}
-.adminbox h3{font-family:Georgia,serif;font-size:18px;margin-bottom:10px}
-.adminbox table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-.adminbox th,.adminbox td{border:1px solid var(--bordo);padding:8px 10px;text-align:left}
-.adminbox th{background:#f2f2f2;font-family:Georgia,serif;letter-spacing:.05em}
-.adminbox .riga{margin:6px 0;font-size:13px}
-.adminbox a{color:var(--nero);font-weight:700}
-.tema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:8px 0}
-.tema-btn{background:#fff;border:2px solid #ddd;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
-.tema-btn:hover{border-color:var(--nero);transform:translateY(-1px)}
-.tema-btn .sw{display:block;height:7px;border-radius:4px;margin-bottom:8px}
-.tema-btn .nome{font-family:Georgia,serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#4a4237}
-.tema-btn.attivo{border-color:var(--nero);box-shadow:0 3px 10px rgba(0,0,0,.18)}
-.tema-btn.attivo .nome{font-weight:700}
 footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;color:#9a9a9a;font-size:12px;letter-spacing:.06em;background:rgba(255,255,255,0.5);backdrop-filter:blur(6px)}
 .hidden{display:none}
+.lg-err{color:#a33;font-size:13px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -101,11 +75,18 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 
 <div class="container">
 
-  <div class="adminbox hidden" id="adminPanel"></div>
+  <div class="card hidden" id="loginCard">
+    <h2 style="font-family:Georgia,serif;font-size:22px;border-left:4px solid var(--nero);padding-left:10px">Accesso studio</h2>
+    <p class="hint">Inserisci utente e password che ti ha fornito il tuo fornitore.</p>
+    <label>Utente</label><input id="lgUser" autocomplete="username">
+    <label>Password</label><input id="lgPass" type="password" autocomplete="current-password">
+    <button class="btn" onclick="loginStudio()">Entra</button>
+    <div class="lg-err" id="lgErr"></div>
+  </div>
 
   <div class="step-head hidden" id="stepCollegaHead"><span class="n">0</span><h2>Collega il tuo studio</h2><span class="line"></span></div>
   <div class="card hidden" id="collegaCard">
-    <p class="hint">Incolla il codice ricevuto dal fornitore (formato ACS-…) e premi Collega. Il codice resta memorizzato in questo browser.</p>
+    <p class="hint">Incolla il codice ricevuto dal fornitore e premi Collega.</p>
     <label>Codice studio</label>
     <input id="acsInput" placeholder="ACS-">
     <button class="btn" onclick="collega()">Collega</button>
@@ -114,10 +95,9 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
   <div class="offerta hidden" id="offertaCard"></div>
 
   <div id="areaRiservata" class="hidden">
-
     <div class="step-head"><span class="n">1</span><h2>Dati di contatto</h2><span class="line"></span></div>
     <div class="card">
-      <p class="hint">Servono al fornitore per assisterti. Li invii una volta sola e restano modificabili.</p>
+      <p class="hint">Servono al fornitore per assisterti.</p>
       <div class="grid">
         <div><label>Referente</label><input id="cReferente"></div>
         <div><label>WhatsApp</label><input id="cWhatsapp" placeholder="39..."></div>
@@ -127,10 +107,9 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
       <label>Note</label><textarea id="cNote" rows="2"></textarea>
       <button class="btn" onclick="inviaDatiFornitore()">Invia i dati al fornitore</button>
     </div>
-
     <div class="step-head"><span class="n">2</span><h2>Identita' dello studio</h2><span class="line"></span></div>
     <div class="card">
-      <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti. Il logo resta salvato in questo browser.</p>
+      <p class="hint">Questi dati compaiono sui PDF e sulle pagine dei tuoi clienti.</p>
       <div class="grid">
         <div><label>Nome Studio</label><input id="sNome"></div>
         <div><label>P.IVA</label><input id="sPiva"></div>
@@ -144,10 +123,8 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
       <div id="logoPrev"></div>
       <button class="btn" onclick="salvaEPubblicaIdent()">Salva e invia al fornitore</button>
     </div>
-
     <div class="step-head"><span class="n">3</span><h2>Le tue applicazioni</h2><span class="line"></span></div>
     <div class="apps" id="appsGrid"></div>
-
   </div>
 
 </div>
@@ -156,248 +133,87 @@ footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;col
 
 <script>
 const NETLIFY_BASE='https://dashing-florentine-9b905e.netlify.app';
-const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
-const WORKER='https://acs-api.mairaluigi.workers.dev';
-const REPO='cibox72/AppCenterStudio_Premium';
 const FORNITORE_WA='393447507656';
 const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
-const TEMI=[
- {id:'classico',nome:'Classico',c1:'#f4efe7',c2:'#a3937d'},
- {id:'wedding',nome:'Wedding',c1:'#faf8f3',c2:'#9caf88'},
- {id:'natale',nome:'Natale',c1:'#f7f2ec',c2:'#8c2f2f'},
- {id:'carnevale',nome:'Carnevale',c1:'#faf4ff',c2:'#8e4fa8'},
- {id:'pasqua',nome:'Pasqua',c1:'#fdf8f4',c2:'#c98ba0'},
- {id:'estate',nome:'Estate',c1:'#f2f8fa',c2:'#2a7f9e'},
- {id:'inverno',nome:'Inverno',c1:'#f2f5f8',c2:'#5b7f99'}
-];
-
 const param=n=>new URLSearchParams(location.search).get(n);
 let studioCode=param('studio')||'';
 if(!studioCode&&location.hash)studioCode=decodeURIComponent(location.hash.replace(/^#/,''));
 if(!studioCode)studioCode=sessionStorage.getItem('studio')||'';
 if(!studioCode)studioCode=localStorage.getItem('studioCodeSalvato')||'';
-if(param('admin')==='1')sessionStorage.setItem('admin','1');
-if(param('admin')==='0')sessionStorage.removeItem('admin');
-
 let studioIdent=JSON.parse(localStorage.getItem('studioIdent')||'{}');
 let contatti=JSON.parse(localStorage.getItem('studioContatti')||'{}');
 let licenza=null;
-
 function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
+function collega(){const code=document.getElementById('acsInput').value.trim();if(!code){alert('Incolla il tuo codice');return;}localStorage.setItem('studioCodeSalvato',code);sessionStorage.setItem('studio',code);location.href='benvenuto.html?studio='+encodeURIComponent(code);}
 
-function collega(){
-  const code=document.getElementById('acsInput').value.trim();
-  if(!code){alert('Incolla il tuo codice ACS-');return;}
-  localStorage.setItem('studioCodeSalvato',code);
-  sessionStorage.setItem('studio',code);
-  location.href='benvenuto.html?studio='+encodeURIComponent(code);
+function loginStudio(){
+ if(!licenza)return;
+ const u=document.getElementById('lgUser').value.trim();
+ const p=document.getElementById('lgPass').value;
+ if(u===licenza.utente&&p===licenza.password){sessionStorage.setItem('acs_logged_'+studioCode,'1');location.reload();}
+ else document.getElementById('lgErr').textContent='Utente o password errati.';
 }
 
 async function init(){
-  await renderHero();
-  renderOfferta();
-  loadContatti();
-  loadIdent();
-  renderApps();
-  renderAdmin();
+ await renderHero();
+ if(document.getElementById('loginCard').classList.contains('hidden')===false)return;
+ renderOfferta();loadContatti();loadIdent();renderApps();
 }
 
 async function renderHero(){
-  const badges=document.getElementById('heroBadges');
-  if(!studioCode){
-    document.getElementById('heroNome').textContent='Studio';
-    badges.innerHTML='<span class="hbadge ko">Nessun codice studio</span>';
-    document.getElementById('collegaCard').classList.remove('hidden');
-    document.getElementById('stepCollegaHead').classList.remove('hidden');
-    return;
-  }
-  try{
-    const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-    licenza=(l.studi||[]).find(s=>s.codice===studioCode);
-  }catch(e){}
-  const nome=(licenza&&licenza.nome)?licenza.nome:(studioIdent.nome||'Studio');
-  document.getElementById('heroNome').textContent=nome;
-  document.title=nome+' - AppCenter Studio Premium';
-  const oggi=new Date().toISOString().slice(0,10);
-  if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
-  if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso sospeso</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
-  if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
-  badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+fmtData(licenza.scadenza)+'</span>';
-  document.getElementById('areaRiservata').classList.remove('hidden');
-  document.getElementById('collegaCard').classList.add('hidden');
-  document.getElementById('stepCollegaHead').classList.add('hidden');
+ const badges=document.getElementById('heroBadges');
+ if(!studioCode){document.getElementById('heroNome').textContent='Studio';badges.innerHTML='<span class="hbadge ko">Nessun codice studio</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+ try{const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();licenza=(l.studi||[]).find(s=>s.codice===studioCode);}catch(e){}
+ const nome=(licenza&&licenza.nome)?licenza.nome:(studioIdent.nome||'Studio');
+ document.getElementById('heroNome').textContent=nome;
+ document.title=nome+' - AppCenter Studio Premium';
+ const oggi=new Date().toISOString().slice(0,10);
+ if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+ if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso spento dal fornitore</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+ if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span><span class="hbadge">'+studioCode+'</span>';document.getElementById('collegaCard').classList.remove('hidden');document.getElementById('stepCollegaHead').classList.remove('hidden');return;}
+ if(licenza.utente&&licenza.password&&sessionStorage.getItem('acs_logged_'+studioCode)!=='1'){
+  document.getElementById('loginCard').classList.remove('hidden');
+  badges.innerHTML='<span class="hbadge">'+studioCode+'</span>';
+  return;
+ }
+ badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+fmtData(licenza.scadenza)+'</span>';
+ document.getElementById('areaRiservata').classList.remove('hidden');
+ document.getElementById('collegaCard').classList.add('hidden');
+ document.getElementById('stepCollegaHead').classList.add('hidden');
 }
 
 async function renderOfferta(){
-  if(!studioCode)return;
-  let off=null;
-  try{
-    const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();
-    off=(o.offerte||[]).find(x=>x.studio===studioCode&&x.attiva);
-  }catch(e){}
-  if(!off)return;
-  const card=document.getElementById('offertaCard');
-  card.classList.remove('hidden');
-  card.innerHTML='<h2>Un\'offerta riservata al tuo studio</h2><p>'+(off.descrizione||'')+'</p>'+
-  '<div class="prezzo">&euro; '+off.prezzo+' <small>per '+off.mesi+' mesi di licenza completa</small></div>'+
-  '<a class="btn" style="text-decoration:none" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(FORNITORE_PAYPAL)+'&currency_code=EUR&amount='+off.prezzo+'&item_name=Offerta+'+encodeURIComponent(studioCode)+'">Paga ora con PayPal</a> '+
-  '<a class="btn ghost" style="text-decoration:none" href="assistenza.html?studio='+encodeURIComponent(studioCode)+'">Manda ricevuta via Assistenza</a>'+
-  '<p style="margin-top:12px;font-size:12px;color:#8a8a8a">Dopo il pagamento il fornitore estende la tua licenza.</p>';
+ if(!studioCode)return;let off=null;
+ try{const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();off=(o.offerte||[]).find(x=>x.studio===studioCode&&x.attiva);}catch(e){}
+ if(!off)return;
+ const card=document.getElementById('offertaCard');card.classList.remove('hidden');
+ card.innerHTML='<h2>Un\'offerta riservata al tuo studio</h2><p>'+(off.descrizione||'')+'</p><div class="prezzo">&euro; '+off.prezzo+' <small>per '+off.mesi+' mesi di licenza completa</small></div><a class="btn" style="text-decoration:none" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(FORNITORE_PAYPAL)+'&currency_code=EUR&amount='+off.prezzo+'&item_name=Offerta+'+encodeURIComponent(studioCode)+'">Paga ora con PayPal</a> <a class="btn ghost" style="text-decoration:none;background:transparent;color:#fff;border-color:#5a5a5a" href="assistenza.html?studio='+encodeURIComponent(studioCode)+'">Manda ricevuta via Assistenza</a><p style="margin-top:12px;font-size:12px;color:#8a8a8a">Dopo il pagamento il fornitore estende la tua licenza.</p>';
 }
-
-function loadContatti(){
-  document.getElementById('cReferente').value=contatti.referente||'';
-  document.getElementById('cWhatsapp').value=contatti.whatsapp||'';
-  document.getElementById('cEmail').value=contatti.email||'';
-  document.getElementById('cCitta').value=contatti.citta||'';
-  document.getElementById('cNote').value=contatti.note||'';
-}
-function inviaDatiFornitore(){
-  contatti={
-    referente:document.getElementById('cReferente').value.trim(),
-    whatsapp:document.getElementById('cWhatsapp').value.trim(),
-    email:document.getElementById('cEmail').value.trim(),
-    citta:document.getElementById('cCitta').value.trim(),
-    note:document.getElementById('cNote').value.trim()
-  };
-  localStorage.setItem('studioContatti',JSON.stringify(contatti));
-  const testo='DATI STUDIO '+studioCode+'\nReferente: '+contatti.referente+'\nWhatsApp: '+contatti.whatsapp+'\nEmail: '+contatti.email+'\nCitta\': '+contatti.citta+'\nNote: '+contatti.note;
-  window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(testo),'_blank');
-}
-
-function loadIdent(){
-  if(!studioIdent.nome&&licenza&&licenza.nome)studioIdent.nome=licenza.nome;
-  document.getElementById('sNome').value=studioIdent.nome||'';
-  document.getElementById('sPiva').value=studioIdent.piva||'';
-  document.getElementById('sIndirizzo').value=studioIdent.indirizzo||'';
-  document.getElementById('sTelefono').value=studioIdent.telefono||'';
-  document.getElementById('sEmail').value=studioIdent.email||'';
-  document.getElementById('sNote').value=studioIdent.note||'';
-  renderLogoPrev();
-}
-document.getElementById('sLogo').addEventListener('change',e=>{
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{studioIdent.logoData=r.result;renderLogoPrev();};
-  r.readAsDataURL(f);
-});
-function renderLogoPrev(){
-  document.getElementById('logoPrev').innerHTML=studioIdent.logoData?'<img class="logoPreview" src="'+studioIdent.logoData+'">':'';
-}
-
-function salvaEPubblicaIdent(){
-  studioIdent.nome=document.getElementById('sNome').value.trim();
-  studioIdent.piva=document.getElementById('sPiva').value.trim();
-  studioIdent.indirizzo=document.getElementById('sIndirizzo').value.trim();
-  studioIdent.telefono=document.getElementById('sTelefono').value.trim();
-  studioIdent.email=document.getElementById('sEmail').value.trim();
-  studioIdent.note=document.getElementById('sNote').value.trim();
-  localStorage.setItem('studioIdent',JSON.stringify(studioIdent));
-  const q=new URLSearchParams({studio:studioCode,nome:studioIdent.nome,piva:studioIdent.piva,indirizzo:studioIdent.indirizzo,telefono:studioIdent.telefono,email:studioIdent.email,note:studioIdent.note});
-  window.open(NETLIFY_BASE+'/form-identita.html?'+q.toString(),'_blank');
-  alert('Dati salvati in questo browser.\nNella nuova scheda premi INVIA per spedirli al fornitore.');
-}
-
+function loadContatti(){document.getElementById('cReferente').value=contatti.referente||'';document.getElementById('cWhatsapp').value=contatti.whatsapp||'';document.getElementById('cEmail').value=contatti.email||'';document.getElementById('cCitta').value=contatti.citta||'';document.getElementById('cNote').value=contatti.note||'';}
+function inviaDatiFornitore(){contatti={referente:document.getElementById('cReferente').value.trim(),whatsapp:document.getElementById('cWhatsapp').value.trim(),email:document.getElementById('cEmail').value.trim(),citta:document.getElementById('cCitta').value.trim(),note:document.getElementById('cNote').value.trim()};localStorage.setItem('studioContatti',JSON.stringify(contatti));const testo='DATI STUDIO '+studioCode+'\nReferente: '+contatti.referente+'\nWhatsApp: '+contatti.whatsapp+'\nEmail: '+contatti.email+'\nCitta\': '+contatti.citta+'\nNote: '+contatti.note;window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(testo),'_blank');}
+function loadIdent(){if(!studioIdent.nome&&licenza&&licenza.nome)studioIdent.nome=licenza.nome;document.getElementById('sNome').value=studioIdent.nome||'';document.getElementById('sPiva').value=studioIdent.piva||'';document.getElementById('sIndirizzo').value=studioIdent.indirizzo||'';document.getElementById('sTelefono').value=studioIdent.telefono||'';document.getElementById('sEmail').value=studioIdent.email||'';document.getElementById('sNote').value=studioIdent.note||'';renderLogoPrev();}
+document.getElementById('sLogo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{studioIdent.logoData=r.result;renderLogoPrev();};r.readAsDataURL(f);});
+function renderLogoPrev(){document.getElementById('logoPrev').innerHTML=studioIdent.logoData?'<img class="logoPreview" src="'+studioIdent.logoData+'">':'';}
+function salvaEPubblicaIdent(){studioIdent.nome=document.getElementById('sNome').value.trim();studioIdent.piva=document.getElementById('sPiva').value.trim();studioIdent.indirizzo=document.getElementById('sIndirizzo').value.trim();studioIdent.telefono=document.getElementById('sTelefono').value.trim();studioIdent.email=document.getElementById('sEmail').value.trim();studioIdent.note=document.getElementById('sNote').value.trim();localStorage.setItem('studioIdent',JSON.stringify(studioIdent));const q=new URLSearchParams({studio:studioCode,nome:studioIdent.nome,piva:studioIdent.piva,indirizzo:studioIdent.indirizzo,telefono:studioIdent.telefono,email:studioIdent.email,note:studioIdent.note});window.open(NETLIFY_BASE+'/form-identita.html?'+q.toString(),'_blank');alert('Dati salvati in questo browser.\nNella nuova scheda premi INVIA per spedirli al fornitore.');}
 function renderApps(){
-  if(!studioCode||!licenza||!licenza.attivo)return;
-  const oggi=new Date().toISOString().slice(0,10);
-  if(licenza.scadenza<oggi)return;
-  const q='?studio='+encodeURIComponent(studioCode);
-  const apps=[
-    {n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, acconti con ricevute, piani di pagamento e PDF con la tua intestazione.',u:'preventivi-contratti/'+q},
-    {n:'02',t:'Workflow Foto & Video',d:'Stato di avanzamento di ogni servizio, tabella clienti e PDF di produzione.',u:'workflow/'+q},
-    {n:'03',t:'Clienti & Foto',d:'Archivio clienti, caricamento foto nel magazzino temporaneo, link gallery al cliente.',u:'clienti-foto/'+q},
-    {n:'04',t:'Selezione per Album',d:'Selezione in studio o da casa (link 7 giorni). Pulizia automatica e gallery 6 mesi.',u:'selezione-album/'+q},
-    {n:'05',t:'Gallery',d:'Galleria elegante per i clienti con scadenza automatica e proroga.',u:'gallery/'+q},
-    {n:'06',t:'Negozio Online',d:'Prodotti con foto e prezzi, carrello, ordini e pagamenti al tuo studio.',u:'negozio/'+q},
-    {n:'07',t:'Agenda',d:'Calendario sfogliabile: contratti automatici, appuntamenti e promemoria.',u:'agenda/'+q},
-    {n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo per qualsiasi servizio, con PDF e firme.',u:'ricevute/'+q},
-    {n:'09',t:'Email',d:'Scrivi e invia email o PEC dall\'indirizzo dello studio, con modelli pronti.',u:'email/'+q},
-    {n:'10',t:'Assistenza Online',d:'Chat dedicata con il fornitore e codice AnyDesk per il controllo remoto.',u:'assistenza.html'+q}
-  ];
-  document.getElementById('appsGrid').innerHTML=apps.map(a=>`
-   <div class="app">
-    <div class="num">${a.n}</div>
-    <h3>${a.t}</h3>
-    <p>${a.d}</p>
-    <a href="${a.u}">Apri &rarr;</a>
-   </div>`).join('');
+ if(!studioCode||!licenza||!licenza.attivo)return;const oggi=new Date().toISOString().slice(0,10);if(licenza.scadenza<oggi)return;
+ const q='?studio='+encodeURIComponent(studioCode);
+ const apps=[
+  {n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, acconti con ricevute e PDF.',u:'preventivi-contratti/'+q},
+  {n:'02',t:'Workflow Foto & Video',d:'Stato di avanzamento di ogni servizio.',u:'workflow/'+q},
+  {n:'03',t:'Clienti & Foto',d:'Archivio clienti e caricamento foto.',u:'clienti-foto/'+q},
+  {n:'04',t:'Selezione per Album',d:'Selezione in studio o da casa.',u:'selezione-album/'+q},
+  {n:'05',t:'Gallery',d:'Galleria elegante per i clienti.',u:'gallery/'+q},
+  {n:'06',t:'Negozio Online',d:'Prodotti, carrello, ordini e pagamenti.',u:'negozio/'+q},
+  {n:'07',t:'Agenda',d:'Calendario impegni e promemoria.',u:'agenda/'+q},
+  {n:'08',t:'Ricevute',d:'Ricevute di acconto e saldo con PDF.',u:'ricevute/'+q},
+  {n:'09',t:'Email',d:'Email e PEC dall\'indirizzo dello studio.',u:'email/'+q},
+  {n:'10',t:'Assistenza Online',d:'Chat dedicata e AnyDesk.',u:'assistenza.html'+q}
+ ];
+ document.getElementById('appsGrid').innerHTML=apps.map(a=>`<div class="app"><div class="num">${a.n}</div><h3>${a.t}</h3><p>${a.d}</p><a href="${a.u}">Apri &rarr;</a></div>`).join('');
 }
-
-function temaBtnHtml(t,attivo){
- return '<button class="tema-btn'+(attivo?' attivo':'')+'" onclick="cambiaTema(\''+t.id+'\')">'+
-  '<span class="sw" style="background:linear-gradient(90deg,'+t.c1+' 50%,'+t.c2+' 50%)"></span>'+
-  '<span class="nome">'+t.nome+'</span></button>';
-}
-
-async function cambiaTema(id){
- const tok=localStorage.getItem('gh_token');
- if(!tok){alert('Token GitHub mancante: apri una volta admin-tema.html, salva il token e poi torna qui.');return;}
- const tr=TEMI.find(t=>t.id===id);
- if(!confirm('Applicare il tema "'+tr.nome+'" a TUTTE le app di TUTTI gli studi? La pubblicazione richiede circa 1 minuto.'))return;
- try{
-  const g=await fetch('https://api.github.com/repos/'+REPO+'/contents/tema.json',{headers:{Authorization:'Bearer '+tok}});
-  let sha=null;
-  if(g.ok){const j=await g.json();sha=j.sha;}
-  const b64=btoa(unescape(encodeURIComponent(JSON.stringify({tema:id},null,2))));
-  const body={message:'Tema: '+id,content:b64};
-  if(sha)body.sha=sha;
-  const r=await fetch('https://api.github.com/repos/'+REPO+'/contents/tema.json',{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok){const j=await r.json();alert('Errore GitHub: '+(j.message||r.status));return;}
-  alert('Tema "'+tr.nome+'" pubblicato: tra ~1 minuto TUTTE le app cambiano grafica.');
-  renderAdmin();
- }catch(e){alert('Errore: '+e.message);}
-}
-
-async function renderAdmin(){
-  if(sessionStorage.getItem('admin')!=='1')return;
-  const box=document.getElementById('adminPanel');
-  box.classList.remove('hidden');
-  let righe='';
-  try{
-    const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-    const oggi=new Date().toISOString().slice(0,10);
-    righe=(l.studi||[]).map(s=>'<tr><td>'+s.codice+'</td><td>'+(s.nome||'')+'</td><td>'+fmtData(s.scadenza)+'</td><td>'+(s.attivo?'SI':'NO')+'</td><td>'+(s.scadenza<oggi?'SCADUTA':'valida')+'</td></tr>').join('');
-  }catch(e){righe='<tr><td colspan="5">licenses.json non leggibile</td></tr>';}
-  let temaAttuale='classico';
-  try{const t=await(await fetch('tema.json?t='+Date.now(),{cache:'no-store'})).json();temaAttuale=t.tema||'classico';}catch(e){}
-  box.innerHTML='<h3>Pannello fornitore (sessione admin)</h3>'+
-   '<div class="riga"><b>CAMBIA STILE APP (tutti gli studi):</b> tema attuale = <b>'+temaAttuale+'</b></div>'+
-   '<div class="tema-grid">'+TEMI.map(t=>temaBtnHtml(t,t.id===temaAttuale)).join('')+'</div>'+
-   '<div class="riga">Vetrina GitHub: <a href="https://cibox72.github.io/AppCenterStudio_Premium/" target="_blank">apri</a></div>'+
-   '<div class="riga">Gestione studi & offerte: <a href="admin-offerte.html" target="_blank">apri pannello studi</a></div>'+
-   '<div class="riga">Tema grafico stagionale (pagina dedicata): <a href="admin-tema.html" target="_blank">apri pannello tema</a></div>'+
-   '<div class="riga">Cervello Cloudflare (worker): <a href="'+WORKER+'/health" target="_blank">health check</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard worker</a></div>'+
-   '<div class="riga">Magazzino R2 (foto clienti): <a href="'+R2_BASE+'/IMG_6086.jpg" target="_blank">test foto</a> &middot; <a href="https://dash.cloudflare.com" target="_blank">dashboard bucket</a></div>'+
-   '<div class="riga">Netlify (forms dati studio + identità): <a href="'+NETLIFY_BASE+'" target="_blank">apri</a> &middot; Forms: <a href="https://app.netlify.com" target="_blank">dashboard</a></div>'+
-   '<table><tr><th>Codice</th><th>Nome</th><th>Scadenza</th><th>Attivo</th><th>Stato</th></tr>'+righe+'</table>';
-}
-
-function backupGlobale(){
-  const d={};
-  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
-  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
-  alert('Backup globale scaricato.');
-}
-function ripristinoGlobale(){
-  const input=document.createElement('input');input.type='file';input.accept='.json';
-  input.onchange=e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{try{
-      const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-      if(typeof d!=='object')throw new Error('File non valido.');
-      if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
-      Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-      alert('Backup ripristinato. La pagina si ricarica.');location.reload();
-    }catch(err){alert('Errore: '+err.message)}};
-    r.readAsText(f);
-  };
-  input.click();
-}
-
+function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();alert('Backup globale scaricato.');}
+function ripristinoGlobale(){const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(typeof d!=='object')throw new Error('File non valido.');if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Backup ripristinato. La pagina si ricarica.');location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);};input.click();}
 init();
 </script>
 </body>
