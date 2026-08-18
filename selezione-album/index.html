@@ -2,252 +2,215 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppCenterStudio Premium - Selezione per Album</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 Selezione per Album - AppCenterStudio Premium</title>
 <script src="../tema.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e2e4e9}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);background-attachment:fixed;min-height:100vh;color:var(--testo)}
-.container{max-width:1100px;margin:0 auto;padding:20px}
-.app-header{text-align:center;margin-bottom:26px;padding:20px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
-.app-header h1{font-family:Georgia,serif;font-size:28px}
-.subtitle{color:var(--soft)}
-.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:22px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
-.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
-.topbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:18px}
-.btn-primary{padding:10px 20px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
-.btn-primary:hover{background:#333}
-.btn-secondary{padding:10px 18px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #111;border-radius:999px;cursor:pointer;font-size:13px}
-.btn-secondary:hover{background:#111;color:#fff}
-.btn-link{padding:7px 14px;background:rgba(255,255,255,0.9);color:#111;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-link:hover{border-color:#111;background:#fff}
-.btn-del{padding:7px 14px;background:rgba(255,255,255,0.9);color:#a00;border:1px solid #a00;border-radius:999px;cursor:pointer;font-size:12px}
-.btn-del:hover{background:#a00;color:#fff}
-.g-row{background:rgba(255,255,255,0.92);backdrop-filter:blur(4px);border:1px solid var(--bordo);border-radius:10px;padding:14px 16px;margin-bottom:12px;font-size:13px;box-shadow:0 2px 8px rgba(15,20,40,.04)}
-.g-row .code{font-family:monospace;font-weight:700}
-.chip{display:inline-block;padding:2px 10px;border:1px solid #ccc;border-radius:999px;font-size:11px;color:#555;margin:2px}
-.warn{color:#7a4a10;background:#fff4e0;border:1px solid #f0b050;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:600}
-.status{margin:8px 0}
+:root{--crema:#f4efe7;--carta:#fbf9f5;--taupe:#a3937d;--taupe-scuro:#6f6353;--beige:#e9dfcd;--testo:#4a4237;--soft:#9b8f7d;--bordo:#e5dccb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--crema);color:var(--testo);line-height:1.6;min-height:100vh}
+.topbar{display:flex;gap:8px;padding:12px 18px;background:rgba(251,249,245,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
+.topbar button{padding:8px 18px;background:#fff;border:1px solid var(--taupe);cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;color:var(--taupe-scuro);margin:0;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.topbar button:hover{background:var(--taupe);color:#fff}
+.hero{position:relative;overflow:hidden;text-align:center;padding:44px 20px 26px}
+.blob{position:absolute;opacity:.65;z-index:0}
+.blob.b1{width:280px;height:230px;top:-70px;left:-80px;background:var(--beige);border-radius:60% 40% 55% 45%/50% 60% 40% 50%}
+.blob.b2{width:320px;height:270px;bottom:-110px;right:-90px;background:#ddd0b8;opacity:.45;border-radius:45% 55% 40% 60%/55% 45% 60% 40%}
+.hero-inner{position:relative;z-index:1}
+.eyebrow{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--soft)}
+h1.big{font-family:Georgia,serif;font-size:54px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--taupe-scuro);margin:8px 0 4px}
+.sub{font-size:12px;letter-spacing:.45em;text-transform:uppercase;color:var(--taupe)}
+.container{max-width:1180px;margin:0 auto;padding:10px 20px 40px}
+.card{background:var(--carta);border:1px solid var(--bordo);padding:26px;margin-bottom:24px;border-radius:18px;box-shadow:0 8px 24px rgba(120,100,70,.08)}
+.card h2{font-family:Georgia,serif;font-size:20px;color:var(--taupe-scuro);padding-bottom:10px;border-bottom:1px solid var(--bordo)}
+.btn{display:inline-block;padding:9px 22px;background:var(--taupe);color:#fff;border:none;cursor:pointer;font-size:13px;border-radius:999px;margin:4px 2px;font-weight:600;letter-spacing:.05em}
+.btn:hover{background:var(--taupe-scuro)}
+.btn.secondary{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)}
+.btn.secondary:hover{background:var(--taupe);color:#fff}
+.btn.danger{background:#8c2f2f;color:#fff;border:none}
+.btn.danger:hover{background:#5e1f1f}
+.btn.wa{background:#25D366;color:#fff;border:none}
+.btn.wa:hover{background:#128C7E}
+select,input,textarea{width:100%;padding:10px;border:1px solid var(--bordo);margin:5px 0;font-family:inherit;border-radius:10px;background:#fff;color:var(--testo)}
+select:focus,input:focus{outline:2px solid var(--taupe)}
+label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
+.hint{font-size:12px;color:var(--soft)}
+.g-row{background:var(--carta);border:1px solid var(--bordo);padding:14px 18px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.g-row .code{font-family:monospace;color:var(--taupe-scuro);font-weight:700;background:var(--beige);padding:2px 8px;border-radius:6px;font-size:12px}
+.status{font-size:12px;color:var(--soft);margin:6px 0}
+.warn{background:var(--beige);border:1px solid #d3c3a2;border-radius:10px;padding:10px 14px;font-size:13px;color:#6b4d1a;margin:10px 0}
+.ok{background:#eaf3e4;border:1px solid #bcd3a8;border-radius:10px;padding:10px 14px;font-size:13px;color:#3f6b2e;margin:10px 0}
 .rowbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.lock-card{background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border:1px solid var(--bordo);border-radius:14px;padding:36px;max-width:430px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(15,20,40,.12)}
-.c-head{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--bordo);padding:16px;text-align:center;position:relative;top:0;z-index:5}
-.c-head img{height:44px;border-radius:50%;filter:grayscale(100%);margin-bottom:6px}
-.c-head h1{font-family:Georgia,serif;font-size:18px}
-.c-head p{font-size:13px;color:var(--soft);margin-top:4px}
-.c-folder-badge{display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:999px;font-size:13px;font-weight:600;margin-top:8px}
-.count-bar{position:sticky;top:0;z-index:6;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);text-align:center;padding:9px;font-size:13px;font-weight:700;font-family:Georgia,serif}
-.count-bar .n{font-family:monospace}
-.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:14px;max-width:1100px;margin:0 auto}
-.ph{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--bordo);background:#fff;cursor:pointer;box-shadow:0 2px 8px rgba(15,20,40,.04)}
-.ph img{width:100%;height:150px;object-fit:cover;display:block}
-.ph .heart{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #111;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:6px}
-.ph .heart svg{width:100%;height:100%;display:block}
-.ph.sel{border:2px solid #111}
-.ph .fname{font-size:10px;color:var(--soft);padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;display:flex;gap:10px;align-items:center;justify-content:center;padding:12px;flex-wrap:wrap;z-index:7}
-.bottom-bar .n{font-family:monospace;font-size:14px}
-.bb-btn{padding:10px 20px;border-radius:999px;border:1px solid #fff;background:transparent;color:#fff;font-size:13px;font-weight:600;cursor:pointer}
-.bb-btn.main{background:#fff;color:#111;border-color:#fff}
-.lb{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:50;display:none;flex-direction:column}
-.lb.open{display:flex}
-.lb-top{display:flex;align-items:center;gap:12px;padding:12px 16px;color:#fff;justify-content:space-between}
-.lb-count{font-family:monospace;font-size:14px}
-.lb-sel{font-size:13px;color:#bbb}
-.lb-btn{background:transparent;border:1px solid #fff;color:#fff;border-radius:999px;padding:6px 16px;cursor:pointer;font-size:14px;font-family:inherit}
-.lb-btn:hover{background:#fff;color:#111}
-.lb-imgwrap{flex:1;display:flex;align-items:center;justify-content:center;position:relative;padding:0 60px;min-height:0}
-.lb-imgwrap img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;background:#fff}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid #fff;background:rgba(0,0,0,.55);color:#fff;font-size:20px;cursor:pointer}
-.lb-nav:hover{background:#fff;color:#111}
-.lb-nav.prev{left:10px}
-.lb-nav.next{right:10px}
-.lb-bottom{display:flex;align-items:center;justify-content:center;gap:16px;padding:12px}
-.lb-name{color:#bbb;font-size:12px;font-family:monospace;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lb-heart{width:54px;height:54px;border-radius:50%;border:1px solid #fff;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:10px}
-.lb-heart svg{width:100%;height:100%;display:block}
-@media(max-width:640px){.lb-imgwrap{padding:0 8px}.lb-nav{width:38px;height:38px;font-size:16px;opacity:.85}}
+.chip{display:inline-block;background:var(--taupe);color:#fff;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;margin:2px}
+@media(max-width:800px){h1.big{font-size:36px;letter-spacing:.14em}}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<input type="file" id="filePicker" multiple accept="image/*" style="display:none" onchange="onFile(event)">
+
+<div class="topbar">
+  <button onclick="history.back()">← Indietro</button>
+  <button onclick="goHome()">Home</button>
+</div>
+
+<div class="hero">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">AppCenterStudio Premium</div>
+    <h1 class="big">Selezione per Album</h1>
+    <div class="sub">Selezione in studio o da casa</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <h2>Come funziona</h2>
+    <p class="hint">
+    1. <b>Carica foto</b>: manda nel magazzino le foto basse risoluzioni del cliente.<br>
+    2. <b>Selezione in studio</b>: falla come hai sempre fatto davanti al computer; poi premi "Selezione in studio" per registrarla.<br>
+    3. <b>Link da casa</b>: solo per chi non può venire; il link vale 7 giorni; le foto non scelte si eliminano da sole alla selezione.<br>
+    4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi, poi si eliminano da sole (con "Gallery +6 mesi" allunghi quando serve).<br>
+    5. <b>Sbagliato qualcosa?</b> Usa i pulsanti rossi "X selezione" o "X link casa" per annullare.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Clienti</h2>
+    <div id="listaClienti"></div>
+  </div>
+
+</div>
+
 <script>
-const $=id=>document.getElementById(id);
-const param=n=>new URLSearchParams(location.search).get(n);
-const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 const WORKER='https://acs-api.mairaluigi.workers.dev';
-function todayStr(){return new Date().toISOString().slice(0,10);}
-function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
-function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+const R2_BASE='https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
+let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCodice)sessionStorage.setItem('studio',studioCodice);
+function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
-const HEART_EMPTY='<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_FILLED='<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_EMPTY_LB='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-const HEART_FILLED_LB='<svg viewBox="0 0 24 24" fill="#e53935" stroke="#e53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+let clienti=JSON.parse(localStorage.getItem('appcenter_clienti')||'[]');
+let manifesti={};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const today=()=>new Date().toISOString().slice(0,10);
+const fmtData=d=>{if(!d)return'';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);};
 
-window.addEventListener('DOMContentLoaded',()=>{const s=param('s');if(s)return clientMode(s);adminGate();});
-
-function blocca(msg){document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif">Licenza non attiva</h2><p style="color:var(--soft)">'+esc(msg)+'</p></div></div>'}
-function errPage(msg){document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif">Selezione non disponibile</h2><p style="color:var(--soft)">'+esc(msg)+'</p></div></div>'}
-
-async function adminGate(){
- const codice=param('studio')||sessionStorage.getItem('studio');
- if(!codice)return blocca('Accedi da AppCenterStudio-Premium per aprire le applicazioni.');
- sessionStorage.setItem('studio',codice);
+async function refreshManifest(codice){
  try{
-  const l=await(await fetch('../licenses.json?t='+Date.now(),{cache:'no-store'})).json();
-  const s=(l.studi||[]).find(x=>x.codice===codice);
-  const oggi=todayStr();
-  if(!s)return blocca('Codice studio non riconosciuto.');
-  if(!s.attivo)return blocca('Accesso sospeso. Contatta il fornitore.');
-  if(s.scadenza<oggi)return blocca('Prova scaduta. Contatta il fornitore.');
- }catch(e){return blocca('Verifica licenza non riuscita.');}
- STUDIO_CODE=codice;
- renderStudio();
-}
-
-let STUDIO_CODE='',MANIFESTI={},pendingAzione='',pendingCliente='';
-function leggiClienti(){try{return JSON.parse(localStorage.getItem('clientiFotoData'))||{clients:[]}}catch(e){return{clients:[]}}}
-function leggiIdent(){try{return JSON.parse(localStorage.getItem('studioIdent'))||{}}catch(e){return{}}}
-function leggiContatti(){try{return JSON.parse(localStorage.getItem('studioContatti'))||{}}catch(e){return{}}}
-function dataUrlToBlob(d){try{const p=d.split(',');const bin=atob(p[0].split('base64,')[1]);const ab=new ArrayBuffer(bin.length);const u8=new Uint8Array(ab);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);return new Blob([ab],{type:p[0].split(';')[0].replace('data:','')});}catch(e){return null}}
-function linkSel(codice){return location.origin+location.pathname+'?s='+encodeURIComponent(STUDIO_CODE+'/'+codice)}
-function copiaTesto(t){if(navigator.clipboard)navigator.clipboard.writeText(t).catch(()=>{});}
-
-async function renderStudio(){
- const data=leggiClienti();
- document.getElementById('root').innerHTML=`
- <div class="container">
-  <div class="topbar">
-   <div style="display:flex;gap:8px">
-    <button class="btn-secondary" onclick="history.back()">&#x2190; Indietro</button>
-    <button class="btn-secondary" onclick="location.href='../index.html'">Home</button>
-   </div>
-   <button class="btn-primary" onclick="renderStudio()">Aggiorna stato</button>
-  </div>
-  <header class="app-header"><h1>Selezione per Album</h1><p class="subtitle">Selezione in studio o da casa, pulizia automatica, gallery con scadenza</p></header>
-  <div class="card">
-   <h2>Come funziona</h2>
-   <p style="font-size:13px;color:var(--soft);line-height:1.7">
-   1. <b>Carica foto</b>: manda nel magazzino le foto basse risoluzioni del cliente.<br>
-   2. <b>Selezione in studio</b>: falla come hai sempre fatto davanti al computer; poi premi "Selezione in studio" per registrarla.<br>
-   3. <b>Link da casa</b>: solo per chi non pu&ograve; venire; il link vale 7 giorni; le foto non scelte si eliminano da sole alla selezione.<br>
-   4. <b>Ritoccate</b>: carica le foto finali; restano in gallery 6 mesi, poi si eliminano da sole (con "Gallery +6 mesi" allunghi quando serve).<br>
-   5. <b>Sbagliato qualcosa?</b> Usa i pulsanti rossi "X selezione" o "X link casa" per annullare.</p>
-  </div>
-  <div class="card">
-   <h2>Clienti</h2>
-   <div id="listaClienti"><p class="warn">Caricamento stato...</p></div>
-  </div>
- </div>`;
- const box=$('listaClienti');
- if(!data.clients.length){box.innerHTML='<p class="warn">Nessun cliente. Aggiungili nell\'app Clienti &amp; Foto.</p>';return;}
- MANIFESTI={};
- await Promise.all(data.clients.map(async c=>{
-  try{MANIFESTI[c.codice]=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(STUDIO_CODE)+'&cliente='+encodeURIComponent(c.codice)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MANIFESTI[c.codice]={};}
- }));
- box.innerHTML=data.clients.slice().reverse().map(c=>{
-  const man=MANIFESTI[c.codice]||{};
-  return `<div class="g-row"><b>${esc(c.nome)} ${esc(c.cognome)}</b> &middot; <span class="code">${esc(c.codice)}</span>
-  <div class="status">${statoHtml(man)}</div>
-  <div class="rowbtns">
-   <button class="btn-link" onclick="scegliFile('upload','${c.codice}')">Carica foto</button>
-   <button class="btn-link" onclick="creaLink('${c.codice}')">Link da casa</button>
-   <button class="btn-link" onclick="regStudio('${c.codice}')">Selezione in studio</button>
-   <button class="btn-link" onclick="scegliFile('ritoccate','${c.codice}')">Carica ritoccate</button>
-   <button class="btn-link" onclick="proroga('${c.codice}')">Gallery +6 mesi</button>
-   <button class="btn-link" onclick="gruText('${c.codice}')">Text Gru</button>
-   <button class="btn-link" onclick="pdfSel('${c.codice}')">PDF stampa</button>
-   <button class="btn-del" onclick="resetMan('${c.codice}','selezione')">X selezione</button>
-   <button class="btn-del" onclick="resetMan('${c.codice}','link')">X link casa</button>
-  </div></div>`;
- }).join('');
+  const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
+  manifesti[codice]=await r.json();
+ }catch(e){manifesti[codice]={};}
 }
 
 function statoHtml(man){
- const t=[];
+ const chips=[];
  if(man.selezione){
   const n=Array.isArray(man.selezione.photos)?man.selezione.photos.length:null;
-  t.push('Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' &middot; '+n+' foto':''));
- }else t.push('Selezione: non ancora fatta');
- if(man.scadenza_link)t.push(man.scadenza_link>=todayStr()?'Link casa attivo fino al '+fmtData(man.scadenza_link):'Link casa scaduto il '+fmtData(man.scadenza_link));
- if(man.basse&&man.basse.length)t.push(man.basse.length+' foto nel magazzino');
- if(man.folders){const k=Object.keys(man.folders);if(k.length)t.push('Cartelle: '+k.map(x=>esc(x)+' ('+man.folders[x]+')').join(', '));}
- if(man.scadenza_gallery)t.push('Gallery fino al '+fmtData(man.scadenza_gallery));
- return t.map(x=>'<span class="chip">'+x+'</span>').join('');
+  chips.push('Selezione: '+(man.selezione.metodo==='studio'?'in studio':'tramite link')+' il '+fmtData(man.selezione.data)+(n!=null?' · '+n+' foto':''));
+ }else chips.push('Selezione: non ancora fatta');
+ if(man.scadenza_link)chips.push(man.scadenza_link>=today()?'Link casa attivo fino al '+fmtData(man.scadenza_link):'Link casa scaduto il '+fmtData(man.scadenza_link));
+ if(man.basse&&man.basse.length)chips.push(man.basse.length+' foto nel magazzino');
+ if(man.folders){const k=Object.keys(man.folders);if(k.length)chips.push('Cartelle: '+k.map(x=>x+' ('+man.folders[x]+')').join(', '));}
+ if(man.scadenza_gallery)chips.push('Gallery fino al '+fmtData(man.scadenza_gallery));
+ return chips.map(x=>'<span class="chip">'+x+'</span>').join(' ');
 }
 
 async function resetMan(codice,cosa){
  const msg=cosa==='selezione'?'Annullare la selezione registrata per questo cliente?':'Annullare il link da casa per questo cliente?';
  if(!confirm(msg))return;
  try{
-  const r=await(await fetch(WORKER+'/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:STUDIO_CODE,cliente:codice,cosa:cosa})})).json();
+  const r=await(await fetch(WORKER+'/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,cosa:cosa})})).json();
   if(r.error)return alert('Errore: '+r.error);
+  await refreshManifest(codice);
+  render();
   alert('Annullato.');
  }catch(e){alert('Errore: '+e.message);}
- renderStudio();
 }
 
-function scegliFile(azione,codice){pendingAzione=azione;pendingCliente=codice;const inp=$('filePicker');inp.value='';inp.click();}
-async function onFile(e){
- const files=[...e.target.files];if(!files.length)return;
- const fd=new FormData();
- fd.append('studio',STUDIO_CODE);fd.append('cliente',pendingCliente);
- files.forEach(f=>fd.append('file',f));
- fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:'varie'}))));
- const url=pendingAzione==='upload'?WORKER+'/upload':WORKER+'/ritoccate';
- alert('Caricamento di '+files.length+' file in corso...');
- try{
-  const r=await(await fetch(url,{method:'POST',body:fd})).json();
-  if(r.error)return alert('Errore caricamento: '+r.error);
-  alert('Caricati '+r.caricate+' file.');
- }catch(err){alert('Errore caricamento: '+err.message);}
- renderStudio();
- e.target.value='';
+function scegliFile(azione,codice){
+ const inp=document.createElement('input');
+ inp.type='file';inp.multiple=true;inp.accept='image/*';
+ inp.onchange=async e=>{
+  const files=[...e.target.files];if(!files.length)return;
+  const fd=new FormData();
+  fd.append('studio',studioCodice);fd.append('cliente',codice);
+  files.forEach(f=>fd.append('file',f));
+  fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:'varie'}))));
+  const url=azione==='upload'?WORKER+'/upload':WORKER+'/ritoccate';
+  alert('Caricamento di '+files.length+' file in corso...');
+  try{
+   const r=await(await fetch(url,{method:'POST',body:fd})).json();
+   if(r.error)return alert('Errore caricamento: '+r.error);
+   alert('Caricati '+r.caricate+' file.');
+   await refreshManifest(codice);
+   render();
+  }catch(err){alert('Errore caricamento: '+err.message);}
+ };
+ inp.click();
 }
 
 async function creaLink(codice){
- const ident=leggiIdent(),cont=leggiContatti();
+ const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+ const cont=JSON.parse(localStorage.getItem('studioContatti')||'{}');
  const fd=new FormData();
- fd.append('studio',STUDIO_CODE);fd.append('cliente',codice);fd.append('giorni','7');
+ fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','7');
  fd.append('nome_studio',ident.nome||'');
  fd.append('whatsapp',ident.telefono||cont.whatsapp||'');
  fd.append('messaggio','Tocca una foto per aprirla, usa il cuore per sceglierla.');
- if(ident.logoData&&ident.logoData.startsWith('data:')){const b=dataUrlToBlob(ident.logoData);if(b)fd.append('logo',b,'logo.png');}
  try{
   const r=await(await fetch(WORKER+'/link',{method:'POST',body:fd})).json();
   if(r.error)return alert('Errore link: '+r.error);
-  copiaTesto(linkSel(codice));
+  const link=location.origin+'/selezione-album/?s='+encodeURIComponent(studioCodice+'/'+codice);
+  navigator.clipboard.writeText(link).catch(()=>{});
+  await refreshManifest(codice);
+  render();
   alert('Link creato, valido fino al '+fmtData(r.scadenza_link)+'.\nLink copiato: incollalo nel WhatsApp del cliente.');
  }catch(e){alert('Errore link: '+e.message);}
- renderStudio();
+}
+
+async function inviaLinkWhatsApp(codice){
+ const man=manifesti[codice]||{};
+ if(!man.scadenza_link||man.scadenza_link<today()){
+  if(!confirm('Link non attivo o scaduto. Creare un nuovo link?'))return;
+  await creaLink(codice);
+  return;
+ }
+ const link=location.origin+'/selezione-album/?s='+encodeURIComponent(studioCodice+'/'+codice);
+ const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+ const num=ident.telefono||'';
+ const msg='Ciao! Ecco il link per selezionare le tue foto (valido fino al '+fmtData(man.scadenza_link)+'):\n'+link;
+ if(num){
+  window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank');
+ }else{
+  navigator.clipboard.writeText(msg).catch(()=>{});
+  alert('Numero WhatsApp non configurato. Messaggio copiato:\n\n'+msg);
+ }
 }
 
 async function regStudio(codice){
- if(!confirm('Registrare che la selezione di questo cliente e\' stata fatta in studio?'))return;
+ if(!confirm('Registrare che la selezione di questo cliente è stata fatta in studio?'))return;
  try{
-  const r=await(await fetch(WORKER+'/registra-studio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:STUDIO_CODE,cliente:codice})})).json();
+  const r=await(await fetch(WORKER+'/registra-studio',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})})).json();
   if(r.error)return alert('Errore: '+r.error);
+  await refreshManifest(codice);
+  render();
   alert('Selezione in studio registrata.');
  }catch(e){alert('Errore: '+e.message);}
- renderStudio();
 }
 
 async function proroga(codice){
  if(!confirm('Allungare la gallery di questo cliente di 6 mesi?'))return;
  try{
-  const r=await(await fetch(WORKER+'/proroga',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:STUDIO_CODE,cliente:codice})})).json();
+  const r=await(await fetch(WORKER+'/proroga',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})})).json();
   if(r.error)return alert('Errore: '+r.error);
+  await refreshManifest(codice);
+  render();
   alert('Gallery allungata fino al '+fmtData(r.scadenza_gallery)+'.');
  }catch(e){alert('Errore: '+e.message);}
- renderStudio();
 }
 
 function gruText(codice){
- const man=MANIFESTI[codice]||{};
+ const man=manifesti[codice]||{};
  const photos=(man.selezione&&Array.isArray(man.selezione.photos))?man.selezione.photos:[];
  if(!photos.length)return alert('Nessuna selezione con elenco foto per questo cliente.');
  const blob=new Blob([photos.join('\n')],{type:'text/plain'});
@@ -257,10 +220,10 @@ function gruText(codice){
 }
 
 function pdfSel(codice){
- const man=MANIFESTI[codice]||{};
+ const man=manifesti[codice]||{};
  const sel=man.selezione||{};
  const photos=Array.isArray(sel.photos)?sel.photos:[];
- const cli=leggiClienti().clients.find(c=>c.codice===codice);
+ const cli=clienti.find(c=>c.codice===codice);
  try{
   const {jsPDF}=window.jspdf;const doc=new jsPDF('p','mm','a4');
   doc.setFillColor(17,17,17);doc.rect(0,0,210,35,'F');
@@ -276,103 +239,32 @@ function pdfSel(codice){
  }catch(e){alert('Errore PDF: '+e.message);}
 }
 
-/* ===== CLIENTE ===== */
-let PH=[],SEL=new Set(),LB=0,MAN=null,C_STUDIO='',C_CLIENTE='';
-async function clientMode(s){
- const parts=decodeURIComponent(s).split('/');
- if(parts.length<2)return errPage('Link non valido. Contatta lo studio.');
- C_STUDIO=parts[0];C_CLIENTE=parts.slice(1).join('/');
- try{MAN=await(await fetch(WORKER+'/manifest?studio='+encodeURIComponent(C_STUDIO)+'&cliente='+encodeURIComponent(C_CLIENTE)+'&t='+Date.now(),{cache:'no-store'})).json();}catch(e){MAN=null;}
- if(!MAN||!MAN.basse||!MAN.basse.length)return errPage('Nessuna foto pubblicata. Contatta lo studio.');
- if(!MAN.scadenza_link||MAN.scadenza_link<todayStr())return errPage('Il link selezione e\' scaduto. Contatta lo studio.');
- PH=MAN.basse;
- document.title='Selezione foto'+(MAN.nome_studio?' - '+MAN.nome_studio:'');
- const logo=MAN.logo?R2_BASE+'/'+C_STUDIO+'/'+C_CLIENTE+'/'+MAN.logo:'';
- document.getElementById('root').innerHTML=`
- <div class="c-head">${logo?`<img src="${logo}" alt="logo" onerror="this.style.display='none'"><br>`:''}
-  <h1>${esc(MAN.nome_studio||'Studio Fotografico')}</h1>
-  <p>${esc(MAN.messaggio||'Tocca una foto per aprirla, usa il cuore per sceglierla.')}</p>
-  <span class="c-folder-badge">Link valido fino al ${esc(fmtData(MAN.scadenza_link))}</span>
- </div>
- <div class="count-bar" id="countBar"><span class="n">0</span> foto selezionate</div>
- <div class="ph-grid" id="grid"></div>
- <div class="bottom-bar">
-  <span class="n" id="selCount">0 selezionate</span>
-  <button class="bb-btn" onclick="SEL.clear();draw();">Azzera</button>
-  <button class="bb-btn main" onclick="inviaSel()">Invia selezione</button>
- </div>
- <div class="lb" id="lb">
-  <div class="lb-top">
-   <span class="lb-count" id="lbCount"></span>
-   <span class="lb-sel" id="lbSel"></span>
-   <button class="lb-btn" onclick="closeLb()">Chiudi &#x2715;</button>
-  </div>
-  <div class="lb-imgwrap" id="lbWrap">
-   <button class="lb-nav prev" onclick="lbPrev(event)">&#x2190;</button>
-   <img id="lbImg" src="" alt="">
-   <button class="lb-nav next" onclick="lbNext(event)">&#x2192;</button>
-  </div>
-  <div class="lb-bottom">
-   <span class="lb-name" id="lbName"></span>
-   <button class="lb-heart" id="lbHeart" onclick="lbToggle()"></button>
-  </div>
- </div>`;
- draw();setupLb();
+function render(){
+ const box=document.getElementById('listaClienti');
+ if(!clienti.length){box.innerHTML='<p class="hint">Nessun cliente. Aggiungili nell\'app Clienti & Foto.</p>';return;}
+ box.innerHTML=clienti.slice().reverse().map(c=>{
+  const man=manifesti[c.codice]||{};
+  return '<div class="g-row"><div><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span>'+
+   '<div class="status">'+statoHtml(man)+'</div>'+
+   '</div><div class="rowbtns">'+
+   '<button class="btn secondary" onclick="scegliFile(\'upload\',\''+c.codice+'\')">Carica foto</button>'+
+   '<button class="btn" onclick="creaLink(\''+c.codice+'\')">Link da casa</button>'+
+   '<button class="btn wa" onclick="inviaLinkWhatsApp(\''+c.codice+'\')">Invia su WhatsApp</button>'+
+   '<button class="btn secondary" onclick="regStudio(\''+c.codice+'\')">Selezione in studio</button>'+
+   '<button class="btn secondary" onclick="scegliFile(\'ritoccate\',\''+c.codice+'\')">Carica ritoccate</button>'+
+   '<button class="btn secondary" onclick="proroga(\''+c.codice+'\')">Gallery +6 mesi</button>'+
+   '<button class="btn secondary" onclick="gruText(\''+c.codice+'\')">Text Gru</button>'+
+   '<button class="btn secondary" onclick="pdfSel(\''+c.codice+'\')">PDF stampa</button>'+
+   '<button class="btn danger" onclick="resetMan(\''+c.codice+'\',\'selezione\')">X selezione</button>'+
+   '<button class="btn danger" onclick="resetMan(\''+c.codice+'\',\'link\')">X link casa</button>'+
+   '</div></div>';
+ }).join('');
 }
-function photoUrl(i){return R2_BASE+'/'+C_STUDIO+'/'+C_CLIENTE+'/basse/'+encodeURIComponent(PH[i])}
-function draw(){
- $('grid').innerHTML=PH.map((p,i)=>`
-  <div class="ph ${SEL.has(p)?'sel':''}" onclick="openLb(${i})">
-   <img src="${photoUrl(i)}" loading="lazy" alt="">
-   <div class="heart" onclick="event.stopPropagation();toggle(${i})">${SEL.has(p)?HEART_FILLED:HEART_EMPTY}</div>
-   <div class="fname">${esc(p)}</div>
-  </div>`).join('');
- $('selCount').textContent=SEL.size+' selezionate';
- const cb=$('countBar');if(cb)cb.innerHTML='<span class="n">'+SEL.size+'</span> foto selezionate';
-}
-function toggle(i){SEL.has(PH[i])?SEL.delete(PH[i]):SEL.add(PH[i]);draw();if($('lb')&&$('lb').classList.contains('open'))renderLb();}
-function openLb(i){LB=i;renderLb();$('lb').classList.add('open');document.body.style.overflow='hidden';}
-function closeLb(){$('lb').classList.remove('open');document.body.style.overflow='';}
-function renderLb(){
- $('lbImg').src=photoUrl(LB);
- $('lbName').textContent=PH[LB];
- $('lbCount').textContent=(LB+1)+' / '+PH.length;
- $('lbHeart').innerHTML=SEL.has(PH[LB])?HEART_FILLED_LB:HEART_EMPTY_LB;
- $('lbSel').textContent=SEL.size+' selezionate';
-}
-function lbPrev(e){if(e)e.stopPropagation();LB=(LB-1+PH.length)%PH.length;renderLb();}
-function lbNext(e){if(e)e.stopPropagation();LB=(LB+1)%PH.length;renderLb();}
-function lbToggle(){const i=LB;SEL.has(PH[i])?SEL.delete(PH[i]):SEL.add(PH[i]);draw();renderLb();}
-function setupLb(){
- const w=$('lbWrap');if(!w)return;
- let tx=0,ty=0;
- w.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
- w.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){dx<0?lbNext():lbPrev();}},{passive:true});
- document.addEventListener('keydown',e=>{
-  if(!$('lb')||!$('lb').classList.contains('open'))return;
-  if(e.key==='ArrowLeft'){e.preventDefault();lbPrev();}
-  if(e.key==='ArrowRight'){e.preventDefault();lbNext();}
-  if(e.key==='Escape')closeLb();
- });
-}
-async function inviaSel(){
- if(!SEL.size)return alert('Nessuna foto selezionata: tocca il cuore sulle foto che vuoi.');
- if(!confirm('Inviare la selezione di '+SEL.size+' foto allo studio?'))return;
- const fd=new FormData();
- fd.append('studio',C_STUDIO);fd.append('cliente',C_CLIENTE);
- fd.append('photos',JSON.stringify([...SEL]));
- fd.append('metodo','link');
- fd.append('cliente_nome',(MAN.cliente_nome||''));
- try{
-  const r=await(await fetch(WORKER+'/selezione',{method:'POST',body:fd})).json();
-  if(r.error)return alert('Errore invio: '+r.error);
-  if(MAN.whatsapp){
-   const testo='NUOVA SELEZIONE da '+(MAN.nome_studio||'studio')+' - cliente '+C_CLIENTE+'. '+SEL.size+' foto scelte. Le foto non scelte sono state eliminate dal magazzino.';
-   window.open('https://wa.me/'+MAN.whatsapp+'?text='+encodeURIComponent(testo),'_blank');
-  }
-  document.getElementById('root').innerHTML='<div class="lock-wrap"><div class="lock-card"><h2 style="font-family:Georgia,serif;margin:10px 0">Selezione inviata!</h2><p style="color:var(--soft)">Lo studio ha ricevuto le tue foto scelte e ti contatter&agrave; presto.</p></div></div>';
- }catch(e){alert('Errore invio: '+e.message);}
-}
+
+(async()=>{
+ for(const c of clienti)await refreshManifest(c.codice);
+ render();
+})();
 </script>
 </body>
 </html>
