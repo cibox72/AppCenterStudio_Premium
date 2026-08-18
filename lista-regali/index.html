@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista Regali - AppCenterStudio Premium</title>
+<script src="../tema.js"></script>
+<style>
+  :root {
+    --bg-color: #f5f1e8;
+    --text-color: #4a4036;
+    --accent-color: #8b7d6b;
+    --card-bg: #ffffff;
+    --border-color: #d4c5b0;
+  }
+  body {
+    font-family: Georgia, serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  .topbar {
+    background-color: var(--accent-color);
+    color: #fff;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar button {
+    background: none;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    margin-left: 5px;
+  }
+  .topbar button:hover {
+    background: rgba(255,255,255,0.2);
+  }
+  .container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  .card h2, .card h3 {
+    margin-top: 0;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: Georgia, serif;
+    box-sizing: border-box;
+  }
+  button.action-btn {
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+  button.action-btn:hover {
+    opacity: 0.9;
+  }
+  button.danger-btn {
+    background-color: #b00020;
+  }
+  .row-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .row-item:last-child {
+    border-bottom: none;
+  }
+  .novita-badge {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background: #b00020;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 4px;
+    transform: rotate(-8deg);
+    animation: blink 1s infinite;
+    font-weight: bold;
+    z-index: 101;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .sync-status {
+    font-size: 0.8em;
+    opacity: 0.8;
+  }
+  .progress-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    height: 20px;
+    margin: 10px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background-color: var(--accent-color);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  .guest-view {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .guest-view h1 {
+    color: var(--accent-color);
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <button onclick="window.history.back()">← Indietro</button>
+      <button onclick="window.location.href='../index.html'">Home</button>
+      <button onclick="backupGlobale()">Backup globale</button>
+      <button onclick="ripristinoGlobale()">Ripristino globale</button>
+    </div>
+    <div class="sync-status" id="syncStatus">Sync cloud: in attesa...</div>
+  </div>
+
+  <div class="novita-badge" id="novitaBadge">NOVITÀ</div>
+
+  <div class="container" id="appContainer">
+    <!-- Contenuto iniettato dinamicamente -->
+  </div>
+
+<script>
+const WORKER_URL = 'https://acs-api.mairaluigi.workers.dev';
+const DB_KEY = 'listaregali';
+let studioIdent = { nome: 'Studio Fotografico', codice: '' };
+let dbData = { eventi: [], promozioni: [] };
+let activePromo = null;
+
+function getParam(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+function generateCode() {
+  return 'REG-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' });
+}
+
+async function fetchStudioName(codice) {
+  try {
+    const res = await fetch('../licenses.json');
+    const licenses = await res.json();
+    const studio = licenses.find(l => l.codice === codice && l.attivo);
+    if (studio) {
+      studioIdent.nome = studio.nome;
+      studioIdent.codice = studio.codice;
+    }
+  } catch(e) {
+    console.log('Impossibile caricare licenses.json, uso default');
+  }
+}
+
+async function loadDb() {
+  document.getElementById('syncStatus').textContent = 'Sync cloud: caricamento...';
+  try {
+    const res = await fetch(`${WORKER_URL}/db-load?key=${DB_KEY}`);
+    if (res.ok) {
+      const data = await res.json();
+      dbData = data || { eventi: [], promozioni: [] };
+      document.getElementById('syncStatus').textContent = 'Sync cloud: aggiornato';
+    } else {
+      dbData = { eventi: [], promozioni: [] };
+      document.getElementById('syncStatus').textContent = 'Sync cloud: errore';
+    }
+  } catch (e) {
+    console.error(e);
+    document.getElementById('syncStatus').textContent = 'Sync cloud: offline';
+  }
+}
+
+async function saveDb() {
+  document.getElementById('syncStatus').textContent = 'Sync cloud: salvataggio...';
+  try {
+    const res = await fetch(`${WORKER_URL}/db-save?key=${DB_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dbData)
+    });
+    if (res.ok) {
+      document.getElementById('syncStatus').textContent = 'Sync cloud: salvato';
+    } else {
+      document.getElementById('syncStatus').textContent = 'Sync cloud: errore salvataggio';
+    }
+  } catch (e) {
+    console.error(e);
+    document.getElementById('syncStatus').textContent = 'Sync cloud: errore';
+  }
+}
+
+async function backupGlobale() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbData));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "backup_listaregali.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+  alert('Backup globale scaricato.');
+}
+
+async function ripristinoGlobale() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        dbData = JSON.parse(event.target.result);
+        await saveDb();
+        alert('Ripristino globale completato con successo.');
+        init();
+      } catch (err) {
+        alert('Errore nel file di ripristino.');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// VISTA STUDIO
+function renderStudioView() {
+  const container = document.getElementById('appContainer');
+  container.innerHTML = `
+    <div class="card">
+      <h2>Nuova Lista Regali</h2>
+      <label>Nome dello Studio</label>
+      <input type="text" id="nomeStudioInput" value="${studioIdent.nome}" onchange="studioIdent.nome = this.value">
+      <label>Nomi Sposi / Festeggiati</label>
+      <input type="text" id="newSposi" placeholder="Es. Mario e Luisa">
+      <label>Tipo Evento</label>
+      <select id="newTipo">
+        <option value="Matrimonio">Matrimonio</option>
+        <option value="Battesimo">Battesimo</option>
+        <option value="Compleanno">Compleanno</option>
+        <option value="Altro">Altro</option>
+      </select>
+      <label>Data Evento</label>
+      <input type="date" id="newData">
+      <label>Obiettivo € (Segreto agli invitati)</label>
+      <input type="number" id="newObiettivo" placeholder="Es. 2000">
+      <label>Email PayPal Sposi</label>
+      <input type="email" id="newPaypal" placeholder="email@esempio.com">
+      <button class="action-btn" onclick="creaLista()">Crea lista</button>
+    </div>
+
+    <div class="card">
+      <h2>Liste create</h2>
+      <div id="listeCreate"></div>
+    </div>
+
+    <div class="card">
+      <h2>Promozioni Invitati</h2>
+      <label>Titolo Promozione</label>
+      <input type="text" id="promoTitolo" placeholder="Es. Sconto Album">
+      <label>Testo Promozione</label>
+      <textarea id="promoTesto" rows="3" placeholder="Es. Grazie per il regalo! Ecco uno sconto sul tuo album."></textarea>
+      <label>Sconto %</label>
+      <input type="number" id="promoSconto" placeholder="15">
+      <button class="action-btn" onclick="creaPromozione()">Crea Promozione</button>
+      <div id="listaPromozioni" style="margin-top:15px;"></div>
+    </div>
+
+    <div class="card">
+      <h2>Numeri Raccolti</h2>
+      <div id="listaNumeri"></div>
+    </div>
+  `;
+  renderListeCreate();
+  renderPromozioni();
+  renderNumeri();
+}
+
+function creaLista() {
+  const sposi = document.getElementById('newSposi').value;
+  const tipo = document.getElementById('newTipo').value;
+  const data = document.getElementById('newData').value;
+  const obiettivo = parseFloat(document.getElementById('newObiettivo').value) || 0;
+  const paypal = document.getElementById('newPaypal').value;
+
+  if (!sposi || !paypal) {
+    alert('Compilare nomi e email PayPal.');
+    return;
+  }
+
+  const newEvent = {
+    id: generateId(),
+    studio: studioIdent.codice,
+    sposi,
+    tipo,
+    data,
+    obiettivo,
+    paypal,
+    codiceSposa: generateId().substr(0, 8),
+    regali: [],
+    numeri: []
+  };
+
+  dbData.eventi.push(newEvent);
+  saveDb().then(() => {
+    alert('Lista creata con successo!');
+    renderStudioView();
+  });
+}
+
+function renderListeCreate() {
+  const div = document.getElementById('listeCreate');
+  if (dbData.eventi.length === 0) {
+    div.innerHTML = '<p>Nessuna lista creata.</p>';
+    return;
+  }
+
+  let html = '';
+  dbData.eventi.forEach(ev => {
+    const totale = ev.regali.reduce((sum, r) => sum + (parseFloat(r.importo) || 0), 0);
+    html += `
+      <div class="row-item">
+        <div>
+          <strong>${ev.sposi}</strong> (${ev.tipo}) - ${formatDate(ev.data)}<br>
+          Totale raccolto: € ${totale.toFixed(2)}
+        </div>
+        <div>
+          <button class="action-btn" onclick="visualizzaLista('${ev.id}')">VISUALIZZA</button>
+          <button class="action-btn" onclick="modificaLista('${ev.id}')">MODIFICA</button>
+          <button class="action-btn" onclick="creaPdfLista('${ev.id}')">CREA PDF</button>
+          <button class="action-btn danger-btn" onclick="eliminaLista('${ev.id}')">ELIMINA</button>
+          <button class="action-btn" onclick="copiaLinkInvitati('${ev.id}')">Copia link invitati</button>
+          <button class="action-btn" onclick="copiaLinkSposi('${ev.id}')">Copia link sposi</button>
+          <button class="action-btn" onclick="inviaWaSposi('${ev.id}')">Invia WA sposi</button>
+        </div>
+      </div>
+    `;
+  });
+  div.innerHTML = html;
+}
+
+function visualizzaLista(id) {
+  const ev = dbData.eventi.find(e => e.id === id);
+  if (!ev) return;
+  let msg = `Lista: ${ev.sposi}\nTipo: ${ev.tipo}\nData: ${formatDate(ev.data)}\nObiettivo: € ${ev.obiettivo}\nPayPal: ${ev.paypal}\n\nRegali:\n`;
+  ev.regali.forEach(r => {
+    msg += `- ${r.nome}: € ${r.importo} (${formatDate(r.data)}) - Cod: ${r.codice}\n`;
+  });
+  alert(msg);
+}
+
+function modificaLista(id) {
+  const ev = dbData.eventi.find(e => e.id === id);
+  if (!ev) return;
+  const nuovoPaypal = prompt('Nuova email PayPal:', ev.paypal);
+  if (nuovoPaypal !== null) {
+    ev.paypal = nuovoPaypal;
+    saveDb().then(() => {
+      alert('Lista aggiornata.');
+      renderListeCreate();
+    });
+  }
+}
+
+function creaPdfLista(id) {
+  const ev = dbData.eventi.find(e => e.id === id);
+  if (!ev) return;
+  const totale = ev.regali.reduce((sum, r) => sum + (parseFloat(r.importo) || 0), 0);
+  
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <html>
+    <head><title>Lista Regali - ${ev.sposi}</title>
+    <style>
+      body { font-family: Georgia, serif; padding: 20px; color: #4a4036; }
+      h1 { color: #8b7d6b; border-bottom: 1px solid #d4c5b0; padding-bottom: 10px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { border: 1px solid #d4c5b0; padding: 8px; text-align: left; }
+      th { background-color: #f5f1e8; }
+      .footer { margin-top: 30px; font-size: 0.9em; text-align: center; color: #8b7d6b; }
+    </style>
+    </head>
+    <body>
+      <h1>Lista Regali - ${studioIdent.nome}</h1>
+      <p><strong>Festeggiati:</strong> ${ev.sposi}</p>
+      <p><strong>Tipo Evento:</strong> ${ev.tipo}</p>
+      <p><strong>Data:</strong> ${formatDate(ev.data)}</p>
+      <h2>Riepilogo Regali</h2>
+      <table>
+        <tr><th>Nome</th><th>Messaggio</th><th>Importo</th><th>Data</th><th>Codice Sconto</th></tr>
+        ${ev.regali.map(r => `<tr><td>${r.nome}</td><td>${r.msg}</td><td>€ ${parseFloat(r.importo).toFixed(2)}</td><td>${formatDate(r.data)}</td><td>${r.codice}</td></tr>`).join('')}
+      </table>
+      <h3>Totale Raccolto: € ${totale.toFixed(2)}</h3>
+      <div class="footer">
+        <p>Grazie per aver scelto ${studioIdent.nome}</p>
+        <p>Documento generato il ${new Date().toLocaleDateString('it-IT')}</p>
+      </div>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+function eliminaLista(id) {
+  if (confirm('Sei sicuro di voler eliminare questa lista?')) {
+    dbData.eventi = dbData.eventi.filter(e => e.id !== id);
+    saveDb().then(() => renderListeCreate());
+  }
+}
+
+function copiaLinkInvitati(id) {
+  const ev = dbData.eventi.find(e => e.id === id);
+  const url = `${window.location.origin}${window.location.pathname}?e=${id}&s=${ev.studio}&nomeStudio=${encodeURIComponent(studioIdent.nome)}`;
+  navigator.clipboard.writeText(url).then(() => alert('Link invitati copiato negli appunti!'));
+}
+
+function copiaLinkSposi(id) {
+  const ev = dbData.eventi.find(e => e.id === id);
+  const url = `${window.location.origin}${window.location.pathname}?sposa=${id}&k=${ev.codiceSposa}&s=${ev.studio}&nomeStudio=${encodeURIComponent(studioIdent.nome)}`;
+  navigator.clipboard.writeText(url).then(() => alert('Link sposi copiato negli appunti!'));
+}
+
+function inviaWaSposi(id) {
+  const ev = dbData.eventi.find(e => e.id === id);
+  if (!ev) return;
+  const totale = ev.regali.reduce((sum, r) => sum + (parseFloat(r.importo) || 0), 0);
+  const linkCruscotto = `${window.location.origin}${window.location.pathname}?sposa=${id}&k=${ev.codiceSposa}&s=${ev.studio}&nomeStudio=${encodeURIComponent(studioIdent.nome)}`;
+  const testo = `Ciao ${ev.sposi}! La vostra Lista Regali con ${studioIdent.nome} ha raggiunto € ${totale.toFixed(2)}. Controllate il vostro cruscotto privato: ${linkCruscotto}`;
+  const url = `https://wa.me/?text=${encodeURIComponent(testo)}`;
+  window.open(url, '_blank');
+}
+
+function creaPromozione() {
+  const titolo = document.getElementById('promoTitolo').value;
+  const testo = document.getElementById('promoTesto').value;
+  const sconto = parseFloat(document.getElementById('promoSconto').value) || 0;
+
+  if (!titolo || !testo) {
+    alert('Compilare titolo e testo della promozione.');
+    return;
+  }
+
+  dbData.promozioni.push({
+    id: generateId(),
+    titolo,
+    testo,
+    sconto,
+    creata: new Date().toISOString()
+  });
+
+  saveDb().then(() => {
+    alert('Promozione creata!');
+    renderPromozioni();
+  });
+}
+
+function renderPromozioni() {
+  const div = document.getElementById('listaPromozioni');
+  if (dbData.promozioni.length === 0) {
+    div.innerHTML = '<p>Nessuna promozione.</p>';
+    return;
+  }
+
+  let html = '<label>Promozione Attiva</label><select id="selectPromoAttiva" onchange="attivaPromozione(this.value)"><option value="">Nessuna</option>';
+  dbData.promozioni.forEach(p => {
+    const isActive = activePromo === p.id ? 'selected' : '';
+    html += `<option value="${p.id}" ${isActive}>${p.titolo} (-${p.sconto}%)</option>`;
+  });
+  html += '</select><br><br>';
+
+  dbData.promozioni.forEach(p => {
+    html += `
+      <div class="row-item">
+        <div><strong>${p.titolo}</strong>: ${p.testo} (-${p.sconto}%)</div>
+        <button class="action-btn danger-btn" onclick="eliminaPromozione('${p.id}')">Elimina</button>
+      </div>
+    `;
+  });
+  div.innerHTML = html;
+  if (activePromo) {
+    document.getElementById('selectPromoAttiva').value = activePromo;
+  }
+}
+
+function attivaPromozione(id) {
+  activePromo = id || null;
+  alert('Promozione attiva aggiornata.');
+}
+
+function eliminaPromozione(id) {
+  if (confirm('Eliminare questa promozione?')) {
+    dbData.promozioni = dbData.promozioni.filter(p => p.id !== id);
+    if (activePromo === id) activePromo = null;
+    saveDb().then(() => renderPromozioni());
+  }
+}
+
+function renderNumeri() {
+  const div = document.getElementById('listaNumeri');
+  let html = '';
+  let hasNumbers = false;
+
+  dbData.eventi.forEach(ev => {
+    ev.numeri.forEach(n => {
+      hasNumbers = true;
+      html += `
+        <div class="row-item">
+          <div>
+            <strong>${ev.sposi}</strong> - ${n.nome}<br>
+            ${n.n1} / ${n.n2} (${formatDate(n.data)})
+          </div>
+          <div>
+            <button class="action-btn" onclick="inviaPromoWa('${n.n1}', '${ev.sposi}')">Invia promo a ${n.n1}</button>
+            <button class="action-btn" onclick="inviaPromoWa('${n.n2}', '${ev.sposi}')">Invia promo a ${n.n2}</button>
+          </div>
+        </div>
+      `;
+    });
+  });
+
+  if (!hasNumbers) {
+    html = '<p>Nessun numero raccolto.</p>';
+  }
+  div.innerHTML = html;
+}
+
+function inviaPromoWa(numero, sposi) {
+  const promo = dbData.promozioni.find(p => p.id === activePromo);
+  if (!promo) {
+    alert('Seleziona prima una "Promozione Attiva" nella sezione Promozioni Invitati.');
+    return;
+  }
+  let cleanNumber = numero.replace(/\D/g, '');
+  if (cleanNumber.length === 10 && cleanNumber.startsWith('3')) {
+    cleanNumber = '39' + cleanNumber;
+  }
+  const testo = `Ciao! Da parte di ${sposi} e ${studioIdent.nome}: ${promo.titolo}. ${promo.testo}`;
+  const url = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(testo)}`;
+  window.open(url, '_blank');
+}
+
+// VISTA INVITATO
+function renderGuestView() {
+  const eventId = getParam('e');
+  const studioCode = getParam('s');
+  
+  const ev = dbData.eventi.find(e => e.id === eventId && e.studio === studioCode);
+  if (!ev) {
+    document.getElementById('appContainer').innerHTML = '<div class="card"><h2>Lista non trovata o scaduta.</h2></div>';
+    return;
+  }
+
+  studioIdent.nome = getParam('nomeStudio') || 'Studio Fotografico';
+  const container = document.getElementById('appContainer');
+  container.className = 'container guest-view';
+  container.innerHTML = `
+    <div class="card">
+      <h1>${ev.sposi}</h1>
+      <p>Con la partecipazione di <strong>${studioIdent.nome}</strong></p>
+      <p>Vi ringraziamo per il vostro affetto!</p>
+      
+      <label>Il tuo nome</label>
+      <input type="text" id="guestNome" placeholder="Nome e Cognome">
+      
+      <label>Messaggio di auguri</label>
+      <textarea id="guestMsg" rows="3" placeholder="Scrivi un messaggio per gli sposi..."></textarea>
+      
+      <label>Importo Regalo (€)</label>
+      <input type="number" id="guestImporto" placeholder="Es. 50">
+      
+      <button class="action-btn" style="width:100%; margin-top:10px;" onclick="pagaPayPal('${ev.paypal}', '${ev.sposi}')">Paga con PayPal</button>
+      
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+      
+      <h3>Conferma Regalo</h3>
+      <p style="font-size:0.9em;">Dopo il pagamento, conferma qui per ricevere il tuo codice sconto.</p>
+      <button class="action-btn" style="width:100%;" onclick="confermaRegalo('${ev.id}')">Conferma regalo</button>
+      
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border-color);">
+      
+      <h3>Lascia i tuoi contatti</h3>
+      <p style="font-size:0.9em;">Lascia almeno 2 numeri cellulari per ricevere una promozione speciale!</p>
+      <input type="text" id="contactNome" placeholder="Il tuo nome">
+      <input type="tel" id="contactN1" placeholder="Numero 1 (es. 3331234567)">
+      <input type="tel" id="contactN2" placeholder="Numero 2 (es. 3471234567)">
+      <button class="action-btn" style="width:100%;" onclick="salvaContatti('${ev.id}')">Salva contatti</button>
+    </div>
+  `;
+}
+
+function pagaPayPal(paypalEmail, sposi) {
+  const importo = document.getElementById('guestImporto').value;
+  if (!importo || importo <= 0) {
+    alert('Inserisci un importo valido.');
+    return;
+  }
+  const nome = document.getElementById('guestNome').value || 'Invitato';
+  const itemName = `Regalo per ${sposi} da ${nome}`;
+  const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(paypalEmail)}&currency_code=EUR&amount=${encodeURIComponent(importo)}&item_name=${encodeURIComponent(itemName)}`;
+  window.open(paypalUrl, '_blank');
+}
+
+function confermaRegalo(eventId) {
+  const nome = document.getElementById('guestNome').value;
+  const msg = document.getElementById('guestMsg').value;
+  const importo = parseFloat(document.getElementById('guestImporto').value);
+
+  if (!nome || !importo || importo <= 0) {
+    alert('Compila il tuo nome e un importo valido prima di confermare.');
+    return;
+  }
+
+  const ev = dbData.eventi.find(e => e.id === eventId);
+  const codice = generateCode();
+  const promo = dbData.promozioni.find(p => p.id === activePromo);
+  const sconto = promo ? promo.sconto : 15;
+  
+  ev.regali.push({
+    id: generateId(),
+    nome,
+    msg,
+    importo,
+    data: new Date().toISOString(),
+    codice
+  });
+
+  saveDb().then(() => {
+    alert(`Grazie ${nome}! Il tuo regalo è stato registrato.\n\nIl tuo codice sconto è: ${codice}\nConservalo per ottenere il ${sconto}% di sconto sul tuo prossimo acquisto con ${studioIdent.nome}!`);
+    document.getElementById('guestImporto').value = '';
+    document.getElementById('guestMsg').value = '';
+  });
+}
+
+function salvaContatti(eventId) {
+  const nome = document.getElementById('contactNome').value;
+  const n1 = document.getElementById('contactN1').value.replace(/\D/g, '');
+  const n2 = document.getElementById('contactN2').value.replace(/\D/g, '');
+
+  if (!nome || n1.length < 9 || n2.length < 9) {
+    alert('Compila il nome e inserisci almeno 2 numeri di cellulare validi (minimo 9 cifre).');
+    return;
+  }
+
+  const ev = dbData.eventi.find(e => e.id === eventId);
+  ev.numeri.push({
+    nome,
+    n1,
+    n2,
+    data: new Date().toISOString()
+  });
+
+  saveDb().then(() => {
+    alert('Contatti salvati con successo! Riceverai presto una nostra promozione.');
+    document.getElementById('contactNome').value = '';
+    document.getElementById('contactN1').value = '';
+    document.getElementById('contactN2').value = '';
+  });
+}
+
+// VISTA SPOSI
+function renderCoupleView() {
+  const eventId = getParam('sposa');
+  const code = getParam('k');
+  const studioCode = getParam('s');
+
+  const ev = dbData.eventi.find(e => e.id === eventId && e.codiceSposa === code && e.studio === studioCode);
+  if (!ev) {
+    document.getElementById('appContainer').innerHTML = '<div class="card"><h2>Accesso non autorizzato o lista non trovata.</h2></div>';
+    return;
+  }
+
+  studioIdent.nome = getParam('nomeStudio') || 'Studio Fotografico';
+  const totale = ev.regali.reduce((sum, r) => sum + (parseFloat(r.importo) || 0), 0);
+  const percentuale = ev.obiettivo > 0 ? Math.min((totale / ev.obiettivo) * 100, 100) : 0;
+
+  const container = document.getElementById('appContainer');
+  container.innerHTML = `
+    <div class="card">
+      <h2>Cruscotto Privato - ${ev.sposi}</h2>
+      <p><strong>Studio:</strong> ${studioIdent.nome}</p>
+      <p><strong>Obiettivo:</strong> € ${ev.obiettivo.toFixed(2)}</p>
+      <p><strong>Totale Raccolto:</strong> € ${totale.toFixed(2)}</p>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${percentuale}%"></div>
+      </div>
+      <p style="font-size: 0.9em; text-align: right;">${percentuale.toFixed(1)}% raggiunto</p>
+      
+      <p style="background: #f5f1e8; padding: 10px; border-radius: 4px; border-left: 4px solid var(--accent-color);">
+        <em>Nota: i fondi arrivano direttamente sul vostro PayPal (${ev.paypal}).</em>
+      </p>
+
+      <h3>Regali Ricevuti</h3>
+      ${ev.regali.length === 0 ? '<p>Nessun regalo registrato.</p>' : ''}
+      ${ev.regali.map(r => `
+        <div class="row-item">
+          <div>
+            <strong>${r.nome}</strong> - € ${parseFloat(r.importo).toFixed(2)}<br>
+            <em>"${r.msg}"</em><br>
+            <small>Data: ${formatDate(r.data)} | Codice: ${r.codice}</small>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// INIZIALIZZAZIONE
+async function init() {
+  await loadDb();
+  
+  const studio = getParam('studio');
+  const e = getParam('e');
+  const sposa = getParam('sposa');
+
+  if (studio) {
+    await fetchStudioName(studio);
+    renderStudioView();
+  } else if (e) {
+    studioIdent.nome = getParam('nomeStudio') || 'Studio Fotografico';
+    renderGuestView();
+  } else if (sposa) {
+    studioIdent.nome = getParam('nomeStudio') || 'Studio Fotografico';
+    renderCoupleView();
+  } else {
+    document.getElementById('appContainer').innerHTML = `
+      <div class="card" style="text-align:center;">
+        <h2>Lista Regali - AppCenterStudio Premium</h2>
+        <p>Sezione dedicata alla gestione delle liste regali per i vostri clienti.</p>
+        <p>Accesso riservato allo studio.</p>
+        <input type="text" id="loginStudio" placeholder="Codice Studio" style="max-width: 300px; margin: 0 auto; display: block;">
+        <button class="action-btn" style="margin-top: 10px;" onclick="if(document.getElementById('loginStudio').value) window.location.search='?studio='+document.getElementById('loginStudio').value">Accedi</button>
+      </div>
+    `;
+    document.getElementById('novitaBadge').style.display = 'none';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
