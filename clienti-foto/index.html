@@ -29,23 +29,20 @@ h1.big{font-family:Georgia,serif;font-size:54px;font-weight:400;letter-spacing:.
 .btn:hover{background:var(--taupe-scuro)}
 .btn.secondary{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)}
 .btn.secondary:hover{background:var(--taupe);color:#fff}
-.btn.danger{background:#8c2f2f;color:#fff;border:none}
+.btn.danger{background:#8c2f2f;color:#fff;border:none;font-size:11px;padding:6px 12px}
 .btn.danger:hover{background:#5e1f1f}
 input,select,textarea{width:100%;padding:10px;border:1px solid var(--bordo);margin:5px 0;font-family:inherit;border-radius:10px;background:#fff;color:var(--testo)}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--taupe)}
+input:focus,select:focus{outline:2px solid var(--taupe)}
 label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
 .hint{font-size:12px;color:var(--soft)}
 .g-row{background:var(--carta);border:1px solid var(--bordo);padding:14px 18px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
 .g-row .code{font-family:monospace;color:var(--taupe-scuro);font-weight:700;background:var(--beige);padding:2px 8px;border-radius:6px;font-size:12px}
 .folder-box{background:#fff;border:1px solid var(--bordo);border-radius:10px;padding:12px;margin:8px 0}
-.folder-box h4{font-family:Georgia,serif;font-size:15px;color:var(--taupe-scuro);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.folder-box h4{font-family:Georgia,serif;font-size:15px;color:var(--taupe-scuro);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .folder-box h4 .count{font-size:11px;background:var(--taupe);color:#fff;padding:3px 10px;border-radius:999px;font-weight:700}
 .folder-box .files{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin-top:8px}
 .folder-box .file{background:var(--crema);padding:6px 10px;border-radius:6px;font-size:11px;font-family:monospace;color:var(--testo);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.folder-box .file.del{background:#fdf0f0;color:#8c2f2f}
 .status{font-size:12px;color:var(--soft);margin:6px 0}
-.warn{background:var(--beige);border:1px solid #d3c3a2;border-radius:10px;padding:10px 14px;font-size:13px;color:#6b4d1a;margin:10px 0}
-.ok{background:#eaf3e4;border:1px solid #bcd3a8;border-radius:10px;padding:10px 14px;font-size:13px;color:#3f6b2e;margin:10px 0}
 .rowbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 @media(max-width:800px){h1.big{font-size:36px;letter-spacing:.14em}}
 </style>
@@ -93,6 +90,7 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
 
   <div class="card">
     <h2>Archivio clienti</h2>
+    <p class="hint">Le foto sono suddivise per cartella. Usa il pulsante rosso per eliminare una cartella sbagliata.</p>
     <div id="archivioBox"></div>
   </div>
 
@@ -110,198 +108,64 @@ let manifesti={};
 function save(){localStorage.setItem('appcenter_clienti',JSON.stringify(clienti));syncCloud();}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 
-async function syncCloud(){
- if(!studioCodice)return;
- const box=document.getElementById('syncStatus');
- try{
-  const fd=new FormData();
-  fd.append('studio',studioCodice);fd.append('cliente','__db__');
-  fd.append('chiave','clienti');fd.append('data',JSON.stringify(clienti));
-  const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});
-  const j=await r.json();
-  if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
-  else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
- }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
-}
+async function syncCloud(){if(!studioCodice)return;const box=document.getElementById('syncStatus');try{const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente','__db__');fd.append('chiave','clienti');fd.append('data',JSON.stringify(clienti));const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});const j=await r.json();if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}else{box.textContent='Sync cloud: errore';box.classList.add('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
 
-async function loadCloud(){
- if(!studioCodice)return;
- const box=document.getElementById('syncStatus');
- box.textContent='Sync cloud: carico...';
- try{
-  const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=clienti&t='+Date.now(),{cache:'no-store'});
-  const cloud=await r.json();
-  if(Array.isArray(cloud)&&cloud.length){
-   const map={};clienti.forEach(c=>{map[c.codice]=c;});
-   let add=0;
-   cloud.forEach(c=>{if(!c.codice)c.codice=uid();if(!map[c.codice]){map[c.codice]=c;add++;}});
-   clienti=Object.values(map);
-   save();
-   box.textContent='Sync: '+add+' aggiunti';
-   render();
-  }else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
- }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
-}
+async function loadCloud(){if(!studioCodice)return;const box=document.getElementById('syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=clienti&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(Array.isArray(cloud)&&cloud.length){const map={};clienti.forEach(c=>{map[c.codice]=c;});let add=0;cloud.forEach(c=>{if(!c.codice)c.codice=uid();if(!map[c.codice]){map[c.codice]=c;add++;}});clienti=Object.values(map);save();box.textContent='Sync: '+add+' aggiunti';render();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
 
-function aggiungiCliente(){
- const nome=document.getElementById('newNome').value.trim();
- const cognome=document.getElementById('newCognome').value.trim();
- if(!nome||!cognome)return alert('Nome e cognome obbligatori.');
- const codice=nome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+cognome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+String(clienti.length+1).padStart(3,'0');
- clienti.push({codice,nome,cognome,creato:new Date().toISOString()});
- save();
- document.getElementById('newNome').value='';
- document.getElementById('newCognome').value='';
- render();
- alert('Cliente aggiunto: '+codice);
-}
+function aggiungiCliente(){const nome=document.getElementById('newNome').value.trim();const cognome=document.getElementById('newCognome').value.trim();if(!nome||!cognome)return alert('Nome e cognome obbligatori.');const codice=nome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+cognome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+String(clienti.length+1).padStart(3,'0');clienti.push({codice,nome,cognome,creato:new Date().toISOString()});save();document.getElementById('newNome').value='';document.getElementById('newCognome').value='';render();alert('Cliente aggiunto: '+codice);}
 
-function aggiornaSelect(){
- const sel=document.getElementById('selCliente');
- sel.innerHTML=clienti.map(c=>'<option value="'+c.codice+'">'+c.nome+' '+c.cognome+' ('+c.codice+')</option>').join('');
-}
+function aggiornaSelect(){const sel=document.getElementById('selCliente');sel.innerHTML=clienti.map(c=>'<option value="'+c.codice+'">'+c.nome+' '+c.cognome+' ('+c.codice+')</option>').join('');}
 
 async function caricaFoto(){
- const codice=document.getElementById('selCliente').value;
- if(!codice)return alert('Seleziona un cliente.');
- const input=document.getElementById('fileInput');
- const files=[...input.files];
- if(!files.length)return alert('Seleziona una cartella.');
- const status=document.getElementById('uploadStatus');
- status.textContent='Caricamento di '+files.length+' file in corso...';
+ const codice=document.getElementById('selCliente').value;if(!codice)return alert('Seleziona un cliente.');
+ const input=document.getElementById('fileInput');const files=[...input.files];if(!files.length)return alert('Seleziona una cartella.');
+ const status=document.getElementById('uploadStatus');status.textContent='Caricamento di '+files.length+' file in corso...';
  const folderName=files[0].webkitRelativePath.split('/')[0]||'varie';
- const fd=new FormData();
- fd.append('studio',studioCodice);
- fd.append('cliente',codice);
- files.forEach(f=>fd.append('file',f));
- fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:folderName}))));
- try{
-  const r=await fetch(WORKER+'/upload',{method:'POST',body:fd});
-  const j=await r.json();
-  if(j.error)return status.textContent='Errore: '+j.error;
-  status.textContent='Completato: '+j.caricate+' foto caricate nella cartella "'+folderName+'".';
-  input.value='';
-  await refreshManifest(codice);
-  render();
- }catch(e){status.textContent='Errore: '+e.message;}
+ const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);files.forEach(f=>fd.append('file',f));fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:folderName}))));
+ try{const r=await fetch(WORKER+'/upload',{method:'POST',body:fd});const j=await r.json();if(j.error)return status.textContent='Errore: '+j.error;status.textContent='Completato: '+j.caricate+' foto caricate nella cartella "'+folderName+'".';input.value='';await refreshManifest(codice);render();}catch(e){status.textContent='Errore: '+e.message;}
 }
 
-async function refreshManifest(codice){
- try{
-  const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
-  manifesti[codice]=await r.json();
- }catch(e){manifesti[codice]={};}
-}
+async function refreshManifest(codice){try{const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});manifesti[codice]=await r.json();}catch(e){manifesti[codice]={};}}
 
 async function eliminaCartella(codice,folderName){
  if(!confirm('Eliminare la cartella "'+folderName+'" e tutte le sue foto?'))return;
- const man=manifesti[codice]||{};
- const files=man.basseByFolder?.[folderName]||[];
+ const man=manifesti[codice]||{};const basseByFolder=man.basseByFolder||{};const files=basseByFolder[folderName]||[];
  if(!files.length)return alert('Cartella vuota.');
  try{
-  for(const f of files){
-   await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,file:'basse/'+f})});
-  }
-  await refreshManifest(codice);
-  render();
-  alert('Cartella eliminata.');
- }catch(e){alert('Errore: '+e.message);}
+  for(const f of files){await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,file:'basse/'+f})});}
+  await refreshManifest(codice);render();alert('Cartella "'+folderName+'" eliminata.');
+ }catch(e){alert('Errore: '+e.message+'\n\nNota: l\'endpoint /delete-file del worker potrebbe non essere ancora attivo. Aggiorna acs-api.js con la Tranche 3.');}
 }
 
-function apriSelezione(codice){
- window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice),'_blank');
-}
+function apriSelezione(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice),'_blank');}
 
 async function creaLinkGallery(codice){
  const man=manifesti[codice]||{};
- if(!man.gallery||!man.gallery.length){
-  if(confirm('Nessuna ritoccata caricata.\n\nAprire ora "Selezione per Album" per caricare le foto finali?')){
-   apriSelezione(codice);
-  }
-  return;
- }
- const fd=new FormData();
- fd.append('studio',studioCodice);
- fd.append('cliente',codice);
- fd.append('giorni','180');
- const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
- fd.append('nome_studio',ident.nome||'');
- fd.append('whatsapp',ident.telefono||'');
- fd.append('messaggio','La tua gallery è pronta. Tocca una foto per ingrandirla.');
- try{
-  const r=await fetch(WORKER+'/link',{method:'POST',body:fd});
-  const j=await r.json();
-  if(j.error)return alert('Errore: '+j.error);
-  const link=location.origin+'/gallery/?g='+encodeURIComponent(studioCodice+'/'+codice);
-  navigator.clipboard.writeText(link).catch(()=>{});
-  alert('Link gallery copiato:\n'+link+'\n\nScade il '+j.scadenza_link);
- }catch(e){alert('Errore: '+e.message);}
+ if(!man.gallery||!man.gallery.length){if(confirm('Nessuna ritoccata caricata.\n\nAprire ora "Selezione per Album" per caricare le foto finali?')){apriSelezione(codice);}return;}
+ const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','180');const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');fd.append('nome_studio',ident.nome||'');fd.append('whatsapp',ident.telefono||'');fd.append('messaggio','La tua gallery è pronta. Tocca una foto per ingrandirla.');
+ try{const r=await fetch(WORKER+'/link',{method:'POST',body:fd});const j=await r.json();if(j.error)return alert('Errore: '+j.error);const link=location.origin+'/gallery/?g='+encodeURIComponent(studioCodice+'/'+codice);navigator.clipboard.writeText(link).catch(()=>{});alert('Link gallery copiato:\n'+link+'\n\nScade il '+j.scadenza_link);}catch(e){alert('Errore: '+e.message);}
 }
 
 function render(){
- aggiornaSelect();
- const box=document.getElementById('archivioBox');
+ aggiornaSelect();const box=document.getElementById('archivioBox');
  if(!clienti.length){box.innerHTML='<p class="hint">Nessun cliente. Aggiungine uno qui sopra.</p>';return;}
  box.innerHTML=clienti.slice().reverse().map(c=>{
-  const man=manifesti[c.codice]||{};
-  const folders=man.folders||{};
-  const basseByFolder=man.basseByFolder||{};
-  const totaleBasse=man.basse?man.basse.length:0;
-  const totaleGallery=man.gallery?man.gallery.length:0;
+  const man=manifesti[c.codice]||{};const basseByFolder=man.basseByFolder||{};const totaleBasse=man.basse?man.basse.length:0;const totaleGallery=man.gallery?man.gallery.length:0;
   let foldersHtml='';
-  Object.keys(basseByFolder).forEach(folder=>{
-   const files=basseByFolder[folder];
-   foldersHtml+='<div class="folder-box"><h4>'+folder+' <span class="count">'+files.length+' foto</span> <button class="btn danger" onclick="eliminaCartella(\''+c.codice+'\',\''+folder+'\')">🗑 Elimina cartella</button></h4><div class="files">'+files.map(f=>'<div class="file">'+f+'</div>').join('')+'</div></div>';
-  });
-  if(!Object.keys(basseByFolder).length&&totaleBasse>0){
+  const folderNames=Object.keys(basseByFolder);
+  if(folderNames.length){
+   foldersHtml=folderNames.map(folder=>{const files=basseByFolder[folder];return '<div class="folder-box"><h4><span>'+folder+' <span class="count">'+files.length+' foto</span></span><button class="btn danger" onclick="eliminaCartella(\''+c.codice+'\',\''+folder.replace(/'/g,'\\\'')+'\')">🗑 Elimina cartella</button></h4><div class="files">'+files.map(f=>'<div class="file">'+f+'</div>').join('')+'</div></div>';}).join('');
+  }else if(totaleBasse>0){
    foldersHtml='<div class="folder-box"><h4>varie <span class="count">'+totaleBasse+' foto</span></h4></div>';
   }
-  return '<div class="g-row"><div><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span>'+
-   '<div class="status">'+totaleBasse+' foto nel magazzino · '+totaleGallery+' ritoccate'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+
-   foldersHtml+
-   '</div><div class="rowbtns">'+
-   '<button class="btn" onclick="apriSelezione(\''+c.codice+'\')">Apri selezione Album</button>'+
-   '<button class="btn secondary" onclick="creaLinkGallery(\''+c.codice+'\')">Link gallery cliente</button>'+
-   '<button class="btn danger" onclick="eliminaCliente(\''+c.codice+'\')">Elimina</button>'+
-   '</div></div>';
+  return '<div class="g-row"><div><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span><div class="status">'+totaleBasse+' foto nel magazzino · '+totaleGallery+' ritoccate'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+foldersHtml+'</div><div class="rowbtns"><button class="btn" onclick="apriSelezione(\''+c.codice+'\')">Apri selezione Album</button><button class="btn secondary" onclick="creaLinkGallery(\''+c.codice+'\')">Link gallery cliente</button></div></div>';
  }).join('');
 }
 
-function eliminaCliente(codice){
- if(!confirm('Eliminare il cliente '+codice+'?'))return;
- clienti=clienti.filter(c=>c.codice!==codice);
- save();
- render();
-}
+function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();alert('Backup globale scaricato.');}
+function ripristinoGlobale(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(typeof d!=='object')throw new Error('File non valido.');if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Backup ripristinato.');location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);e.target.value='';}
 
-function backupGlobale(){
- const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
- const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
- alert('Backup globale scaricato.');
-}
-
-function ripristinoGlobale(e){
- const f=e.target.files[0];if(!f)return;
- const r=new FileReader();
- r.onload=ev=>{try{
-  const obj=JSON.parse(ev.target.result);const d=obj.data||obj;
-  if(typeof d!=='object')throw new Error('File non valido.');
-  if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;
-  Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));
-  alert('Backup ripristinato. La pagina si ricarica.');location.reload();
- }catch(err){alert('Errore: '+err.message);}};
- r.readAsText(f);e.target.value='';
-}
-
-(async()=>{
- for(const c of clienti)await refreshManifest(c.codice);
- render();
- loadCloud().then(async()=>{
-  for(const c of clienti)await refreshManifest(c.codice);
-  render();
- });
-})();
+(async()=>{for(const c of clienti)await refreshManifest(c.codice);render();loadCloud().then(async()=>{for(const c of clienti)await refreshManifest(c.codice);render();});})();
 </script>
 </body>
 </html>
