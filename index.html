@@ -8,14 +8,7 @@
 <style>
 :root{--b:#e2e4e9;--s:#8a8f98;--nero:#111;--ombra:0 6px 18px rgba(15,20,40,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--nero);min-height:100vh;
-background-color:#e9ebef;
-background-image:
- radial-gradient(ellipse 62% 52% at 50% 45%, rgba(255,255,255,.92), rgba(255,255,255,0) 70%),
- repeating-linear-gradient(115deg, rgba(255,255,255,0) 0 26px, rgba(255,255,255,.55) 26px 30px, rgba(255,255,255,0) 30px 74px, rgba(255,255,255,.35) 74px 77px, rgba(255,255,255,0) 77px 120px),
- repeating-linear-gradient(115deg, rgba(140,146,158,0) 0 40px, rgba(140,146,158,.16) 40px 44px, rgba(140,146,158,0) 44px 150px),
- linear-gradient(115deg,#b9bec7 0%,#dfe2e8 40%,#f2f3f6 55%,#c2c7cf 100%);
-background-attachment:fixed;}
+body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--nero);min-height:100vh;background-color:#e9ebef;background-image:radial-gradient(ellipse 62% 52% at 50% 45%, rgba(255,255,255,.92), rgba(255,255,255,0) 70%),repeating-linear-gradient(115deg, rgba(255,255,255,0) 0 26px, rgba(255,255,255,.55) 26px 30px, rgba(255,255,255,0) 30px 74px, rgba(255,255,255,.35) 74px 77px, rgba(255,255,255,0) 77px 120px),repeating-linear-gradient(115deg, rgba(140,146,158,0) 0 40px, rgba(140,146,158,.16) 40px 44px, rgba(140,146,158,0) 44px 150px),linear-gradient(115deg,#b9bec7 0%,#dfe2e8 40%,#f2f3f6 55%,#c2c7cf 100%);background-attachment:fixed}
 .wrap{max-width:1100px;margin:0 auto;padding:20px}
 .mono{width:56px;height:56px;border-radius:50%;background:var(--nero);color:#fff;font-family:Georgia,serif;font-size:20px;display:inline-flex;align-items:center;justify-content:center;letter-spacing:1px;margin-bottom:10px}
 .hd{text-align:center;padding:30px;background:#fff;border:1px solid var(--b);border-radius:16px;margin-bottom:22px;box-shadow:var(--ombra)}
@@ -36,30 +29,29 @@ background-attachment:fixed;}
 .row{background:#fff;border:1px solid var(--b);border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:13px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:var(--ombra)}
 .code{font-family:monospace;font-weight:700}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.app{background:#fff;border:1px solid var(--b);border-radius:16px;padding:22px;text-decoration:none;color:#111;display:block;transition:border-color .2s, transform .2s;box-shadow:var(--ombra)}
-.app:hover{border-color:#111;transform:translateY(-2px)}
+.app{background:#fff;border:1px solid var(--b);border-radius:16px;padding:22px;text-decoration:none;color:#111;display:block;box-shadow:var(--ombra)}
+.app:hover{border-color:#111}
 .app .num{font-family:Georgia,serif;font-size:13px;color:var(--s)}
 .app h3{font-family:Georgia,serif;font-size:18px;margin:4px 0}
 .app p{font-size:13px;color:var(--s)}
 .lw{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .lc{background:#fff;border:1px solid var(--b);border-radius:20px;padding:38px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(15,20,40,.15)}
 .bl{padding:7px 13px;background:#fff;border:1px solid #999;border-radius:999px;cursor:pointer;font-size:12px}
-.bl:hover{background:#111;color:#fff;border-color:#111}
+.bl:hover{background:#111;color:#fff}
+.bl-wa{padding:7px 13px;background:#25D366;border:1px solid #25D366;color:#fff;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700}
+.bl-wa:hover{background:#128C7E}
 .bl-danger{padding:7px 13px;background:#fff;border:1px solid #a33;color:#a33;border-radius:999px;cursor:pointer;font-size:12px}
 .bl-danger:hover{background:#a33;color:#fff}
 .bl-on{padding:7px 13px;background:#1d5c74;color:#fff;border:1px solid #1d5c74;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700}
-.bl-on:hover{background:#2a7f9e}
 .bl-off{padding:7px 13px;background:#8c2f2f;color:#fff;border:1px solid #8c2f2f;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700}
-.bl-off:hover{background:#5e1f1f}
 .tema-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:14px}
-.tema-btn{background:#fff;border:2px solid #ddd;border-radius:12px;padding:12px 8px;cursor:pointer;font-family:inherit;text-align:center;transition:all .15s}
-.tema-btn:hover{border-color:#111;transform:translateY(-1px)}
+.tema-btn{background:#fff;border:2px solid #ddd;border-radius:12px;padding:12px 8px;cursor:pointer;font-family:inherit;text-align:center}
+.tema-btn:hover{border-color:#111}
 .tema-btn .sw{display:block;height:8px;border-radius:4px;margin-bottom:9px}
 .tema-btn .nome{font-family:Georgia,serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#4a4237}
 .tema-btn.attivo{border-color:#111;box-shadow:0 4px 12px rgba(0,0,0,.2)}
 .tema-btn.attivo .nome{font-weight:700}
 #temaStatus{font-size:12px;color:#2e7d32;margin-top:8px;font-weight:600}
-#temaStatus.ko{color:#a33}
 .cred{background:#f5f6f8;border-radius:8px;padding:6px 10px;font-family:monospace;font-size:12px;margin-top:4px}
 </style>
 </head>
@@ -69,7 +61,6 @@ background-attachment:fixed;}
 const OWNER='cibox72',REPO='AppCenterStudio_Premium';
 const BASE='https://'+OWNER+'.github.io/'+REPO+'/';
 const $=id=>document.getElementById(id);
-
 const TEMI=[
  {id:'classico',nome:'Classico',c1:'#f4efe7',c2:'#a3937d'},
  {id:'wedding',nome:'Wedding',c1:'#faf8f3',c2:'#9caf88'},
@@ -80,201 +71,100 @@ const TEMI=[
  {id:'inverno',nome:'Inverno',c1:'#f2f5f8',c2:'#5b7f99'}
 ];
 let temaAttuale='classico';
-
 window.addEventListener('DOMContentLoaded',()=>{sessionStorage.getItem('admin')?renderDash():renderLogin();});
 function renderLogin(){
-$('root').innerHTML=`<div class="lw"><div class="lc">
-<div class="mono">AC</div>
-<h1 style="font-family:Georgia,serif;font-size:22px">AppCenterStudio Premium</h1>
-<p style="color:var(--s);margin-bottom:16px">Accesso fornitore</p>
-<div class="fg"><label>Utente</label><input id="lu" autocomplete="username"></div>
-<div class="fg"><label>Password</label><input id="lp" type="password" autocomplete="current-password"></div>
-<button class="bp" style="width:100%" onclick="login()">Entra</button>
-<div id="lerr" style="color:#a33;font-size:13px;margin-top:10px"></div>
-</div></div>`;
+$('root').innerHTML=`<div class="lw"><div class="lc"><div class="mono">AC</div><h1 style="font-family:Georgia,serif;font-size:22px">AppCenterStudio Premium</h1><p style="color:var(--s);margin-bottom:16px">Accesso fornitore</p><div class="fg"><label>Utente</label><input id="lu"></div><div class="fg"><label>Password</label><input id="lp" type="password"></div><button class="bp" style="width:100%" onclick="login()">Entra</button><div id="lerr" style="color:#a33;font-size:13px;margin-top:10px"></div></div></div>`;
 }
-function login(){
-if($('lu').value.trim()==='admin'&&$('lp').value==='58879@Stella'){sessionStorage.setItem('admin','1');renderDash();}
-else $('lerr').textContent='Credenziali non valide.';
-}
+function login(){if($('lu').value.trim()==='admin'&&$('lp').value==='58879@Stella'){sessionStorage.setItem('admin','1');renderDash();}else $('lerr').textContent='Credenziali non valide.';}
 async function leggiLicenze(){try{const r=await fetch(BASE+'licenses.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{studi:[]}}}
 async function leggiOfferte(){try{const r=await fetch(BASE+'offers.json?t='+Date.now(),{cache:'no-store'});return await r.json();}catch(e){return{offerte:[]}}}
+async function leggiTema(){try{const r=await fetch(BASE+'tema.json?t='+Date.now(),{cache:'no-store'});const j=await r.json();return j.tema||'classico';}catch(e){return 'classico';}}
 async function ghPut(path,content){
 const tok=localStorage.getItem('gh_token');
-if(!tok)throw new Error('Token GitHub mancante: inseriscilo nella card "Token GitHub".');
+if(!tok)throw new Error('Token GitHub mancante.');
 const g=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json'}});
 let sha=null;if(g.ok){const j=await g.json();sha=j.sha;}
 const p=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/contents/'+path,{method:'PUT',headers:{Authorization:'Bearer '+tok,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({message:'aggiorna '+path,content:btoa(unescape(encodeURIComponent(content))),sha:sha||undefined})});
 const j2=await p.json();if(!p.ok)throw new Error(j2.message||'Errore GitHub');
 }
-
-/* ===== GENERATORE CREDENZIALI ===== */
-function genPassword(){
- const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
- let p='';for(let i=0;i<8;i++)p+=chars[Math.floor(Math.random()*chars.length)];
- return p;
-}
-function slugNome(nome){
- return nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')||'studio';
-}
-
-function temaBtnHtml(t,attivo){
- return '<button class="tema-btn'+(attivo?' attivo':'')+'" onclick="cambiaTema(\''+t.id+'\')">'+
-  '<span class="sw" style="background:linear-gradient(90deg,'+t.c1+' 50%,'+t.c2+' 50%)"></span>'+
-  '<span class="nome">'+t.nome+'</span></button>';
-}
+function genPassword(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';let p='';for(let i=0;i<8;i++)p+=chars[Math.floor(Math.random()*chars.length)];return p;}
+function slugNome(nome){return nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')||'studio';}
+function temaBtnHtml(t,attivo){return '<button class="tema-btn'+(attivo?' attivo':'')+'" onclick="cambiaTema(\''+t.id+'\')"><span class="sw" style="background:linear-gradient(90deg,'+t.c1+' 50%,'+t.c2+' 50%)"></span><span class="nome">'+t.nome+'</span></button>';}
 function renderDash(){
 $('root').innerHTML=`<div class="wrap">
-<div class="tb">
-<button class="bp" onclick="backupGlobale()">Backup Globale</button>
-<label class="bs" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label>
-<button class="bs" onclick="location.href='assistenza.html?admin=true'">Assistenza Online</button>
-<button class="bs" onclick="sessionStorage.clear();renderLogin();">Esci</button>
-</div>
+<div class="tb"><button class="bp" onclick="backupGlobale()">Backup Globale</button><label class="bs" style="cursor:pointer">Ripristino Globale<input type="file" hidden accept=".json" onchange="restoreGlobale(event)"></label><button class="bs" onclick="sessionStorage.clear();renderLogin();">Esci</button></div>
 <div class="hd"><div class="mono">AC</div><h1>AppCenterStudio Premium</h1><p>Suite gestionale per studi fotografici</p></div>
-<div class="card"><h2>Token GitHub</h2>
-<div class="ib">Serve per creare studi e scrivere licenses.json. Lo trovi su GitHub → Settings → Developer settings → Personal access tokens.</div>
-<div class="fg"><input id="ghTok" type="password" placeholder="ghp_…"></div>
-<button class="bs" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());alert('Token salvato.');">Salva token</button></div>
-<div class="card"><h2>Cambia stile app (tutti gli studi)</h2>
-<div class="ib">Scegli un tema stagionale: si applica a <b>TUTTE</b> le app di TUTTI gli studi. Il pulsante attivo resta con bordo nero.</div>
-<div class="tema-grid" id="temaGrid"></div>
-<div id="temaStatus">Caricamento tema attuale...</div></div>
-<div class="card"><h2>Studi & Licenze (con credenziali di accesso)</h2>
-<div class="ib">Quando crei uno studio nascono in automatico <b>utente</b> (= nome studio) e <b>password</b>. Copiale con "Copia credenziali" e darle allo studio insieme al link benvenuto. Lo studio le userà per entrare. "Accendi/Spegni" blocca o sblocca l'accesso.</div>
-<div class="fr"><div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio"></div>
-<div class="fg"><label>Giorni di prova</label><input id="stGiorni" type="number" value="30"></div></div>
+<div class="card"><h2>Token GitHub</h2><div class="ib">Serve per creare studi e scrivere licenses.json.</div><div class="fg"><input id="ghTok" type="password" placeholder="ghp_…"></div><button class="bs" onclick="localStorage.setItem('gh_token',$('ghTok').value.trim());alert('Token salvato.');">Salva token</button></div>
+<div class="card"><h2>Cambia stile app (tutti gli studi)</h2><div class="tema-grid" id="temaGrid"></div><div id="temaStatus"></div></div>
+<div class="card"><h2>Studi & Licenze (credenziali + WhatsApp)</h2>
+<div class="ib">Il <b>telefono è obbligatorio</b>: serve per inviare link+credenziali con il pulsante "Invia su WhatsApp". Alla creazione nascono utente e password.</div>
+<div class="fr"><div class="fg"><label>Nome studio</label><input id="stNome" placeholder="Es. G&L Studio"></div><div class="fg"><label>WhatsApp studio (obbligatorio)</label><input id="stTel" placeholder="39..."></div></div>
+<div class="fg"><label>Giorni di prova</label><input id="stGiorni" type="number" value="30"></div>
 <button class="bp" onclick="creaStudio()">Crea studio</button>
 <div id="studiList" style="margin-top:14px"></div></div>
 <div class="card"><h2>Offerte agli studi</h2>
-<div class="ib">Crea offerte personalizzate con prezzo e durata. Lo studio paga con PayPal; dopo estendi la licenza.</div>
-<div class="fr"><div class="fg"><label>Studio</label><select id="ofStudio"></select></div>
-<div class="fg"><label>Prezzo (€)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div></div>
-<div class="fr"><div class="fg"><label>Durata (mesi)</label><input id="ofDurata" type="number" value="12" min="1"></div>
-<div class="fg"><label>Descrizione</label><input id="ofDesc" placeholder="Es. Pacchetto matrimoni 2026"></div></div>
+<div class="fr"><div class="fg"><label>Studio</label><select id="ofStudio"></select></div><div class="fg"><label>Prezzo (€)</label><input id="ofPrezzo" type="number" step="0.01" placeholder="150"></div></div>
+<div class="fr"><div class="fg"><label>Durata (mesi)</label><input id="ofDurata" type="number" value="12" min="1"></div><div class="fg"><label>Descrizione</label><input id="ofDesc" placeholder="Es. Pacchetto matrimoni"></div></div>
 <button class="bp" onclick="creaOfferta()">Crea offerta</button>
 <div id="offerteList" style="margin-top:14px"></div></div>
-<div class="card"><h2>Applicazioni</h2>
-<div class="ib" id="studioSel">Seleziona prima uno studio qui sopra: i link delle app si attivano con il suo codice.</div>
-<div class="grid" id="appGrid"></div></div>
+<div class="card"><h2>Applicazioni</h2><div class="ib" id="studioSel">Seleziona prima uno studio (pulsante Entra).</div><div class="grid" id="appGrid"></div></div>
 </div>`;
 $('ghTok').value=localStorage.getItem('gh_token')||'';
 renderTemi();renderStudi();renderOfferte();renderApps();caricaTemaAttuale();
 }
-function renderTemi(){const g=$('temaGrid');if(!g)return;g.innerHTML=TEMI.map(t=>temaBtnHtml(t,t.id===temaAttuale)).join('');}
-async function caricaTemaAttuale(){const s=$('temaStatus');if(!s)return;temaAttuale=await leggiTema();renderTemi();const tr=TEMI.find(t=>t.id===temaAttuale);s.textContent='Tema attuale: '+(tr?tr.nome:temaAttuale);s.classList.remove('ko');}
-async function leggiTema(){try{const r=await fetch(BASE+'tema.json?t='+Date.now(),{cache:'no-store'});const j=await r.json();return j.tema||'classico';}catch(e){return 'classico';}}
-async function cambiaTema(id){
-const tok=localStorage.getItem('gh_token');
-if(!tok){alert('Prima salva il token GitHub.');return;}
-const tr=TEMI.find(t=>t.id===id);
-if(!confirm('Applicare il tema "'+tr.nome+'" a TUTTE le app di TUTTI gli studi?'))return;
-try{await ghPut('tema.json',JSON.stringify({tema:id},null,2));temaAttuale=id;renderTemi();$('temaStatus').textContent='Tema "'+tr.nome+'" pubblicato.';}catch(e){$('temaStatus').textContent='Errore: '+e.message;$('temaStatus').classList.add('ko');alert('Errore: '+e.message);}
-}
-
+function renderTemi(){const g=$('temaGrid');if(g)g.innerHTML=TEMI.map(t=>temaBtnHtml(t,t.id===temaAttuale)).join('');}
+async function caricaTemaAttuale(){temaAttuale=await leggiTema();renderTemi();const tr=TEMI.find(t=>t.id===temaAttuale);$('temaStatus').textContent='Tema attuale: '+(tr?tr.nome:temaAttuale);}
+async function cambiaTema(id){const tok=localStorage.getItem('gh_token');if(!tok){alert('Prima salva il token GitHub.');return;}const tr=TEMI.find(t=>t.id===id);if(!confirm('Applicare il tema "'+tr.nome+'" a TUTTE le app?'))return;try{await ghPut('tema.json',JSON.stringify({tema:id},null,2));temaAttuale=id;renderTemi();$('temaStatus').textContent='Tema "'+tr.nome+'" pubblicato.';}catch(e){alert('Errore: '+e.message);}}
 async function creaStudio(){
 const nome=$('stNome').value.trim();if(!nome)return alert('Nome studio obbligatorio.');
+const tel=$('stTel').value.replace(/\D/g,'');if(!tel)return alert('Il telefono WhatsApp dello studio è OBBLIGATORIO.');
 const giorni=parseInt($('stGiorni').value)||30;
 const l=await leggiLicenze();const studi=l.studi||[];
 let n=studi.length+1,codice='st-'+String(n).padStart(3,'0');
 while(studi.find(s=>s.codice===codice)){n++;codice='st-'+String(n).padStart(3,'0');}
-let utente=slugNome(nome);
-while(studi.find(s=>s.utente===utente))utente=slugNome(nome)+n;
+let utente=slugNome(nome);while(studi.find(s=>s.utente===utente))utente=slugNome(nome)+n;
 const sc=new Date();sc.setDate(sc.getDate()+giorni);
-studi.push({codice,nome,attivo:true,scadenza:sc.toISOString().slice(0,10),utente:utente,password:genPassword()});
-try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';alert('Studio creato: '+codice+'\nUtente: '+utente+'\nPassword: vedi archivio.');renderStudi();renderOfferte();}catch(e){alert('Errore: '+e.message);}
+studi.push({codice,nome,telefono:tel,attivo:true,scadenza:sc.toISOString().slice(0,10),utente:utente,password:genPassword()});
+try{await ghPut('licenses.json',JSON.stringify({studi},null,2));$('stNome').value='';$('stTel').value='';alert('Studio creato: '+codice);renderStudi();renderOfferte();}catch(e){alert('Errore: '+e.message);}
 }
-async function toggleStudio(codice){
-try{const l=await leggiLicenze();
-const studi=(l.studi||[]).map(s=>s.codice===codice?{...s,attivo:!s.attivo}:s);
-await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();}catch(e){alert('Errore: '+e.message);}
-}
-async function nuovaPassword(codice){
-if(!confirm('Generare una nuova password per '+codice+'? La vecchia smetterà di funzionare.'))return;
-try{const l=await leggiLicenze();
-const studi=(l.studi||[]).map(s=>s.codice===codice?{...s,password:genPassword()}:s);
-await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();alert('Nuova password generata.');}catch(e){alert('Errore: '+e.message);}
-}
-async function copiaCredenziali(codice){
+async function inviaWhatsApp(codice){
 const l=await leggiLicenze();const s=(l.studi||[]).find(x=>x.codice===codice);if(!s)return;
-const txt='ACCESSO AppCenterStudio\nUtente: '+(s.utente||'')+'\nPassword: '+(s.password||'')+'\nLink: '+BASE+'benvenuto.html?studio='+s.codice;
-navigator.clipboard.writeText(txt).then(()=>alert('Credenziali copiate:\n\n'+txt));
+if(!s.telefono)return alert('Questo studio non ha il telefono: modificalo in licenses.json o ricrea lo studio.');
+const txt='Benvenuto in AppCenterStudio Premium!\nUtente: '+(s.utente||'')+'\nPassword: '+(s.password||'')+'\nApri qui: '+BASE+'benvenuto.html?studio='+s.codice;
+window.open('https://wa.me/'+s.telefono+'?text='+encodeURIComponent(txt),'_blank');
 }
-async function eliminaStudio(codice){
-if(!confirm('Eliminare lo studio '+codice+'?'))return;
-if(!confirm('CONFERMA DEFINITIVA: rimozione permanente di '+codice+'. Procedere?'))return;
-try{const l=await leggiLicenze();
-const studi=(l.studi||[]).filter(s=>s.codice!==codice);
-await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();
-if(sessionStorage.getItem('studio')===codice){sessionStorage.removeItem('studio');renderApps();}
-const o=await leggiOfferte();
-await ghPut('offers.json',JSON.stringify({offerte:(o.offerte||[]).filter(x=>x.codice!==codice)},null,2));
-renderOfferte();}catch(e){alert('Errore: '+e.message);}
-}
+async function toggleStudio(codice){try{const l=await leggiLicenze();const studi=(l.studi||[]).map(s=>s.codice===codice?{...s,attivo:!s.attivo}:s);await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();}catch(e){alert('Errore: '+e.message);}}
+async function nuovaPassword(codice){if(!confirm('Generare una nuova password per '+codice+'?'))return;try{const l=await leggiLicenze();const studi=(l.studi||[]).map(s=>s.codice===codice?{...s,password:genPassword()}:s);await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();alert('Nuova password generata.');}catch(e){alert('Errore: '+e.message);}}
+async function copiaCredenziali(codice){const l=await leggiLicenze();const s=(l.studi||[]).find(x=>x.codice===codice);if(!s)return;const txt='ACCESSO AppCenterStudio\nUtente: '+(s.utente||'')+'\nPassword: '+(s.password||'')+'\nLink: '+BASE+'benvenuto.html?studio='+s.codice;navigator.clipboard.writeText(txt).then(()=>alert('Credenziali copiate.'));}
+async function eliminaStudio(codice){if(!confirm('Eliminare lo studio '+codice+'?'))return;if(!confirm('CONFERMA DEFINITIVA?'))return;try{const l=await leggiLicenze();const studi=(l.studi||[]).filter(s=>s.codice!==codice);await ghPut('licenses.json',JSON.stringify({studi},null,2));renderStudi();}catch(e){alert('Errore: '+e.message);}}
 async function renderStudi(){
-const l=await leggiLicenze();const studi=l.studi||[];
-const box=$('studiList');
-if(!studi.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuno studio: crea il primo qui sopra.</p>';return;}
-box.innerHTML=studi.map(s=>`<div class="row">
-<div><span class="code">${s.codice}</span> — <b>${s.nome}</b><br>
-<small style="color:var(--s)">scadenza ${s.scadenza} · ${s.attivo?'ACCESO':'SPENTO'}</small>
-<div class="cred">utente: <b>${s.utente||'—'}</b> · password: <b>${s.password||'—'}</b></div></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
-<button class="bl" onclick="scegliStudio('${s.codice}')">Entra</button>
-${s.attivo?`<button class="bl-off" onclick="toggleStudio('${s.codice}')">Spegni</button>`:`<button class="bl-on" onclick="toggleStudio('${s.codice}')">Accendi</button>`}
-<button class="bl" onclick="copiaCredenziali('${s.codice}')">Copia credenziali</button>
-<button class="bl" onclick="nuovaPassword('${s.codice}')">Nuova password</button>
-<button class="bl" onclick="copiaTxt('${BASE}benvenuto.html?studio=${s.codice}')">Link benvenuto</button>
-<button class="bl-danger" onclick="eliminaStudio('${s.codice}')">Elimina</button>
-</div></div>`).join('');
+const l=await leggiLicenze();const studi=l.studi||[];const box=$('studiList');
+if(!studi.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuno studio.</p>';return;}
+box.innerHTML=studi.map(s=>`<div class="row"><div><span class="code">${s.codice}</span> — <b>${s.nome}</b> · tel ${s.telefono||'—'}<br><small style="color:var(--s)">scadenza ${s.scadenza} · ${s.attivo?'ACCESO':'SPENTO'}</small><div class="cred">utente: <b>${s.utente||'—'}</b> · password: <b>${s.password||'—'}</b></div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="bl-wa" onclick="inviaWhatsApp('${s.codice}')">Invia su WhatsApp</button><button class="bl" onclick="scegliStudio('${s.codice}')">Entra</button>${s.attivo?`<button class="bl-off" onclick="toggleStudio('${s.codice}')">Spegni</button>`:`<button class="bl-on" onclick="toggleStudio('${s.codice}')">Accendi</button>`}<button class="bl" onclick="copiaCredenziali('${s.codice}')">Copia credenziali</button><button class="bl" onclick="nuovaPassword('${s.codice}')">Nuova password</button><button class="bl-danger" onclick="eliminaStudio('${s.codice}')">Elimina</button></div></div>`).join('');
 const sel=$('ofStudio');if(sel)sel.innerHTML='<option value="">-- Scegli studio --</option>'+studi.map(s=>'<option value="'+s.codice+'">'+s.nome+' ('+s.codice+')</option>').join('');
 }
-async function creaOfferta(){
-const codice=$('ofStudio').value;if(!codice)return alert('Seleziona uno studio.');
-const prezzo=parseFloat($('ofPrezzo').value);if(!prezzo||prezzo<=0)return alert('Prezzo non valido.');
-const durata=parseInt($('ofDurata').value);if(!durata||durata<1)return alert('Durata non valida.');
-const o=await leggiOfferte();const offerte=o.offerte||[];
-offerte.push({codice,prezzo,durata,descrizione:$('ofDesc').value.trim(),attiva:true,creata:new Date().toISOString().slice(0,10)});
-try{await ghPut('offers.json',JSON.stringify({offerte},null,2));alert('Offerta creata.');renderOfferte();}catch(e){alert('Errore: '+e.message);}
+async function creaOfferta(){const codice=$('ofStudio').value;if(!codice)return alert('Seleziona uno studio.');const prezzo=parseFloat($('ofPrezzo').value);if(!prezzo||prezzo<=0)return alert('Prezzo non valido.');const durata=parseInt($('ofDurata').value);if(!durata||durata<1)return alert('Durata non valida.');const o=await leggiOfferte();const offerte=o.offerte||[];offerte.push({codice,prezzo,durata,descrizione:$('ofDesc').value.trim(),attiva:true,creata:new Date().toISOString().slice(0,10)});try{await ghPut('offers.json',JSON.stringify({offerte},null,2));alert('Offerta creata.');renderOfferte();}catch(e){alert('Errore: '+e.message);}}
+async function modificaOfferta(idx){
+const o=await leggiOfferte();const of=o.offerte[idx];if(!of)return;
+const prezzo=prompt('Nuovo prezzo (€):',of.prezzo);if(prezzo===null)return;
+const durata=prompt('Nuova durata (mesi):',of.durata);if(durata===null)return;
+const desc=prompt('Nuova descrizione:',of.descrizione||'');if(desc===null)return;
+of.prezzo=parseFloat(prezzo)||of.prezzo;of.durata=parseInt(durata)||of.durata;of.descrizione=desc;
+try{await ghPut('offers.json',JSON.stringify(o,null,2));renderOfferte();alert('Offerta modificata.');}catch(e){alert('Errore: '+e.message);}
 }
 async function rimuoviOfferta(idx){if(!confirm('Rimuovere questa offerta?'))return;const o=await leggiOfferte();o.offerte.splice(idx,1);try{await ghPut('offers.json',JSON.stringify(o,null,2));renderOfferte();}catch(e){alert('Errore: '+e.message);}}
-async function estendiScadenza(idx){
-const o=await leggiOfferte();const of=o.offerte[idx];if(!of)return;
-const mesi=parseInt(prompt('Quanti mesi aggiungere? (es. '+of.durata+')',String(of.durata)));if(!mesi||mesi<1)return;
-const l=await leggiLicenze();const s=l.studi.find(x=>x.codice===of.codice);if(!s)return alert('Studio non trovato.');
-const oggi=new Date();const sc=new Date(s.scadenza>oggi.toISOString().slice(0,10)?s.scadenza:oggi.toISOString().slice(0,10));
-sc.setMonth(sc.getMonth()+mesi);s.scadenza=sc.toISOString().slice(0,10);s.attivo=true;
-try{await ghPut('licenses.json',JSON.stringify(l,null,2));alert('Scadenza estesa a '+s.scadenza);renderStudi();}catch(e){alert('Errore: '+e.message);}
-}
+async function estendiScadenza(idx){const o=await leggiOfferte();const of=o.offerte[idx];if(!of)return;const mesi=parseInt(prompt('Quanti mesi aggiungere?',String(of.durata)));if(!mesi||mesi<1)return;const l=await leggiLicenze();const s=l.studi.find(x=>x.codice===of.codice);if(!s)return alert('Studio non trovato.');const oggi=new Date();const sc=new Date(s.scadenza>oggi.toISOString().slice(0,10)?s.scadenza:oggi.toISOString().slice(0,10));sc.setMonth(sc.getMonth()+mesi);s.scadenza=sc.toISOString().slice(0,10);s.attivo=true;try{await ghPut('licenses.json',JSON.stringify(l,null,2));alert('Scadenza estesa a '+s.scadenza);renderStudi();}catch(e){alert('Errore: '+e.message);}}
 async function renderOfferte(){
-const o=await leggiOfferte();const offerte=o.offerte||[];
-const box=$('offerteList');
-if(!offerte.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuna offerta creata.</p>';return;}
+const o=await leggiOfferte();const offerte=o.offerte||[];const box=$('offerteList');
+if(!offerte.length){box.innerHTML='<p style="color:var(--s);font-size:13px">Nessuna offerta.</p>';return;}
 const l=await leggiLicenze();const studi=l.studi||[];
-box.innerHTML=offerte.map((of,i)=>{const s=studi.find(x=>x.codice===of.codice);const link=BASE+'benvenuto.html?studio='+of.codice+'&offerta=1';
-return`<div class="row"><div><b>${s?s.nome:'Studio eliminato'}</b> (${of.codice})<br><small style="color:var(--s)">${of.descrizione||''} · <b>€${of.prezzo}</b> · ${of.durata} mesi</small></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="bl" onclick="copiaTxt('${link}')">Copia link</button><button class="bl" onclick="estendiScadenza(${i})">Estendi licenza</button><button class="bl-danger" onclick="rimuoviOfferta(${i})">Rimuovi</button></div></div>`;}).join('');
+box.innerHTML=offerte.map((of,i)=>{const s=studi.find(x=>x.codice===of.codice);const link=BASE+'benvenuto.html?studio='+of.codice+'&offerta=1';return `<div class="row"><div><b>${s?s.nome:'—'}</b> (${of.codice})<br><small style="color:var(--s)">${of.descrizione||''} · <b>€${of.prezzo}</b> · ${of.durata} mesi</small></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="bl" onclick="modificaOfferta(${i})">Modifica</button><button class="bl" onclick="copiaTxt('${link}')">Copia link</button><button class="bl" onclick="estendiScadenza(${i})">Estendi licenza</button><button class="bl-danger" onclick="rimuoviOfferta(${i})">Rimuovi</button></div></div>`;}).join('');
 }
 function scegliStudio(c){sessionStorage.setItem('studio',c);$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';renderApps();}
-function renderApps(){
-const c=sessionStorage.getItem('studio');
-const apps=[
-{n:'01',t:'Preventivi & Contratti',d:'Preventivi PDF e contratti con firma',u:'preventivi-contratti/'},
-{n:'02',t:'Workflow Foto & Video',d:'Stati di avanzamento e consegne',u:'workflow/'},
-{n:'03',t:'Clienti & Foto',d:'Archivio clienti e caricamento foto',u:'clienti-foto/'},
-{n:'04',t:'Selezione per Album',d:'Selezione studio o da casa, text Gru',u:'selezione-album/'},
-{n:'05',t:'Gallery',d:'Gallery privata per i clienti',u:'gallery/'},
-{n:'06',t:'Negozio Online',d:'Ordini stampa e pagamenti',u:'negozio/'},
-{n:'07',t:'Agenda',d:'Calendario impegni e promemoria',u:'agenda/'},
-{n:'08',t:'Ricevute',d:'Ricevute acconto e saldo con PDF',u:'ricevute/'},
-{n:'09',t:'Email',d:'Email e PEC dallo studio',u:'email/'}
-];
-$('appGrid').innerHTML=apps.map(a=>`<a class="app" href="${c?a.u+'?studio='+c:'#'}" onclick="if(!${!!c}){event.preventDefault();alert('Seleziona prima uno studio (pulsante Entra).');}"><div class="num">${a.n}</div><h3>${a.t}</h3><p>${a.d}</p></a>`).join('');
-if(c)$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';
-}
-function copiaTxt(t){navigator.clipboard.writeText(t).then(()=>alert('Copiato: '+t));}
-function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
-function restoreGlobale(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(typeof d!=='object')throw new Error('File non valido.');if(!confirm('Ripristinare il backup? I dati attuali verranno sostituiti.'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Ripristinato. Ricarico.');location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);e.target.value='';}
+function renderApps(){const c=sessionStorage.getItem('studio');const apps=[{n:'01',t:'Preventivi & Contratti',u:'preventivi-contratti/'},{n:'02',t:'Workflow',u:'workflow/'},{n:'03',t:'Clienti & Foto',u:'clienti-foto/'},{n:'04',t:'Selezione per Album',u:'selezione-album/'},{n:'05',t:'Gallery',u:'gallery/'},{n:'06',t:'Negozio',u:'negozio/'},{n:'07',t:'Agenda',u:'agenda/'},{n:'08',t:'Ricevute',u:'ricevute/'},{n:'09',t:'Email',u:'email/'}];$('appGrid').innerHTML=apps.map(a=>`<a class="app" href="${c?a.u+'?studio='+c:'#'}" onclick="if(!${!!c}){event.preventDefault();alert('Seleziona prima uno studio.');}"><div class="num">${a.n}</div><h3>${a.t}</h3></a>`).join('');if(c)$('studioSel').innerHTML='Studio attivo: <b class="code">'+c+'</b>';}
+function copiaTxt(t){navigator.clipboard.writeText(t).then(()=>alert('Copiato.'));}
+function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function restoreGlobale(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(!confirm('Ripristinare il backup?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);e.target.value='';}
 </script>
 </body>
 </html>
