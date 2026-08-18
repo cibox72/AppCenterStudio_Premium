@@ -1,5 +1,6 @@
-/* tema.js — grafica stagionale per tutte le app AppCenterStudio Premium */
+/* tema.js — grafica stagionale + SALVATAGGIO AUTOMATICO GLOBALE */
 (function(){
+ var WORKER='https://acs-api.mairaluigi.workers.dev';
  var THEMES={
   classico:{sf1:'#f4efe7',sf2:'#e7dccb',carta:'#fbf9f5',bordo:'#e2d7c3',testo:'#4a4237',acc:'#a3937d',scuro:'#6f6353',chiaro:'#e9dfcd'},
   wedding:{sf1:'#faf8f3',sf2:'#ece7db',carta:'#fffdf9',bordo:'#e3ddcf',testo:'#5a5647',acc:'#9caf88',scuro:'#6d7f5c',chiaro:'#f0ead8'},
@@ -29,6 +30,40 @@
   document.head.appendChild(st);
   var od=document.getElementById('appTemaDeco');if(od)od.remove();
  }
+
+ /* ===== SALVATAGGIO AUTOMATICO GLOBALE ===== */
+ function studioCodeNow(){
+  try{
+   var u=new URLSearchParams(location.search).get('studio');
+   if(u)return u;
+   return sessionStorage.getItem('studio')||localStorage.getItem('studioCodeSalvato')||'';
+  }catch(e){return '';}
+ }
+ function leggiJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+ function profiloSync(){
+  var code=studioCodeNow();
+  if(!code)return;
+  fetch(WORKER+'/db-load?studio='+encodeURIComponent(code)+'&chiave=profilo&t='+Date.now(),{cache:'no-store'})
+   .then(function(r){return r.json();})
+   .then(function(p){
+    var ident=leggiJSON('studioIdent');
+    var hasLocal=ident&&ident.nome;
+    if(!hasLocal&&p&&p.ident&&p.ident.nome){
+     /* PC vuoto: ripristina identita', logo, listini e mittente dal cloud */
+     localStorage.setItem('studioIdent',JSON.stringify(p.ident));
+     if(p.categorie)localStorage.setItem('appcenter_categorie',JSON.stringify(p.categorie));
+     if(p.emailCfg)localStorage.setItem('emailStudioCfg',JSON.stringify(p.emailCfg));
+    }else if(hasLocal){
+     /* PC con dati: backup automatico nel cloud */
+     var fd=new FormData();
+     fd.append('studio',code);fd.append('cliente','__db__');
+     fd.append('chiave','profilo');
+     fd.append('data',JSON.stringify({ident:ident,categorie:leggiJSON('appcenter_categorie'),emailCfg:leggiJSON('emailStudioCfg'),ts:Date.now()}));
+     fetch(WORKER+'/db-save',{method:'POST',body:fd}).catch(function(){});
+    }
+   }).catch(function(){});
+ }
+
  function avvia(){
   var sc=document.currentScript;
   var base=sc?sc.src.replace(/tema\.js.*$/,''):'';
@@ -36,6 +71,7 @@
    .then(function(r){return r.json();})
    .then(function(j){apply(j&&j.tema?j.tema:'classico');})
    .catch(function(){apply('classico');});
+  profiloSync();
  }
  if(document.body)avvia();else window.addEventListener('DOMContentLoaded',avvia);
 })();
