@@ -9,8 +9,8 @@
 :root{--crema:#f4efe7;--carta:#fbf9f5;--taupe:#a3937d;--taupe-scuro:#6f6353;--beige:#e9dfcd;--testo:#4a4237;--soft:#9b8f7d;--bordo:#e5dccb}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--crema);color:var(--testo);line-height:1.6;min-height:100vh}
-.topbar{display:flex;gap:8px;padding:12px 18px;background:rgba(251,249,245,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
-.topbar button,.topbar label{padding:8px 18px;background:#fff;border:1px solid var(--taupe);cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;color:var(--taupe-scuro);margin:0;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.topbar{display:flex;gap:8px;padding:12px 18px;background:rgba(251,249,245,0.95);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
+.topbar button,.topbar label{padding:8px 18px;background:#fff;border:1px solid var(--taupe);cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit;color:var(--taupe-scuro);margin:0;font-weight:600;text-transform:uppercase}
 .topbar button:hover,.topbar label:hover{background:var(--taupe);color:#fff}
 .sync-status{font-size:11px;color:#2e7d32;margin-left:auto;font-weight:700}
 .sync-status.ko{color:#b00020}
@@ -19,22 +19,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .blob.b1{width:280px;height:230px;top:-70px;left:-80px;background:var(--beige);border-radius:60% 40% 55% 45%/50% 60% 40% 50%}
 .blob.b2{width:320px;height:270px;bottom:-110px;right:-90px;background:#ddd0b8;opacity:.45;border-radius:45% 55% 40% 60%/55% 45% 60% 40%}
 .hero-inner{position:relative;z-index:1}
-.eyebrow{font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--soft)}
 h1.big{font-family:Georgia,serif;font-size:54px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;color:var(--taupe-scuro);margin:8px 0 4px}
 .sub{font-size:12px;letter-spacing:.45em;text-transform:uppercase;color:var(--taupe)}
 .container{max-width:1180px;margin:0 auto;padding:10px 20px 40px}
-.card{background:var(--carta);border:1px solid var(--bordo);padding:26px;margin-bottom:24px;border-radius:18px;box-shadow:0 8px 24px rgba(120,100,70,.08)}
+.card{background:var(--carta);border:1px solid var(--bordo);padding:26px;margin-bottom:24px;border-radius:18px}
 .card h2{font-family:Georgia,serif;font-size:20px;color:var(--taupe-scuro);padding-bottom:10px;border-bottom:1px solid var(--bordo)}
-.btn{display:inline-block;padding:9px 22px;background:var(--taupe);color:#fff;border:none;cursor:pointer;font-size:13px;border-radius:999px;margin:4px 2px;font-weight:600;letter-spacing:.05em}
+.btn{display:inline-block;padding:9px 22px;background:var(--taupe);color:#fff;border:none;cursor:pointer;font-size:13px;border-radius:999px;margin:4px 2px;font-weight:600}
 .btn:hover{background:var(--taupe-scuro)}
 .btn.secondary{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)}
-.btn.secondary:hover{background:var(--taupe);color:#fff}
 .btn.danger{background:#8c2f2f;color:#fff;border:none}
-.btn.danger:hover{background:#5e1f1f}
 .btn.danger.small{font-size:11px;padding:6px 12px}
-input,select,textarea{width:100%;padding:10px;border:1px solid var(--bordo);margin:5px 0;font-family:inherit;border-radius:10px;background:#fff;color:var(--testo)}
-input:focus,select:focus{outline:2px solid var(--taupe)}
-label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.08em}
+input,select{width:100%;padding:10px;border:1px solid var(--bordo);margin:5px 0;border-radius:10px;background:#fff;color:var(--testo)}
+label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase}
 .hint{font-size:12px;color:var(--soft)}
 .g-row{background:var(--carta);border:1px solid var(--bordo);padding:14px 18px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
 .g-row .code{font-family:monospace;color:var(--taupe-scuro);font-weight:700;background:var(--beige);padding:2px 8px;border-radius:6px;font-size:12px}
@@ -42,16 +38,14 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
 .folder-box h4{font-family:Georgia,serif;font-size:15px;color:var(--taupe-scuro);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .folder-box h4 .count{font-size:11px;background:var(--taupe);color:#fff;padding:3px 10px;border-radius:999px;font-weight:700}
 .folder-box .files{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}
-.folder-box .file{background:var(--crema);padding:6px 10px;border-radius:6px;font-size:11px;font-family:monospace;color:var(--testo);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;justify-content:space-between;align-items:center;gap:4px}
-.folder-box .file .fx{background:none;border:none;color:#8c2f2f;cursor:pointer;font-size:12px;font-weight:700;padding:0 2px}
-.folder-box .file .fx:hover{color:#5e1f1f;transform:scale(1.2)}
+.folder-box .file{background:var(--crema);padding:6px 10px;border-radius:6px;font-size:11px;font-family:monospace;display:flex;justify-content:space-between;align-items:center;gap:4px}
+.folder-box .file .fx{background:none;border:none;color:#8c2f2f;cursor:pointer;font-size:12px;font-weight:700}
 .status{font-size:12px;color:var(--soft);margin:6px 0}
 .rowbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-@media(max-width:800px){h1.big{font-size:36px;letter-spacing:.14em}}
+@media(max-width:800px){h1.big{font-size:36px}}
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <button onclick="history.back()">← Indietro</button>
   <button onclick="goHome()">Home</button>
@@ -59,139 +53,111 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
   <label>Ripristino globale<input type="file" hidden accept=".json" onchange="ripristinoGlobale(event)"></label>
   <span class="sync-status" id="syncStatus">Sync cloud: --</span>
 </div>
-
 <div class="hero">
   <div class="blob b1"></div><div class="blob b2"></div>
   <div class="hero-inner">
-    <div class="eyebrow">AppCenterStudio Premium</div>
     <h1 class="big">Clienti & Foto</h1>
     <div class="sub">Archivio clienti e caricamento foto</div>
   </div>
 </div>
-
 <div class="container">
-
   <div class="card">
     <h2>Nuovo cliente</h2>
-    <label>Nome</label>
-    <input id="newNome" placeholder="Es. Mario">
-    <label>Cognome</label>
-    <input id="newCognome" placeholder="Es. Rossi">
+    <label>Nome</label><input id="newNome" placeholder="Es. Mario">
+    <label>Cognome</label><input id="newCognome" placeholder="Es. Rossi">
     <button class="btn" onclick="aggiungiCliente()">+ Aggiungi cliente</button>
   </div>
-
   <div class="card">
     <h2>Carica foto nel magazzino</h2>
-    <p class="hint">Seleziona il cliente, poi scegli la cartella con le foto a BASSA risoluzione (Lightroom JPEG qualità 20). I nomi dei file devono essere IDENTICI agli originali.</p>
-    <label>Cliente</label>
-    <select id="selCliente"></select>
-    <label>Cartella foto</label>
-    <input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*">
+    <p class="hint">Scegli il cliente, poi la cartella con le foto a BASSA risoluzione (qualità 20). Nomi IDENTICI agli originali.</p>
+    <label>Cliente</label><select id="selCliente"></select>
+    <label>Cartella foto</label><input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*">
     <button class="btn" onclick="caricaFoto()">Carica nel magazzino</button>
     <div id="uploadStatus" class="hint"></div>
   </div>
-
   <div class="card">
     <h2>Archivio clienti</h2>
-    <p class="hint">Le foto sono suddivise per cartella. Usa "🗑 Elimina cartella" per una cartella, la ✕ per una singola foto, "Svuota magazzino" per cancellare tutto.</p>
+    <p class="hint">Foto suddivise per cartella. "🗑 Elimina cartella" cancella una cartella, la "✕" una foto, "Svuota magazzino" tutto.</p>
     <div id="archivioBox"></div>
   </div>
-
 </div>
-
 <script>
 const WORKER='https://acs-api.mairaluigi.workers.dev';
 let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
 if(studioCodice)sessionStorage.setItem('studio',studioCodice);
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
-
 let clienti=JSON.parse(localStorage.getItem('appcenter_clienti')||'[]');
 let manifesti={};
-
 function save(){localStorage.setItem('appcenter_clienti',JSON.stringify(clienti));syncCloud();}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-
 async function syncCloud(){if(!studioCodice)return;const box=document.getElementById('syncStatus');try{const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente','__db__');fd.append('chiave','clienti');fd.append('data',JSON.stringify(clienti));const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});const j=await r.json();if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}else{box.textContent='Sync cloud: errore';box.classList.add('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
-
-async function loadCloud(){if(!studioCodice)return;const box=document.getElementById('syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=clienti&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(Array.isArray(cloud)&&cloud.length){const map={};clienti.forEach(c=>{map[c.codice]=c;});let add=0;cloud.forEach(c=>{if(!c.codice)c.codice=uid();if(!map[c.codice]){map[c.codice]=c;add++;}});clienti=Object.values(map);save();box.textContent='Sync: '+add+' aggiunti';render();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
-
+async function loadCloud(){
+ if(!studioCodice)return;const box=document.getElementById('syncStatus');box.textContent='Sync cloud: carico...';
+ try{
+  const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=clienti&t='+Date.now(),{cache:'no-store'});
+  const cloud=await r.json();
+  if(Array.isArray(cloud)&&cloud.length){
+   const map={};clienti.forEach(c=>{map[c.codice]=c;});let add=0;
+   cloud.forEach(c=>{if(!c.codice)c.codice=uid();if(!map[c.codice]){map[c.codice]=c;add++;}});
+   clienti=Object.values(map);
+   localStorage.setItem('appcenter_clienti',JSON.stringify(clienti));
+   box.textContent='Sync: '+add+' clienti ripristinati';
+  }else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
+ }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
+}
 function aggiungiCliente(){const nome=document.getElementById('newNome').value.trim();const cognome=document.getElementById('newCognome').value.trim();if(!nome||!cognome)return alert('Nome e cognome obbligatori.');const codice=nome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+cognome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+String(clienti.length+1).padStart(3,'0');clienti.push({codice,nome,cognome,creato:new Date().toISOString()});save();document.getElementById('newNome').value='';document.getElementById('newCognome').value='';render();alert('Cliente aggiunto: '+codice);}
-
-function aggiornaSelect(){const sel=document.getElementById('selCliente');sel.innerHTML=clienti.map(c=>'<option value="'+c.codice+'">'+c.nome+' '+c.cognome+' ('+c.codice+')</option>').join('');}
-
+function aggiornaSelect(){document.getElementById('selCliente').innerHTML=clienti.map(c=>'<option value="'+c.codice+'">'+c.nome+' '+c.cognome+' ('+c.codice+')</option>').join('');}
 async function caricaFoto(){
  const codice=document.getElementById('selCliente').value;if(!codice)return alert('Seleziona un cliente.');
  const input=document.getElementById('fileInput');const files=[...input.files];if(!files.length)return alert('Seleziona una cartella.');
- const status=document.getElementById('uploadStatus');status.textContent='Caricamento di '+files.length+' file in corso...';
+ const status=document.getElementById('uploadStatus');status.textContent='Caricamento di '+files.length+' file...';
  const folderName=files[0].webkitRelativePath.split('/')[0]||'varie';
  const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);files.forEach(f=>fd.append('file',f));fd.append('meta',JSON.stringify(files.map(f=>({name:f.name,folder:folderName}))));
- try{const r=await fetch(WORKER+'/upload',{method:'POST',body:fd});const j=await r.json();if(j.error)return status.textContent='Errore: '+j.error;status.textContent='Completato: '+j.caricate+' foto caricate nella cartella "'+folderName+'".';input.value='';await refreshManifest(codice);render();}catch(e){status.textContent='Errore: '+e.message;}
+ try{const r=await fetch(WORKER+'/upload',{method:'POST',body:fd});const j=await r.json();if(j.error)return status.textContent='Errore: '+j.error;status.textContent='Completato: '+j.caricate+' foto in "'+folderName+'".';input.value='';await refreshManifest(codice);render();}catch(e){status.textContent='Errore: '+e.message;}
 }
-
 async function refreshManifest(codice){try{const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});manifesti[codice]=await r.json();}catch(e){manifesti[codice]={};}}
-
-async function deleteFile(codice,path){
- try{await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,file:path})});}catch(e){alert('Errore: '+e.message);}
-}
-
-/* Elimina una intera cartella (anche "varie" dei vecchi test) */
+async function deleteFile(codice,path){try{await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,file:path})});}catch(e){alert('Errore: '+e.message);}}
 async function eliminaCartella(codice,folderName){
  if(!confirm('Eliminare la cartella "'+folderName+'" e tutte le sue foto?'))return;
  const man=manifesti[codice]||{};
  const files=(man.basseByFolder&&man.basseByFolder[folderName])?man.basseByFolder[folderName]:(man.basse||[]);
  if(!files.length)return alert('Cartella vuota.');
  for(const f of files)await deleteFile(codice,'basse/'+f);
- await refreshManifest(codice);render();
- alert('Cartella "'+folderName+'" eliminata.');
+ await refreshManifest(codice);render();alert('Cartella eliminata.');
 }
-
-/* Elimina una singola foto */
-async function eliminaFoto(codice,name){
- if(!confirm('Eliminare la foto "'+name+'"?'))return;
- await deleteFile(codice,'basse/'+name);
- await refreshManifest(codice);render();
-}
-
-/* Svuota TUTTO il magazzino del cliente */
-async function svuotaMagazzino(codice){
- if(!confirm('Svuotare TUTTO il magazzino di '+codice+'?'))return;
- if(!confirm('CONFERMA DEFINITIVA: tutte le foto basse verranno eliminate. Procedere?'))return;
- const man=manifesti[codice]||{};const files=man.basse||[];
- if(!files.length)return alert('Magazzino già vuoto.');
- for(const f of files)await deleteFile(codice,'basse/'+f);
- await refreshManifest(codice);render();
- alert('Magazzino svuotato.');
-}
-
+async function eliminaFoto(codice,name){if(!confirm('Eliminare la foto "'+name+'"?'))return;await deleteFile(codice,'basse/'+name);await refreshManifest(codice);render();}
+async function svuotaMagazzino(codice){if(!confirm('Svuotare TUTTO il magazzino di '+codice+'?'))return;if(!confirm('CONFERMA DEFINITIVA?'))return;const man=manifesti[codice]||{};const files=man.basse||[];if(!files.length)return alert('Gia\' vuoto.');for(const f of files)await deleteFile(codice,'basse/'+f);await refreshManifest(codice);render();alert('Magazzino svuotato.');}
 function apriSelezione(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice),'_blank');}
-
 async function creaLinkGallery(codice){
  const man=manifesti[codice]||{};
- if(!man.gallery||!man.gallery.length){if(confirm('Nessuna ritoccata caricata.\n\nAprire ora "Selezione per Album" per caricare le foto finali?')){apriSelezione(codice);}return;}
- const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','180');const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');fd.append('nome_studio',ident.nome||'');fd.append('whatsapp',ident.telefono||'');fd.append('messaggio','La tua gallery è pronta. Tocca una foto per ingrandirla.');
- try{const r=await fetch(WORKER+'/link',{method:'POST',body:fd});const j=await r.json();if(j.error)return alert('Errore: '+j.error);const link=location.origin+'/gallery/?g='+encodeURIComponent(studioCodice+'/'+codice);navigator.clipboard.writeText(link).catch(()=>{});alert('Link gallery copiato:\n'+link+'\n\nScade il '+j.scadenza_link);}catch(e){alert('Errore: '+e.message);}
+ if(!man.gallery||!man.gallery.length){if(confirm('Nessuna ritoccata caricata.\nAprire "Selezione per Album" per caricare le foto finali?'))apriSelezione(codice);return;}
+ const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','180');
+ const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
+ fd.append('nome_studio',ident.nome||'');fd.append('whatsapp',ident.telefono||'');fd.append('messaggio','La tua gallery e\' pronta.');
+ try{const r=await fetch(WORKER+'/link',{method:'POST',body:fd});const j=await r.json();if(j.error)return alert('Errore: '+j.error);const link=location.origin+'/gallery/?g='+encodeURIComponent(studioCodice+'/'+codice);navigator.clipboard.writeText(link).catch(()=>{});alert('Link gallery copiato. Scade il '+j.scadenza_gallery);}catch(e){alert('Errore: '+e.message);}
 }
-
 function render(){
  aggiornaSelect();const box=document.getElementById('archivioBox');
  if(!clienti.length){box.innerHTML='<p class="hint">Nessun cliente. Aggiungine uno qui sopra.</p>';return;}
  box.innerHTML=clienti.slice().reverse().map(c=>{
   const man=manifesti[c.codice]||{};const basseByFolder=man.basseByFolder||{};const totaleBasse=man.basse?man.basse.length:0;const totaleGallery=man.gallery?man.gallery.length:0;
-  let foldersHtml='';
-  const folderNames=Object.keys(basseByFolder);
+  let foldersHtml='';const folderNames=Object.keys(basseByFolder);
   if(folderNames.length){
-   foldersHtml=folderNames.map(folder=>{const files=basseByFolder[folder];return '<div class="folder-box"><h4><span>'+folder+' <span class="count">'+files.length+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\''+folder.replace(/'/g,'')+'\')">🗑 Elimina cartella</button></h4><div class="files">'+files.map(f=>'<div class="file">'+f+'<button class="fx" title="Elimina foto" onclick="eliminaFoto(\''+c.codice+'\',\''+f.replace(/'/g,'')+'\')">✕</button></div>').join('')+'</div></div>';}).join('');
+   foldersHtml=folderNames.map(folder=>{const files=basseByFolder[folder];return '<div class="folder-box"><h4><span>'+folder+' <span class="count">'+files.length+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\''+folder.replace(/'/g,'')+'\')">🗑 Elimina cartella</button></h4><div class="files">'+files.map(f=>'<div class="file">'+f+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+f.replace(/'/g,'')+'\')">✕</button></div>').join('')+'</div></div>';}).join('');
   }else if(totaleBasse>0){
-   foldersHtml='<div class="folder-box"><h4><span>varie <span class="count">'+totaleBasse+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\'varie\')">🗑 Elimina cartella</button></h4><div class="files">'+(man.basse||[]).map(f=>'<div class="file">'+f+'<button class="fx" title="Elimina foto" onclick="eliminaFoto(\''+c.codice+'\',\''+f.replace(/'/g,'')+'\')">✕</button></div>').join('')+'</div></div>';
+   foldersHtml='<div class="folder-box"><h4><span>varie <span class="count">'+totaleBasse+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\'varie\')">🗑 Elimina cartella</button></h4><div class="files">'+(man.basse||[]).map(f=>'<div class="file">'+f+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+f.replace(/'/g,'')+'\')">✕</button></div>').join('')+'</div></div>';
   }
   return '<div class="g-row"><div style="flex:1"><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span><div class="status">'+totaleBasse+' foto nel magazzino · '+totaleGallery+' ritoccate'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+foldersHtml+(totaleBasse>0?'<button class="btn danger small" onclick="svuotaMagazzino(\''+c.codice+'\')">Svuota magazzino</button>':'')+'</div><div class="rowbtns"><button class="btn" onclick="apriSelezione(\''+c.codice+'\')">Apri selezione Album</button><button class="btn secondary" onclick="creaLinkGallery(\''+c.codice+'\')">Link gallery cliente</button></div></div>';
  }).join('');
 }
-
-function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();alert('Backup globale scaricato.');}
-function ripristinoGlobale(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(typeof d!=='object')throw new Error('File non valido.');if(!confirm('Ripristinare il backup globale ('+Object.keys(d).length+' voci)?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));alert('Ripristinato. Ricarico.');location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);e.target.value='';}
-
-(async()=>{for(const c of clienti)await refreshManifest(c.codice);render();loadCloud().then(async()=>{for(const c of clienti)await refreshManifest(c.codice);render();});})();
+function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function ripristinoGlobale(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(!confirm('Ripristinare?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);e.target.value='';}
+/* AVVIO: PRIMA ripristina i clienti dal cloud, POI mostra l'archivio */
+(async()=>{
+ await loadCloud();
+ for(const c of clienti)await refreshManifest(c.codice);
+ render();
+})();
 </script>
 </body>
 </html>
