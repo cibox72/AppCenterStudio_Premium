@@ -122,7 +122,7 @@ th{background:#111;color:#fff}
     <div class="card"><h2>Acconti ricevuti</h2>
       <div id="accontiBox"></div>
       <p style="margin-bottom:0"><button class="btn secondary" id="btnAddAcconto">+ Aggiungi acconto</button></p>
-      <p class="hint">Accanto a ogni acconto c'è "Ricevuta": PDF in stile blocchetto con tutti gli acconti e il saldo residuo.</p>
+      <p class="hint">Accanto a ogni acconto c'è "Ricevuta": PDF in stile blocchetto con tutti gli acconti, il saldo residuo e il quadratino di accettazione.</p>
     </div>
   </div>
   <div class="card"><h2>Piano di pagamento</h2>
@@ -143,7 +143,7 @@ th{background:#111;color:#fff}
   <div class="card"><h2>Accettazione</h2>
     <div class="acc-box">
       <label class="chk"><input type="checkbox" id="chkAccettato"> ACCETTATO E FIRMATO DAL CLIENTE</label>
-      <p class="hint" style="margin:8px 0 0">Se spunti, nel PDF la casella di accettazione esce PIENA; se non spunti, esce VUOTA da far firmare al cliente.</p>
+      <p class="hint" style="margin:8px 0 0">Se spunti, nei PDF (preventivo e ricevuta acconto) il quadratino esce PIENO; se no, esce VUOTO da firmare.</p>
     </div>
   </div>
   <div class="card"><h2>Note aggiuntive</h2><textarea id="p_note"></textarea></div>
@@ -246,15 +246,17 @@ function salvaPreventivo(){
   alert('Salvato in archivio: '+current.numero);
  }catch(e){alert('Errore salvataggio: '+e.message);}
 }
+/* QUADRATINO ACCETTAZIONE: disegnato ACCANTO alla scritta "ACCETTAZIONE" */
 function disegnaAccettazione(doc,W,y){
- doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('ACCETTAZIONE DEL PREVENTIVO',15,y);y+=7;
- doc.setFont('helvetica','normal');doc.setFontSize(10);
  doc.setDrawColor(0);doc.setLineWidth(.4);
- doc.rect(15,y-4.5,5.5,5.5);
- if(current.accettato){doc.setFillColor(0);doc.rect(15.8,y-3.7,3.9,3.9,'F');}
- doc.text('ACCETTATO E FIRMATO DAL CLIENTE',25,y);y+=6;
+ doc.rect(15,y-4,5,5);
+ if(current.accettato){doc.setFillColor(0);doc.rect(15.8,y-3.2,3.4,3.4,'F');}
+ doc.setFont('helvetica','bold');doc.setFontSize(11);
+ doc.text('ACCETTAZIONE DEL PREVENTIVO',24,y);
+ y+=6;doc.setFont('helvetica','normal');doc.setFontSize(9);
+ doc.text('ACCETTATO E FIRMATO DAL CLIENTE',24,y);y+=4;
  doc.setFontSize(8);doc.setTextColor(120);
- doc.text(current.accettato?'Il cliente ha accettato il presente preventivo.':'Casella da spuntare e firmare a mano per accettazione.',25,y);
+ doc.text(current.accettato?'Il cliente ha accettato il presente preventivo.':'Casella da spuntare e firmare a mano per accettazione.',24,y);
  doc.setTextColor(0);
  return y+8;
 }
@@ -315,7 +317,13 @@ function ricevutaAcconto(idx){
  y+=2;doc.line(5,y,W-5,y);y+=5;
  doc.text('TOTALE SERVIZIO: € '+fmt(current._totale||0),5,y);y+=4;
  doc.text('TOTALE ACCONTI: € '+fmt(current._totAcconti||0),5,y);y+=4;
- doc.setFontSize(9);doc.setFont('courier','bold');doc.text('SALDO RESIDUO: € '+fmt(current._saldo||0),5,y);y+=6;
+ doc.setFontSize(9);doc.setFont('courier','bold');doc.text('SALDO RESIDUO: € '+fmt(current._saldo||0),5,y);y+=7;
+ /* QUADRATINO ACCETTAZIONE ANCHE NELLA RICEVUTA ACCONTO */
+ doc.setDrawColor(0);doc.setLineWidth(.3);
+ doc.rect(5,y-3.5,4.5,4.5);
+ if(current.accettato){doc.setFillColor(0);doc.rect(5.7,y-2.8,3.1,3.1,'F');}
+ doc.setFont('courier','bold');doc.setFontSize(7);
+ doc.text('ACCETTATO E FIRMATO DAL CLIENTE',12,y);y+=6;
  doc.setFontSize(6);doc.setFont('courier','italic');doc.text('Soggetta a bollo vigente se dovuta',W/2,y,{align:'center'});y+=5;
  doc.line(5,y,30,y);doc.line(W-30,y,W-5,y);y+=3;doc.setFont('courier','normal');doc.setFontSize(7);doc.text('Firma Studio',5,y);doc.text('Firma Cliente',W-30,y);
  doc.save('Ricevuta_'+numR+'.pdf');
