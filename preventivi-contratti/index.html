@@ -44,12 +44,13 @@ input[readonly]{background:#f0f0f0;font-weight:700}
 .totCard .riga{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
 .totCard .big{font-size:20px;font-weight:800;border-top:2px solid #000;margin-top:6px;padding-top:8px}
 .totCard .saldo{background:#e8e8e8;border-radius:8px;padding:6px 10px}
-.chk{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:600}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 30px}
+.chk{display:flex;gap:10px;align-items:center;font-size:15px;font-weight:700;color:#000}
+.chk input{width:24px;height:24px;transform:scale(1.1);accent-color:#000;cursor:pointer}
+.acc-box{border:2px solid #000;border-radius:10px;padding:14px;background:#fff}
+.hint{font-size:12px;color:#777}
 table{width:100%;border-collapse:collapse}
 th,td{padding:8px 6px;border-bottom:1px solid #e3e3e3;font-size:12px;text-align:left;vertical-align:top}
 th{background:#111;color:#fff}
-.hint{font-size:12px;color:#777}
 .acconto-row{display:grid;grid-template-columns:110px 100px 1fr auto auto;gap:6px;align-items:center;margin-bottom:6px}
 .piano-row{display:grid;grid-template-columns:1fr 110px auto;gap:6px;align-items:center;margin-bottom:6px}
 .sync-status{font-size:11px;color:#2e7d32;margin-left:10px}
@@ -128,7 +129,7 @@ th{background:#111;color:#fff}
     <div id="pianoBox"></div>
     <p><button class="btn secondary" id="btnAddPiano">+ Aggiungi voce</button> <button class="btn green" id="btnPDFPiano">PDF piano di pagamento</button></p>
     <div id="pianoResiduo" class="hint"></div>
-    <p class="hint">Le 4 voci di partenza sono gia' pronte senza date: metti solo gli importi. Il PDF del piano si stampa e si consegna al cliente.</p>
+    <p class="hint">Le 4 voci di partenza sono gia' pronte senza date: metti solo gli importi.</p>
   </div>
   <div class="card totCard">
     <div class="riga"><span>Totale servizi</span><b id="totServizi">0,00 €</b></div>
@@ -139,7 +140,12 @@ th{background:#111;color:#fff}
     <div class="riga"><span>Totale acconti</span><b id="totAcconti">0,00 €</b></div>
     <div class="riga big saldo"><span>SALDO RESIDUO</span><span id="saldoResiduo">0,00 €</span></div>
   </div>
-  <div class="card"><h2>Accettazione</h2><label class="chk"><input type="checkbox" id="chkAccettato"> ACCETTATO E FIRMATO DAL CLIENTE</label></div>
+  <div class="card"><h2>Accettazione</h2>
+    <div class="acc-box">
+      <label class="chk"><input type="checkbox" id="chkAccettato"> ACCETTATO E FIRMATO DAL CLIENTE</label>
+      <p class="hint" style="margin:8px 0 0">Se spunti, nel PDF la casella di accettazione esce PIENA; se non spunti, esce VUOTA da far firmare al cliente.</p>
+    </div>
+  </div>
   <div class="card"><h2>Note aggiuntive</h2><textarea id="p_note"></textarea></div>
   <div class="actions">
     <button id="btnSalva" class="btn">Salva in archivio</button>
@@ -240,6 +246,18 @@ function salvaPreventivo(){
   alert('Salvato in archivio: '+current.numero);
  }catch(e){alert('Errore salvataggio: '+e.message);}
 }
+function disegnaAccettazione(doc,W,y){
+ doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('ACCETTAZIONE DEL PREVENTIVO',15,y);y+=7;
+ doc.setFont('helvetica','normal');doc.setFontSize(10);
+ doc.setDrawColor(0);doc.setLineWidth(.4);
+ doc.rect(15,y-4.5,5.5,5.5);
+ if(current.accettato){doc.setFillColor(0);doc.rect(15.8,y-3.7,3.9,3.9,'F');}
+ doc.text('ACCETTATO E FIRMATO DAL CLIENTE',25,y);y+=6;
+ doc.setFontSize(8);doc.setTextColor(120);
+ doc.text(current.accettato?'Il cliente ha accettato il presente preventivo.':'Casella da spuntare e firmare a mano per accettazione.',25,y);
+ doc.setTextColor(0);
+ return y+8;
+}
 function generaPDF(tipoDoc){
  raccogli();const doc=new jspdf.jsPDF();const W=doc.internal.pageSize.getWidth();
  doc.setFontSize(14);doc.setFont('helvetica','bold');doc.text(studioIdent.nome||'STUDIO FOTOGRAFICO',W/2,15,{align:'center'});
@@ -252,7 +270,10 @@ function generaPDF(tipoDoc){
  doc.setFont('helvetica','bold');doc.text('SERVIZI',15,y);doc.setFont('helvetica','normal');y+=6;
  current.servizi.forEach(s=>{if(y>270){doc.addPage();y=20;}doc.text('• '+s.nome+' — € '+fmt(s.prezzo),15,y);y+=6;});
  y+=3;doc.setFont('helvetica','bold');doc.text('IMPORTO TOTALE: € '+fmt(current._totale),15,y);doc.setFont('helvetica','normal');y+=6;
- doc.text('Acconti: € '+fmt(current._totAcconti)+' — SALDO RESIDUO: € '+fmt(current._saldo),15,y);y+=12;
+ doc.text('Acconti: € '+fmt(current._totAcconti)+' — SALDO RESIDUO: € '+fmt(current._saldo),15,y);y+=10;
+ if(current.note){if(y>250){doc.addPage();y=20;}doc.setFont('helvetica','bold');doc.text('NOTE',15,y);doc.setFont('helvetica','normal');y+=6;doc.text(current.note,15,y,{maxWidth:180});y+=10;}
+ if(y>235){doc.addPage();y=20;}
+ y=disegnaAccettazione(doc,W,y);
  y=Math.max(y,240);doc.line(15,y,80,y);doc.line(W-80,y,W-15,y);y+=4;doc.setFontSize(9);doc.text('Lo Studio',15,y);doc.text('Il Cliente',W-80,y);
  doc.save((tipoDoc==='contratto'?'CONTRATTO_':'PREVENTIVO_')+(current.numero||'bozza')+'.pdf');
 }
@@ -302,7 +323,7 @@ function ricevutaAcconto(idx){
 $('#btnSalva').onclick=salvaPreventivo;
 $('#btnPDF').onclick=()=>{try{generaPDF(current.tipoDoc||'preventivo');}catch(e){alert('Errore PDF: '+e.message);}};
 $('#btnPDFPiano').onclick=()=>{try{generaPDFPiano();}catch(e){alert('Errore PDF: '+e.message);}};
-$('#btnContratto').onclick=()=>{raccogli();if(!current.numero){alert('Prima salva in archivio.');return;}if(!confirm('Trasformare in CONTRATTO?'))return;current.tipoDoc='contratto';current.dataModifica=Date.now();const idx=db.preventivi.findIndex(p=>p.numero===current.numero);if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));save();renderArchivio();$('#pBadge').textContent='CONTRATTO';$('#pBadge').classList.add('contratto');alert('Trasformato in contratto.');};
+$('#btnContratto').onclick=()=>{raccogli();if(!current.numero){alert('Prima salva in archivio.');return;}if(!confirm('Trasformare in CONTRATTO?'))return;current.tipoDoc='contratto';current.accettato=true;$('#chkAccettato').checked=true;current.dataModifica=Date.now();const idx=db.preventivi.findIndex(p=>p.numero===current.numero);if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));save();renderArchivio();$('#pBadge').textContent='CONTRATTO';$('#pBadge').classList.add('contratto');alert('Trasformato in contratto.');};
 $('#btnNuovo').onclick=()=>{if(confirm('Aprire un nuovo preventivo?'))nuovoPreventivo();};
 function renderArchivio(){
  const box=$('#view-archivio');
