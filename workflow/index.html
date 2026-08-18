@@ -26,7 +26,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .actions button:hover{background:var(--taupe);color:#fff;border-color:var(--taupe)}
 .admin-banner{background:var(--taupe-scuro);color:#fff;padding:12px 18px;border-radius:12px;margin-bottom:16px;font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .admin-banner button{background:#fff;color:var(--taupe-scuro);border:none;padding:8px 18px;border-radius:999px;cursor:pointer;font-weight:600;font-size:12px}
-.admin-banner button:hover{background:var(--beige)}
 .card{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 6px 18px rgba(120,100,70,.08)}
 .card h2{color:var(--taupe-scuro);font-size:20px;border-left:4px solid var(--taupe);padding-left:12px;margin-bottom:14px}
 .card h3{color:var(--taupe-scuro);font-size:16px;margin:14px 0 8px}
@@ -128,7 +127,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
 .license-gate h2{font-family:Georgia,serif;color:var(--taupe-scuro);margin-bottom:12px}
 .license-gate p{color:var(--soft);margin-bottom:18px}
 .license-gate button{background:var(--taupe);color:#fff;border:none;padding:10px 24px;border-radius:999px;cursor:pointer;font-weight:600}
-/* ADMIN CONFIG */
 .admin-section{background:var(--beige);border:2px solid var(--taupe);border-radius:14px;padding:16px;margin:14px 0}
 .admin-section-head{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px dashed var(--taupe)}
 .admin-section-head input[type=text]{padding:8px;border:1px solid var(--taupe);border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;background:#fff;flex:1;min-width:180px}
@@ -226,7 +224,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
   </div>
 </div>
 
-<!-- MODAL DETTAGLIO -->
 <div id="detailModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -237,7 +234,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
   </div>
 </div>
 
-<!-- MODAL MODIFICA -->
 <div id="editModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -261,7 +257,6 @@ header{background:var(--carta);border:1px solid var(--bordo);border-radius:14px;
   </div>
 </div>
 
-<!-- MODAL CONFIG ADMIN -->
 <div id="adminConfigModal" class="modal">
   <div class="modal-content" style="max-width:950px">
     <div class="modal-header">
@@ -289,7 +284,6 @@ if(new URLSearchParams(location.search).get('admin')==='1')sessionStorage.setIte
 if(new URLSearchParams(location.search).get('admin')==='0')sessionStorage.removeItem('workflow_admin');
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
-/* ===== DEFAULT: FOTO (9 step) + VIDEO (5 step) ===== */
 const DEFAULT_SECTIONS=[
  {
   id:'foto', name:'FOTO', color:'#a3937d',
@@ -316,7 +310,6 @@ const DEFAULT_SECTIONS=[
  }
 ];
 
-/* Descrizioni dei tipi step (per admin) */
 const STEP_TYPES={
  simple:{label:'Semplice (solo data e stato)',hint:'Solo checkbox fatto e data.'},
  archive:{label:'Archiviazione (NAS + 3 HD + chi)',hint:'Campi: fatto da (Studio/Collaboratore), NAS, HD1, HD2, HD3.'},
@@ -329,7 +322,6 @@ const STEP_TYPES={
  usb_or_link:{label:'USB (1-5) oppure link',hint:'Radio: USB (con 5 pulsanti 1-5) oppure Link (campo per incollare).'}
 };
 
-/* ===== CARICAMENTO CONFIG ===== */
 let sectionsConfig=loadSectionsConfig();
 function loadSectionsConfig(){
  try{
@@ -342,7 +334,6 @@ function loadSectionsConfig(){
 }
 function saveSectionsConfig(){localStorage.setItem('workflow_sections_v1',JSON.stringify(sectionsConfig));}
 
-/* ===== DATI SERVIZI ===== */
 let services=JSON.parse(localStorage.getItem('gl_services_v2')||'[]');
 let editingId=null;
 function uid(){return 's_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -366,13 +357,12 @@ function migrateService(s){
 }
 function save(){localStorage.setItem('gl_services_v2',JSON.stringify(services));syncCloud();}
 
-/* ===== RENDER STEP FIELDS (in base al tipo) ===== */
 function renderStepFields(serviceId,sectionId,stepDef,stepData){
  const d=stepData||{done:false,date:'',extra:{}};
  const ex=d.extra||{};
  const F=(field,label,html)=>`<div class="field-group${field==='wide'?' wide':''}"><label>${label}</label>${html}</div>`;
- const inp=(field,ph,val,onch)=>`<input type="text" placeholder="${ph}" value="${(val||'').replace(/"/g,'&quot;')}" onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','${field}',this.value)">`;
- const sel=(field,opts,val,onch)=>`<select onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','${field}',this.value)">${opts.map(o=>`<option value="${o.v}" ${val===o.v?'selected':''}>${o.l}</option>`).join('')}</select>`;
+ const inp=(field,ph,val)=>`<input type="text" placeholder="${ph}" value="${(val||'').replace(/"/g,'&quot;')}" onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','${field}',this.value)">`;
+ const sel=(field,opts,val)=>`<select onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','${field}',this.value)">${opts.map(o=>`<option value="${o.v}" ${val===o.v?'selected':''}>${o.l}</option>`).join('')}</select>`;
  switch(stepDef.type){
   case 'archive':
    return `
@@ -385,7 +375,7 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
    return `
     <div class="field-group wide"><label>Selezione fatta</label>
      <div class="radio-group">
-      <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="studio" ${ex.method==='studio'||!ex.method?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','studio')"> In studio</label>
+      <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="studio" ${ex.method==='studio'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','studio')"> In studio</label>
       <label><input type="radio" name="sel_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
      </div></div>
     ${F('','Copertina - articolo',inp('coverArticle','Es. ART-2024-001',ex.coverArticle))}
@@ -398,7 +388,7 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
    return `
     <div class="field-group"><label>Musiche cliente</label>
      <div class="radio-group">
-      <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="no" ${ex.hasMusic!=='si'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','no')"> NO</label>
+      <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="no" ${ex.hasMusic==='no'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','no')"> NO</label>
       <label><input type="radio" name="mu_${serviceId}_${sectionId}_${stepDef.id}" value="si" ${ex.hasMusic==='si'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','hasMusic','si')"> SÌ</label>
      </div></div>
     <div class="field-group wide"><label>Link musiche (max 4)</label>
@@ -414,7 +404,7 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
    return `
     <div class="field-group"><label>Ricevuto</label>
      <div class="radio-group">
-      <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="person" ${ex.method==='person'||!ex.method?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','person')"> Di persona</label>
+      <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="person" ${ex.method==='person'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','person')"> Di persona</label>
       <label><input type="radio" name="vr_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
      </div></div>
     ${F('wide','Link (se tramite link)',inp('link','https://...',ex.link))}`;
@@ -423,7 +413,7 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
    return `
     <div class="field-group"><label>Modalità consegna</label>
      <div class="radio-group">
-      <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="usb" ${ex.method!=='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','usb')"> Con USB</label>
+      <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="usb" ${ex.method==='usb'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','usb')"> Con USB</label>
       <label><input type="radio" name="dl_${serviceId}_${sectionId}_${stepDef.id}" value="link" ${ex.method==='link'?'checked':''} onchange="updateExtra('${serviceId}','${sectionId}','${stepDef.id}','method','link')"> Tramite link</label>
      </div></div>
     <div class="field-group"><label>Numero USB (1-5)</label>
@@ -435,7 +425,6 @@ function renderStepFields(serviceId,sectionId,stepDef,stepData){
  }
 }
 
-/* ===== RENDER STEP / SEZIONE / SERVIZI ===== */
 function renderStepRow(serviceId,sectionId,stepDef){
  const s=services.find(x=>x.id===serviceId);if(!s)return '';
  const secData=s.sectionsData?.[sectionId]||{};
@@ -515,7 +504,6 @@ function renderServices(data=services){
 
 function toggleSteps(id){document.getElementById('steps-'+id).classList.toggle('open');}
 
-/* ===== AZIONI STEP ===== */
 function ensureStep(serviceId,sectionId,stepId){
  const s=services.find(x=>x.id===serviceId);if(!s)return null;
  if(!s.sectionsData)s.sectionsData={};
@@ -524,22 +512,35 @@ function ensureStep(serviceId,sectionId,stepId){
  if(!s.sectionsData[sectionId][stepId].extra)s.sectionsData[sectionId][stepId].extra={};
  return s.sectionsData[sectionId][stepId];
 }
+
 function toggleStep(serviceId,sectionId,stepId,checked){
+ const s=services.find(x=>x.id===serviceId);if(!s)return;
+ const sec=sectionsConfig.find(x=>x.id===sectionId);if(!sec)return;
+ const stepDef=sec.steps.find(x=>x.id===stepId);if(!stepDef)return;
  const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;
- d.done=checked;
  if(checked&&!d.date)d.date=new Date().toISOString().slice(0,10);
+ if(checked&&!d.extra.method){
+  if(stepDef.type==='selection')d.extra.method='studio';
+  if(stepDef.type==='video_receive')d.extra.method='person';
+  if(stepDef.type==='usb_or_link')d.extra.method='usb';
+  if(stepDef.type==='music')d.extra.hasMusic='no';
+ }
+ d.done=checked;
  save();renderServices();
  document.getElementById('steps-'+serviceId).classList.add('open');
  renderTable();
 }
+
 function updateDate(serviceId,sectionId,stepId,val){
  const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;
  d.date=val;save();
 }
+
 function updateExtra(serviceId,sectionId,stepId,field,val){
  const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;
  d.extra[field]=val;save();
 }
+
 function setUsbCount(serviceId,sectionId,stepId,n){
  const d=ensureStep(serviceId,sectionId,stepId);if(!d)return;
  d.extra.usbCount=n;d.extra.method='usb';
@@ -547,8 +548,8 @@ function setUsbCount(serviceId,sectionId,stepId,n){
  document.getElementById('steps-'+serviceId).classList.add('open');
 }
 
-/* ===== SERVIZI ===== */
 function toggleNewService(){document.getElementById('newService').classList.toggle('open');}
+
 function saveService(){
  const client=document.getElementById('inputClient').value.trim();
  const type=document.getElementById('inputType').value.trim();
@@ -568,11 +569,13 @@ function saveService(){
  document.getElementById('inputVideographer').value='';
  toggleNewService();renderServices();
 }
+
 function deleteService(id){
  if(!confirm('Eliminare questo servizio?'))return;
  services=services.filter(x=>x.id!==id);
  save();renderServices();renderTable();
 }
+
 function editService(id){
  const s=services.find(x=>x.id===id);if(!s)return;
  editingId=id;
@@ -582,6 +585,7 @@ function editService(id){
  document.getElementById('editVideographer').value=s.videographer||'';
  document.getElementById('editModal').classList.add('active');
 }
+
 function saveEdit(){
  if(!editingId)return;
  const s=services.find(x=>x.id===editingId);if(!s)return;
@@ -592,7 +596,6 @@ function saveEdit(){
  save();closeModal('editModal');renderServices();renderTable();
 }
 
-/* ===== VISUALIZZA DETTAGLIO ===== */
 function viewService(id){
  const s=services.find(x=>x.id===id);if(!s)return;
  const {done,total}=countAll(s);
@@ -614,6 +617,7 @@ function viewService(id){
  document.getElementById('detailBody').innerHTML=html;
  document.getElementById('detailModal').classList.add('active');
 }
+
 function renderStepDetail(st,d){
  const status=d.done?'✓ Completato':'◻ In attesa';
  const dateStr=d.date?` — ${formatDate(d.date)}`:'';
@@ -623,6 +627,7 @@ function renderStepDetail(st,d){
   ${info?`<div class="step-extra-info">${info}</div>`:''}
  </div>`;
 }
+
 function buildExtraInfo(st,ex){
  const parts=[];
  switch(st.type){
@@ -652,21 +657,23 @@ function buildExtraInfo(st,ex){
    if(ex.editor)parts.push(`Collaboratore montaggio: ${ex.editor}`);
    break;
   case 'video_receive':
-   parts.push(`Ricevuto: ${ex.method==='link'?'tramite link':'di persona'}`);
+   if(ex.method)parts.push(`Ricevuto: ${ex.method==='link'?'tramite link':'di persona'}`);
    if(ex.method==='link'&&ex.link)parts.push(`Link: ${ex.link}`);
    break;
   case 'usb_or_link':
    if(ex.method==='link'){parts.push('Consegna: tramite link');if(ex.link)parts.push(`Link: ${ex.link}`);}
-   else parts.push(`Consegna: USB x ${ex.usbCount||0}`);
+   else if(ex.usbCount)parts.push(`Consegna: USB x ${ex.usbCount}`);
    break;
  }
  return parts.join('\n');
 }
 
-/* ===== ARCHIVIO ===== */
 function showArchive(){document.getElementById('servicesList').style.display='none';document.getElementById('tableView').style.display='none';document.getElementById('newService').classList.remove('open');document.getElementById('archiveView').style.display='block';filterServices();}
+
 function showTable(){document.getElementById('servicesList').style.display='none';document.getElementById('archiveView').style.display='none';document.getElementById('newService').classList.remove('open');document.getElementById('tableView').style.display='block';renderTable();}
+
 function showMain(){document.getElementById('archiveView').style.display='none';document.getElementById('tableView').style.display='none';document.getElementById('servicesList').style.display='block';renderServices();}
+
 function filterServices(){
  const search=document.getElementById('searchBox').value.toLowerCase();
  let filtered=services;
@@ -697,7 +704,6 @@ function filterServices(){
  }).join('');
 }
 
-/* ===== TABELLA ===== */
 function renderTable(){
  const search=(document.getElementById('tableSearch')?.value||'').toLowerCase();
  let filtered=services.slice();
@@ -739,7 +745,6 @@ function renderTable(){
  table.innerHTML=thead+tbody;
 }
 
-/* ===== PDF SERVIZIO ===== */
 async function generatePDF(id){
  const s=services.find(x=>x.id===id);if(!s)return;
  if(!window.jspdf)return alert('Libreria PDF non caricata.');
@@ -781,12 +786,12 @@ async function generatePDF(id){
  doc.text(`Generato il ${new Date().toLocaleDateString('it-IT')}`,105,290,{align:'center'});
  doc.save(`Workflow_${s.client.replace(/\s+/g,'_')}_${s.type||'servizio'}.pdf`);
 }
+
 function hexToRgb(hex){
  const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
  return r?{r:parseInt(r[1],16),g:parseInt(r[2],16),b:parseInt(r[3],16)}:{r:163,g:147,b:125};
 }
 
-/* ===== PDF ARCHIVIO ===== */
 function generateArchivePDF(){
  if(!services.length)return alert('Archivio vuoto.');
  if(!window.jspdf||!window.jspdf.autoTable)return alert('Libreria PDF non caricata.');
@@ -813,16 +818,16 @@ function generateArchivePDF(){
  doc.save(`Workflow_Archivio_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
-/* ===== PDF TABELLA ===== */
 function generateTablePDF(){generateArchivePDF();}
 
-/* ===== ADMIN: CONFIGURAZIONE SEZIONI ===== */
 let adminDraft=null;
+
 function openAdminConfig(){
  adminDraft=JSON.parse(JSON.stringify(sectionsConfig));
  renderAdminBox();
  document.getElementById('adminConfigModal').classList.add('active');
 }
+
 function renderAdminBox(){
  const box=document.getElementById('adminSectionsBox');
  box.innerHTML=adminDraft.map((sec,si)=>{
@@ -847,10 +852,12 @@ function renderAdminBox(){
   </div>`;
  }).join('');
 }
+
 function addNewSection(){
  adminDraft.push({id:'sec_'+Date.now().toString(36),name:'NUOVA SEZIONE',color:'#a3937d',steps:[{id:'s1',label:'Primo step',type:'simple'}]});
  renderAdminBox();
 }
+
 function saveAdminConfig(){
  if(!adminDraft||!adminDraft.length)return alert('Almeno una sezione deve esistere.');
  sectionsConfig=adminDraft;
@@ -864,7 +871,6 @@ function saveAdminConfig(){
 
 function closeModal(id){document.getElementById(id).classList.remove('active');if(id==='adminConfigModal')adminDraft=null;if(id==='editModal')editingId=null;}
 
-/* ===== LICENZA + SYNC ===== */
 async function checkLicenza(){
  if(!studioCodice){showGate('Nessun codice studio. Torna alla home.');return false;}
  try{
@@ -877,6 +883,7 @@ async function checkLicenza(){
   return true;
  }catch(e){showGate('Impossibile verificare la licenza.');return false;}
 }
+
 function showGate(msg){document.getElementById('licenseGate').style.display='flex';document.getElementById('licenseMsg').textContent=msg;document.getElementById('app').style.display='none';}
 
 async function syncCloud(){
@@ -892,6 +899,7 @@ async function syncCloud(){
   else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
  }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
 }
+
 async function loadCloud(){
  if(!studioCodice)return;
  const box=document.getElementById('syncStatus');
@@ -910,12 +918,14 @@ async function loadCloud(){
   }else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
  }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
 }
+
 function backupGlobale(){
  const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}
  const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',exportedAt:new Date().toISOString(),data:d},null,2)],{type:'application/json'});
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_GLOBALE_'+new Date().toISOString().slice(0,10)+'.json';a.click();
  alert('Backup globale scaricato.');
 }
+
 function ripristinoGlobale(){
  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
  inp.onchange=e=>{
@@ -933,7 +943,6 @@ function ripristinoGlobale(){
  inp.click();
 }
 
-/* ===== AVVIO ===== */
 services=services.map(migrateService).filter(s=>s!==null);
 save();
 if(isAdmin)document.getElementById('adminBanner').style.display='flex';
