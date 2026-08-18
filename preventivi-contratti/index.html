@@ -189,9 +189,28 @@ let categorie=JSON.parse(localStorage.getItem('appcenter_categorie')||'null')||[
 ];
 let db=JSON.parse(localStorage.getItem(KEY)||'{"preventivi":[]}');
 let current=null;
+
+/* CONVERSIONE AUTOMATICA dei vecchi preventivi (evita l'errore "undefined nome") */
+function migratePreventivo(p){
+ if(!p)return null;
+ if(!p.a&&p.clienteA)p.a=p.clienteA;
+ if(!p.b&&p.clienteB)p.b=p.clienteB;
+ if(!p.a)p.a={nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''};
+ if(!p.b)p.b={nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''};
+ if(!Array.isArray(p.servizi))p.servizi=[];
+ if(!Array.isArray(p.acconti))p.acconti=[];
+ if(!Array.isArray(p.piano)||!p.piano.length)p.piano=[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}];
+ if(!p.tipoDoc)p.tipoDoc='preventivo';
+ if(!p.numero)p.numero='';
+ if(!p.dataCreazione)p.dataCreazione=today();
+ return p;
+}
+function nomeCliente(p){const a=p.a||p.clienteA||{};return ((a.nome||'')+' '+(a.cognome||'')).trim()||'—';}
+db.preventivi=(db.preventivi||[]).map(migratePreventivo).filter(Boolean);
+
 function save(){localStorage.setItem(KEY,JSON.stringify(db));localStorage.setItem('appcenter_categorie',JSON.stringify(categorie));localStorage.setItem('studioIdent',JSON.stringify(studioIdent));syncCloud();}
 async function syncCloud(){if(!studioCode)return;const box=$('#syncStatus');try{const fd=new FormData();fd.append('studio',studioCode);fd.append('cliente','__db__');fd.append('chiave','preventivi');fd.append('data',JSON.stringify(db));const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});const j=await r.json();if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}else{box.textContent='Sync cloud: errore';box.classList.add('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
-async function loadCloud(){if(!studioCode)return;const box=$('#syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCode)+'&chiave=preventivi&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(cloud&&cloud.preventivi&&cloud.preventivi.length){const map={};db.preventivi.forEach(p=>{map[p.numero]=p;});let add=0;cloud.preventivi.forEach(p=>{if(!map[p.numero]){map[p.numero]=p;add++;}else if((p.dataModifica||0)>(map[p.numero].dataModifica||0))map[p.numero]=p;});db.preventivi=Object.values(map);localStorage.setItem(KEY,JSON.stringify(db));box.textContent='Sync: '+add+' aggiunti';renderArchivio();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
+async function loadCloud(){if(!studioCode)return;const box=$('#syncStatus');box.textContent='Sync cloud: carico...';try{const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCode)+'&chiave=preventivi&t='+Date.now(),{cache:'no-store'});const cloud=await r.json();if(cloud&&cloud.preventivi&&cloud.preventivi.length){const map={};db.preventivi.forEach(p=>{map[p.numero]=p;});let add=0;cloud.preventivi.forEach(p=>{p=migratePreventivo(p);if(!map[p.numero]){map[p.numero]=p;add++;}else if((p.dataModifica||0)>(map[p.numero].dataModifica||0))map[p.numero]=p;});db.preventivi=Object.values(map).map(migratePreventivo).filter(Boolean);localStorage.setItem(KEY,JSON.stringify(db));box.textContent='Sync: '+add+' aggiunti';renderArchivio();}else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}}catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}}
 $$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');['preventivo','archivio','listini'].forEach(v=>$('#view-'+v).hidden=(v!==b.dataset.view));if(b.dataset.view==='archivio')renderArchivio();if(b.dataset.view==='listini')renderListini();});
 function nuovoPreventivo(){
  current={numero:'',dataCreazione:today(),dataServizio:'',tipo:'',a:{nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''},b:{nome:'',cognome:'',telefono:'',email:'',via:'',citta:'',cap:'',prov:''},chiesa:'',location:'',servizi:[],scontoPerc:0,sconto:0,scontoNota:'',acconti:[],piano:[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}],accettato:false,note:'',tipoDoc:'preventivo',dataModifica:Date.now()};
@@ -242,11 +261,11 @@ function salvaPreventivo(){
   current.dataModifica=Date.now();
   const idx=db.preventivi.findIndex(p=>p.numero===current.numero);
   if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));else db.preventivi.unshift(JSON.parse(JSON.stringify(current)));
+  db.preventivi=db.preventivi.map(migratePreventivo).filter(Boolean);
   save();renderArchivio();
   alert('Salvato in archivio: '+current.numero);
- }catch(e){alert('Errore salvataggio: '+e.message);}
+ }catch(e){alert('Errore durante il salvataggio. Ricarica la pagina con Ctrl+F5 e riprova.');}
 }
-/* QUADRATINO ACCETTAZIONE: disegnato ACCANTO alla scritta "ACCETTAZIONE" */
 function disegnaAccettazione(doc,W,y){
  doc.setDrawColor(0);doc.setLineWidth(.4);
  doc.rect(15,y-4,5,5);
@@ -267,7 +286,7 @@ function generaPDF(tipoDoc){
  doc.setLineWidth(.5);doc.line(15,25,W-15,25);
  doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text(tipoDoc==='contratto'?'CONTRATTO':'PREVENTIVO',W/2,35,{align:'center'});
  doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text('N. '+(current.numero||'—')+' del '+fmtData(current.dataCreazione),W/2,41,{align:'center'});
- let y=52;doc.text('CLIENTE: '+(current.a.nome+' '+current.a.cognome).trim(),15,y);y+=6;
+ let y=52;doc.text('CLIENTE: '+nomeCliente(current),15,y);y+=6;
  doc.text('Servizio: '+(current.tipo||'—')+' — Data: '+fmtData(current.dataServizio),15,y);y+=8;
  doc.setFont('helvetica','bold');doc.text('SERVIZI',15,y);doc.setFont('helvetica','normal');y+=6;
  current.servizi.forEach(s=>{if(y>270){doc.addPage();y=20;}doc.text('• '+s.nome+' — € '+fmt(s.prezzo),15,y);y+=6;});
@@ -286,7 +305,7 @@ function generaPDFPiano(){
  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text([studioIdent.indirizzo||'',studioIdent.telefono||''].filter(Boolean).join(' · '),W/2,20,{align:'center'});
  doc.line(15,25,W-15,25);
  doc.setFontSize(18);doc.setFont('helvetica','bold');doc.text('PIANO DI PAGAMENTO',W/2,38,{align:'center'});
- doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text((current.numero||'—')+' — Cliente: '+(current.a.nome+' '+current.a.cognome).trim(),W/2,46,{align:'center'});
+ doc.setFontSize(11);doc.setFont('helvetica','normal');doc.text((current.numero||'—')+' — Cliente: '+nomeCliente(current),W/2,46,{align:'center'});
  let y=60;doc.setFont('helvetica','bold');doc.setFontSize(13);doc.text('Importo totale: € '+fmt(current._totale),15,y);y+=10;
  doc.setFontSize(11);doc.text('RATE',15,y);doc.setFont('helvetica','normal');y+=8;
  current.piano.forEach((p,i)=>{if(y>265){doc.addPage();y=20;}doc.text((i+1)+'. '+(p.descrizione||'Rata '+(i+1)),15,y);doc.text('€ '+fmt(p.importo||0),W-15,y,{align:'right'});y+=8;});
@@ -301,7 +320,7 @@ function ricevutaAcconto(idx){
  raccogli();const a=current.acconti[idx];if(!a||!a.importo)return alert('Metti prima l\'importo dell\'acconto.');
  const anno=(current.dataCreazione||today()).slice(0,4);
  const numR='AC-'+anno+'-'+String(db.preventivi.reduce((n,p)=>n+(p.acconti?p.acconti.length:0),0)+1).padStart(3,'0');
- const cliente=((current.a.nome||'')+' '+(current.a.cognome||'')).trim()||'Cliente';
+ const cliente=nomeCliente(current);
  const doc=new jspdf.jsPDF({unit:'mm',format:[80,200]});const W=80;
  doc.setFillColor(17,17,17);doc.rect(0,0,W,12,'F');doc.setTextColor(255);doc.setFont('courier','bold');doc.setFontSize(8);doc.text((studioIdent.nome||'STUDIO').toUpperCase(),W/2,7,{align:'center'});
  doc.setTextColor(0);let y=20;doc.setFontSize(18);doc.text(numR,W/2,y,{align:'center'});y+=4;doc.setFontSize(7);doc.setFont('courier','normal');doc.text('RICEVUTA N.',W/2,y,{align:'center'});y+=6;
@@ -318,7 +337,6 @@ function ricevutaAcconto(idx){
  doc.text('TOTALE SERVIZIO: € '+fmt(current._totale||0),5,y);y+=4;
  doc.text('TOTALE ACCONTI: € '+fmt(current._totAcconti||0),5,y);y+=4;
  doc.setFontSize(9);doc.setFont('courier','bold');doc.text('SALDO RESIDUO: € '+fmt(current._saldo||0),5,y);y+=7;
- /* QUADRATINO ACCETTAZIONE ANCHE NELLA RICEVUTA ACCONTO */
  doc.setDrawColor(0);doc.setLineWidth(.3);
  doc.rect(5,y-3.5,4.5,4.5);
  if(current.accettato){doc.setFillColor(0);doc.rect(5.7,y-2.8,3.1,3.1,'F');}
@@ -329,16 +347,16 @@ function ricevutaAcconto(idx){
  doc.save('Ricevuta_'+numR+'.pdf');
 }
 $('#btnSalva').onclick=salvaPreventivo;
-$('#btnPDF').onclick=()=>{try{generaPDF(current.tipoDoc||'preventivo');}catch(e){alert('Errore PDF: '+e.message);}};
-$('#btnPDFPiano').onclick=()=>{try{generaPDFPiano();}catch(e){alert('Errore PDF: '+e.message);}};
-$('#btnContratto').onclick=()=>{raccogli();if(!current.numero){alert('Prima salva in archivio.');return;}if(!confirm('Trasformare in CONTRATTO?'))return;current.tipoDoc='contratto';current.accettato=true;$('#chkAccettato').checked=true;current.dataModifica=Date.now();const idx=db.preventivi.findIndex(p=>p.numero===current.numero);if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));save();renderArchivio();$('#pBadge').textContent='CONTRATTO';$('#pBadge').classList.add('contratto');alert('Trasformato in contratto.');};
+$('#btnPDF').onclick=()=>{try{generaPDF(current.tipoDoc||'preventivo');}catch(e){alert('Errore nella creazione del PDF. Ricarica con Ctrl+F5 e riprova.');}};
+$('#btnPDFPiano').onclick=()=>{try{generaPDFPiano();}catch(e){alert('Errore nella creazione del PDF. Ricarica con Ctrl+F5 e riprova.');}};
+$('#btnContratto').onclick=()=>{raccogli();if(!current.numero){alert('Prima salva in archivio.');return;}if(!confirm('Trasformare in CONTRATTO?'))return;current.tipoDoc='contratto';current.accettato=true;$('#chkAccettato').checked=true;current.dataModifica=Date.now();const idx=db.preventivi.findIndex(p=>p.numero===current.numero);if(idx>=0)db.preventivi[idx]=JSON.parse(JSON.stringify(current));db.preventivi=db.preventivi.map(migratePreventivo).filter(Boolean);save();renderArchivio();$('#pBadge').textContent='CONTRATTO';$('#pBadge').classList.add('contratto');alert('Trasformato in contratto.');};
 $('#btnNuovo').onclick=()=>{if(confirm('Aprire un nuovo preventivo?'))nuovoPreventivo();};
 function renderArchivio(){
  const box=$('#view-archivio');
  if(!db.preventivi.length){box.innerHTML='<div class="card"><p class="hint">Archivio vuoto.</p></div>';return;}
- box.innerHTML='<div class="card"><h2>Archivio Preventivi & Contratti</h2><table><tr><th>Tipo</th><th>Numero</th><th>Cliente</th><th>Data serv.</th><th>Totale</th><th>Saldo</th><th>Azioni</th></tr>'+db.preventivi.map((p,i)=>{const tipo=p.tipoDoc==='contratto'?'<span class="badge contratto">CONTRATTO</span>':'<span class="badge">Preventivo</span>';const servTot=(p.servizi||[]).reduce((a,s)=>a+(+s.prezzo||0),0);const sp=servTot*(+p.scontoPerc||0)/100;const tot=Math.max(0,servTot-sp-(+p.sconto||0));const ta=(p.acconti||[]).reduce((a,x)=>a+(+x.importo||0),0);return '<tr><td>'+tipo+'</td><td><b>'+esc(p.numero)+'</b></td><td>'+esc(((p.a.nome||'')+' '+(p.a.cognome||'')).trim())+'</td><td>'+fmtData(p.dataServizio)+'</td><td>€ '+fmt(tot)+'</td><td>€ '+fmt(tot-ta)+'</td><td><button class="mini" onclick="apriPreventivo('+i+')">Apri</button> <button class="mini" onclick="eliminaPreventivo('+i+')">Elimina</button></td></tr>';}).join('')+'</table></div>';
+ box.innerHTML='<div class="card"><h2>Archivio Preventivi & Contratti</h2><table><tr><th>Tipo</th><th>Numero</th><th>Cliente</th><th>Data serv.</th><th>Totale</th><th>Saldo</th><th>Azioni</th></tr>'+db.preventivi.map((p,i)=>{const tipo=p.tipoDoc==='contratto'?'<span class="badge contratto">CONTRATTO</span>':'<span class="badge">Preventivo</span>';const servTot=(p.servizi||[]).reduce((a,s)=>a+(+s.prezzo||0),0);const sp=servTot*(+p.scontoPerc||0)/100;const tot=Math.max(0,servTot-sp-(+p.sconto||0));const ta=(p.acconti||[]).reduce((a,x)=>a+(+x.importo||0),0);return '<tr><td>'+tipo+'</td><td><b>'+esc(p.numero)+'</b></td><td>'+esc(nomeCliente(p))+'</td><td>'+fmtData(p.dataServizio)+'</td><td>€ '+fmt(tot)+'</td><td>€ '+fmt(tot-ta)+'</td><td><button class="mini" onclick="apriPreventivo('+i+')">Apri</button> <button class="mini" onclick="eliminaPreventivo('+i+')">Elimina</button></td></tr>';}).join('')+'</table></div>';
 }
-function apriPreventivo(i){current=JSON.parse(JSON.stringify(db.preventivi[i]));$('#pBadge').textContent=current.tipoDoc==='contratto'?'CONTRATTO':'Preventivo';if(current.tipoDoc==='contratto')$('#pBadge').classList.add('contratto');else $('#pBadge').classList.remove('contratto');$('#p_numero').value=current.numero;$('#p_dataCreazione').value=current.dataCreazione;$('#p_dataServizio').value=current.dataServizio||'';$('#p_tipo').value=current.tipo||'';['a','b'].forEach(k=>{['nome','cognome','telefono','email','via','citta','cap','prov'].forEach(f=>{$('#'+k+'_'+f).value=(current[k]&&current[k][f])||'';});});$('#p_chiesa').value=current.chiesa||'';$('#p_location').value=current.location||'';$('#p_scontoPerc').value=current.scontoPerc||0;$('#p_sconto').value=current.sconto||0;$('#p_scontoNota').value=current.scontoNota||'';$('#p_note').value=current.note||'';$('#chkAccettato').checked=!!current.accettato;current.acconti=current.acconti||[];current.piano=(current.piano&&current.piano.length)?current.piano:[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}];renderAcconti();renderPiano();renderServiziBox();setTimeout(()=>{const ids=new Set(current.servizi.map(s=>s.id));$$('.servChk').forEach(c=>{if(ids.has(c.dataset.id))c.checked=true;});calcola();},50);$$('.tab').forEach(t=>t.classList.remove('active'));document.querySelector('.tab[data-view="preventivo"]').classList.add('active');['preventivo','archivio','listini'].forEach(v=>$('#view-'+v).hidden=(v!=='preventivo'));}
+function apriPreventivo(i){current=migratePreventivo(JSON.parse(JSON.stringify(db.preventivi[i])));$('#pBadge').textContent=current.tipoDoc==='contratto'?'CONTRATTO':'Preventivo';if(current.tipoDoc==='contratto')$('#pBadge').classList.add('contratto');else $('#pBadge').classList.remove('contratto');$('#p_numero').value=current.numero;$('#p_dataCreazione').value=current.dataCreazione;$('#p_dataServizio').value=current.dataServizio||'';$('#p_tipo').value=current.tipo||'';['a','b'].forEach(k=>{['nome','cognome','telefono','email','via','citta','cap','prov'].forEach(f=>{$('#'+k+'_'+f).value=(current[k]&&current[k][f])||'';});});$('#p_chiesa').value=current.chiesa||'';$('#p_location').value=current.location||'';$('#p_scontoPerc').value=current.scontoPerc||0;$('#p_sconto').value=current.sconto||0;$('#p_scontoNota').value=current.scontoNota||'';$('#p_note').value=current.note||'';$('#chkAccettato').checked=!!current.accettato;current.acconti=current.acconti||[];current.piano=(current.piano&&current.piano.length)?current.piano:[{descrizione:'Caparra',importo:0},{descrizione:"Prima dell'evento",importo:0},{descrizione:'Alla selezione delle foto',importo:0},{descrizione:'Prima della stampa',importo:0}];renderAcconti();renderPiano();renderServiziBox();setTimeout(()=>{const ids=new Set(current.servizi.map(s=>s.id));$$('.servChk').forEach(c=>{if(ids.has(c.dataset.id))c.checked=true;});calcola();},50);$$('.tab').forEach(t=>t.classList.remove('active'));document.querySelector('.tab[data-view="preventivo"]').classList.add('active');['preventivo','archivio','listini'].forEach(v=>$('#view-'+v).hidden=(v!=='preventivo'));}
 function eliminaPreventivo(i){if(!confirm('Eliminare '+db.preventivi[i].numero+'?'))return;db.preventivi.splice(i,1);save();renderArchivio();}
 function renderListini(){
  $('#s_nome').value=studioIdent.nome||'';$('#s_piva').value=studioIdent.piva||'';$('#s_indirizzo').value=studioIdent.indirizzo||'';$('#s_telefono').value=studioIdent.telefono||'';$('#s_email').value=studioIdent.email||'';$('#s_note').value=studioIdent.note||'';
