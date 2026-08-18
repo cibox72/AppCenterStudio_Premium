@@ -1,12 +1,3 @@
 {
-  "offerte": [
-    {
-      "codice": "st-001",
-      "prezzo": 150,
-      "durata": 12,
-      "descrizione": "1 Mese Omaggio",
-      "attiva": true,
-      "creata": "2026-08-17"
-    }
-  ]
+  "offerte": []
 }
