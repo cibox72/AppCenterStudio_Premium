@@ -42,14 +42,8 @@
     font-family: Georgia, serif;
     margin-left: 5px;
   }
-  .topbar button:hover {
-    background: rgba(255,255,255,0.2);
-  }
-  .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 0 15px;
-  }
+  .topbar button:hover { background: rgba(255,255,255,0.2); }
+  .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
   .card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -64,12 +58,8 @@
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 10px;
   }
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  input, select {
+  label { display: block; margin-bottom: 5px; font-weight: bold; }
+  input[type="text"], input[type="tel"], input[type="email"], select {
     width: 100%;
     padding: 8px;
     margin-bottom: 15px;
@@ -89,9 +79,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
   }
-  button.action-btn:hover {
-    opacity: 0.9;
-  }
+  button.action-btn:hover { opacity: 0.9; }
   button.danger-btn {
     background-color: #b00020;
     color: #fff;
@@ -104,58 +92,40 @@
   .row-item {
     border-bottom: 1px solid var(--border-color);
     padding: 12px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
   }
-  .row-item:last-child {
-    border-bottom: none;
-  }
-  .sync-status {
-    font-size: 0.8em;
-    opacity: 0.8;
-  }
+  .row-item:last-child { border-bottom: none; }
+  .sync-status { font-size: 0.8em; opacity: 0.8; }
   .hidden { display: none !important; }
   .folder-item {
     background: #f9f7f4;
-    padding: 15px;
+    padding: 12px;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border: 1px solid var(--border-color);
-  }
-  .folder-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 10px;
   }
-  .upload-area {
+  .upload-form {
+    background: #faf8f5;
     border: 2px dashed var(--border-color);
-    padding: 20px;
-    text-align: center;
+    padding: 15px;
     border-radius: 4px;
     margin-top: 10px;
-    background: #fff;
   }
-  .upload-area:hover {
-    border-color: var(--accent-color);
-    background: #faf8f5;
-  }
+  .upload-form label { font-size: 0.95em; }
   .file-list {
     margin-top: 10px;
     font-size: 0.9em;
-    max-height: 200px;
+    max-height: 150px;
     overflow-y: auto;
+    background: #fff;
+    padding: 8px;
+    border-radius: 4px;
   }
   .file-item {
-    padding: 5px;
+    padding: 4px 0;
     border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
   }
   .progress-bar {
     width: 100%;
@@ -170,8 +140,15 @@
     background-color: var(--accent-color);
     transition: width 0.3s;
   }
-  input[type="file"] {
-    margin: 10px 0;
+  .client-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .client-id {
+    font-size: 0.85em;
+    color: var(--accent-color);
   }
 </style>
 </head>
@@ -186,9 +163,7 @@
     <div class="sync-status" id="syncStatus">Sync cloud: in attesa...</div>
   </div>
 
-  <div class="container" id="appContainer">
-    <!-- Contenuto iniettato dinamicamente -->
-  </div>
+  <div class="container" id="appContainer"></div>
 
 <script>
 const WORKER_URL = 'https://acs-api.mairaluigi.workers.dev';
@@ -197,22 +172,13 @@ let studioIdent = { nome: 'Studio Fotografico', telefono: '', codice: '' };
 let dbData = { clienti: [] };
 
 function getParam(name) {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(name);
+  return new URLSearchParams(window.location.search).get(name);
 }
-
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
-
 function generateClientId() {
   return 'CLI-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: '2-digit' });
 }
 
 async function fetchStudioInfo(codice) {
@@ -225,9 +191,7 @@ async function fetchStudioInfo(codice) {
       studioIdent.telefono = studio.telefono || '';
       studioIdent.codice = studio.codice;
     }
-  } catch(e) {
-    console.log('Impossibile caricare licenses.json, uso default');
-  }
+  } catch(e) { console.log('licenses.json non disponibile'); }
 }
 
 async function loadDb() {
@@ -235,15 +199,13 @@ async function loadDb() {
   try {
     const res = await fetch(`${WORKER_URL}/db-load?key=${DB_KEY}`);
     if (res.ok) {
-      const data = await res.json();
-      dbData = data || { clienti: [] };
+      dbData = await res.json() || { clienti: [] };
       document.getElementById('syncStatus').textContent = 'Sync cloud: aggiornato';
     } else {
       dbData = { clienti: [] };
       document.getElementById('syncStatus').textContent = 'Sync cloud: errore';
     }
   } catch (e) {
-    console.error(e);
     document.getElementById('syncStatus').textContent = 'Sync cloud: offline';
   }
 }
@@ -256,13 +218,8 @@ async function saveDb() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dbData)
     });
-    if (res.ok) {
-      document.getElementById('syncStatus').textContent = 'Sync cloud: salvato';
-    } else {
-      document.getElementById('syncStatus').textContent = 'Sync cloud: errore salvataggio';
-    }
+    document.getElementById('syncStatus').textContent = res.ok ? 'Sync cloud: salvato' : 'Sync cloud: errore';
   } catch (e) {
-    console.error(e);
     document.getElementById('syncStatus').textContent = 'Sync cloud: errore';
   }
 }
@@ -270,8 +227,8 @@ async function saveDb() {
 async function backupGlobale() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbData));
   const a = document.createElement('a');
-  a.setAttribute("href", dataStr);
-  a.setAttribute("download", "backup_clienti_foto.json");
+  a.href = dataStr;
+  a.download = "backup_clienti_foto.json";
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -291,16 +248,14 @@ async function ripristinoGlobale() {
         await saveDb();
         alert('Ripristino globale completato.');
         init();
-      } catch (err) {
-        alert('Errore nel file di ripristino.');
-      }
+      } catch (err) { alert('Errore nel file di ripristino.'); }
     };
     reader.readAsText(file);
   };
   input.click();
 }
 
-// VISTA STUDIO
+// === VISTA STUDIO ===
 function renderStudioView() {
   const container = document.getElementById('appContainer');
   container.innerHTML = `
@@ -326,10 +281,10 @@ function renderStudioView() {
 }
 
 function creaCliente() {
-  const nome = document.getElementById('newNome').value;
-  const cognome = document.getElementById('newCognome').value;
-  const idCliente = document.getElementById('newIdCliente').value || generateClientId();
-  const telefono = document.getElementById('newTelefono').value;
+  const nome = document.getElementById('newNome').value.trim();
+  const cognome = document.getElementById('newCognome').value.trim();
+  const idCliente = document.getElementById('newIdCliente').value.trim() || generateClientId();
+  const telefono = document.getElementById('newTelefono').value.trim();
 
   if (!nome || !cognome) {
     alert('Inserire almeno Nome e Cognome.');
@@ -338,7 +293,7 @@ function creaCliente() {
 
   dbData.clienti.push({
     id: generateId(),
-    idCliente: idCliente,
+    idCliente,
     nome,
     cognome,
     telefono,
@@ -361,168 +316,159 @@ function renderArchivio() {
 
   let html = '';
   dbData.clienti.forEach(cliente => {
-    html += `<div class="row-item" style="flex-direction: column; align-items: flex-start;">
-      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+    html += `<div class="row-item">
+      <div class="client-header">
         <strong>${cliente.cognome} ${cliente.nome}</strong>
-        <span style="font-size: 0.85em; color: var(--accent-color);">ID: ${cliente.idCliente}</span>
-      </div>
-      <div style="width: 100%; margin-top: 10px;">`;
-    
+        <span class="client-id">ID: ${cliente.idCliente}</span>
+      </div>`;
+
     if (cliente.cartelle.length === 0) {
-      html += `<p style="font-size: 0.9em; color: #888;">Nessuna cartella caricata.</p>`;
+      html += `<p style="font-size: 0.9em; color: #888; margin: 5px 0;">Nessuna cartella caricata.</p>`;
     } else {
       cliente.cartelle.forEach((cartella, idx) => {
         const totaleFoto = cartella.foto ? cartella.foto.length : 0;
         html += `
           <div class="folder-item">
-            <div class="folder-header">
-              <strong>📁 ${cartella.nome} (${totaleFoto} foto)</strong>
-              <button class="danger-btn" onclick="eliminaCartella('${cliente.id}', ${idx})">X Elimina Cartella</button>
-            </div>
-            ${totaleFoto > 0 ? `
-              <div class="file-list">
-                ${cartella.foto.slice(0, 5).map(f => `<div class="file-item"><span>${f.nome}</span></div>`).join('')}
-                ${totaleFoto > 5 ? `<div style="padding:5px; color:#888;">... e altre ${totaleFoto - 5} foto</div>` : ''}
-              </div>
-            ` : '<p style="font-size:0.9em; color:#888; margin:5px 0;">Nessuna foto caricata</p>'}
+            <span>📁 ${cartella.nome} (${totaleFoto} foto)</span>
+            <button class="danger-btn" onclick="eliminaCartella('${cliente.id}', ${idx})">X Elimina Cartella</button>
           </div>
         `;
       });
     }
 
-    html += `</div>
-      <div style="width: 100%; margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
-        <button class="action-btn" onclick="mostraUploadCartella('${cliente.id}')">+ Nuova Cartella</button>
+    html += `
+      <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+        <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">+ Nuova Cartella</button>
         <button class="action-btn" onclick="inviaLinkWhatsApp('${cliente.id}')">Invia Link WhatsApp</button>
         <button class="action-btn danger-btn" onclick="eliminaCliente('${cliente.id}')">Elimina Cliente</button>
+      </div>
+      <div id="uploadForm_${cliente.id}" class="upload-form hidden">
+        <h3 style="margin-top:0; color: var(--accent-color);">Carica nuova cartella per ${cliente.cognome} ${cliente.nome}</h3>
+        <label>Nome cartella (es. Matrimonio, Battesimo, Comunione)</label>
+        <input type="text" id="nomeCartella_${cliente.id}" placeholder="Es. Matrimonio">
+        <label>Seleziona i file da caricare</label>
+        <input type="file" id="fileInput_${cliente.id}" multiple accept="image/*,.pdf,.mp4" style="margin-bottom: 10px;">
+        <div id="fileList_${cliente.id}" class="file-list hidden"></div>
+        <div id="progressSection_${cliente.id}" class="hidden">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill_${cliente.id}" style="width: 0%"></div>
+          </div>
+          <p id="progressText_${cliente.id}" style="font-size: 0.9em;">Caricamento in corso...</p>
+        </div>
+        <div style="margin-top: 10px;">
+          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">📤 Carica Cartella</button>
+          <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">Annulla</button>
+        </div>
       </div>
     </div>`;
   });
   div.innerHTML = html;
-}
 
-function mostraUploadCartella(clienteId) {
-  const nomeCartella = prompt("Nome della cartella (es. Matrimonio, Battesimo, Comunione):");
-  if (!nomeCartella) return;
-
-  const container = document.getElementById('appContainer');
-  const cliente = dbData.clienti.find(c => c.id === clienteId);
-  
-  const uploadSection = document.createElement('div');
-  uploadSection.className = 'card';
-  uploadSection.id = 'uploadSection';
-  uploadSection.innerHTML = `
-    <h3>Caricamento Cartella: ${nomeCartella}</h3>
-    <p>Cliente: ${cliente.cognome} ${cliente.nome} (ID: ${cliente.idCliente})</p>
-    
-    <div class="upload-area">
-      <label for="fileInput">Seleziona i file da caricare:</label>
-      <input type="file" id="fileInput" multiple accept="image/*,.pdf" style="margin: 10px 0;">
-      <p style="font-size: 0.85em; color: #666;">Puoi selezionare più file contemporaneamente (tieni premuto Ctrl o Shift)</p>
-    </div>
-    
-    <div id="fileList" class="file-list"></div>
-    
-    <div id="progressSection" class="hidden">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-      </div>
-      <p id="progressText">Caricamento in corso...</p>
-    </div>
-    
-    <div style="margin-top: 15px;">
-      <button class="action-btn" onclick="avviaUpload('${cliente.id}', '${nomeCartella}')">Avvia Caricamento</button>
-      <button class="action-btn" onclick="renderStudioView()">Annulla</button>
-    </div>
-  `;
-  
-  container.insertBefore(uploadSection, container.firstChild);
-  
-  document.getElementById('fileInput').addEventListener('change', function(e) {
-    const files = e.target.files;
-    const fileList = document.getElementById('fileList');
-    if (files.length > 0) {
-      fileList.innerHTML = `<p><strong>${files.length} file selezionati:</strong></p>` + 
-        Array.from(files).map(f => `<div class="file-item"><span>${f.name} (${(f.size/1024/1024).toFixed(2)} MB)</span></div>`).join('');
+  // Listener per mostrare lista file selezionati
+  dbData.clienti.forEach(cliente => {
+    const fileInput = document.getElementById(`fileInput_${cliente.id}`);
+    if (fileInput) {
+      fileInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+        const fileList = document.getElementById(`fileList_${cliente.id}`);
+        if (files.length > 0) {
+          fileList.classList.remove('hidden');
+          fileList.innerHTML = `<strong>${files.length} file selezionati:</strong><br>` +
+            Array.from(files).map(f => `<div class="file-item">📄 ${f.name} (${(f.size/1024/1024).toFixed(2)} MB)</div>`).join('');
+        } else {
+          fileList.classList.add('hidden');
+        }
+      });
     }
   });
 }
 
-async function avviaUpload(clienteId, nomeCartella) {
-  const fileInput = document.getElementById('fileInput');
+function toggleUploadForm(clienteId) {
+  const form = document.getElementById(`uploadForm_${clienteId}`);
+  if (form) {
+    form.classList.toggle('hidden');
+  }
+}
+
+async function avviaUpload(clienteId) {
+  const nomeCartella = document.getElementById(`nomeCartella_${clienteId}`).value.trim();
+  const fileInput = document.getElementById(`fileInput_${clienteId}`);
   const files = fileInput.files;
-  
+
+  if (!nomeCartella) {
+    alert('Inserire un nome per la cartella.');
+    return;
+  }
   if (files.length === 0) {
     alert('Seleziona almeno un file da caricare.');
     return;
   }
-  
+
   const cliente = dbData.clienti.find(c => c.id === clienteId);
-  if (!cliente) {
-    alert('Cliente non trovato.');
-    return;
-  }
-  
-  document.getElementById('progressSection').classList.remove('hidden');
-  
+  if (!cliente) { alert('Cliente non trovato.'); return; }
+
+  const progressSection = document.getElementById(`progressSection_${clienteId}`);
+  const progressFill = document.getElementById(`progressFill_${clienteId}`);
+  const progressText = document.getElementById(`progressText_${clienteId}`);
+  progressSection.classList.remove('hidden');
+
   const cartellaObj = {
     nome: nomeCartella,
     foto: [],
     data: new Date().toISOString()
   };
-  
+
   let uploadedCount = 0;
   const totalFiles = files.length;
-  
+
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
-    const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
-    
     progressText.textContent = `Caricamento ${i + 1} di ${totalFiles}: ${file.name}`;
     progressFill.style.width = `${((i + 1) / totalFiles) * 100}%`;
-    
+
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('studio', studioIdent.codice);
+      formData.append('studio', studioIdent.codice || 'demo');
       formData.append('cliente', cliente.idCliente);
       formData.append('cartella', nomeCartella);
       formData.append('nomeFile', file.name);
-      
+
       const uploadRes = await fetch(`${WORKER_URL}/upload`, {
         method: 'POST',
         body: formData
       });
-      
+
       if (uploadRes.ok) {
         const uploadData = await uploadRes.json();
         cartellaObj.foto.push({
           nome: file.name,
-          url: uploadData.url || `https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev/${studioIdent.codice}/${cliente.idCliente}/${nomeCartella}/${file.name}`,
+          url: uploadData.url || `https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev/${studioIdent.codice || 'demo'}/${cliente.idCliente}/${nomeCartella}/${file.name}`,
           data: new Date().toISOString(),
           dimensione: file.size
         });
         uploadedCount++;
+      } else {
+        console.warn(`Upload fallito per ${file.name}`);
       }
     } catch (err) {
       console.error(`Errore upload ${file.name}:`, err);
     }
   }
-  
+
   if (uploadedCount > 0) {
     cliente.cartelle.push(cartellaObj);
     await saveDb();
-    alert(`Caricamento completato! ${uploadedCount} di ${totalFiles} file caricati con successo.`);
+    alert(`✅ Caricamento completato! ${uploadedCount} di ${totalFiles} file caricati.`);
   } else {
-    alert('Nessun file è stato caricato. Verifica la connessione.');
+    alert('⚠️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza.');
   }
-  
+
   renderStudioView();
 }
 
 function eliminaCartella(clienteId, cartellaIdx) {
-  if (confirm("Sei sicuro di voler eliminare INTERA questa cartella e tutto il suo contenuto?")) {
+  if (confirm("Eliminare INTERA questa cartella e tutto il suo contenuto?")) {
     const cliente = dbData.clienti.find(c => c.id === clienteId);
     if (cliente) {
       cliente.cartelle.splice(cartellaIdx, 1);
@@ -532,7 +478,7 @@ function eliminaCartella(clienteId, cartellaIdx) {
 }
 
 function eliminaCliente(clienteId) {
-  if (confirm("Sei sicuro di voler eliminare questo cliente e tutte le sue cartelle?")) {
+  if (confirm("Eliminare questo cliente e tutte le sue cartelle?")) {
     dbData.clienti = dbData.clienti.filter(c => c.id !== clienteId);
     saveDb().then(() => renderArchivio());
   }
@@ -541,27 +487,26 @@ function eliminaCliente(clienteId) {
 function inviaLinkWhatsApp(clienteId) {
   const cliente = dbData.clienti.find(c => c.id === clienteId);
   if (!cliente) return;
-
   if (!cliente.telefono) {
-    alert("Inserire un numero di telefono nel profilo del cliente prima di inviare il link.");
+    alert("Inserire un numero di telefono nel profilo del cliente.");
     return;
   }
 
-  const baseUrl = window.location.origin + window.location.pathname;
+  // URL corretto per GitHub Pages (con %20 per lo spazio nel nome cartella)
+  const baseUrl = "https://cibox72.github.io/AppCenterStudio_Premium/03%20clienti-foto/index.html";
   const link = `${baseUrl}?id=${cliente.id}&studio=${encodeURIComponent(studioIdent.nome)}`;
   const messaggio = `Ciao ${cliente.nome}, ${studioIdent.nome} ti ha condiviso l'accesso alle tue foto. Clicca qui per visualizzarle: ${link}`;
-  
+
   const numeroPulito = cliente.telefono.replace(/\D/g, '');
   const numeroWa = numeroPulito.startsWith('39') ? numeroPulito : '39' + numeroPulito;
-  
+
   window.open(`https://wa.me/${numeroWa}?text=${encodeURIComponent(messaggio)}`, '_blank');
 }
 
-// VISTA CLIENTE (Link ricevuto via WhatsApp)
+// === VISTA CLIENTE ===
 function renderClientView() {
   const clienteId = getParam('id');
   const studioNome = getParam('studio') || 'Studio Fotografico';
-  
   const cliente = dbData.clienti.find(c => c.id === clienteId);
   const container = document.getElementById('appContainer');
 
@@ -590,8 +535,8 @@ function renderClientView() {
             <div class="file-list">
               ${cartella.foto.map(f => `
                 <div class="file-item">
-                  <span>📷 ${f.nome}</span>
-                  <a href="${f.url}" target="_blank" style="color: var(--accent-color);">Visualizza</a>
+                  <span> ${f.nome}</span>
+                  <a href="${f.url}" target="_blank" style="color: var(--accent-color); margin-left: 10px;">Visualizza</a>
                 </div>
               `).join('')}
             </div>
@@ -604,19 +549,16 @@ function renderClientView() {
   container.innerHTML = html;
 }
 
-// INIZIALIZZAZIONE
+// === INIZIALIZZAZIONE ===
 async function init() {
   await loadDb();
-  
   const studio = getParam('studio');
   const clienteId = getParam('id');
 
   if (clienteId) {
     renderClientView();
   } else {
-    if (studio) {
-      await fetchStudioInfo(studio);
-    }
+    if (studio) await fetchStudioInfo(studio);
     renderStudioView();
   }
 }
