@@ -103,7 +103,6 @@ async function ghPut(path,content){
   const j2=await p.json();if(!p.ok)throw new Error(j2.message||'Errore GitHub');
 }
 
-// CORRETTO: Ripristinata la funzione troncata per intero
 function genPassword(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvw';
   let pass='';
@@ -152,3 +151,5 @@ async function renderDash() {
         <div>
           <strong>${s.nome}</strong> (Codice: <code class="code">${s.codice}</code>)<br>
           <span class="soft">Utente: ${s.utente} | Scadenza: ${s.scadenza}</span>
+        </div>
+        <div>
