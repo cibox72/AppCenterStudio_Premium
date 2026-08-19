@@ -58,14 +58,15 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
   <div class="blob b1"></div><div class="blob b2"></div>
   <div class="hero-inner">
     <h1 class="big">Clienti & Foto</h1>
-    <div class="sub">Gestione servizi unici per evitare omonimie</div>
+    <div class="sub">Gestione per Codice Servizio Unico</div>
   </div>
 </div>
 <div class="container">
   <div class="card">
     <h2>Nuovo Caricamento Servizio</h2>
-    <p class="hint">Crea un codice servizio unico per ogni evento (es. Mario Rossi Matrimonio 2024).</p>
-    <label>Nome Cliente</label><input id="newCliente" placeholder="Es. Mario Rossi">
+    <p class="hint">Inserisci il Codice Preventivo/Servizio esatto. Le foto saranno legate permanentemente a questo codice.</p>
+    <label>Codice Servizio / Preventivo</label><input id="newCodice" placeholder="Es. PREV-2024-089">
+    <label>Nome Cliente (per riferimento)</label><input id="newCliente" placeholder="Es. Mario Rossi">
     <label>Tipo Servizio</label>
     <select id="newTipo">
       <option value="matrimonio">Matrimonio</option>
@@ -74,14 +75,12 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
       <option value="reportage">Reportage</option>
       <option value="altro">Altro</option>
     </select>
-    <label>Anno</label><input id="newAnno" type="number" value="2024" min="2000" max="2099">
-    <button class="btn" onclick="creaServizio()">+ Crea Codice Servizio</button>
-    <div id="codiceGenerato" class="hint" style="margin-top:10px;font-weight:bold;color:var(--taupe-scuro)"></div>
+    <button class="btn" onclick="aggiungiServizio()">+ Registra Servizio</button>
   </div>
   
   <div class="card">
     <h2>Carica Foto per Selezione</h2>
-    <p class="hint">Seleziona tutte le cartelle (Casa Sposa, Chiesa, Locale...). Il link sarà unico per questo servizio.</p>
+    <p class="hint">Seleziona tutte le cartelle (Casa Sposa, Chiesa, Locale...). Il link sarà unico per questo codice servizio.</p>
     <label>Servizio Attivo</label><select id="selServizio"></select>
     <label>Cartelle Foto</label><input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*">
     <button class="btn" onclick="caricaFoto()">Carica nel magazzino</button>
@@ -90,7 +89,7 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
   
   <div class="card">
     <h2>Archivio Servizi</h2>
-    <p class="hint">Ogni servizio ha il proprio spazio. Le foto scartate si eliminano automaticamente dopo la selezione.</p>
+    <p class="hint">Ogni codice ha il proprio spazio isolato. Le foto scartate si eliminano automaticamente dopo la selezione.</p>
     <div id="archivioBox"></div>
   </div>
 </div>
@@ -100,7 +99,7 @@ let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStor
 if(studioCodice)sessionStorage.setItem('studio',studioCodice);
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
 
-// Archivio locale dei servizi creati
+// Archivio locale dei servizi registrati
 let servizi=JSON.parse(localStorage.getItem('appcenter_servizi')||'[]');
 let manifesti={};
 
@@ -132,30 +131,26 @@ async function loadCloud(){
   }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
 }
 
-function creaServizio(){
+function aggiungiServizio(){
+  const codice=document.getElementById('newCodice').value.trim().toUpperCase();
   const nome=document.getElementById('newCliente').value.trim();
   const tipo=document.getElementById('newTipo').value;
-  const anno=document.getElementById('newAnno').value;
-  if(!nome) return alert('Inserisci il nome del cliente.');
   
-  // Genera codice univoco: nome-tipo-anno
-  const slug=nome.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
-  const codice=slug+'-'+tipo+'-'+anno;
+  if(!codice) return alert('Il Codice Servizio è obbligatorio.');
+  if(servizi.find(s=>s.codice===codice)) return alert('Questo codice servizio esiste già!');
   
-  // Evita duplicati
-  if(servizi.find(s=>s.codice===codice)) return alert('Questo codice servizio esiste già! Usa un anno diverso o verifica il nome.');
-  
-  const nuovo={codice,cliente:nome,tipo,anno,creato:new Date().toISOString()};
+  const nuovo={codice,cliente:nome,tipo,creato:new Date().toISOString()};
   servizi.push(nuovo);saveServizi();
   
-  document.getElementById('codiceGenerato').textContent='Codice creato: '+codice;
+  document.getElementById('newCodice').value='';
   document.getElementById('newCliente').value='';
   aggiornaSelect();render();
+  alert('Servizio registrato: '+codice);
 }
 
 function aggiornaSelect(){
   document.getElementById('selServizio').innerHTML='<option value="">-- Seleziona Servizio --</option>'+
-    servizi.map(s=>'<option value="'+s.codice+'">'+s.cliente+' ('+s.tipo+' '+s.anno+') - '+s.codice+'</option>').join('');
+    servizi.map(s=>'<option value="'+s.codice+'">'+s.codice+' - '+s.cliente+' ('+s.tipo+')</option>').join('');
 }
 
 async function caricaFoto(){
@@ -168,7 +163,7 @@ async function caricaFoto(){
   
   const fd=new FormData();
   fd.append('studio',studioCodice);
-  fd.append('servizio',codice); // USIAMO SERVIZIO INVECE DI CLIENTE
+  fd.append('codice_servizio',codice); // PARAMETRO CHIAVE PER IL WORKER
   fd.append('cliente_nome',svc?svc.cliente:'');
   fd.append('tipo_servizio',svc?svc.tipo:'');
   files.forEach(f=>fd.append('file',f));
@@ -187,8 +182,7 @@ async function caricaFoto(){
 async function refreshManifest(codice,forceReload=false){
   try{
     if(forceReload||!manifesti[codice]){
-      // PASSIAMO SERVIZIO COME PARAMETRO
-      const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&servizio='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
+      const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&codice_servizio='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
       manifesti[codice]=await r.json();
     }
   }catch(e){console.error('Errore refresh manifest:',e);manifesti[codice]={};}
@@ -197,7 +191,7 @@ async function refreshManifest(codice,forceReload=false){
 async function pulisciManifest(codice){
   if(!confirm('Sincronizzare con il server?'))return;
   try{
-    const r=await fetch(WORKER+'/pulisci-manifest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,servizio:codice})});
+    const r=await fetch(WORKER+'/pulisci-manifest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,codice_servizio:codice})});
     const j=await r.json();
     if(j.error)alert('Errore: '+j.error);
     else{alert('Sincronizzato: '+j.temp+' in attesa, '+j.gallery+' definitive.');await refreshManifest(codice,true);render();}
@@ -206,7 +200,7 @@ async function pulisciManifest(codice){
 
 async function deleteFile(codice,path){
   try{
-    const response=await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,servizio:codice,file:path})});
+    const response=await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,codice_servizio:codice,file:path})});
     const result=await response.json();
     if(!response.ok||result.error)throw new Error(result.error||'Errore eliminazione: '+response.status);
     return result;
@@ -239,12 +233,12 @@ async function eliminaFoto(codice,relativePath){
   try{await deleteFile(codice,workerPath);await refreshManifest(codice,true);render();}catch(e){alert('Errore: '+e.message);}
 }
 
-function apriSelezione(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&servizio='+encodeURIComponent(codice),'_blank');}
+function apriSelezione(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&codice_servizio='+encodeURIComponent(codice),'_blank');}
 
 async function creaLinkGallery(codice){
   const man=manifesti[codice]||{};
   if(!man.gallery||!man.gallery.length){if(confirm('Nessuna foto definitiva. Aprire selezione?'))apriSelezione(codice);return;}
-  const fd=new FormData();fd.append('studio',studioCodice);fd.append('servizio',codice);fd.append('giorni','180');
+  const fd=new FormData();fd.append('studio',studioCodice);fd.append('codice_servizio',codice);fd.append('giorni','180');
   const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
   fd.append('nome_studio',ident.nome||'');fd.append('whatsapp',ident.telefono||'');fd.append('messaggio','La tua gallery è pronta.');
   try{
@@ -258,7 +252,7 @@ async function creaLinkGallery(codice){
 
 function render(){
   aggiornaSelect();const box=document.getElementById('archivioBox');
-  if(!servizi.length){box.innerHTML='<p class="hint">Nessun servizio creato.</p>';return;}
+  if(!servizi.length){box.innerHTML='<p class="hint">Nessun servizio registrato.</p>';return;}
   
   box.innerHTML=servizi.slice().reverse().map(s=>{
     const man=manifesti[s.codice]||{};
@@ -286,7 +280,7 @@ function render(){
       foldersHtml+='<div class="folder-box"><h4><span>'+folder+' <span class="count">'+totalFiles+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+s.codice+'\',\''+safeFolder+'\')">🗑 Elimina cartella</button></h4><div class="files">'+filesHtml+'</div></div>';
     });
     
-    return '<div class="g-row"><div style="flex:1"><b>'+s.cliente+'</b> · <span class="code">'+s.codice+'</span><br><small>'+s.tipo.toUpperCase()+' '+s.anno+'</small><div class="status">'+totaleTemp+' in selezione · '+totaleGallery+' definitive'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+foldersHtml+'<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" onclick="pulisciManifest(\''+s.codice+'\')">🔄 Sincronizza</button></div></div><div class="rowbtns"><button class="btn" onclick="apriSelezione(\''+s.codice+'\')">Apri selezione Album</button><button class="btn secondary" onclick="creaLinkGallery(\''+s.codice+'\')">Link gallery cliente</button></div></div>';
+    return '<div class="g-row"><div style="flex:1"><b>'+s.cliente+'</b> · <span class="code">'+s.codice+'</span><br><small>'+s.tipo.toUpperCase()+'</small><div class="status">'+totaleTemp+' in selezione · '+totaleGallery+' definitive'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+foldersHtml+'<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" onclick="pulisciManifest(\''+s.codice+'\')">🔄 Sincronizza</button></div></div><div class="rowbtns"><button class="btn" onclick="apriSelezione(\''+s.codice+'\')">Apri selezione Album</button><button class="btn secondary" onclick="creaLinkGallery(\''+s.codice+'\')">Link gallery cliente</button></div></div>';
   }).join('');
 }
 
