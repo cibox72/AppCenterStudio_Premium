@@ -24,9 +24,9 @@
   .upload-box { background: #faf8f5; border: 2px dashed var(--accent-color); padding: 20px; margin-top: 10px; border-radius: 8px; text-align: center; }
   .hidden { display: none; }
   .file-preview { text-align: left; margin: 10px 0; max-height: 150px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 4px; }
-  .file-item { padding: 3px 0; border-bottom: 1px solid #eee; font-size: 0.9em; }
+  .file-item { padding: 5px 0; border-bottom: 1px solid #eee; font-size: 0.9em; display: flex; justify-content: space-between; }
   .progress { width: 100%; height: 20px; background: #e0e0e0; border-radius: 4px; margin: 10px 0; overflow: hidden; }
-  .progress-bar { height: 100%; background: var(--accent-color); transition: width 0.3s; }
+  .progress-bar { height: 100%; background: var(--accent-color); transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8em; }
 </style>
 </head>
 <body>
@@ -41,7 +41,7 @@
 <script>
 const API = 'https://acs-api.mairaluigi.workers.dev';
 const KEY = 'clientifoto_db';
-let studio = { nome: 'Studio', tel: '', codice: '' };
+let studio = { nome: 'Studio Fotografico', tel: '', codice: '' };
 let db = { clienti: [] };
 
 function getParam(n) { return new URLSearchParams(location.search).get(n); }
@@ -54,14 +54,14 @@ async function loadStudio(codice) {
     const l = await r.json();
     const s = l.find(x => x.codice === codice && x.attivo);
     if (s) { studio.nome = s.nome; studio.tel = s.telefono || ''; studio.codice = s.codice; }
-  } catch(e) {}
+  } catch(e) { console.log('Licenze non trovate, uso default'); }
 }
 
 async function loadDb() {
   try {
     const r = await fetch(`${API}/db-load?key=${KEY}`);
     if (r.ok) db = await r.json() || { clienti: [] };
-  } catch(e) {}
+  } catch(e) { console.error('Errore loadDb', e); }
 }
 
 async function saveDb() {
@@ -77,8 +77,7 @@ async function backup() {
 
 async function ripristina() {
   const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.json';
+  input.type = 'file'; input.accept = '.json';
   input.onchange = async e => {
     const reader = new FileReader();
     reader.onload = async ev => { db = JSON.parse(ev.target.result); await saveDb(); location.reload(); };
@@ -93,7 +92,7 @@ function renderStudio() {
       <h2>Nuovo Cliente</h2>
       <label>Nome</label><input type="text" id="nome" placeholder="Nome">
       <label>Cognome</label><input type="text" id="cognome" placeholder="Cognome">
-      <label>ID Cliente (Univoco)</label><input type="text" id="idCli" value="${genClientId()}" placeholder="CLI-2026-XXXX">
+      <label>ID Cliente (Univoco per servizi futuri)</label><input type="text" id="idCli" value="${genClientId()}" placeholder="CLI-2026-XXXX">
       <label>Telefono</label><input type="tel" id="tel" placeholder="3331234567">
       <button class="btn" onclick="salvaCliente()">Salva Cliente</button>
     </div>
@@ -125,7 +124,7 @@ function renderArchivio() {
       </div>`;
     
     if (!c.cartelle.length) {
-      html += '<p style="color:#888;font-size:0.9em">Nessuna cartella</p>';
+      html += '<p style="color:#888;font-size:0.9em">Nessuna cartella caricata</p>';
     } else {
       c.cartelle.forEach((cart, idx) => {
         const n = cart.foto ? cart.foto.length : 0;
@@ -143,11 +142,12 @@ function renderArchivio() {
     </div>
     <div id="up_${c.id}" class="upload-box hidden">
       <h3>Carica cartella per ${c.nome} ${c.cognome}</h3>
+      <p style="font-size:0.9em; color:#666;">Seleziona l'intera cartella dal tuo computer (es. "Matrimonio")</p>
       <input type="file" id="f_${c.id}" webkitdirectory directory multiple>
       <div id="fl_${c.id}" class="file-preview hidden"></div>
-      <div id="pr_${c.id}" class="hidden"><div class="progress"><div id="pb_${c.id}" class="progress-bar" style="width:0%"></div></div></div>
+      <div id="pr_${c.id}" class="hidden"><div class="progress"><div id="pb_${c.id}" class="progress-bar" style="width:0%">0%</div></div></div>
       <div style="margin-top:10px">
-        <button class="btn" onclick="upload('${c.id}')"> Salva Cartella</button>
+        <button class="btn" onclick="uploadReale('${c.id}')">📤 Carica su Cloudflare</button>
         <button class="btn" onclick="toggleUpload('${c.id}')">Annulla</button>
       </div>
     </div></div>`;
@@ -162,9 +162,9 @@ function renderArchivio() {
       if (files.length) {
         const name = files[0].webkitRelativePath.split('/')[0] || 'Cartella';
         div.classList.remove('hidden');
-        div.innerHTML = `<strong>📁 ${name}</strong><br>${files.length} file<br>` + 
-          Array.from(files).slice(0,5).map(f=>`<div class="file-item">${f.name}</div>`).join('') +
-          (files.length>5 ? `<div style="color:#888">+${files.length-5} altri</div>` : '');
+        div.innerHTML = `<strong>📁 ${name}</strong><br>${files.length} file selezionati<br>` + 
+          Array.from(files).slice(0,5).map(f=>`<div class="file-item"><span>${f.name}</span><span>${(f.size/1024/1024).toFixed(1)} MB</span></div>`).join('') +
+          (files.length>5 ? `<div style="color:#888; padding:5px;">+${files.length-5} altri file</div>` : '');
       }
     };
   });
@@ -172,7 +172,8 @@ function renderArchivio() {
 
 function toggleUpload(id) { document.getElementById(`up_${id}`).classList.toggle('hidden'); }
 
-async function upload(clienteId) {
+// FUNZIONE DI UPLOAD REALE SU CLOUDFLARE R2
+async function uploadReale(clienteId) {
   const inp = document.getElementById(`f_${clienteId}`);
   const files = inp.files;
   if (!files.length) { alert('Seleziona una cartella'); return; }
@@ -184,21 +185,50 @@ async function upload(clienteId) {
   pr.classList.remove('hidden');
   
   const cartella = { nome: cartName, foto: [], data: new Date().toISOString() };
+  const studioCode = studio.codice || 'demo';
+  let successCount = 0;
+  
   for (let i = 0; i < files.length; i++) {
+    const file = files[i];
     const pct = Math.round(((i+1)/files.length)*100);
     pb.style.width = pct + '%';
-    await new Promise(r => setTimeout(r, 30));
-    cartella.foto.push({ nome: files[i].name, size: files[i].size });
+    pb.textContent = pct + '%';
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('studio', studioCode);
+    formData.append('cliente', cliente.idCli);
+    formData.append('cartella', cartName);
+    formData.append('nomeFile', file.name);
+    
+    try {
+      const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        cartella.foto.push({ 
+          nome: file.name, 
+          url: data.url || `https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev/${studioCode}/${cliente.idCli}/${cartName}/${file.name}`,
+          size: file.size 
+        });
+        successCount++;
+      }
+    } catch(err) {
+      console.error('Errore upload:', file.name, err);
+    }
   }
   
-  cliente.cartelle.push(cartella);
-  await saveDb();
-  alert(`✅ Cartella "${cartName}" salvata con ${files.length} file`);
+  if (successCount > 0) {
+    cliente.cartelle.push(cartella);
+    await saveDb();
+    alert(`✅ Caricamento completato!\nCartella: ${cartName}\nFile caricati su Cloudflare: ${successCount}/${files.length}`);
+  } else {
+    alert('⚠️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza per il worker.');
+  }
   renderStudio();
 }
 
 function eliminaCartella(clienteId, idx) {
-  if (!confirm('Eliminare questa cartella?')) return;
+  if (!confirm('Eliminare INTERA questa cartella e tutte le foto al suo interno?')) return;
   const c = db.clienti.find(x => x.id === clienteId);
   if (c) { c.cartelle.splice(idx, 1); saveDb().then(renderArchivio); }
 }
@@ -211,33 +241,39 @@ function eliminaCliente(id) {
 
 function inviaLink(clienteId) {
   const c = db.clienti.find(x => x.id === clienteId);
-  if (!c || !c.tel) { alert('Inserisci telefono cliente'); return; }
+  if (!c || !c.tel) { alert('Inserisci il telefono del cliente'); return; }
   
-  // URL CORRETTO - SENZA "03 "
+  // CORREZIONE TEST 15 - PUNTO 4: URL corretto senza "03 " e senza spazi
   const url = `https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/index.html?id=${c.id}&studio=${encodeURIComponent(studio.nome)}`;
-  const msg = `Ciao ${c.nome}, ${studio.nome} ti ha condiviso le foto: ${url}`;
+  const msg = `Ciao ${c.nome}, ${studio.nome} ti ha condiviso l'accesso alle tue foto. Clicca qui per visualizzarle: ${url}`;
   const num = c.tel.replace(/\D/g,'');
   window.open(`https://wa.me/${num.startsWith('39')?num:'39'+num}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 function renderCliente() {
   const id = getParam('id');
-  const studioNome = getParam('studio') || 'Studio';
+  const studioNome = getParam('studio') || 'Studio Fotografico';
   const c = db.clienti.find(x => x.id === id);
   const app = document.getElementById('app');
   
-  if (!c) { app.innerHTML = '<div class="card"><h2>Link non valido</h2></div>'; return; }
+  if (!c) { app.innerHTML = '<div class="card"><h2>Link non valido o scaduto</h2><p>Contatta lo studio per assistenza.</p></div>'; return; }
   
-  let html = `<div class="card" style="text-align:center"><h2>Benvenuto ${c.nome}</h2><p>da <strong>${studioNome}</strong></p><p>ID: ${c.idCli}</p></div>`;
+  let html = `<div class="card" style="text-align:center"><h2>Benvenuto/a ${c.nome}</h2><p>Le tue foto sono state curate da <strong>${studioNome}</strong></p><p>ID Cliente: ${c.idCli}</p></div>`;
   
-  c.cartelle.forEach(cart => {
-    html += `<div class="card"><h3>📁 ${cart.nome}</h3><p>${cart.foto.length} foto</p>`;
-    cart.foto.forEach(f => {
-      html += `<div class="file-item"><span>${f.nome}</span><span>${(f.size/1024/1024).toFixed(1)} MB</span></div>`;
+  if (!c.cartelle.length) {
+    html += `<div class="card"><p>Le tue cartelle sono in fase di caricamento. Torneremo presto!</p></div>`;
+  } else {
+    c.cartelle.forEach(cart => {
+      html += `<div class="card"><h3>📁 ${cart.nome}</h3><p>${cart.foto.length} foto</p>`;
+      cart.foto.forEach(f => {
+        html += `<div class="file-item">
+          <span>📄 ${f.nome}</span>
+          <a href="${f.url}" target="_blank" style="color: var(--accent-color); text-decoration: none;">Visualizza / Scarica</a>
+        </div>`;
+      });
+      html += '</div>';
     });
-    html += '</div>';
-  });
-  
+  }
   app.innerHTML = html;
 }
 
@@ -246,8 +282,9 @@ async function init() {
   const studioCode = getParam('studio');
   const clienteId = getParam('id');
   
-  if (clienteId) renderCliente();
-  else {
+  if (clienteId) {
+    renderCliente();
+  } else {
     if (studioCode) await loadStudio(studioCode);
     renderStudio();
   }
