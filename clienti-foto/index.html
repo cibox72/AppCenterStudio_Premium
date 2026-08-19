@@ -106,39 +106,58 @@
     justify-content: space-between;
     align-items: center;
   }
-  .upload-form {
+  .upload-area {
     background: #faf8f5;
-    border: 2px dashed var(--border-color);
-    padding: 15px;
-    border-radius: 4px;
-    margin-top: 10px;
+    border: 2px dashed var(--accent-color);
+    padding: 30px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
   }
-  .upload-form label { font-size: 0.95em; }
+  .upload-area h3 {
+    margin-top: 0;
+    color: var(--accent-color);
+  }
+  .upload-area p {
+    margin: 10px 0;
+    color: #666;
+  }
+  input[type="file"] {
+    margin: 15px 0;
+  }
   .file-list {
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 0.9em;
-    max-height: 150px;
+    max-height: 200px;
     overflow-y: auto;
     background: #fff;
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
+    text-align: left;
   }
   .file-item {
-    padding: 4px 0;
+    padding: 5px 0;
     border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
   }
   .progress-bar {
     width: 100%;
-    height: 20px;
+    height: 25px;
     background-color: #e0e0e0;
     border-radius: 4px;
-    margin: 10px 0;
+    margin: 15px 0;
     overflow: hidden;
   }
   .progress-fill {
     height: 100%;
     background-color: var(--accent-color);
     transition: width 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.85em;
   }
   .client-header {
     display: flex;
@@ -149,6 +168,14 @@
   .client-id {
     font-size: 0.85em;
     color: var(--accent-color);
+  }
+  .upload-info {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 0.9em;
   }
 </style>
 </head>
@@ -338,25 +365,27 @@ function renderArchivio() {
 
     html += `
       <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
-        <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">+ Nuova Cartella</button>
+        <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')"> Carica Cartella</button>
         <button class="action-btn" onclick="inviaLinkWhatsApp('${cliente.id}')">Invia Link WhatsApp</button>
         <button class="action-btn danger-btn" onclick="eliminaCliente('${cliente.id}')">Elimina Cliente</button>
       </div>
-      <div id="uploadForm_${cliente.id}" class="upload-form hidden">
-        <h3 style="margin-top:0; color: var(--accent-color);">Carica nuova cartella per ${cliente.cognome} ${cliente.nome}</h3>
-        <label>Nome cartella (es. Matrimonio, Battesimo, Comunione)</label>
-        <input type="text" id="nomeCartella_${cliente.id}" placeholder="Es. Matrimonio">
-        <label>Seleziona i file da caricare</label>
-        <input type="file" id="fileInput_${cliente.id}" multiple accept="image/*,.pdf,.mp4" style="margin-bottom: 10px;">
+      <div id="uploadForm_${cliente.id}" class="upload-area hidden">
+        <h3>📁 Carica intera cartella per ${cliente.cognome} ${cliente.nome}</h3>
+        <p><strong>Seleziona la cartella dal tuo computer</strong> (es. cartella "Matrimonio" con tutte le foto dentro)</p>
+        <div class="upload-info">
+          💡 <strong>Nota:</strong> Clicca sul pulsante sotto e seleziona la cartella completa dal tuo computer. 
+          Tutti i file all'interno verranno caricati automaticamente.
+        </div>
+        <input type="file" id="folderInput_${cliente.id}" webkitdirectory directory multiple style="margin: 15px 0;">
         <div id="fileList_${cliente.id}" class="file-list hidden"></div>
         <div id="progressSection_${cliente.id}" class="hidden">
           <div class="progress-bar">
-            <div class="progress-fill" id="progressFill_${cliente.id}" style="width: 0%"></div>
+            <div class="progress-fill" id="progressFill_${cliente.id}" style="width: 0%">0%</div>
           </div>
-          <p id="progressText_${cliente.id}" style="font-size: 0.9em;">Caricamento in corso...</p>
+          <p id="progressText_${cliente.id}" style="font-size: 0.9em; margin: 10px 0;">In attesa...</p>
         </div>
-        <div style="margin-top: 10px;">
-          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">📤 Carica Cartella</button>
+        <div style="margin-top: 15px;">
+          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">📤 Avvia Caricamento Cartella</button>
           <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">Annulla</button>
         </div>
       </div>
@@ -364,17 +393,33 @@ function renderArchivio() {
   });
   div.innerHTML = html;
 
-  // Listener per mostrare lista file selezionati
+  // Listener per mostrare lista file selezionati dalla cartella
   dbData.clienti.forEach(cliente => {
-    const fileInput = document.getElementById(`fileInput_${cliente.id}`);
-    if (fileInput) {
-      fileInput.addEventListener('change', function(e) {
+    const folderInput = document.getElementById(`folderInput_${cliente.id}`);
+    if (folderInput) {
+      folderInput.addEventListener('change', function(e) {
         const files = e.target.files;
         const fileList = document.getElementById(`fileList_${cliente.id}`);
         if (files.length > 0) {
           fileList.classList.remove('hidden');
-          fileList.innerHTML = `<strong>${files.length} file selezionati:</strong><br>` +
-            Array.from(files).map(f => `<div class="file-item">📄 ${f.name} (${(f.size/1024/1024).toFixed(2)} MB)</div>`).join('');
+          
+          // Estrai il nome della cartella dal primo file
+          const firstFile = files[0];
+          const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
+          const cartellaNome = pathParts.length > 1 ? pathParts[0] : 'Cartella selezionata';
+          
+          let html = `<strong> ${cartellaNome}</strong><br>`;
+          html += `<em>${files.length} file trovati nella cartella:</em><br><br>`;
+          
+          // Mostra i primi 10 file
+          const filesToShow = Array.from(files).slice(0, 10);
+          html += filesToShow.map(f => `<div class="file-item"><span>📄 ${f.name}</span><span style="color:#888; font-size:0.85em;">(${(f.size/1024/1024).toFixed(2)} MB)</span></div>`).join('');
+          
+          if (files.length > 10) {
+            html += `<div style="padding:5px; color:#888; text-align:center;">... e altri ${files.length - 10} file</div>`;
+          }
+          
+          fileList.innerHTML = html;
         } else {
           fileList.classList.add('hidden');
         }
@@ -391,21 +436,21 @@ function toggleUploadForm(clienteId) {
 }
 
 async function avviaUpload(clienteId) {
-  const nomeCartella = document.getElementById(`nomeCartella_${clienteId}`).value.trim();
-  const fileInput = document.getElementById(`fileInput_${clienteId}`);
-  const files = fileInput.files;
+  const folderInput = document.getElementById(`folderInput_${clienteId}`);
+  const files = folderInput.files;
 
-  if (!nomeCartella) {
-    alert('Inserire un nome per la cartella.');
-    return;
-  }
   if (files.length === 0) {
-    alert('Seleziona almeno un file da caricare.');
+    alert('Seleziona una cartella con i file da caricare.');
     return;
   }
 
   const cliente = dbData.clienti.find(c => c.id === clienteId);
   if (!cliente) { alert('Cliente non trovato.'); return; }
+
+  // Estrai il nome della cartella dal path del primo file
+  const firstFile = files[0];
+  const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
+  const nomeCartella = pathParts.length > 1 ? pathParts[0] : `Cartella_${Date.now()}`;
 
   const progressSection = document.getElementById(`progressSection_${clienteId}`);
   const progressFill = document.getElementById(`progressFill_${clienteId}`);
@@ -419,12 +464,16 @@ async function avviaUpload(clienteId) {
   };
 
   let uploadedCount = 0;
+  let failedCount = 0;
   const totalFiles = files.length;
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
+    const percent = Math.round(((i + 1) / totalFiles) * 100);
+    
+    progressFill.style.width = `${percent}%`;
+    progressFill.textContent = `${percent}%`;
     progressText.textContent = `Caricamento ${i + 1} di ${totalFiles}: ${file.name}`;
-    progressFill.style.width = `${((i + 1) / totalFiles) * 100}%`;
 
     try {
       const formData = new FormData();
@@ -449,9 +498,11 @@ async function avviaUpload(clienteId) {
         });
         uploadedCount++;
       } else {
+        failedCount++;
         console.warn(`Upload fallito per ${file.name}`);
       }
     } catch (err) {
+      failedCount++;
       console.error(`Errore upload ${file.name}:`, err);
     }
   }
@@ -459,9 +510,13 @@ async function avviaUpload(clienteId) {
   if (uploadedCount > 0) {
     cliente.cartelle.push(cartellaObj);
     await saveDb();
-    alert(`✅ Caricamento completato! ${uploadedCount} di ${totalFiles} file caricati.`);
+    let msg = `✅ Caricamento completato!\n\n📁 Cartella: ${nomeCartella}\n✅ File caricati: ${uploadedCount}`;
+    if (failedCount > 0) {
+      msg += `\n️ File falliti: ${failedCount}`;
+    }
+    alert(msg);
   } else {
-    alert('⚠️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza.');
+    alert('️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza.');
   }
 
   renderStudioView();
@@ -535,8 +590,8 @@ function renderClientView() {
             <div class="file-list">
               ${cartella.foto.map(f => `
                 <div class="file-item">
-                  <span> ${f.nome}</span>
-                  <a href="${f.url}" target="_blank" style="color: var(--accent-color); margin-left: 10px;">Visualizza</a>
+                  <span>📄 ${f.nome}</span>
+                  <a href="${f.url}" target="_blank" style="color: var(--accent-color);">Scarica</a>
                 </div>
               `).join('')}
             </div>
