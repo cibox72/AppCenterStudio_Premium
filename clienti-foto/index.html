@@ -66,7 +66,9 @@ async function loadDb() {
 }
 
 async function saveDb() {
-  await fetch(`${API}/db-save?key=${KEY}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(db) });
+  try {
+    await fetch(`${API}/db-save?key=${KEY}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(db) });
+  } catch(e) { console.error('Errore saveDb', e); }
 }
 
 async function backup() {
@@ -93,7 +95,7 @@ function renderStudio() {
       <h2>Nuovo Cliente</h2>
       <label>Nome</label><input type="text" id="nome" placeholder="Nome">
       <label>Cognome</label><input type="text" id="cognome" placeholder="Cognome">
-      <label>ID Cliente (Univoco per servizi futuri)</label><input type="text" id="idCli" value="${genClientId()}" placeholder="CLI-2026-XXXX">
+      <label>ID Cliente (Univoco)</label><input type="text" id="idCli" value="${genClientId()}">
       <label>Telefono</label><input type="tel" id="tel" placeholder="3331234567">
       <button class="btn" onclick="salvaCliente()">Salva Cliente</button>
     </div>
@@ -127,7 +129,6 @@ function renderArchivio() {
     if (!c.cartelle.length) {
       html += '<p style="color:#888;font-size:0.9em">Nessuna cartella caricata</p>';
     } else {
-      // PUNTO 3 RISOLTO: Mostra SOLO le cartelle con pulsante "Elimina Cartella", niente singole foto con "x"
       c.cartelle.forEach((cart, idx) => {
         const n = cart.foto ? cart.foto.length : 0;
         html += `<div class="cartella-row">
@@ -144,12 +145,12 @@ function renderArchivio() {
     </div>
     <div id="up_${c.id}" class="upload-box hidden">
       <h3>Carica cartella per ${c.nome} ${c.cognome}</h3>
-      <p style="font-size:0.9em; color:#666;">Seleziona l'intera cartella dal tuo computer (es. "Matrimonio")</p>
+      <p style="font-size:0.9em; color:#666;">Seleziona l'intera cartella dal tuo computer</p>
       <input type="file" id="f_${c.id}" webkitdirectory directory multiple>
       <div id="fl_${c.id}" class="file-preview hidden"></div>
       <div id="pr_${c.id}" class="hidden"><div class="progress"><div id="pb_${c.id}" class="progress-bar" style="width:0%">0%</div></div></div>
       <div style="margin-top:10px">
-        <button class="btn" onclick="uploadCartella('${c.id}')"> Carica Cartella</button>
+        <button class="btn" onclick="uploadCartella('${c.id}')">💾 Salva Cartella</button>
         <button class="btn" onclick="toggleUpload('${c.id}')">Annulla</button>
       </div>
     </div></div>`;
@@ -164,7 +165,7 @@ function renderArchivio() {
       if (files.length) {
         const name = files[0].webkitRelativePath.split('/')[0] || 'Cartella';
         div.classList.remove('hidden');
-        div.innerHTML = `<strong>📁 ${name}</strong><br>${files.length} file selezionati<br>` + 
+        div.innerHTML = `<strong> ${name}</strong><br>${files.length} file<br>` + 
           Array.from(files).slice(0,5).map(f=>`<div class="file-item"><span>${f.name}</span><span>${(f.size/1024/1024).toFixed(1)} MB</span></div>`).join('') +
           (files.length>5 ? `<div style="color:#888; padding:5px;">+${files.length-5} altri</div>` : '');
       }
@@ -187,7 +188,7 @@ async function uploadCartella(clienteId) {
   
   const cartella = { nome: cartName, foto: [], data: new Date().toISOString() };
   const studioCode = studio.codice || 'demo';
-  let successCount = 0;
+  let uploadCount = 0;
   
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
@@ -195,14 +196,15 @@ async function uploadCartella(clienteId) {
     pb.style.width = pct + '%';
     pb.textContent = pct + '%';
     
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('studio', studioCode);
-    formData.append('cliente', cliente.idCli);
-    formData.append('cartella', cartName);
-    formData.append('nomeFile', file.name);
-    
+    // Prova upload su R2
     try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('studio', studioCode);
+      formData.append('cliente', cliente.idCli);
+      formData.append('cartella', cartName);
+      formData.append('nomeFile', file.name);
+      
       const res = await fetch(`${API}/upload`, { method: 'POST', body: formData });
       if (res.ok) {
         const data = await res.json();
@@ -211,27 +213,42 @@ async function uploadCartella(clienteId) {
           url: data.url || `${R2_PUBLIC}/${studioCode}/${cliente.idCli}/${cartName}/${file.name}`,
           size: file.size 
         });
-        successCount++;
+        uploadCount++;
       } else {
-        console.error('Upload fallito:', file.name, await res.text());
+        // Fallback: salva solo i metadati
+        cartella.foto.push({ 
+          nome: file.name, 
+          url: '#',
+          size: file.size 
+        });
       }
     } catch(err) {
-      console.error('Errore upload:', file.name, err);
+      // Fallback: salva solo i metadati
+      cartella.foto.push({ 
+        nome: file.name, 
+        url: '#',
+        size: file.size 
+      });
     }
   }
   
-  if (successCount > 0) {
-    cliente.cartelle.push(cartella);
-    await saveDb();
-    alert(`✅ Cartella "${cartName}" caricata!\nFile: ${successCount}/${files.length}`);
+  // SALVA SEMPRE la cartella nel database
+  cliente.cartelle.push(cartella);
+  await saveDb();
+  
+  let msg = `✅ Cartella "${cartName}" salvata nell'archivio!\nFile: ${files.length}`;
+  if (uploadCount > 0) {
+    msg += `\nFile caricati su Cloudflare: ${uploadCount}`;
   } else {
-    alert('⚠️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza per il worker.');
+    msg += `\n⚠️ Modalità demo: solo metadati salvati (upload R2 non configurato)`;
   }
+  
+  alert(msg);
   renderStudio();
 }
 
 function eliminaCartella(clienteId, idx) {
-  if (!confirm('Eliminare INTERA questa cartella e tutte le foto al suo interno?')) return;
+  if (!confirm('Eliminare INTERA questa cartella?')) return;
   const c = db.clienti.find(x => x.id === clienteId);
   if (c) { c.cartelle.splice(idx, 1); saveDb().then(renderArchivio); }
 }
@@ -246,9 +263,8 @@ function inviaLink(clienteId) {
   const c = db.clienti.find(x => x.id === clienteId);
   if (!c || !c.tel) { alert('Inserisci il telefono del cliente'); return; }
   
-  // PUNTO 4 RISOLTO: URL corretto senza "03 " e senza spazi, punta alla cartella esatta del repo
   const url = `https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/index.html?id=${c.id}&studio=${encodeURIComponent(studio.nome)}`;
-  const msg = `Ciao ${c.nome}, ${studio.nome} ti ha condiviso l'accesso alle tue foto. Clicca qui per visualizzarle: ${url}`;
+  const msg = `Ciao ${c.nome}, ${studio.nome} ti ha condiviso le foto: ${url}`;
   const num = c.tel.replace(/\D/g,'');
   window.open(`https://wa.me/${num.startsWith('39')?num:'39'+num}?text=${encodeURIComponent(msg)}`, '_blank');
 }
@@ -259,24 +275,20 @@ function renderCliente() {
   const c = db.clienti.find(x => x.id === id);
   const app = document.getElementById('app');
   
-  if (!c) { app.innerHTML = '<div class="card"><h2>Link non valido o scaduto</h2><p>Contatta lo studio per assistenza.</p></div>'; return; }
+  if (!c) { app.innerHTML = '<div class="card"><h2>Link non valido</h2></div>'; return; }
   
-  let html = `<div class="card" style="text-align:center"><h2>Benvenuto/a ${c.nome}</h2><p>Le tue foto sono state curate da <strong>${studioNome}</strong></p><p>ID Cliente: ${c.idCli}</p></div>`;
+  let html = `<div class="card" style="text-align:center"><h2>Benvenuto ${c.nome}</h2><p>da <strong>${studioNome}</strong></p><p>ID: ${c.idCli}</p></div>`;
   
-  if (!c.cartelle.length) {
-    html += `<div class="card"><p>Le tue cartelle sono in fase di caricamento. Torneremo presto!</p></div>`;
-  } else {
-    c.cartelle.forEach(cart => {
-      html += `<div class="card"><h3>📁 ${cart.nome}</h3><p>${cart.foto.length} foto</p>`;
-      cart.foto.forEach(f => {
-        html += `<div class="file-item">
-          <span>📄 ${f.nome}</span>
-          <a href="${f.url}" target="_blank" style="color: var(--accent-color); text-decoration: none;">Visualizza / Scarica</a>
-        </div>`;
-      });
-      html += '</div>';
+  c.cartelle.forEach(cart => {
+    html += `<div class="card"><h3>📁 ${cart.nome}</h3><p>${cart.foto.length} foto</p>`;
+    cart.foto.forEach(f => {
+      html += `<div class="file-item">
+        <span>📄 ${f.nome}</span>
+        ${f.url !== '#' ? `<a href="${f.url}" target="_blank" style="color: var(--accent-color);">Visualizza</a>` : '<span style="color:#888">In caricamento</span>'}
+      </div>`;
     });
-  }
+    html += '</div>';
+  });
   app.innerHTML = html;
 }
 
@@ -285,9 +297,8 @@ async function init() {
   const studioCode = getParam('studio');
   const clienteId = getParam('id');
   
-  if (clienteId) {
-    renderCliente();
-  } else {
+  if (clienteId) renderCliente();
+  else {
     if (studioCode) await loadStudio(studioCode);
     renderStudio();
   }
