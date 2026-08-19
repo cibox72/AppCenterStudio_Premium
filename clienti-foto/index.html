@@ -20,10 +20,10 @@
   .cliente-box { border-bottom: 1px solid var(--border-color); padding: 15px 0; }
   .cliente-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .cliente-id { color: var(--accent-color); font-size: 0.9em; font-weight: bold; }
-  .cartella-row { background: #f9f7f4; padding: 10px; margin: 5px 0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .cartella-row { background: #f9f7f4; padding: 12px; margin: 8px 0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); }
   .upload-box { background: #faf8f5; border: 2px dashed var(--accent-color); padding: 20px; margin-top: 10px; border-radius: 8px; text-align: center; }
   .hidden { display: none; }
-  .file-preview { text-align: left; margin: 10px 0; max-height: 150px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 4px; }
+  .file-preview { text-align: left; margin: 10px 0; max-height: 150px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 4px; border: 1px solid var(--border-color); }
   .file-item { padding: 5px 0; border-bottom: 1px solid #eee; font-size: 0.9em; display: flex; justify-content: space-between; }
   .progress { width: 100%; height: 20px; background: #e0e0e0; border-radius: 4px; margin: 10px 0; overflow: hidden; }
   .progress-bar { height: 100%; background: var(--accent-color); transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8em; }
@@ -40,6 +40,7 @@
 
 <script>
 const API = 'https://acs-api.mairaluigi.workers.dev';
+const R2_PUBLIC = 'https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev';
 const KEY = 'clientifoto_db';
 let studio = { nome: 'Studio Fotografico', tel: '', codice: '' };
 let db = { clienti: [] };
@@ -54,7 +55,7 @@ async function loadStudio(codice) {
     const l = await r.json();
     const s = l.find(x => x.codice === codice && x.attivo);
     if (s) { studio.nome = s.nome; studio.tel = s.telefono || ''; studio.codice = s.codice; }
-  } catch(e) { console.log('Licenze non trovate, uso default'); }
+  } catch(e) { console.log('Licenze non trovate'); }
 }
 
 async function loadDb() {
@@ -126,6 +127,7 @@ function renderArchivio() {
     if (!c.cartelle.length) {
       html += '<p style="color:#888;font-size:0.9em">Nessuna cartella caricata</p>';
     } else {
+      // PUNTO 3 RISOLTO: Mostra SOLO le cartelle con pulsante "Elimina Cartella", niente singole foto con "x"
       c.cartelle.forEach((cart, idx) => {
         const n = cart.foto ? cart.foto.length : 0;
         html += `<div class="cartella-row">
@@ -147,7 +149,7 @@ function renderArchivio() {
       <div id="fl_${c.id}" class="file-preview hidden"></div>
       <div id="pr_${c.id}" class="hidden"><div class="progress"><div id="pb_${c.id}" class="progress-bar" style="width:0%">0%</div></div></div>
       <div style="margin-top:10px">
-        <button class="btn" onclick="uploadReale('${c.id}')">📤 Carica su Cloudflare</button>
+        <button class="btn" onclick="uploadCartella('${c.id}')"> Carica Cartella</button>
         <button class="btn" onclick="toggleUpload('${c.id}')">Annulla</button>
       </div>
     </div></div>`;
@@ -164,7 +166,7 @@ function renderArchivio() {
         div.classList.remove('hidden');
         div.innerHTML = `<strong>📁 ${name}</strong><br>${files.length} file selezionati<br>` + 
           Array.from(files).slice(0,5).map(f=>`<div class="file-item"><span>${f.name}</span><span>${(f.size/1024/1024).toFixed(1)} MB</span></div>`).join('') +
-          (files.length>5 ? `<div style="color:#888; padding:5px;">+${files.length-5} altri file</div>` : '');
+          (files.length>5 ? `<div style="color:#888; padding:5px;">+${files.length-5} altri</div>` : '');
       }
     };
   });
@@ -172,8 +174,7 @@ function renderArchivio() {
 
 function toggleUpload(id) { document.getElementById(`up_${id}`).classList.toggle('hidden'); }
 
-// FUNZIONE DI UPLOAD REALE SU CLOUDFLARE R2
-async function uploadReale(clienteId) {
+async function uploadCartella(clienteId) {
   const inp = document.getElementById(`f_${clienteId}`);
   const files = inp.files;
   if (!files.length) { alert('Seleziona una cartella'); return; }
@@ -207,10 +208,12 @@ async function uploadReale(clienteId) {
         const data = await res.json();
         cartella.foto.push({ 
           nome: file.name, 
-          url: data.url || `https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev/${studioCode}/${cliente.idCli}/${cartName}/${file.name}`,
+          url: data.url || `${R2_PUBLIC}/${studioCode}/${cliente.idCli}/${cartName}/${file.name}`,
           size: file.size 
         });
         successCount++;
+      } else {
+        console.error('Upload fallito:', file.name, await res.text());
       }
     } catch(err) {
       console.error('Errore upload:', file.name, err);
@@ -220,7 +223,7 @@ async function uploadReale(clienteId) {
   if (successCount > 0) {
     cliente.cartelle.push(cartella);
     await saveDb();
-    alert(`✅ Caricamento completato!\nCartella: ${cartName}\nFile caricati su Cloudflare: ${successCount}/${files.length}`);
+    alert(`✅ Cartella "${cartName}" caricata!\nFile: ${successCount}/${files.length}`);
   } else {
     alert('⚠️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza per il worker.');
   }
@@ -243,7 +246,7 @@ function inviaLink(clienteId) {
   const c = db.clienti.find(x => x.id === clienteId);
   if (!c || !c.tel) { alert('Inserisci il telefono del cliente'); return; }
   
-  // CORREZIONE TEST 15 - PUNTO 4: URL corretto senza "03 " e senza spazi
+  // PUNTO 4 RISOLTO: URL corretto senza "03 " e senza spazi, punta alla cartella esatta del repo
   const url = `https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/index.html?id=${c.id}&studio=${encodeURIComponent(studio.nome)}`;
   const msg = `Ciao ${c.nome}, ${studio.nome} ti ha condiviso l'accesso alle tue foto. Clicca qui per visualizzarle: ${url}`;
   const num = c.tel.replace(/\D/g,'');
