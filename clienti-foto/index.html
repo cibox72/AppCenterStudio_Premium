@@ -105,6 +105,7 @@ async function syncCloud(){
   }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
 }
 
+// CARICAMENTO AUTOMATICO SERVIZI DAL DB CONTRATTI
 async function loadServizi(){
   const box=document.getElementById('syncStatus');box.textContent='Carico contratti...';
   try{
@@ -112,6 +113,7 @@ async function loadServizi(){
     const data=await r.json();
     servizi=data.servizi||[];
     
+    // Fallback: se il DB è vuoto, usa cache locale
     if(servizi.length===0){
       const cached=JSON.parse(localStorage.getItem('appcenter_servizi_cache')||'[]');
       if(cached.length>0) servizi=cached;
@@ -123,6 +125,7 @@ async function loadServizi(){
     box.classList.remove('ko');
   }catch(e){
     console.error('Errore loadServizi:',e);
+    // Usa cache locale come fallback
     servizi=JSON.parse(localStorage.getItem('appcenter_servizi_cache')||'[]');
     aggiornaSelect();
     box.textContent='Offline - usando cache locale';
@@ -265,6 +268,7 @@ function render(){
   const box=document.getElementById('archivioBox');
   if(!servizi.length){box.innerHTML='<p class="hint">Nessun contratto trovato. Verifica che i contratti siano stati creati nel gestionale.</p>';return;}
   
+  // Mostra solo i servizi che hanno foto o sono selezionati
   const serviziConDati=servizi.filter(s=>{
     const man=manifesti[s.codice]||{};
     return (man.temp&&man.temp.length>0)||(man.gallery&&man.gallery.length>0);
@@ -322,8 +326,10 @@ function ripristinoGlobale(e){
   };r.readAsText(f);e.target.value='';
 }
 
+// AVVIO: Carica automaticamente i servizi dai contratti
 (async()=>{
   await loadServizi();
+  // Se c'è un servizio selezionato in sessione, ricaricalo
   const savedSvc=sessionStorage.getItem('foto_servizio_corrente');
   if(savedSvc){
     const sel=document.getElementById('selServizio');
@@ -332,6 +338,7 @@ function ripristinoGlobale(e){
   }
 })();
 
+// Salva selezione in sessione quando cambia
 document.getElementById('selServizio').addEventListener('change',()=>{
   sessionStorage.setItem('foto_servizio_corrente',document.getElementById('selServizio').value);
 });
