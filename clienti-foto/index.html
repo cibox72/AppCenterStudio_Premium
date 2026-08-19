@@ -6,569 +6,250 @@
 <title>Clienti e Foto - AppCenterStudio Premium</title>
 <script src="../tema.js"></script>
 <style>
-  :root {
-    --bg-color: #f5f1e8;
-    --text-color: #4a4036;
-    --accent-color: #8b7d6b;
-    --card-bg: #ffffff;
-    --border-color: #d4c5b0;
-  }
-  body {
-    font-family: Georgia, serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-  }
-  .topbar {
-    background-color: var(--accent-color);
-    color: #fff;
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .topbar button {
-    background: none;
-    border: 1px solid #fff;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: Georgia, serif;
-    margin-left: 5px;
-  }
-  .topbar button:hover { background: rgba(255,255,255,0.2); }
+  :root { --bg-color: #f5f1e8; --text-color: #4a4036; --accent-color: #8b7d6b; --card-bg: #fff; --border-color: #d4c5b0; }
+  body { font-family: Georgia, serif; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 0; }
+  .topbar { background: var(--accent-color); color: #fff; padding: 10px 15px; display: flex; gap: 10px; position: sticky; top: 0; z-index: 100; }
+  .topbar button { background: none; border: 1px solid #fff; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
   .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  .card h2, .card h3 {
-    margin-top: 0;
-    color: var(--accent-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-  }
-  label { display: block; margin-bottom: 5px; font-weight: bold; }
-  input[type="text"], input[type="tel"], input[type="email"], select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-family: Georgia, serif;
-    box-sizing: border-box;
-  }
-  button.action-btn {
-    background-color: var(--accent-color);
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: Georgia, serif;
-    margin-right: 5px;
-    margin-bottom: 5px;
-  }
-  button.action-btn:hover { opacity: 0.9; }
-  button.danger-btn {
-    background-color: #b00020;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: Georgia, serif;
-  }
-  .row-item {
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 0;
-  }
-  .row-item:last-child { border-bottom: none; }
-  .sync-status { font-size: 0.8em; opacity: 0.8; }
-  .hidden { display: none !important; }
-  .folder-item {
-    background: #f9f7f4;
-    padding: 12px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    border: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .upload-area {
-    background: #faf8f5;
-    border: 2px dashed var(--accent-color);
-    padding: 30px;
-    border-radius: 8px;
-    margin-top: 15px;
-    text-align: center;
-  }
-  .upload-area h3 { margin-top: 0; color: var(--accent-color); }
-  .upload-area p { margin: 10px 0; color: #666; }
-  input[type="file"] { margin: 15px 0; }
-  .file-list {
-    margin-top: 15px;
-    font-size: 0.9em;
-    max-height: 200px;
-    overflow-y: auto;
-    background: #fff;
-    padding: 10px;
-    border-radius: 4px;
-    text-align: left;
-  }
-  .file-item {
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-  }
-  .progress-bar {
-    width: 100%;
-    height: 25px;
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    margin: 15px 0;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background-color: var(--accent-color);
-    transition: width 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 0.85em;
-  }
-  .client-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .client-id {
-    font-size: 0.85em;
-    color: var(--accent-color);
-    font-weight: bold;
-  }
-  .warning-box {
-    background: #fff3cd;
-    border: 1px solid #ffc107;
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
-    font-size: 0.9em;
-    text-align: left;
-  }
+  .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  .card h2 { margin-top: 0; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+  label { display: block; margin: 10px 0 5px; font-weight: bold; }
+  input[type="text"], input[type="tel"] { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
+  button.btn { background: var(--accent-color); color: #fff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px 5px 5px 0; }
+  button.btn-danger { background: #b00020; }
+  .cliente-box { border-bottom: 1px solid var(--border-color); padding: 15px 0; }
+  .cliente-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .cliente-id { color: var(--accent-color); font-size: 0.9em; font-weight: bold; }
+  .cartella-row { background: #f9f7f4; padding: 10px; margin: 5px 0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .upload-box { background: #faf8f5; border: 2px dashed var(--accent-color); padding: 20px; margin-top: 10px; border-radius: 8px; text-align: center; }
+  .hidden { display: none; }
+  .file-preview { text-align: left; margin: 10px 0; max-height: 150px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 4px; }
+  .file-item { padding: 3px 0; border-bottom: 1px solid #eee; font-size: 0.9em; }
+  .progress { width: 100%; height: 20px; background: #e0e0e0; border-radius: 4px; margin: 10px 0; overflow: hidden; }
+  .progress-bar { height: 100%; background: var(--accent-color); transition: width 0.3s; }
 </style>
 </head>
 <body>
   <div class="topbar">
-    <div>
-      <button onclick="window.history.back()">← Indietro</button>
-      <button onclick="window.location.href='../index.html'">Home</button>
-      <button onclick="backupGlobale()">Backup globale</button>
-      <button onclick="ripristinoGlobale()">Ripristino globale</button>
-    </div>
-    <div class="sync-status" id="syncStatus">Sync cloud: in attesa...</div>
+    <button onclick="history.back()">← Indietro</button>
+    <button onclick="location.href='../index.html'">Home</button>
+    <button onclick="backup()">Backup</button>
+    <button onclick="ripristina()">Ripristino</button>
   </div>
-
-  <div class="container" id="appContainer"></div>
+  <div class="container" id="app"></div>
 
 <script>
-const WORKER_URL = 'https://acs-api.mairaluigi.workers.dev';
-const DB_KEY = 'clientifoto_db';
-let studioIdent = { nome: 'Studio Fotografico', telefono: '', codice: '' };
-let dbData = { clienti: [] };
+const API = 'https://acs-api.mairaluigi.workers.dev';
+const KEY = 'clientifoto_db';
+let studio = { nome: 'Studio', tel: '', codice: '' };
+let db = { clienti: [] };
 
-function getParam(name) {
-  return new URLSearchParams(window.location.search).get(name);
-}
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-function generateClientId() {
-  return 'CLI-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-}
+function getParam(n) { return new URLSearchParams(location.search).get(n); }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+function genClientId() { return 'CLI-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000); }
 
-async function fetchStudioInfo(codice) {
+async function loadStudio(codice) {
   try {
-    const res = await fetch('../licenses.json');
-    const licenses = await res.json();
-    const studio = licenses.find(l => l.codice === codice && l.attivo);
-    if (studio) {
-      studioIdent.nome = studio.nome;
-      studioIdent.telefono = studio.telefono || '';
-      studioIdent.codice = studio.codice;
-    }
-  } catch(e) { console.log('licenses.json non disponibile'); }
+    const r = await fetch('../licenses.json');
+    const l = await r.json();
+    const s = l.find(x => x.codice === codice && x.attivo);
+    if (s) { studio.nome = s.nome; studio.tel = s.telefono || ''; studio.codice = s.codice; }
+  } catch(e) {}
 }
 
 async function loadDb() {
-  document.getElementById('syncStatus').textContent = 'Sync cloud: caricamento...';
   try {
-    const res = await fetch(`${WORKER_URL}/db-load?key=${DB_KEY}`);
-    if (res.ok) {
-      dbData = await res.json() || { clienti: [] };
-      document.getElementById('syncStatus').textContent = 'Sync cloud: aggiornato';
-    } else {
-      dbData = { clienti: [] };
-      document.getElementById('syncStatus').textContent = 'Sync cloud: errore';
-    }
-  } catch (e) {
-    document.getElementById('syncStatus').textContent = 'Sync cloud: offline';
-  }
+    const r = await fetch(`${API}/db-load?key=${KEY}`);
+    if (r.ok) db = await r.json() || { clienti: [] };
+  } catch(e) {}
 }
 
 async function saveDb() {
-  document.getElementById('syncStatus').textContent = 'Sync cloud: salvataggio...';
-  try {
-    const res = await fetch(`${WORKER_URL}/db-save?key=${DB_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dbData)
-    });
-    document.getElementById('syncStatus').textContent = res.ok ? 'Sync cloud: salvato' : 'Sync cloud: errore';
-  } catch (e) {
-    document.getElementById('syncStatus').textContent = 'Sync cloud: errore';
-  }
+  await fetch(`${API}/db-save?key=${KEY}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(db) });
 }
 
-async function backupGlobale() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dbData));
+async function backup() {
   const a = document.createElement('a');
-  a.href = dataStr;
-  a.download = "backup_clienti_foto.json";
-  document.body.appendChild(a);
+  a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+  a.download = "backup_clienti.json";
   a.click();
-  a.remove();
-  alert('Backup globale scaricato.');
 }
 
-async function ripristinoGlobale() {
+async function ripristina() {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json';
-  input.onchange = async (e) => {
-    const file = e.target.files[0];
+  input.onchange = async e => {
     const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        dbData = JSON.parse(event.target.result);
-        await saveDb();
-        alert('Ripristino globale completato.');
-        init();
-      } catch (err) { alert('Errore nel file di ripristino.'); }
-    };
-    reader.readAsText(file);
+    reader.onload = async ev => { db = JSON.parse(ev.target.result); await saveDb(); location.reload(); };
+    reader.readAsText(e.target.files[0]);
   };
   input.click();
 }
 
-// === VISTA STUDIO ===
-function renderStudioView() {
-  const container = document.getElementById('appContainer');
-  container.innerHTML = `
+function renderStudio() {
+  document.getElementById('app').innerHTML = `
     <div class="card">
       <h2>Nuovo Cliente</h2>
-      <label>Nome</label>
-      <input type="text" id="newNome" placeholder="Nome">
-      <label>Cognome</label>
-      <input type="text" id="newCognome" placeholder="Cognome">
-      <label>ID Cliente (Univoco per servizi futuri)</label>
-      <input type="text" id="newIdCliente" placeholder="Es. CLI-2026-001" value="${generateClientId()}">
-      <label>Telefono (per invio WhatsApp)</label>
-      <input type="tel" id="newTelefono" placeholder="Es. 3331234567">
-      <button class="action-btn" onclick="creaCliente()">Salva Cliente</button>
+      <label>Nome</label><input type="text" id="nome" placeholder="Nome">
+      <label>Cognome</label><input type="text" id="cognome" placeholder="Cognome">
+      <label>ID Cliente (Univoco)</label><input type="text" id="idCli" value="${genClientId()}" placeholder="CLI-2026-XXXX">
+      <label>Telefono</label><input type="tel" id="tel" placeholder="3331234567">
+      <button class="btn" onclick="salvaCliente()">Salva Cliente</button>
     </div>
-
-    <div class="card">
-      <h2>Archivio Clienti</h2>
-      <div id="archivioClienti"></div>
-    </div>
+    <div class="card"><h2>Archivio Clienti</h2><div id="archivio"></div></div>
   `;
   renderArchivio();
 }
 
-function creaCliente() {
-  const nome = document.getElementById('newNome').value.trim();
-  const cognome = document.getElementById('newCognome').value.trim();
-  const idCliente = document.getElementById('newIdCliente').value.trim() || generateClientId();
-  const telefono = document.getElementById('newTelefono').value.trim();
-
-  if (!nome || !cognome) {
-    alert('Inserire almeno Nome e Cognome.');
-    return;
-  }
-
-  dbData.clienti.push({
-    id: generateId(),
-    idCliente,
-    nome,
-    cognome,
-    telefono,
-    cartelle: [],
-    dataCreazione: new Date().toISOString()
-  });
-
-  saveDb().then(() => {
-    alert('Cliente salvato con successo.');
-    renderStudioView();
-  });
+function salvaCliente() {
+  const nome = document.getElementById('nome').value.trim();
+  const cognome = document.getElementById('cognome').value.trim();
+  const idCli = document.getElementById('idCli').value.trim() || genClientId();
+  const tel = document.getElementById('tel').value.trim();
+  if (!nome || !cognome) { alert('Inserisci nome e cognome'); return; }
+  db.clienti.push({ id: genId(), idCli, nome, cognome, tel, cartelle: [] });
+  saveDb().then(() => { alert('Cliente salvato'); renderStudio(); });
 }
 
 function renderArchivio() {
-  const div = document.getElementById('archivioClienti');
-  if (dbData.clienti.length === 0) {
-    div.innerHTML = '<p>Nessun cliente presente.</p>';
-    return;
-  }
-
+  const div = document.getElementById('archivio');
+  if (!db.clienti.length) { div.innerHTML = '<p>Nessun cliente</p>'; return; }
+  
   let html = '';
-  dbData.clienti.forEach(cliente => {
-    html += `<div class="row-item">
-      <div class="client-header">
-        <strong>${cliente.cognome} ${cliente.nome}</strong>
-        <span class="client-id">ID: ${cliente.idCliente}</span>
+  db.clienti.forEach(c => {
+    html += `<div class="cliente-box">
+      <div class="cliente-header">
+        <strong>${c.cognome} ${c.nome}</strong>
+        <span class="cliente-id">ID: ${c.idCli}</span>
       </div>`;
-
-    if (cliente.cartelle.length === 0) {
-      html += `<p style="font-size: 0.9em; color: #888; margin: 5px 0;">Nessuna cartella caricata.</p>`;
+    
+    if (!c.cartelle.length) {
+      html += '<p style="color:#888;font-size:0.9em">Nessuna cartella</p>';
     } else {
-      cliente.cartelle.forEach((cartella, idx) => {
-        const totaleFoto = cartella.foto ? cartella.foto.length : 0;
-        html += `
-          <div class="folder-item">
-            <span>📁 ${cartella.nome} (${totaleFoto} foto)</span>
-            <button class="danger-btn" onclick="eliminaCartella('${cliente.id}', ${idx})">X Elimina Cartella</button>
-          </div>
-        `;
+      c.cartelle.forEach((cart, idx) => {
+        const n = cart.foto ? cart.foto.length : 0;
+        html += `<div class="cartella-row">
+          <span>📁 ${cart.nome} (${n} foto)</span>
+          <button class="btn btn-danger" onclick="eliminaCartella('${c.id}',${idx})">X Elimina Cartella</button>
+        </div>`;
       });
     }
-
-    html += `
-      <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
-        <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">📁 Carica Cartella</button>
-        <button class="action-btn" onclick="inviaLinkWhatsApp('${cliente.id}')">Invia Link WhatsApp</button>
-        <button class="action-btn danger-btn" onclick="eliminaCliente('${cliente.id}')">Elimina Cliente</button>
+    
+    html += `<div style="margin-top:10px">
+      <button class="btn" onclick="toggleUpload('${c.id}')">📁 Carica Cartella</button>
+      <button class="btn" onclick="inviaLink('${c.id}')">Invia WhatsApp</button>
+      <button class="btn btn-danger" onclick="eliminaCliente('${c.id}')">Elimina Cliente</button>
+    </div>
+    <div id="up_${c.id}" class="upload-box hidden">
+      <h3>Carica cartella per ${c.nome} ${c.cognome}</h3>
+      <input type="file" id="f_${c.id}" webkitdirectory directory multiple>
+      <div id="fl_${c.id}" class="file-preview hidden"></div>
+      <div id="pr_${c.id}" class="hidden"><div class="progress"><div id="pb_${c.id}" class="progress-bar" style="width:0%"></div></div></div>
+      <div style="margin-top:10px">
+        <button class="btn" onclick="upload('${c.id}')"> Salva Cartella</button>
+        <button class="btn" onclick="toggleUpload('${c.id}')">Annulla</button>
       </div>
-      <div id="uploadForm_${cliente.id}" class="upload-area hidden">
-        <h3>📁 Carica intera cartella per ${cliente.cognome} ${cliente.nome}</h3>
-        
-        <div class="warning-box">
-          <strong>ℹ️ Modalità Demo Attiva</strong><br>
-          Il sistema salva i nomi dei file nel database per testare il flusso. 
-          L'upload fisico su cloud sarà attivato a breve.
-        </div>
-        
-        <p><strong>Seleziona la cartella dal tuo computer</strong> (es. cartella "Matrimonio" con tutte le foto dentro)</p>
-        <input type="file" id="folderInput_${cliente.id}" webkitdirectory directory multiple style="margin: 15px 0;">
-        <div id="fileList_${cliente.id}" class="file-list hidden"></div>
-        <div id="progressSection_${cliente.id}" class="hidden">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill_${cliente.id}" style="width: 0%">0%</div>
-          </div>
-          <p id="progressText_${cliente.id}" style="font-size: 0.9em; margin: 10px 0;">Elaborazione in corso...</p>
-        </div>
-        <div style="margin-top: 15px;">
-          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">💾 Salva Cartella</button>
-          <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">Annulla</button>
-        </div>
-      </div>
-    </div>`;
+    </div></div>`;
   });
   div.innerHTML = html;
-
-  dbData.clienti.forEach(cliente => {
-    const folderInput = document.getElementById(`folderInput_${cliente.id}`);
-    if (folderInput) {
-      folderInput.addEventListener('change', function(e) {
-        const files = e.target.files;
-        const fileList = document.getElementById(`fileList_${cliente.id}`);
-        if (files.length > 0) {
-          fileList.classList.remove('hidden');
-          const firstFile = files[0];
-          const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
-          const cartellaNome = pathParts.length > 1 ? pathParts[0] : 'Cartella selezionata';
-          
-          let html = `<strong>📁 ${cartellaNome}</strong><br>`;
-          html += `<em>${files.length} file trovati nella cartella:</em><br><br>`;
-          
-          const filesToShow = Array.from(files).slice(0, 10);
-          html += filesToShow.map(f => `<div class="file-item"><span>📄 ${f.name}</span><span style="color:#888; font-size:0.85em;">(${(f.size/1024/1024).toFixed(2)} MB)</span></div>`).join('');
-          
-          if (files.length > 10) {
-            html += `<div style="padding:5px; color:#888; text-align:center;">... e altri ${files.length - 10} file</div>`;
-          }
-          fileList.innerHTML = html;
-        } else {
-          fileList.classList.add('hidden');
-        }
-      });
-    }
+  
+  db.clienti.forEach(c => {
+    const inp = document.getElementById(`f_${c.id}`);
+    if (inp) inp.onchange = function() {
+      const files = this.files;
+      const div = document.getElementById(`fl_${c.id}`);
+      if (files.length) {
+        const name = files[0].webkitRelativePath.split('/')[0] || 'Cartella';
+        div.classList.remove('hidden');
+        div.innerHTML = `<strong>📁 ${name}</strong><br>${files.length} file<br>` + 
+          Array.from(files).slice(0,5).map(f=>`<div class="file-item">${f.name}</div>`).join('') +
+          (files.length>5 ? `<div style="color:#888">+${files.length-5} altri</div>` : '');
+      }
+    };
   });
 }
 
-function toggleUploadForm(clienteId) {
-  const form = document.getElementById(`uploadForm_${clienteId}`);
-  if (form) form.classList.toggle('hidden');
-}
+function toggleUpload(id) { document.getElementById(`up_${id}`).classList.toggle('hidden'); }
 
-async function avviaUpload(clienteId) {
-  const folderInput = document.getElementById(`folderInput_${clienteId}`);
-  const files = folderInput.files;
-
-  if (files.length === 0) {
-    alert('Seleziona una cartella con i file da caricare.');
-    return;
-  }
-
-  const cliente = dbData.clienti.find(c => c.id === clienteId);
-  if (!cliente) { alert('Cliente non trovato.'); return; }
-
-  const firstFile = files[0];
-  const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
-  const nomeCartella = pathParts.length > 1 ? pathParts[0] : `Cartella_${Date.now()}`;
-
-  const progressSection = document.getElementById(`progressSection_${clienteId}`);
-  const progressFill = document.getElementById(`progressFill_${clienteId}`);
-  const progressText = document.getElementById(`progressText_${clienteId}`);
-  progressSection.classList.remove('hidden');
-
-  const cartellaObj = { nome: nomeCartella, foto: [], data: new Date().toISOString() };
-  let processedCount = 0;
-  const totalFiles = files.length;
-
+async function upload(clienteId) {
+  const inp = document.getElementById(`f_${clienteId}`);
+  const files = inp.files;
+  if (!files.length) { alert('Seleziona una cartella'); return; }
+  
+  const cliente = db.clienti.find(c => c.id === clienteId);
+  const cartName = files[0].webkitRelativePath.split('/')[0] || 'Cartella_' + Date.now();
+  const pb = document.getElementById(`pb_${clienteId}`);
+  const pr = document.getElementById(`pr_${clienteId}`);
+  pr.classList.remove('hidden');
+  
+  const cartella = { nome: cartName, foto: [], data: new Date().toISOString() };
   for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const percent = Math.round(((i + 1) / totalFiles) * 100);
-    
-    progressFill.style.width = `${percent}%`;
-    progressFill.textContent = `${percent}%`;
-    progressText.textContent = `Elaborazione ${i + 1} di ${totalFiles}: ${file.name}`;
-
-    await new Promise(resolve => setTimeout(resolve, 30));
-
-    cartellaObj.foto.push({
-      nome: file.name,
-      url: '#',
-      data: new Date().toISOString(),
-      dimensione: file.size
-    });
-    processedCount++;
+    const pct = Math.round(((i+1)/files.length)*100);
+    pb.style.width = pct + '%';
+    await new Promise(r => setTimeout(r, 30));
+    cartella.foto.push({ nome: files[i].name, size: files[i].size });
   }
-
-  cliente.cartelle.push(cartellaObj);
+  
+  cliente.cartelle.push(cartella);
   await saveDb();
-
-  alert(`✅ Cartella salvata nel database!\n\n📁 Cartella: ${nomeCartella}\n📄 File registrati: ${processedCount}`);
-  renderStudioView();
+  alert(`✅ Cartella "${cartName}" salvata con ${files.length} file`);
+  renderStudio();
 }
 
-function eliminaCartella(clienteId, cartellaIdx) {
-  if (confirm("Eliminare INTERA questa cartella e tutto il suo contenuto?")) {
-    const cliente = dbData.clienti.find(c => c.id === clienteId);
-    if (cliente) {
-      cliente.cartelle.splice(cartellaIdx, 1);
-      saveDb().then(() => renderArchivio());
-    }
-  }
+function eliminaCartella(clienteId, idx) {
+  if (!confirm('Eliminare questa cartella?')) return;
+  const c = db.clienti.find(x => x.id === clienteId);
+  if (c) { c.cartelle.splice(idx, 1); saveDb().then(renderArchivio); }
 }
 
-function eliminaCliente(clienteId) {
-  if (confirm("Eliminare questo cliente e tutte le sue cartelle?")) {
-    dbData.clienti = dbData.clienti.filter(c => c.id !== clienteId);
-    saveDb().then(() => renderArchivio());
-  }
+function eliminaCliente(id) {
+  if (!confirm('Eliminare cliente e tutte le cartelle?')) return;
+  db.clienti = db.clienti.filter(x => x.id !== id);
+  saveDb().then(renderArchivio);
 }
 
-function inviaLinkWhatsApp(clienteId) {
-  const cliente = dbData.clienti.find(c => c.id === clienteId);
-  if (!cliente) return;
-  if (!cliente.telefono) {
-    alert("Inserire un numero di telefono nel profilo del cliente.");
-    return;
-  }
-
-  // CORRETTO: la cartella su GitHub si chiama 'clienti-foto', non '03 clienti-foto'
-  const baseUrl = "https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/index.html";
-  const link = `${baseUrl}?id=${cliente.id}&studio=${encodeURIComponent(studioIdent.nome)}`;
-  const messaggio = `Ciao ${cliente.nome}, ${studioIdent.nome} ti ha condiviso l'accesso alle tue foto. Clicca qui per visualizzarle: ${link}`;
-
-  const numeroPulito = cliente.telefono.replace(/\D/g, '');
-  const numeroWa = numeroPulito.startsWith('39') ? numeroPulito : '39' + numeroPulito;
-
-  window.open(`https://wa.me/${numeroWa}?text=${encodeURIComponent(messaggio)}`, '_blank');
+function inviaLink(clienteId) {
+  const c = db.clienti.find(x => x.id === clienteId);
+  if (!c || !c.tel) { alert('Inserisci telefono cliente'); return; }
+  
+  // URL CORRETTO - SENZA "03 "
+  const url = `https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/index.html?id=${c.id}&studio=${encodeURIComponent(studio.nome)}`;
+  const msg = `Ciao ${c.nome}, ${studio.nome} ti ha condiviso le foto: ${url}`;
+  const num = c.tel.replace(/\D/g,'');
+  window.open(`https://wa.me/${num.startsWith('39')?num:'39'+num}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-// === VISTA CLIENTE ===
-function renderClientView() {
-  const clienteId = getParam('id');
-  const studioNome = getParam('studio') || 'Studio Fotografico';
-  const cliente = dbData.clienti.find(c => c.id === clienteId);
-  const container = document.getElementById('appContainer');
-
-  if (!cliente) {
-    container.innerHTML = `<div class="card"><h2>Link non valido o scaduto.</h2><p>Contatta ${studioNome} per assistenza.</p></div>`;
-    return;
-  }
-
-  let html = `
-    <div class="card" style="text-align: center;">
-      <h2>Benvenuto/a, ${cliente.nome}</h2>
-      <p>Le tue foto sono state curate da <strong>${studioNome}</strong>.</p>
-      <p>ID Cliente: ${cliente.idCliente}</p>
-    </div>
-  `;
-
-  if (cliente.cartelle.length === 0) {
-    html += `<div class="card"><p>Le tue cartelle sono in fase di caricamento. Torneremo presto!</p></div>`;
-  } else {
-    cliente.cartelle.forEach(cartella => {
-      html += `
-        <div class="card">
-          <h3>📁 ${cartella.nome}</h3>
-          <p>Totale foto: ${cartella.foto ? cartella.foto.length : 0}</p>
-          ${cartella.foto && cartella.foto.length > 0 ? `
-            <div class="file-list">
-              ${cartella.foto.map(f => `
-                <div class="file-item">
-                  <span>📄 ${f.nome}</span>
-                  <span style="color:#888; font-size:0.85em;">(${(f.dimensione/1024/1024).toFixed(2)} MB)</span>
-                </div>
-              `).join('')}
-            </div>
-          ` : '<p style="color:#888;">Nessuna foto disponibile</p>'}
-        </div>
-      `;
+function renderCliente() {
+  const id = getParam('id');
+  const studioNome = getParam('studio') || 'Studio';
+  const c = db.clienti.find(x => x.id === id);
+  const app = document.getElementById('app');
+  
+  if (!c) { app.innerHTML = '<div class="card"><h2>Link non valido</h2></div>'; return; }
+  
+  let html = `<div class="card" style="text-align:center"><h2>Benvenuto ${c.nome}</h2><p>da <strong>${studioNome}</strong></p><p>ID: ${c.idCli}</p></div>`;
+  
+  c.cartelle.forEach(cart => {
+    html += `<div class="card"><h3>📁 ${cart.nome}</h3><p>${cart.foto.length} foto</p>`;
+    cart.foto.forEach(f => {
+      html += `<div class="file-item"><span>${f.nome}</span><span>${(f.size/1024/1024).toFixed(1)} MB</span></div>`;
     });
-  }
-
-  container.innerHTML = html;
+    html += '</div>';
+  });
+  
+  app.innerHTML = html;
 }
 
-// === INIZIALIZZAZIONE ===
 async function init() {
   await loadDb();
-  const studio = getParam('studio');
+  const studioCode = getParam('studio');
   const clienteId = getParam('id');
-
-  if (clienteId) {
-    renderClientView();
-  } else {
-    if (studio) await fetchStudioInfo(studio);
-    renderStudioView();
+  
+  if (clienteId) renderCliente();
+  else {
+    if (studioCode) await loadStudio(studioCode);
+    renderStudio();
   }
 }
 
