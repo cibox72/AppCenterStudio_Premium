@@ -62,7 +62,6 @@ body{font-family:-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--nero);mi
 
 <script>
 const OWNER='cibox72',REPO='AppCenterStudio_Premium';
-// Allineamento percorsi per Cloudflare Pages (usa la root assoluta o l'origin corrente)
 const BASE=window.location.origin + '/';
 const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
 const $=id=>document.getElementById(id);
@@ -104,6 +103,7 @@ async function ghPut(path,content){
   const j2=await p.json();if(!p.ok)throw new Error(j2.message||'Errore GitHub');
 }
 
+// CORRETTO: Ripristinata la funzione troncata per intero
 function genPassword(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvw';
   let pass='';
@@ -111,7 +111,6 @@ function genPassword(){
   return pass;
 }
 
-// RIPRISTINO LOGICA COMPLETA DI RENDERING DELLA DASHBOARD GENERALE
 async function renderDash() {
   $('root').innerHTML = `
     <div class="wrap">
@@ -151,3 +150,5 @@ async function renderDash() {
     $('studiContainer').innerHTML = studiLista.map(s => `
       <div class="row">
         <div>
+          <strong>${s.nome}</strong> (Codice: <code class="code">${s.codice}</code>)<br>
+          <span class="soft">Utente: ${s.utente} | Scadenza: ${s.scadenza}</span>
