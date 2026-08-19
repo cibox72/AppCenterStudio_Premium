@@ -78,7 +78,7 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
   </div>
   <div class="card">
     <h2>Archivio clienti</h2>
-    <p class="hint">Foto suddivise per cartella. "🗑 Elimina cartella" cancella una cartella, la "✕" una singola foto, "Svuota magazzino" tutto. Usa "🔄 Sincronizza" se vedi foto fantasma o errori di eliminazione.</p>
+    <p class="hint">Foto suddivise per cartella. "🗑 Elimina cartella" cancella una cartella, la "✕" una singola foto, "Svuota magazzino" tutto.</p>
     <div id="archivioBox"></div>
   </div>
 </div>
@@ -173,28 +173,29 @@ async function caricaFoto(){
     const folders = [...new Set(meta.map(m => m.folder))];
     status.textContent='Completato: '+j.caricate+' foto nelle cartelle: '+folders.join(', ')+'.';
     input.value='';
-    await refreshManifest(codice);
+    
+    await refreshManifest(codice, true);
     render();
   }catch(e){
     status.textContent='Errore: '+e.message;
   }
 }
 
-async function refreshManifest(codice){
+async function refreshManifest(codice, forceReload = false){
   try{
+    if(forceReload){
+      const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
+      let man=await r.json();
+      manifesti[codice]=man;
+      return;
+    }
+    
+    if(manifesti[codice]){
+      return;
+    }
+    
     const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
     let man=await r.json();
-    
-    if(!man.basseByFolder && man.basse && man.basse.length>0){
-      man.basseByFolder={};
-      man.basse.forEach(filePath=>{
-        const cleanPath = filePath.startsWith('basse/') ? filePath.slice(6) : filePath;
-        const parts = cleanPath.split('/');
-        const folder = parts.length > 1 ? parts[0] : 'varie';
-        if(!man.basseByFolder[folder]) man.basseByFolder[folder]=[];
-        man.basseByFolder[folder].push(cleanPath);
-      });
-    }
     manifesti[codice]=man;
   }catch(e){
     console.error('Errore refresh manifest:',e);
@@ -203,7 +204,7 @@ async function refreshManifest(codice){
 }
 
 async function pulisciManifest(codice){
-  if(!confirm('Sincronizzare il manifest con i file reali nel server?\nQuesto ricostruirà l\'elenco delle cartelle dai file effettivamente presenti.'))return;
+  if(!confirm('Sincronizzare il manifest con i file reali nel server?'))return;
   
   try{
     const r=await fetch(WORKER+'/pulisci-manifest',{
@@ -216,7 +217,7 @@ async function pulisciManifest(codice){
       alert('Errore: '+j.error);
     }else{
       alert('Sincronizzato: '+j.basse+' foto basse, '+j.gallery+' ritoccate.');
-      await refreshManifest(codice);
+      await refreshManifest(codice, true);
       render();
     }
   }catch(e){
@@ -263,11 +264,11 @@ async function eliminaCartella(codice, folderName) {
     const results = await Promise.allSettled(deletePromises);
     const failures = results.filter(r => r.status === 'rejected');
     
-    await refreshManifest(codice);
+    await refreshManifest(codice, true);
     render();
     
     if (failures.length > 0) {
-      alert('Attenzione: alcune eliminazioni hanno fallito. Prova a usare "🔄 Sincronizza" per ricostruire il manifest.');
+      alert('Attenzione: alcune eliminazioni hanno fallito.');
       console.error('Fallimenti eliminazione:', failures);
     } else {
       alert('Cartella "' + folderName + '" eliminata con successo.');
@@ -285,7 +286,7 @@ async function eliminaFoto(codice, relativePath){
   const workerPath = relativePath.startsWith('basse/') ? relativePath : 'basse/' + relativePath;
   try{
     await deleteFile(codice, workerPath);
-    await refreshManifest(codice);
+    await refreshManifest(codice, true);
     render();
   }catch(e){
     alert('Errore: '+e.message);
@@ -306,7 +307,7 @@ async function svuotaMagazzino(codice){
       return deleteFile(codice, path);
     });
     await Promise.allSettled(deletePromises);
-    await refreshManifest(codice);
+    await refreshManifest(codice, true);
     render();
     alert('Magazzino svuotato.');
   }catch(e){
@@ -365,19 +366,20 @@ function render(){
       foldersHtml=folderNames.map(folder=>{
         const files=basseByFolder[folder];
         const safeFolder = folder.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        const filesHtml = files.map(f => {
-          const safeFile = f.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-          return '<div class="file">'+f+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+safeFile+'\')"></button></div>';
+        // Estrai solo il nome del file, non il percorso completo
+        const filesHtml = files.map(filePath => {
+          const fileName = filePath.includes('/') ? filePath.split('/').pop() : filePath;
+          const safeFile = fileName.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          return '<div class="file">'+fileName+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+safeFile+'\')">✕</button></div>';
         }).join('');
         
-        return '<div class="folder-box"><h4><span>'+folder+' <span class="count">'+files.length+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\''+safeFolder+'\')">🗑 Elimina cartella</button></h4><div class="files">'+filesHtml+'</div></div>';
+        return '<div class="folder-box"><h4><span>'+folder+' <span class="count">'+files.length+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\''+safeFolder+'\')"> Elimina cartella</button></h4><div class="files">'+filesHtml+'</div></div>';
       }).join('');
     }else if(totaleBasse>0){
       const safeFolder = 'varie'.replace(/'/g, "\\'");
       const filesHtml = (man.basse||[]).map(f => {
-        const cleanF = f.startsWith('basse/') ? f.slice(6) : f;
-        const safeFile = cleanF.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        return '<div class="file">'+cleanF+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+safeFile+'\')">✕</button></div>';
+        const safeFile = f.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        return '<div class="file">'+f+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+safeFile+'\')">✕</button></div>';
       }).join('');
       foldersHtml='<div class="folder-box"><h4><span>varie <span class="count">'+totaleBasse+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\''+safeFolder+'\')">🗑 Elimina cartella</button></h4><div class="files">'+filesHtml+'</div></div>';
     }
@@ -420,7 +422,7 @@ function ripristinoGlobale(e){
 
 (async()=>{
   await loadCloud();
-  for(const c of clienti) await refreshManifest(c.codice);
+  for(const c of clienti) await refreshManifest(c.codice, true);
   render();
 })();
 </script>
