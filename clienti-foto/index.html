@@ -182,7 +182,6 @@ async function caricaFoto(){
 
 async function refreshManifest(codice){
   try{
-    // FORZIAMO CACHE-BUSTING con timestamp
     const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
     let man=await r.json();
     
@@ -192,7 +191,6 @@ async function refreshManifest(codice){
         const cleanPath = filePath.startsWith('basse/') ? filePath.slice(6) : filePath;
         const parts = cleanPath.split('/');
         const folder = parts.length > 1 ? parts[0] : 'varie';
-        
         if(!man.basseByFolder[folder]) man.basseByFolder[folder]=[];
         man.basseByFolder[folder].push(cleanPath);
       });
@@ -204,68 +202,64 @@ async function refreshManifest(codice){
   }
 }
 
-async function deleteFile(codice,path){
-  try{
-    const response = await fetch(WORKER+'/delete-file',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({studio:studioCodice,cliente:codice,file:path})
+async function deleteFile(codice, path) {
+  try {
+    const response = await fetch(WORKER + '/delete-file', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studio: studioCodice, cliente: codice, file: path })
     });
     const result = await response.json();
-    if(!response.ok || result.error){
-      throw new Error(result.error || 'Errore eliminazione: '+response.status);
+    if (!response.ok || result.error) {
+      throw new Error(result.error || 'Errore eliminazione: ' + response.status);
     }
     return result;
-  }catch(e){
-    console.error('Errore deleteFile:',e);
+  } catch (e) {
+    console.error('ERRORE ELIMINAZIONE FILE:', path, e);
     throw e;
   }
 }
 
-async function eliminaCartella(codice,folderName){
-  if(!confirm('Eliminare la cartella "'+folderName+'" e tutte le sue foto?'))return;
+async function eliminaCartella(codice, folderName) {
+  if (!confirm('Eliminare la cartella "' + folderName + '" e tutte le sue foto?')) return;
   
-  const man=manifesti[codice]||{};
-  const files=(man.basseByFolder&&man.basseByFolder[folderName])?man.basseByFolder[folderName]:[];
-  if(!files.length)return alert('Cartella vuota o non trovata.');
+  const man = manifesti[codice] || {};
+  const files = (man.basseByFolder && man.basseByFolder[folderName]) ? man.basseByFolder[folderName] : [];
+  if (!files.length) return alert('Cartella vuota o non trovata.');
   
-  // DISABILITIAMO IL PULSANTE durante l'eliminazione
   const btn = event.target;
   const originalText = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Eliminazione in corso...';
   
-  try{
-    // USIAMO Promise.all PER ELIMINARE TUTTE LE FOTO IN PARALLELO
-    const deletePromises = files.map(relativePath => {
-      const workerPath = relativePath.startsWith('basse/') ? relativePath : 'basse/' + relativePath;
+  try {
+    const deletePromises = files.map(fileName => {
+      const workerPath = fileName.startsWith('basse/') ? fileName : 'basse/' + fileName;
       return deleteFile(codice, workerPath);
     });
     
-    await Promise.all(deletePromises);
+    // Usa allSettled per completare anche se qualche file fallisce
+    const results = await Promise.allSettled(deletePromises);
+    const failures = results.filter(r => r.status === 'rejected');
     
-    // FORZIAMO REFRESH del manifest con cache-busting
     await refreshManifest(codice);
     render();
     
-    // VERIFICHIAMO che sia stato eliminato tutto
-    const newMan = manifesti[codice]||{};
-    const remainingFiles = (newMan.basseByFolder&&newMan.basseByFolder[folderName])?newMan.basseByFolder[folderName].length:0;
-    
-    if(remainingFiles === 0){
-      alert('Cartella "'+folderName+'" eliminata con successo.');
-    }else{
-      alert('Attenzione: alcune foto potrebbero essere ancora presenti. Ricarica la pagina.');
+    if (failures.length > 0) {
+      alert('Attenzione: alcune eliminazioni hanno fallito. Apri la console del browser (F12) per vedere i dettagli.');
+      console.error('Fallimenti eliminazione:', failures);
+    } else {
+      alert('Cartella "' + folderName + '" eliminata con successo.');
     }
-  }catch(e){
-    alert('Errore durante l\'eliminazione: '+e.message);
-  }finally{
+  } catch (e) {
+    alert('Errore durante l\'eliminazione: ' + e.message);
+  } finally {
     btn.disabled = false;
     btn.textContent = originalText;
   }
 }
 
-async function eliminaFoto(codice,relativePath){
+async function eliminaFoto(codice, relativePath){
   if(!confirm('Eliminare la foto "'+relativePath+'"?'))return;
   const workerPath = relativePath.startsWith('basse/') ? relativePath : 'basse/' + relativePath;
   try{
@@ -290,7 +284,7 @@ async function svuotaMagazzino(codice){
       const path = f.startsWith('basse/') ? f : 'basse/'+f;
       return deleteFile(codice, path);
     });
-    await Promise.all(deletePromises);
+    await Promise.allSettled(deletePromises);
     await refreshManifest(codice);
     render();
     alert('Magazzino svuotato.');
