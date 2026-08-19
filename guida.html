@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guida Completa v14 - AppCenterStudio Premium</title>
+<style>
+body{font-family:Georgia,'Segoe UI',sans-serif;background:#f4efe7;color:#4a4237;margin:0;line-height:1.7}
+.wrap{max-width:900px;margin:0 auto;padding:30px 20px 90px}
+h1{letter-spacing:.1em;text-transform:uppercase;font-weight:400;border-bottom:3px solid #a3937d;padding-bottom:12px}
+h2{color:#6f6353;margin-top:44px;border-left:5px solid #a3937d;padding-left:12px}
+h3{color:#6f6353;margin-top:22px}
+.card{background:#fbf9f5;border:1px solid #e2d7c3;border-radius:14px;padding:18px 24px;margin:14px 0;box-shadow:0 4px 14px rgba(120,100,70,.08)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14px}
+th,td{border:1px solid #e2d7c3;padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#e9dfcd}
+code{background:#efe8da;padding:2px 6px;border-radius:6px;font-family:monospace;font-size:13px}
+ul,ol{padding-left:24px}
+li{margin:7px 0}
+.toc{columns:2;column-gap:30px}
+@media(max-width:700px){.toc{columns:1}}
+.btn{background:#a3937d;color:#fff;border:none;padding:10px 22px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px}
+.btn:hover{background:#6f6353}
+textarea{width:100%;min-height:320px;font-family:monospace;font-size:12px;border:1px solid #e2d7c3;border-radius:10px;padding:12px;background:#fff;color:#333}
+.warn{background:#fdf6e8;border:1px solid #e8d5a8;border-radius:10px;padding:10px 14px;color:#6b4d1a}
+.ok{background:#eaf3e4;border:1px solid #bcd3a8;border-radius:10px;padding:10px 14px;color:#3f6b2e}
+@media print{.btn{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Guida Completa v14 — AppCenterStudio Premium</h1>
+<p><b>Repository:</b> cibox72/AppCenterStudio_Premium · <code>https://cibox72.github.io/AppCenterStudio_Premium/</code><br>
+<b>Versione 14.0</b> · Firefox = ADMIN · Chrome = STUDIO · DuckDuckGo = CLIENTE · Pronta per la stampa</p>
+<p><button class="btn" onclick="window.print()">Stampa la guida</button></p>
+
+<div class="card">
+<b>Regole del test</b>
+<ul>
+<li>Tre personaggi, tre browser DIVERSI: <b>Firefox = ADMIN</b>, <b>Chrome = STUDIO</b>, <b>DuckDuckGo = CLIENTE</b>.</li>
+<li>Ogni codice va scritto anche sul Blocco Note. Le parole tra virgolette sono i pulsanti esatti.</li>
+<li>Dopo ogni commit, GitHub Pages impiega ~1 minuto: se non vedi le novita', ricarica forte con <b>Ctrl+F5</b> (Mac: Cmd+Shift+R).</li>
+<li>Le foto vanno nel magazzino del fornitore (Cloudflare), NON su Netlify.</li>
+<li>Lo studio entra nel benvenuto con <b>utente e password</b> che gli dai tu (admin).</li>
+</ul>
+</div>
+
+<div class="card toc">
+<b>INDICE</b>
+<ul>
+<li><a href="#s0">0. Preparazione</a></li>
+<li><a href="#s1">1. ADMIN: token GitHub</a></li>
+<li><a href="#s2">2. ADMIN: studio, credenziali, WhatsApp, offerte</a></li>
+<li><a href="#s3">3. STUDIO: login e benvenuto</a></li>
+<li><a href="#s4">4. STUDIO: clienti e foto (03)</a></li>
+<li><a href="#s5">5. STUDIO: selezione (04)</a></li>
+<li><a href="#s6">6. CLIENTE: selezione e gallery</a></li>
+<li><a href="#s7">7. STUDIO: preventivi (01)</a></li>
+<li><a href="#s8">8. STUDIO: ricevute (08)</a></li>
+<li><a href="#s9">9. STUDIO: workflow (02)</a></li>
+<li><a href="#s10">10. STUDIO: agenda (07) ed email (09)</a></li>
+<li><a href="#s11">11. Dati al sicuro + cambiare PC</a></li>
+<li><a href="#s12">12. ADMIN: offerte e fine prova</a></li>
+<li><a href="#s13">13. Salvataggio configurazioni</a></li>
+<li><a href="#s14">14. Risoluzione problemi</a></li>
+<li><a href="#s15">15. Checklist finale</a></li>
+<li><a href="#s16">16. Prompt di ripristino</a></li>
+</ul>
+</div>
+
+<h2 id="s0">0. Preparazione (10 minuti)</h2>
+<div class="card">
+<ol>
+<li>Apri Firefox, Chrome e DuckDuckGo. In tutti scrivi <code>https://cibox72.github.io/AppCenterStudio_Premium/</code> e INVIO.</li>
+<li>Blocco Note: TOKEN GITHUB = / CODICE STUDIO = / UTENTE STUDIO = / PASSWORD STUDIO = / LINK BENVENUTO = / LINK SELEZIONE = / LINK GALLERY = / CLIENTE 1 =</li>
+<li>Desktop: cartella <code>ORIGINALI</code> con 10 foto ALTA; da queste crea le copie BASSA in <code>Matrimonio</code> e <code>Battesimo</code>.</li>
+</ol>
+<p class="warn"><b>REGOLA D'ORO FOTO (GRU):</b> Lightroom Esporta → JPEG → qualita' 20 → sRGB → lato lungo 1600-2000 px. NON rinominare mai file o cartelle.</p>
+</div>
+
+<h2 id="s1">1. ADMIN su Firefox: token GitHub</h2>
+<div class="card">
+<ol>
+<li><code>github.com</code> → "Sign up" → verifica email.</li>
+<li>Settings → Developer settings → Personal access tokens → Tokens (classic) → "Generate new token (classic)".</li>
+<li>"Note" = AppCenterStudio; "Expiration" = No expiration; spunta "repo" → "Generate token". Copia <code>ghp_...</code> nel Blocco Note.</li>
+</ol>
+</div>
+
+<h2 id="s2">2. ADMIN: studio, credenziali, WhatsApp, offerte</h2>
+<div class="card">
+<ol>
+<li>Portale → <code>admin</code> / <code>58879@Stella</code> → "Entra". Card "Token GitHub" → "Salva token".</li>
+<li>Card "Studi & Licenze": nome studio, <b>WhatsApp studio (obbligatorio)</b>, giorni → "Crea studio". Nascono <b>utente</b> (= nome studio) e <b>password</b> (riquadro grigio).</li>
+<li>"Invia su WhatsApp": apre WhatsApp al numero dello studio con link benvenuto + utente + password gia' scritti. In alternativa "Copia credenziali".</li>
+<li>"Accendi/Spegni": blocca/sblocca l'accesso. "Nuova password": rigenera.</li>
+<li>Card "Cambia stile app": 7 pulsanti SOLO TESTO (niente emoji/immagini); dopo ~1 minuto tutte le app cambiano.</li>
+<li>Card "Offerte agli studi": "Crea offerta"; su ogni offerta "Modifica" (prezzo, mesi, descrizione), "Copia link", "Estendi licenza", "Rimuovi".</li>
+</ol>
+</div>
+
+<h2 id="s3">3. STUDIO su Chrome: login e benvenuto</h2>
+<div class="card">
+<ol>
+<li>Apri il LINK BENVENUTO. Pagina "Accesso studio": utente + password → "Entra". Il pulsante <b>"Mostra"</b> accanto alla password la rende visibile per controllare.</li>
+<li>Se lo studio e' nuovo i campi delle sezioni 1 e 2 sono <b>VUOTI</b> (niente dati di altri studi o test precedenti).</li>
+<li>Sezione 1: dati contatto → "Invia i dati al fornitore". Sezione 2: identita' studio con UN SOLO numero WhatsApp + logo → "Salva e invia al fornitore".</li>
+<li>Sezione 3: le app.</li>
+</ol>
+</div>
+
+<h2 id="s4">4. STUDIO: clienti e foto (app 03)</h2>
+<div class="card">
+<ol>
+<li>"Nuovo cliente" → Mario Rossi → "+ Aggiungi cliente".</li>
+<li>"Carica foto nel magazzino": cartella <code>Matrimonio</code> → carica; ripeti con <code>Battesimo</code>.</li>
+<li>"Archivio clienti": foto <b>suddivise per cartella</b>. Pulsanti: "🗑 Elimina cartella", "✕" su una foto, "Svuota magazzino".</li>
+<li><b>Chiudi il browser e riapri</b>: l'archivio clienti torna da solo (ripristino dal cloud all'avvio).</li>
+<li>"Apri selezione Album" (pulsante grande) e "Link gallery cliente".</li>
+</ol>
+</div>
+
+<h2 id="s5">5. STUDIO: selezione (app 04)</h2>
+<div class="card">
+<ol>
+<li>"Selezione in studio" oppure "Link da casa" (7 giorni).</li>
+<li>Dopo "Link da casa" premi il verde <b>"Invia su WhatsApp"</b>: WhatsApp si apre con messaggio e link gia' pronti (niente copia-incolla).</li>
+<li>"Carica ritoccate" → poi in 03 "Link gallery cliente". "Gallery +6 mesi", "X selezione", "X link casa", "Text Gru", "PDF stampa".</li>
+</ol>
+</div>
+
+<h2 id="s6">6. CLIENTE su DuckDuckGo</h2>
+<div class="card">
+<ul>
+<li>Selezione: cuore BIANCO/ROSSO, foto GRANDE, frecce/swipe, "Invia selezione".</li>
+<li>Gallery: selettori "Tutte" / "Matrimonio" / "Battesimo"; scadenza visibile.</li>
+<li>Se le foto non caricano: SCUDO → disattiva protezione → ricarica.</li>
+</ul>
+</div>
+
+<h2 id="s7">7. STUDIO: preventivi (app 01)</h2>
+<div class="card">
+<ol>
+<li>Compila cliente, DATA e TIPO in evidenza, luoghi, servizi, sconto.</li>
+<li>"Acconti ricevuti": "+ Aggiungi acconto" → accanto "Ricevuta" = PDF <b>stile blocchetto 80mm</b> con tutti gli acconti, il saldo residuo E il <b>quadratino di accettazione</b> (pieno se spuntato, vuoto da firmare se no).</li>
+<li>"Piano di pagamento": le <b>4 voci di default sono gia' pronte SENZA date</b> (Caparra / Prima dell'evento / Alla selezione delle foto / Prima della stampa): metti solo gli importi. "+ Aggiungi voce" e pulsante verde <b>"PDF piano di pagamento"</b> (senza date, con firme).</li>
+<li>Card "Accettazione": casella grande con bordo nero <b>"ACCETTATO E FIRMATO DAL CLIENTE"</b>. Nel PDF preventivo il quadratino e' ACCANTO alla scritta "ACCETTAZIONE DEL PREVENTIVO".</li>
+<li>"Salva in archivio": messaggio chiaro in italiano se manca il nome cliente; altrimenti salva con numero P-2026-XXX.</li>
+<li>"Trasforma in Contratto": spunta da solo la casella, mette il badge rosso CONTRATTO e la data in agenda.</li>
+<li>Tab <b>"Preventivi & Contratti"</b>: ogni riga con <b>Apri/Modifica</b>, <b>PDF/Stampa</b> (stampa diretta), <b>Elimina</b> + pulsante "PDF elenco archivio".</li>
+<li>Tab <b>"Archivio Clienti"</b>: SOLO nome cliente, codice (P-2026-XXX), tipo (Preventivo/CONTRATTO) in ordine alfabetico, con <b>Apri/Modifica</b>, <b>PDF/Stampa</b> e <b>Elimina</b> (per cancellare prove o documenti). NIENTE totali o fatturato.</li>
+<li>Tab "Listini & Studio": "Salva dati studio" (finiscono sui PDF) + listini modificabili.</li>
+</ol>
+</div>
+
+<h2 id="s8">8. STUDIO: ricevute (app 08)</h2>
+<div class="card">
+<ol>
+<li>Cliente, servizio, importo, data, "A titolo di" → "Salva ricevuta".</li>
+<li>"Visualizza" = blocchetto; "PDF" = formato 80mm con firme e bollo.</li>
+</ol>
+</div>
+
+<h2 id="s9">9. STUDIO: workflow (app 02)</h2>
+<div class="card">
+<ol>
+<li>"+ Nuovo Servizio" → clicca il servizio: sezioni FOTO (8 step) e VIDEO (5 step).</li>
+<li>I radio (studio/link, SI/NO, persona/link, USB/link) sono <b>VUOTI</b> finche' non li scegli: niente pallini attivati per sbaglio; in "Visualizza" vedi solo cio' che hai davvero completato.</li>
+<li>Admin sezioni: <code>workflow/?studio=CODICE&amp;admin=1</code> → "Configura sezioni".</li>
+</ol>
+</div>
+
+<h2 id="s10">10. STUDIO: agenda (07) ed email (09)</h2>
+<div class="card">
+<ul>
+<li>Agenda: contratti automatici nel giorno del servizio; "+ Nuovo appuntamento"; "Promemoria WhatsApp"; avviso "Data impegnata".</li>
+<li>Email: "Salva mittente", modelli rapidi, invio con app email/PEC o copia.</li>
+</ul>
+</div>
+
+<h2 id="s11">11. Dati al sicuro + cambiare PC</h2>
+<div class="card">
+<p class="ok">Ogni salvataggio va nel cloud ("Sync cloud: ✓"). REGOLA UNICA: link benvenuto nei Preferiti su ogni PC.</p>
+<h3>Prima di uscire da un PC</h3>
+<ol>
+<li>Controlla "Sync cloud: ✓" nelle app usate.</li>
+<li>(Consigliato) "Backup globale" → scarica il .json → mandatelo su WhatsApp/email.</li>
+</ol>
+<h3>Sull'altro PC (casa, notebook...)</h3>
+<ol>
+<li>Apri il Preferito del link benvenuto (?studio=...) → login con utente+password ("Mostra" per controllare).</li>
+<li>Apri le app: i dati arrivano da soli ("Sync: X aggiunti"). Anche le cartelle foto (sono nel magazzino cloud).</li>
+<li>Se una pagina sembra vecchia: Ctrl+F5.</li>
+<li>Se manca qualcosa: "Ripristino globale" con il file .json che ti sei mandato.</li>
+</ol>
+<p class="warn">Il <b>token GitHub</b> del portale admin NON viaggia col cloud: se apri l'admin su un altro PC, reincolla il token <code>ghp_...</code> dal Blocco Note.</p>
+</div>
+
+<h2 id="s12">12. ADMIN: offerte e fine prova</h2>
+<div class="card">
+<ol>
+<li>"Crea offerta" → "Copia link" → studio paga con PayPal → tu "Estendi licenza". Con "Modifica" correggi prezzo/mesi/descrizione.</li>
+</ol>
+</div>
+
+<h2 id="s13">13. Salvataggio configurazioni (ACS-BACKUP)</h2>
+<div class="card">
+<ul>
+<li>Worker: Cloudflare → acs-api → Edit code → copia tutto → <code>acs-api.js</code>.</li>
+<li>GitHub: zip del repo. R2: backup foto.</li>
+</ul>
+</div>
+
+<h2 id="s14">14. Risoluzione problemi</h2>
+<div class="card">
+<table>
+<tr><th>Problema</th><th>Soluzione</th></tr>
+<tr><td>Modifiche non si vedono (lente)</td><td>GitHub Pages ~1 minuto dopo il commit; ricarica forte con Ctrl+F5 (Cmd+Shift+R)</td></tr>
+<tr><td>Campi con dati di altri studi</td><td>I dati sono legati al codice studio: studio nuovo = campi vuoti. Carica tema.js e benvenuto aggiornati</td></tr>
+<tr><td>"Utente o password errati"</td><td>Admin: "Copia credenziali" o "Nuova password"; studio usa "Mostra" per controllare</td></tr>
+<tr><td>"Accesso spento dal fornitore"</td><td>Admin: "Accendi"</td></tr>
+<tr><td>WhatsApp non parte</td><td>Admin: telefono obbligatorio alla creazione; studio: UN SOLO numero nell'identita'</td></tr>
+<tr><td>Cartella sbagliata</td><td>03: "🗑 Elimina cartella" / "✕" / "Svuota magazzino"</td></tr>
+<tr><td>Prove da cancellare nei preventivi</td><td>01: tab Archivio Clienti o Preventivi & Contratti → "Elimina" (con conferma)</td></tr>
+<tr><td>Chiudo browser e perdo i clienti</td><td>clienti-foto ripristina dal cloud all'avvio; su altro PC usa il link benvenuto</td></tr>
+<tr><td>"Salva in archivio" non fa nulla</td><td>Mancava il nome cliente: ora esce il messaggio chiaro; inseriscilo e ripremi</td></tr>
+<tr><td>Quadratino accettazione</td><td>E' accanto a "ACCETTAZIONE" nel PDF preventivo e sopra le firme nella ricevuta acconto; pieno se spuntato</td></tr>
+<tr><td>PDF non scarica</td><td>Serve connessione internet; riprova</td></tr>
+<tr><td>DuckDuckGo non carica foto</td><td>Scudo → disattiva protezione → ricarica</td></tr>
+<tr><td>GRU "NON TROVATO"</td><td>Riesporta basse SENZA rinominare</td></tr>
+</table>
+</div>
+
+<h2 id="s15">15. Checklist finale</h2>
+<div class="card">
+<ul>
+<li>Admin: studio creato con telefono obbligatorio; "Invia su WhatsApp" con link+credenziali; offerta con "Modifica"; temi solo-testo</li>
+<li>Studio: login con "Mostra" password; campi vuoti se studio nuovo; identita' salvata</li>
+<li>03: cartelle suddivise; elimina cartella/foto/svuota; archivio resta dopo chiusura browser</li>
+<li>04: "Invia su WhatsApp" diretto; Text Gru; PDF stampa</li>
+<li>Cliente: selezione cuori; gallery con selettori cartella</li>
+<li>01: piano default 4 voci senza date + PDF piano; ricevuta blocchetto con saldo E quadratino; quadratino accanto a "ACCETTAZIONE" nel PDF; salva con messaggio chiaro; badge CONTRATTO; archivi con Apri/Modifica + PDF/Stampa + Elimina; Archivio Clienti senza totali; "Salva dati studio"</li>
+<li>08: blocchetto + PDF 80mm · 02: radio vuoti + sezioni configurabili · 07/09: promemoria e mittente</li>
+<li>Dati: Preferito benvenuto su ogni PC; backup globale + ripristino sull'altro PC; tutto torna dopo chiusura/cancellazione</li>
+</ul>
+</div>
+
+<h2 id="s16">16. Prompt di ripristino</h2>
+<div class="card">
+<p>Copia e incolla in una NUOVA chat per riprendere da qui:</p>
+<button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('prompt').value).then(()=>alert('Prompt copiato.'))">Copia prompt</button>
+<textarea id="prompt" readonly>
+Sei l'assistente che sviluppa "AppCenterStudio Premium", suite gestionale web in italiano per studi fotografici su GitHub Pages (repo cibox72/AppCenterStudio_Premium). Utente NON tecnico: istruzioni semplici, SEMPRE file completi pronti da incollare (mai patch parziali), date gg/mm/aa, testi verso i clienti senza nominare le piattaforme ("salvate temporaneamente e cancellate dopo un determinato periodo"), UN SOLO numero WhatsApp nell'identita' studio, grafica stagionale "journal" (crema/taupe) con pulsanti tema SOLO TESTO (niente emoji, niente immagini), TUTTI i messaggi di errore e le etichette in ITALIANO.
+
+ARCHITETTURA ATTUALE (funzionante):
+- App statiche su https://cibox72.github.io/AppCenterStudio_Premium/
+- Worker Cloudflare "acs-api" v5 (https://acs-api.mairaluigi.workers.dev): /health, /manifest?studio&cliente, /db-load?studio&chiave, POST /db-save, /upload (campo meta per cartelle, salva basseByFolder), /delete-file (elimina un file e aggiorna il manifest), /link (7gg + logo + whatsapp + messaggio), /selezione (elimina non scelte, aggiorna basseByFolder), /registra-studio, /reset (selezione|link), /ritoccate (salva galleryByFolder), /proroga (+6 mesi); cron notturno che cancella tutto alla scadenza gallery. Licenze verificate leggendo licenses.json dal repo.
+- Bucket R2 pubblico https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev con struttura STUDIO/CLIENTE/basse|gallery|logo.png e STUDIO/_db/*.json (chiavi: preventivi, agenda, ricevute, email, workflow, clienti, profilo).
+- Root: licenses.json (ogni studio: codice, nome, TELEFONO obbligatorio, attivo, scadenza, UTENTE, PASSWORD), offers.json, tema.json, tema.js (grafica + profiloSync v2: profilo legato a studioCode; backup se il PC ha dati propri; ripristino solo se il PC e' vuoto E il profilo corrisponde allo stesso studio), admin-tema.html (pulsanti solo-testo), admin-offerte.html, benvenuto.html (LOGIN studio con utente+password e pulsante "Mostra"; campi VUOTI per studio nuovo grazie a studioIdent/contatti legati a studioCode), guida.html (v14), index.html (portale admin con login admin / 58879@Stella; card Token GitHub; card "Cambia stile app" 7 pulsanti solo-testo; card "Studi & Licenze" con telefono obbligatorio + "Invia su WhatsApp" (link+credenziali gia' scritti) + "Copia credenziali" + "Nuova password" + Accendi/Spegni; card Offerte con "Modifica"; card Applicazioni).
+
+APP MODERNIZZATE (hook tema.js + sync cloud "Sync cloud: ✓"):
+- 01 preventivi-contratti: 4 tab = "+ Nuovo Preventivo" | "Preventivi & Contratti" | "Archivio Clienti" | "Listini & Studio". Piano di pagamento default 4 voci SENZA date (Caparra / Prima dell'evento / Alla selezione delle foto / Prima della stampa), "+ Aggiungi voce", "PDF piano di pagamento" senza date con firme. "Salva in archivio" con messaggio chiaro in italiano se manca il nome cliente; CONVERSIONE AUTOMATICA vecchi preventivi (migratePreventivo: clienteA→a, piano/acconti/servizi default) all'avvio, al sync e al salvataggio; lettura protetta nome (nomeCliente). Card "Accettazione" con casella grande bordo nero "ACCETTATO E FIRMATO DAL CLIENTE"; nel PDF preventivo il quadratino accettazione e' ACCANTO alla scritta "ACCETTAZIONE DEL PREVENTIVO" (pieno se spuntato, vuoto se no); ricevuta acconto in STILE BLOCCHETTO 80mm con tutti gli acconti, saldo residuo E quadratino accettazione sopra le firme. "Trasforma in Contratto" spunta da solo la casella, mette badge rosso CONTRATTO e data in agenda. Tab "Preventivi & Contratti": ogni riga con Apri/Modifica, PDF/Stampa (stampa diretta senza passare dal modulo), Elimina + pulsante "PDF elenco archivio". Tab "Archivio Clienti": SOLO nome cliente, codice (P-2026-XXX), tipo (Preventivo/CONTRATTO) in ordine alfabetico con Apri/Modifica, PDF/Stampa e Elimina — NIENTE totali o fatturato (richiesta esplicita). Tab "Listini & Studio": "Salva dati studio" (finiscono sui PDF) + listini modificabili.
+- 02 workflow v2: sezioni configurabili (localStorage workflow_sections_v1, dati gl_services_v2); default FOTO (8 step: Archiviazione NAS+3HD con Studio/Collaboratore; RAW→JPEG; Selezione studio/link + copertina articolo+azienda; Grafica+ritocchi; Invio laboratorio azienda; Consegna laboratorio azienda; Consegna album; Consegna file non elaborati) e VIDEO (5 step: Archiviazione; Musiche SI/NO + 4 campi link; Inviato montaggio con collaboratore; Video montato ricevuto persona/link; Consegna USB 1-5 o link). Tipi step: simple, archive, selection, lab_send, lab_receive, music, editor, video_receive, usb_or_link. RADIO BUTTON VUOTI finche' non scelti (niente pallini attivati per sbaglio; in "Visualizza" solo cio' che e' completato). Admin da ?admin=1 con modale "Configura sezioni". PDF, tabella clienti, sync.
+- 03 clienti-foto: foto suddivise PER CARTELLA (basseByFolder); pulsanti "Elimina cartella", "✕" su singola foto, "Svuota magazzino"; ALL'AVVIO loadCloud PRIMA di render (archivio resta anche chiudendo browser o su altro PC); "Apri selezione Album" grande; "Link gallery cliente".
+- 04 selezione-album: pulsante grande "Apri selezione Album"; "Link da casa" 7 giorni + pulsante verde "Invia su WhatsApp" (apre WhatsApp con messaggio e link pronti); X selezione / X link casa; carica ritoccate; Gallery +6 mesi; Text Gru; PDF stampa.
+- 05 gallery: selettori per cartella ("Tutte"/"Matrimonio"/"Battesimo") con galleryByFolder; lightbox frecce/swipe; scadenza visibile.
+- 07 agenda: journal; contratti automatici nel giorno del servizio; "+ Nuovo appuntamento"; "Promemoria WhatsApp"; avviso "Data impegnata"; sync.
+- 08 ricevute: layout blocchetto + PDF 80mm; sync.
+- 09 email: mittente, modelli rapidi, invio app email/PEC o copia; sync.
+
+Ruoli/browser: ADMIN=Firefox, STUDIO=Chrome, CLIENTE=DuckDuckGo. Export basse: Lightroom JPEG qualita' 20, lato lungo 1600-2000px, nomi IDENTICI agli originali (per GRU, zip in gru/). Dati sicuri: salvataggio automatico globale via tema.js (profilo) + sync per chiave; REGOLA UNICA link benvenuto nei Preferiti su ogni PC; cambio PC: prima "Backup globale" + invio file, sull'altro PC Preferito → login → sync → eventuale "Ripristino globale"; token GitHub da reincollare sul portale admin di un PC nuovo; dopo commit attendere ~1 minuto e Ctrl+F5; rete diversa (casa/hotspot) funziona uguale.
+
+STATO: problemi del file "test 18.8.26" (1-7) e del "test n.11" (1-8) TUTTI risolti: telefono obbligatorio+Invia su WhatsApp admin, Modifica offerta, campi vuoti studio nuovo, password visibile, piano 4 voci senza date, salva archivio funzionante, archivio clienti persistente, quadratino accettazione accanto a "ACCETTAZIONE" nel PDF e nella ricevuta acconto, errore "Cannot read properties of undefined (reading 'nome')" eliminato con migratePreventivo e messaggi in italiano, Archivio Clienti senza totali con Apri/Modifica + PDF/Stampa + Elimina, archivio preventivi con Apri/Modifica + PDF/Stampa + Elimina + PDF elenco. Guida v14 consegnata. NON ancora modernizzate: negozio/ (06), assistenza.html (10), gru/ (vecchie con Netlify/licenza.js).
+
+REGOLE: consegna solo file completi; una modifica alla volta; guida passo-passo per utente non tecnico; backup consigliato in cartella ACS-BACKUP (acs-api.js, zip repo).
+
+COMPITO: riprendi esattamente da qui. Chiedi prima l'esito del test completo (elenco si/no). Poi sistema cio' che non va e, se richiesto, modernizza negozio/assistenza/gru allo stesso modello (worker+R2+tema.js, senza Netlify).
+</textarea>
+</div>
+
+<p style="text-align:center;color:#9b8f7d">Fine della guida v14 — AppCenter Studio Premium</p>
+</div>
+</body>
+</html>
