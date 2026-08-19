@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistenza Online - AppCenterStudio Premium</title>
+<style>
+:root{--sfondo:#fbfbfb;--carta:#fff;--testo:#111;--soft:#888;--bordo:#e0e0e0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 22px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 32px),
+    linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+  padding:20px;
+  color:var(--testo)
+}
+.container{max-width:900px;margin:0 auto}
+.header{text-align:center;margin-bottom:26px;padding:22px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
+.header h1{font-family:Georgia,serif;font-size:26px;margin-bottom:6px}
+.header p{color:var(--soft);font-size:14px}
+.card{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:14px;padding:22px;margin-bottom:20px;box-shadow:0 6px 18px rgba(15,20,40,.07)}
+.card h2{font-family:Georgia,serif;font-size:18px;margin-bottom:14px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;margin-bottom:6px;font-weight:600;font-size:13px}
+.form-group input,.form-group textarea{width:100%;padding:11px;border:1px solid var(--bordo);border-radius:10px;font-size:14px;background:#fff;font-family:inherit}
+.form-group input:focus,.form-group textarea:focus{outline:2px solid #111;border-color:transparent}
+.btn{display:inline-block;padding:12px 24px;background:#111;color:#fff;border:1px solid #111;border-radius:999px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center}
+.btn:hover{background:#333}
+.btn-sec{display:inline-block;padding:10px 20px;background:#fff;color:#111;border:1px solid #111;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px;text-decoration:none;text-align:center}
+.btn-sec:hover{background:#111;color:#fff}
+.btn-full{width:100%;margin-top:10px}
+.chat-box{background:rgba(249,249,249,0.8);backdrop-filter:blur(4px);border:1px solid var(--bordo);border-radius:12px;padding:16px;max-height:400px;overflow-y:auto;margin-bottom:16px}
+.msg{margin-bottom:14px;padding:12px;border-radius:10px;max-width:85%}
+.msg.studio{background:#fff;border:1px solid var(--bordo);margin-left:auto}
+.msg.admin{background:#111;color:#fff;margin-right:auto}
+.msg .time{font-size:11px;opacity:.7;margin-bottom:4px}
+.msg .text{font-size:14px;line-height:1.5;white-space:pre-wrap}
+.nota{background:#f5f5f5;border-left:4px solid #111;padding:12px;border-radius:8px;font-size:13px;line-height:1.6;margin-bottom:16px}
+.warn-big{background:#111;color:#fff;border:3px solid #111;border-radius:14px;padding:20px;margin-bottom:20px;font-size:14px;line-height:1.7;box-shadow:0 8px 25px rgba(0,0,0,0.2)}
+.warn-big h3{font-family:Georgia,serif;font-size:17px;margin-bottom:10px;color:#fff}
+.warn-big b{color:#fff}
+.warn-big .btn{background:#fff;color:#111;margin-top:12px}
+.warn-big .btn:hover{background:#ddd}
+.anydesk-box{background:#111;color:#fff;padding:20px;border-radius:12px;margin-top:20px}
+.anydesk-box h3{font-family:Georgia,serif;margin-bottom:12px}
+.anydesk-box p{font-size:13px;line-height:1.6;margin-bottom:12px}
+.anydesk-box input{background:#fff;color:#111;border:none;padding:10px;border-radius:8px;font-size:14px;width:100%;margin-bottom:10px}
+.anydesk-box .btn{background:#fff;color:#111}
+.anydesk-box .btn:hover{background:#ddd}
+.promemoria{background:#fff;color:#111;border:2px solid #fff;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.6;margin-bottom:14px;font-weight:600}
+.studio-list{list-style:none;padding:0}
+.studio-item{background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);border:1px solid var(--bordo);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 4px 14px rgba(15,20,40,.06)}
+.studio-item h3{font-family:Georgia,serif;font-size:15px;margin-bottom:8px}
+.studio-item .info{font-size:13px;color:var(--soft);margin-bottom:8px}
+.topbar{display:flex;gap:6px;justify-content:flex-end;margin-bottom:16px}
+.pill{background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.pill:hover{background:#111;color:#fff}
+.status{font-size:12px;color:var(--soft);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+<button class="pill" onclick="history.back()">← Indietro</button>
+<button class="pill" id="btnHome">Home</button>
+</div>
+<header class="header">
+<h1>Assistenza Online</h1>
+<p>Chat e supporto remoto tra studio e fornitore</p>
+</header>
+<div id="content"></div>
+</div>
+<script>
+/* ================= CONFIG ================= */
+const ADMIN_PASS='58879@Stella';
+const ANYDESK_DOWNLOAD='https://anydesk.com/it/downloads';
+const NETLIFY_API='https://api.netlify.com/api/v1';
+const param=n=>new URLSearchParams(location.search).get(n);
+const isAdminMode=param('admin')==='true'||sessionStorage.getItem('admin')==='1';
+const studioCode=param('studio')||sessionStorage.getItem('studio')||'';
+const $=id=>document.getElementById(id);
+
+document.getElementById('btnHome').onclick=()=>{location.href='benvenuto.html'+(studioCode?'?studio='+studioCode:'');};
+
+window.addEventListener('DOMContentLoaded',()=>{isAdminMode?renderAdmin():renderStudio();});
+
+/* ================= NETLIFY (file JSON chat) ================= */
+function netlifyCreds(){return{tok:localStorage.getItem('netlify_token'),site:localStorage.getItem('netlify_site')};}
+function netlifyOk(){const c=netlifyCreds();return !!(c.tok&&c.site);}
+async function siteUrl(){
+ let u=localStorage.getItem('netlify_url');if(u)return u;
+ const{tok,site}=netlifyCreds();if(!tok||!site)return null;
+ try{const r=await fetch(NETLIFY_API+'/sites/'+site,{headers:{Authorization:'Bearer '+tok}});if(!r.ok)return null;
+ const j=await r.json();u=j.ssl_url||j.url;if(u)localStorage.setItem('netlify_url',u);return u;}catch(e){return null;}
+}
+async function leggiFileNetlify(path){
+ const u=await siteUrl();if(!u)return null;
+ try{const r=await fetch(u+'/'+path+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return await r.json();}catch(e){return null;}
+}
+async function pubblicaFileNetlify(path,obj){
+ const{tok,site}=netlifyCreds();
+ if(!tok||!site)throw new Error('Netlify non e\' configurato: inserisci prima il codice ACS- del fornitore nell\'app Clienti & Foto.');
+ const resp=await fetch(NETLIFY_API+'/sites/'+site+'/files',{headers:{Authorization:'Bearer '+tok}});
+ const existing=resp.ok?await resp.json():[];
+ const files={};existing.forEach(f=>{files[f.path]=f;});
+ const content=JSON.stringify(obj,null,2);
+ const bin=new TextEncoder().encode(content);
+ const ab=bin.slice().buffer;
+ const hash=await crypto.subtle.digest('SHA-1',ab).then(h=>Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+ const p='/'+path;
+ files[p]={path:p,hash:hash};
+ const dep=await(await fetch(NETLIFY_API+'/sites/'+site+'/deploys',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({files:files})})).json();
+ if(dep.required&&dep.required.includes(p)){
+  await fetch(NETLIFY_API+'/sites/'+site+'/deploys/'+dep.id+'/files'+p,{method:'PUT',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/octet-stream'},body:ab});
+ }
+}
+
+/* ================= UTILS ================= */
+function esc(t){return t?t.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''}
+function fmtData(iso){try{return new Date(iso).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return'';}}
+function unisciMessaggi(dStudio,dAdmin){
+ const out=[];
+ (dStudio&&dStudio.messaggi||[]).forEach(m=>out.push({testo:m.testo,data:m.data,tipo:'studio'}));
+ (dAdmin&&dAdmin.messaggi||[]).forEach(m=>out.push({testo:m.testo,data:m.data,tipo:'admin'}));
+ out.sort((a,b)=>(a.data||'').localeCompare(b.data||''));
+ return out;
+}
+function disegnaChat(box,msgs,etichettaStudio){
+ if(!box)return;
+ if(!msgs||!msgs.length){box.innerHTML='<p style="color:var(--soft);font-size:13px;text-align:center">Nessun messaggio. Scrivi il primo qui sotto.</p>';return;}
+ box.innerHTML=msgs.map(m=>{
+  const da=m.tipo==='admin'?'Fornitore':(etichettaStudio||'Tu');
+  return '<div class="msg '+m.tipo+'"><div class="time">'+da+' · '+fmtData(m.data)+'</div><div class="text">'+esc(m.testo)+'</div></div>';
+ }).join('');
+ box.scrollTop=box.scrollHeight;
+}
+function avvisoCodiceMancante(){alert('PRIMA DI CONTINUARE: apri l\'app "Clienti & Foto", incolla nel campo "Codice ricevuto (per lo studio)" il codice ACS- che ti ha mandato il fornitore e premi "Collega". Poi torna qui e ricarica la pagina.');}
+
+/* ================= MODALITA' STUDIO ================= */
+function renderStudio(){
+ if(!studioCode){$('content').innerHTML='<div class="card"><h2>Accesso non valido</h2><p style="color:var(--soft);font-size:14px">Apri questa pagina dal pulsante "Assistenza Online" nella home del tuo studio.</p></div>';return;}
+ const ok=netlifyOk();
+ $('content').innerHTML=(ok?'':`
+ <div class="warn-big">
+  <h3>PASSO 1 OBBLIGATORIO - Inserisci il codice ricevuto dal fornitore</h3>
+  <p>Prima di usare la chat e AnyDesk devi collegare il tuo spazio foto. Apri l'app <b>Clienti &amp; Foto</b>: nel riquadro <b>"Collegamento rapido per lo studio"</b> incolla nel campo <b>"Codice ricevuto (per lo studio)"</b> il codice <b>ACS-</b> che ti ha mandato il fornitore, poi premi <b>"Collega"</b>. Infine torna qui e ricarica la pagina.</p>
+  <a class="btn" href="clienti-foto/?studio=${studioCode}">Apri Clienti &amp; Foto ora</a>
+ </div>`)+`
+ <div class="card">
+  <h2>Chat con il fornitore</h2>
+  <div class="nota"><b>Come funziona:</b> scrivi qui sotto e premi "Invia messaggio". Le risposte del fornitore compaiono da sole: la pagina si aggiorna ogni 10 secondi.</div>
+  <div class="chat-box" id="chatBox"></div>
+  <div class="form-group"><label>Tuo messaggio</label><textarea id="msgInput" rows="3" placeholder="Scrivi qui la tua domanda o richiesta di assistenza..."></textarea></div>
+  <button class="btn btn-full" onclick="inviaMessaggio()">Invia messaggio</button>
+  <div class="status" id="statusMsg"></div>
+ </div>
+ <div class="card">
+  <div class="anydesk-box">
+   <h3>Assistenza remota con AnyDesk</h3>
+   <div class="promemoria">PRIMA DI USARE ANYDESK: devi aver inserito il codice ACS- del fornitore nell'app "Clienti &amp; Foto" (campo "Codice ricevuto (per lo studio)" → "Collega"). Senza quel codice questa pagina non puo' inviare nulla.</div>
+   <p>Se il fornitore deve collegarsi al tuo computer: 1) scarica AnyDesk dal pulsante qui sotto; 2) apri AnyDesk; 3) copia il tuo codice (9 cifre) e incollalo nel campo; 4) premi "Invia codice al fornitore".</p>
+   <a class="btn" href="${ANYDESK_DOWNLOAD}" target="_blank" rel="noopener">Scarica AnyDesk</a>
+   <div style="margin-top:16px">
+    <label style="display:block;margin-bottom:6px;font-size:13px">Il tuo codice AnyDesk</label>
+    <input type="text" id="anydeskCode" placeholder="Es. 123 456 789" maxlength="15">
+    <button class="btn" onclick="inviaAnydesk()">Invia codice al fornitore</button>
+   </div>
+  </div>
+ </div>`;
+ aggiornaStudio();
+ setInterval(aggiornaStudio,10000);
+}
+async function aggiornaStudio(){
+ const dS=await leggiFileNetlify('assistenza/'+studioCode+'-studio.json');
+ const dA=await leggiFileNetlify('assistenza/'+studioCode+'-admin.json');
+ if(dS&&dS.anydesk){const el=$('anydeskCode');if(el&&!el.value)el.value=dS.anydesk;}
+ disegnaChat($('chatBox'),unisciMessaggi(dS,dA),'Tu');
+ const st=$('statusMsg');if(st)st.textContent='Ultimo aggiornamento: '+new Date().toLocaleTimeString('it-IT');
+}
+async function inviaMessaggio(){
+ if(!netlifyOk()){avvisoCodiceMancante();return;}
+ const txt=$('msgInput').value.trim();
+ if(!txt)return alert('Scrivi un messaggio prima di inviare.');
+ try{
+  const d=await leggiFileNetlify('assistenza/'+studioCode+'-studio.json')||{studio:studioCode,anydesk:'',messaggi:[]};
+  d.messaggi=d.messaggi||[];d.messaggi.push({testo:txt,data:new Date().toISOString()});
+  await pubblicaFileNetlify('assistenza/'+studioCode+'-studio.json',d);
+  $('msgInput').value='';
+  aggiornaStudio();
+ }catch(e){alert('Errore invio: '+e.message);}
+}
+async function inviaAnydesk(){
+ if(!netlifyOk()){avvisoCodiceMancante();return;}
+ const code=$('anydeskCode').value.trim();
+ if(!code||code.replace(/\D/g,'').length<9)return alert('Inserisci un codice AnyDesk valido (9 cifre).');
+ try{
+  const d=await leggiFileNetlify('assistenza/'+studioCode+'-studio.json')||{studio:studioCode,anydesk:'',messaggi:[]};
+  d.anydesk=code;
+  await pubblicaFileNetlify('assistenza/'+studioCode+'-studio.json',d);
+  alert('Codice AnyDesk inviato al fornitore.');
+ }catch(e){alert('Errore invio: '+e.message);}
+}
+
+/* ================= MODALITA' ADMIN ================= */
+function renderAdmin(){
+ if(sessionStorage.getItem('admin')!=='1'){
+  const p=prompt('Password amministratore:');
+  if(p!==ADMIN_PASS){alert('Password errata.');location.href='index.html';return;}
+  sessionStorage.setItem('admin','1');
+ }
+ $('content').innerHTML=`
+ <div class="card">
+  <h2>Pannello Assistenza - Fornitore</h2>
+  <div class="nota"><b>Come funziona:</b> qui vedi messaggi e codici AnyDesk degli studi. Clicca "Apri chat" per leggere e rispondere. Aggiornamento automatico ogni 10 secondi.</div>
+  <button class="btn-sec" onclick="caricaStudi()">Aggiorna elenco</button>
+  <ul class="studio-list" id="studiList" style="margin-top:16px"></ul>
+ </div>`;
+ caricaStudi();
+ setInterval(()=>{if(!$('modalChat'))caricaStudi();},10000);
+}
+async function caricaStudi(){
+ const list=$('studiList');if(!list)return;
+ try{
+  const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();
+  const studi=l.studi||[];
+  if(!studi.length){list.innerHTML='<li style="color:var(--soft)">Nessuno studio registrato.</li>';return;}
+  list.innerHTML='';
+  for(const s of studi){
+   const dS=await leggiFileNetlify('assistenza/'+s.codice+'-studio.json');
+   const nMsg=(dS&&dS.messaggi||[]).length;
+   const anydesk=dS&&dS.anydesk?dS.anydesk:'';
+   const li=document.createElement('li');
+   li.className='studio-item';
+   li.innerHTML='<h3>'+esc(s.nome)+' <span style="font-family:monospace;font-size:12px">('+s.codice+')</span></h3>'
+    +'<div class="info">Scadenza: '+s.scadenza+' · '+(s.attivo?'Attivo':'Sospeso')+' · Messaggi studio: '+nMsg+(anydesk?' · AnyDesk: <b style="font-family:monospace">'+esc(anydesk)+'</b>':'')+'</div>'
+    +'<button class="btn-sec" onclick="apriChat(\''+s.codice+'\',\''+esc(s.nome).replace(/'/g,'')+'\')">Apri chat</button>';
+   list.appendChild(li);
+  }
+ }catch(e){list.innerHTML='<li style="color:#a33">Errore: '+esc(e.message)+'</li>';}
+}
+let modalStudio=null;
+function apriChat(codice,nome){
+ modalStudio=codice;
+ const old=$('modalChat');if(old)old.remove();
+ const modal=document.createElement('div');
+ modal.id='modalChat';
+ modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+ modal.innerHTML='<div style="background:#fff;border-radius:14px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;padding:24px">'
+  +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-family:Georgia,serif;font-size:20px">Chat con '+esc(nome)+'</h2><button class="btn-sec" onclick="chiudiChat()">Chiudi</button></div>'
+  +'<div id="anydeskAdminBox" style="margin-bottom:14px"></div>'
+  +'<div class="chat-box" id="chatBoxAdmin"></div>'
+  +'<div class="form-group"><label>La tua risposta</label><textarea id="replyInput" rows="3" placeholder="Scrivi la risposta allo studio..."></textarea></div>'
+  +'<button class="btn btn-full" onclick="inviaRisposta()">Invia risposta</button>'
+  +'</div>';
+ document.body.appendChild(modal);
+ aggiornaAdmin();
+ setInterval(()=>{if($('modalChat'))aggiornaAdmin();},10000);
+}
+function chiudiChat(){const m=$('modalChat');if(m)m.remove();modalStudio=null;caricaStudi();}
+async function aggiornaAdmin(){
+ if(!modalStudio)return;
+ const dS=await leggiFileNetlify('assistenza/'+modalStudio+'-studio.json');
+ const dA=await leggiFileNetlify('assistenza/'+modalStudio+'-admin.json');
+ const boxA=$('anydeskAdminBox');
+ if(boxA){
+  if(dS&&dS.anydesk){
+   boxA.innerHTML='<div class="nota" style="margin-bottom:0"><b>Codice AnyDesk dello studio:</b> <span style="font-family:monospace;font-size:16px">'+esc(dS.anydesk)+'</span><br><button class="btn-sec" style="margin-top:8px" onclick="copiaTesto(\''+esc(dS.anydesk).replace(/'/g,'')+'\')">Copia codice</button><a class="btn-sec" style="margin-top:8px" href="'+ANYDESK_DOWNLOAD+'" target="_blank" rel="noopener">Scarica AnyDesk</a><br><span style="font-size:12px;color:var(--soft)">Apri AnyDesk sul tuo PC e incolla il codice per collegarti al computer dello studio.</span></div>';
+  }else{
+   boxA.innerHTML='<div class="nota" style="margin-bottom:0">Lo studio non ha ancora inviato il codice AnyDesk.</div>';
+  }
+ }
+ disegnaChat($('chatBoxAdmin'),unisciMessaggi(dS,dA),modalStudio);
+}
+async function inviaRisposta(){
+ const txt=$('replyInput').value.trim();
+ if(!txt)return alert('Scrivi una risposta prima di inviare.');
+ try{
+  const d=await leggiFileNetlify('assistenza/'+modalStudio+'-admin.json')||{studio:modalStudio,messaggi:[]};
+  d.messaggi=d.messaggi||[];d.messaggi.push({testo:txt,data:new Date().toISOString()});
+  await pubblicaFileNetlify('assistenza/'+modalStudio+'-admin.json',d);
+  $('replyInput').value='';
+  aggiornaAdmin();
+ }catch(e){alert('Errore invio: '+e.message);}
+}
+function copiaTesto(t){navigator.clipboard.writeText(t).then(()=>alert('Copiato: '+t));}
+</script>
+</body>
+</html>
