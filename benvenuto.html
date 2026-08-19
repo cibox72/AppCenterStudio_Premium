@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppCenter Studio Premium - Benvenuto</title>
+<script src="tema.js"></script>
+<style>
+:root{--nero:#0e0e0e;--grigio:#6b6b6b;--bordo:#e6e6e6;--carta:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);background-attachment:fixed;color:var(--nero);line-height:1.6}
+.topbar{display:flex;gap:8px;padding:12px 20px;background:rgba(255,255,255,0.85);border-bottom:1px solid var(--bordo);position:sticky;top:0;z-index:100;flex-wrap:wrap;align-items:center}
+.topbar button{padding:7px 16px;background:var(--carta);border:1px solid #bbb;cursor:pointer;font-size:12px;border-radius:999px;font-family:inherit}
+.topbar button:hover{background:var(--nero);color:#fff}
+.topbar .brand{margin-left:auto;font-family:Georgia,serif;font-size:12px;letter-spacing:.18em;color:var(--grigio);text-transform:uppercase}
+.hero{background:var(--nero);color:#fff;text-align:center;padding:70px 20px 60px}
+.hero h1{font-family:Georgia,serif;font-weight:400;font-size:42px}
+.hero h1 em{font-style:italic}
+.hero p{color:#bdbdbd;font-size:15px}
+.hero .badges{margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.hbadge{display:inline-block;padding:7px 18px;border:1px solid #3d3d3d;border-radius:999px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#d6d6d6}
+.hbadge.ok{background:#fff;color:var(--nero);border-color:#fff;font-weight:700}
+.hbadge.ko{background:#7a1010;border-color:#7a1010;color:#fff;font-weight:700}
+.container{max-width:1040px;margin:0 auto;padding:40px 20px 70px}
+.step-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 18px}
+.step-head .n{font-family:Georgia,serif;font-size:15px;color:#fff;background:var(--nero);width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
+.step-head h2{font-family:Georgia,serif;font-size:24px;font-weight:400}
+.card{background:rgba(255,255,255,0.92);border:1px solid var(--bordo);border-radius:16px;padding:28px;margin-bottom:14px}
+.card .hint{font-size:13px;color:var(--grigio);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:block;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--bordo);margin-top:4px;border-radius:10px;font-family:inherit;font-size:14px;background:#fff}
+input:focus,textarea:focus{outline:2px solid var(--nero)}
+.btn{display:inline-block;padding:12px 26px;background:var(--nero);color:#fff;border:none;cursor:pointer;font-size:13px;border-radius:999px;margin-top:16px;font-family:inherit;text-transform:uppercase;font-weight:600}
+.btn:hover{background:#333}
+.btn.ghost{background:var(--carta);color:var(--nero);border:1px solid var(--nero)}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.app{background:rgba(255,255,255,0.92);border:1px solid var(--bordo);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.app h3{font-family:Georgia,serif;font-size:19px;font-weight:400}
+.app p{font-size:13px;color:var(--grigio);flex:1}
+.app a{align-self:flex-start;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--nero);text-decoration:none;border-bottom:1px solid var(--nero)}
+.offerta{background:var(--nero);color:#fff;border-radius:16px;padding:30px;margin-bottom:20px}
+.offerta .prezzo{font-family:Georgia,serif;font-size:34px;margin:14px 0}
+footer{border-top:1px solid var(--bordo);padding:26px 20px;text-align:center;color:#9a9a9a;font-size:12px}
+.hidden{display:none}
+.passwrap{display:flex;gap:8px;align-items:center}
+.passwrap input{flex:1}
+.passwrap button{margin-top:4px}
+.lg-err{color:#a33;font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button onclick="history.back()">Indietro</button>
+  <button onclick="backupGlobale()">Backup globale</button>
+  <button onclick="ripristinoGlobale()">Ripristino globale</button>
+  <span class="brand">AppCenter Studio Premium</span>
+</div>
+<section class="hero">
+  <h1>Benvenuto, <em id="heroNome">Studio</em></h1>
+  <p id="heroSub">Il tuo spazio di lavoro professionale.</p>
+  <div class="badges" id="heroBadges"></div>
+</section>
+<div class="container">
+  <div class="card hidden" id="loginCard">
+    <h2 style="font-family:Georgia,serif;font-size:22px">Accesso studio</h2>
+    <p class="hint">Inserisci utente e password forniti dal tuo fornitore.</p>
+    <label>Utente</label><input id="lgUser">
+    <label>Password</label>
+    <div class="passwrap"><input id="lgPass" type="password"><button class="btn ghost" onclick="togglePass()" id="passBtn">Mostra</button></div>
+    <button class="btn" onclick="loginStudio()">Entra</button>
+    <div class="lg-err" id="lgErr"></div>
+  </div>
+  <div class="card hidden" id="collegaCard">
+    <p class="hint">Incolla il codice ricevuto dal fornitore e premi Collega.</p>
+    <label>Codice studio</label><input id="acsInput" placeholder="st-...">
+    <button class="btn" onclick="collega()">Collega</button>
+  </div>
+  <div class="offerta hidden" id="offertaCard"></div>
+  <div id="areaRiservata" class="hidden">
+    <div class="step-head"><span class="n">1</span><h2>Dati di contatto</h2></div>
+    <div class="card">
+      <div class="grid">
+        <div><label>Referente</label><input id="cReferente"></div>
+        <div><label>WhatsApp</label><input id="cWhatsapp" placeholder="39..."></div>
+        <div><label>Email</label><input id="cEmail"></div>
+        <div><label>Citta'</label><input id="cCitta"></div>
+      </div>
+      <label>Note</label><textarea id="cNote" rows="2"></textarea>
+      <button class="btn" onclick="inviaDatiFornitore()">Invia i dati al fornitore</button>
+    </div>
+    <div class="step-head"><span class="n">2</span><h2>Identita' dello studio</h2></div>
+    <div class="card">
+      <div class="grid">
+        <div><label>Nome Studio</label><input id="sNome"></div>
+        <div><label>P.IVA</label><input id="sPiva"></div>
+        <div><label>Indirizzo</label><input id="sIndirizzo"></div>
+        <div><label>Telefono</label><input id="sTelefono"></div>
+        <div><label>Email</label><input id="sEmail"></div>
+        <div><label>Note fisse su PDF</label><input id="sNote"></div>
+      </div>
+      <label>Logo dello studio</label><input type="file" id="sLogo" accept="image/*">
+      <div id="logoPrev"></div>
+      <button class="btn" onclick="salvaEPubblicaIdent()">Salva e invia al fornitore</button>
+    </div>
+    <div class="step-head"><span class="n">3</span><h2>Le tue applicazioni</h2></div>
+    <div class="apps" id="appsGrid"></div>
+  </div>
+</div>
+<footer>AppCenter Studio Premium</footer>
+<script>
+const NETLIFY_BASE='https://dashing-florentine-9b905e.netlify.app';
+const FORNITORE_WA='393447507656';
+const FORNITORE_PAYPAL='appcenterstudiopremium@gmail.com';
+const param=n=>new URLSearchParams(location.search).get(n);
+let studioCode=param('studio')||'';
+if(!studioCode)studioCode=sessionStorage.getItem('studio')||'';
+if(!studioCode)studioCode=localStorage.getItem('studioCodeSalvato')||'';
+/* CAMPI VUOTI se i dati salvati appartengono a un ALTRO studio */
+let studioIdent=(()=>{try{const d=JSON.parse(localStorage.getItem('studioIdent')||'{}');return (d&&(!d.studioCode||d.studioCode===studioCode))?d:{};}catch(e){return {};}})();
+let contatti=(()=>{try{const d=JSON.parse(localStorage.getItem('studioContatti')||'{}');return (d&&(!d.studioCode||d.studioCode===studioCode))?d:{};}catch(e){return {};}})();
+let licenza=null;
+function fmtData(d){if(!d)return '';const p=String(d).split('-');if(p.length!==3)return d;return p[2]+'/'+p[1]+'/'+p[0].slice(2);}
+function collega(){const code=document.getElementById('acsInput').value.trim();if(!code)return alert('Incolla il codice.');localStorage.setItem('studioCodeSalvato',code);sessionStorage.setItem('studio',code);location.href='benvenuto.html?studio='+encodeURIComponent(code);}
+function togglePass(){const i=document.getElementById('lgPass');const b=document.getElementById('passBtn');if(i.type==='password'){i.type='text';b.textContent='Nascondi';}else{i.type='password';b.textContent='Mostra';}}
+function loginStudio(){
+ if(!licenza)return;
+ const u=document.getElementById('lgUser').value.trim();const p=document.getElementById('lgPass').value;
+ if(u===licenza.utente&&p===licenza.password){sessionStorage.setItem('acs_logged_'+studioCode,'1');location.reload();}
+ else document.getElementById('lgErr').textContent='Utente o password errati.';
+}
+async function init(){await renderHero();if(!document.getElementById('loginCard').classList.contains('hidden'))return;renderOfferta();loadContatti();loadIdent();renderApps();}
+async function renderHero(){
+ const badges=document.getElementById('heroBadges');
+ if(!studioCode){document.getElementById('heroNome').textContent='Studio';badges.innerHTML='<span class="hbadge ko">Nessun codice studio</span>';document.getElementById('collegaCard').classList.remove('hidden');return;}
+ try{const l=await(await fetch('licenses.json?t='+Date.now(),{cache:'no-store'})).json();licenza=(l.studi||[]).find(s=>s.codice===studioCode);}catch(e){}
+ const nome=(licenza&&licenza.nome)?licenza.nome:'';
+ document.getElementById('heroNome').textContent=nome||'Studio';
+ const oggi=new Date().toISOString().slice(0,10);
+ if(!licenza){badges.innerHTML='<span class="hbadge ko">Codice non riconosciuto</span>';document.getElementById('collegaCard').classList.remove('hidden');return;}
+ if(!licenza.attivo){badges.innerHTML='<span class="hbadge ko">Accesso spento dal fornitore</span>';return;}
+ if(licenza.scadenza<oggi){badges.innerHTML='<span class="hbadge ko">Prova scaduta</span>';return;}
+ if(licenza.utente&&licenza.password&&sessionStorage.getItem('acs_logged_'+studioCode)!=='1'){document.getElementById('loginCard').classList.remove('hidden');badges.innerHTML='<span class="hbadge">'+studioCode+'</span>';return;}
+ badges.innerHTML='<span class="hbadge ok">Licenza attiva</span><span class="hbadge">'+studioCode+'</span><span class="hbadge">Fino al '+fmtData(licenza.scadenza)+'</span>';
+ document.getElementById('areaRiservata').classList.remove('hidden');
+ document.getElementById('collegaCard').classList.add('hidden');
+}
+async function renderOfferta(){
+ if(!studioCode)return;let off=null;
+ try{const o=await(await fetch('offers.json?t='+Date.now(),{cache:'no-store'})).json();off=(o.offerte||[]).find(x=>x.studio===studioCode&&x.attiva);}catch(e){}
+ if(!off)return;
+ const card=document.getElementById('offertaCard');card.classList.remove('hidden');
+ card.innerHTML='<h2 style="font-family:Georgia,serif">Un\'offerta riservata al tuo studio</h2><p>'+(off.descrizione||'')+'</p><div class="prezzo">&euro; '+off.prezzo+' <small>per '+off.mesi+' mesi</small></div><a class="btn" style="background:#fff;color:#000;text-decoration:none" target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business='+encodeURIComponent(FORNITORE_PAYPAL)+'&currency_code=EUR&amount='+off.prezzo+'&item_name=Offerta+'+encodeURIComponent(studioCode)+'">Paga ora con PayPal</a>';
+}
+function loadContatti(){document.getElementById('cReferente').value=contatti.referente||'';document.getElementById('cWhatsapp').value=contatti.whatsapp||'';document.getElementById('cEmail').value=contatti.email||'';document.getElementById('cCitta').value=contatti.citta||'';document.getElementById('cNote').value=contatti.note||'';}
+function inviaDatiFornitore(){contatti={studioCode:studioCode,referente:document.getElementById('cReferente').value.trim(),whatsapp:document.getElementById('cWhatsapp').value.trim(),email:document.getElementById('cEmail').value.trim(),citta:document.getElementById('cCitta').value.trim(),note:document.getElementById('cNote').value.trim()};localStorage.setItem('studioContatti',JSON.stringify(contatti));const testo='DATI STUDIO '+studioCode+'\nReferente: '+contatti.referente+'\nWhatsApp: '+contatti.whatsapp;window.open('https://wa.me/'+FORNITORE_WA+'?text='+encodeURIComponent(testo),'_blank');}
+function loadIdent(){document.getElementById('sNome').value=studioIdent.nome||'';document.getElementById('sPiva').value=studioIdent.piva||'';document.getElementById('sIndirizzo').value=studioIdent.indirizzo||'';document.getElementById('sTelefono').value=studioIdent.telefono||'';document.getElementById('sEmail').value=studioIdent.email||'';document.getElementById('sNote').value=studioIdent.note||'';renderLogoPrev();}
+document.getElementById('sLogo').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{studioIdent.logoData=r.result;renderLogoPrev();};r.readAsDataURL(f);});
+function renderLogoPrev(){document.getElementById('logoPrev').innerHTML=studioIdent.logoData?'<img style="max-height:70px" src="'+studioIdent.logoData+'">':'';}
+function salvaEPubblicaIdent(){studioIdent={studioCode:studioCode,nome:document.getElementById('sNome').value.trim(),piva:document.getElementById('sPiva').value.trim(),indirizzo:document.getElementById('sIndirizzo').value.trim(),telefono:document.getElementById('sTelefono').value.trim(),email:document.getElementById('sEmail').value.trim(),note:document.getElementById('sNote').value.trim(),logoData:studioIdent.logoData||''};localStorage.setItem('studioIdent',JSON.stringify(studioIdent));alert('Dati salvati in questo browser.');}
+function renderApps(){
+ if(!studioCode||!licenza||!licenza.attivo)return;
+ const q='?studio='+encodeURIComponent(studioCode);
+ const apps=[{n:'01',t:'Preventivi & Contratti',d:'Preventivi, contratti, ricevute.',u:'preventivi-contratti/'+q},{n:'02',t:'Workflow',d:'Stato di avanzamento servizi.',u:'workflow/'+q},{n:'03',t:'Clienti & Foto',d:'Archivio clienti e foto.',u:'clienti-foto/'+q},{n:'04',t:'Selezione per Album',d:'Selezione studio o da casa.',u:'selezione-album/'+q},{n:'05',t:'Gallery',d:'Galleria clienti.',u:'gallery/'+q},{n:'06',t:'Negozio',d:'Ordini e pagamenti.',u:'negozio/'+q},{n:'07',t:'Agenda',d:'Calendario impegni.',u:'agenda/'+q},{n:'08',t:'Ricevute',d:'Ricevute con PDF.',u:'ricevute/'+q},{n:'09',t:'Email',d:'Email e PEC.',u:'email/'+q}];
+ document.getElementById('appsGrid').innerHTML=apps.map(a=>`<div class="app"><h3>${a.n} ${a.t}</h3><p>${a.d}</p><a href="${a.u}">Apri</a></div>`).join('');
+}
+function backupGlobale(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);d[k]=localStorage.getItem(k);}const blob=new Blob([JSON.stringify({app:'AppCenterStudioPremium',data:d},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='AppCenterStudio_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function ripristinoGlobale(){const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);const d=obj.data||obj;if(!confirm('Ripristinare?'))return;Object.keys(d).forEach(k=>localStorage.setItem(k,d[k]));location.reload();}catch(err){alert('Errore: '+err.message);}};r.readAsText(f);};input.click();}
+init();
+</script>
+</body>
+</html>
