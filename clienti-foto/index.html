@@ -29,6 +29,7 @@ h1.big{font-family:Georgia,serif;font-size:54px;font-weight:400;letter-spacing:.
 .btn.secondary{background:#fff;color:var(--taupe-scuro);border:1px solid var(--taupe)}
 .btn.danger{background:#8c2f2f;color:#fff;border:none}
 .btn.danger.small{font-size:11px;padding:6px 12px}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
 input,select{width:100%;padding:10px;border:1px solid var(--bordo);margin:5px 0;border-radius:10px;background:#fff;color:var(--testo)}
 label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase}
 .hint{font-size:12px;color:var(--soft)}
@@ -151,7 +152,6 @@ async function caricaFoto(){
   const status=document.getElementById('uploadStatus');
   status.textContent='Preparazione di '+files.length+' file...';
 
-  // Calcola la cartella PER OGNI FILE singolarmente in base al suo percorso
   const meta = files.map(f => {
     const parts = f.webkitRelativePath.split('/');
     const folder = parts.length > 1 ? parts[0] : 'varie';
@@ -182,10 +182,10 @@ async function caricaFoto(){
 
 async function refreshManifest(codice){
   try{
+    // FORZIAMO CACHE-BUSTING con timestamp
     const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
     let man=await r.json();
     
-    // FALLBACK: Se il worker non restituisce basseByFolder, lo costruiamo noi dal percorso dei file!
     if(!man.basseByFolder && man.basse && man.basse.length>0){
       man.basseByFolder={};
       man.basse.forEach(filePath=>{
@@ -199,51 +199,104 @@ async function refreshManifest(codice){
     }
     manifesti[codice]=man;
   }catch(e){
+    console.error('Errore refresh manifest:',e);
     manifesti[codice]={};
   }
 }
 
 async function deleteFile(codice,path){
   try{
-    await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,file:path})});
+    const response = await fetch(WORKER+'/delete-file',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({studio:studioCodice,cliente:codice,file:path})
+    });
+    const result = await response.json();
+    if(!response.ok || result.error){
+      throw new Error(result.error || 'Errore eliminazione: '+response.status);
+    }
+    return result;
   }catch(e){
-    alert('Errore: '+e.message);
+    console.error('Errore deleteFile:',e);
+    throw e;
   }
 }
 
 async function eliminaCartella(codice,folderName){
   if(!confirm('Eliminare la cartella "'+folderName+'" e tutte le sue foto?'))return;
+  
   const man=manifesti[codice]||{};
   const files=(man.basseByFolder&&man.basseByFolder[folderName])?man.basseByFolder[folderName]:[];
   if(!files.length)return alert('Cartella vuota o non trovata.');
   
-  for(const relativePath of files){
-    const workerPath = relativePath.startsWith('basse/') ? relativePath : 'basse/' + relativePath;
-    await deleteFile(codice, workerPath);
+  // DISABILITIAMO IL PULSANTE durante l'eliminazione
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Eliminazione in corso...';
+  
+  try{
+    // USIAMO Promise.all PER ELIMINARE TUTTE LE FOTO IN PARALLELO
+    const deletePromises = files.map(relativePath => {
+      const workerPath = relativePath.startsWith('basse/') ? relativePath : 'basse/' + relativePath;
+      return deleteFile(codice, workerPath);
+    });
+    
+    await Promise.all(deletePromises);
+    
+    // FORZIAMO REFRESH del manifest con cache-busting
+    await refreshManifest(codice);
+    render();
+    
+    // VERIFICHIAMO che sia stato eliminato tutto
+    const newMan = manifesti[codice]||{};
+    const remainingFiles = (newMan.basseByFolder&&newMan.basseByFolder[folderName])?newMan.basseByFolder[folderName].length:0;
+    
+    if(remainingFiles === 0){
+      alert('Cartella "'+folderName+'" eliminata con successo.');
+    }else{
+      alert('Attenzione: alcune foto potrebbero essere ancora presenti. Ricarica la pagina.');
+    }
+  }catch(e){
+    alert('Errore durante l\'eliminazione: '+e.message);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalText;
   }
-  await refreshManifest(codice);
-  render();
-  alert('Cartella "'+folderName+'" eliminata.');
 }
 
 async function eliminaFoto(codice,relativePath){
   if(!confirm('Eliminare la foto "'+relativePath+'"?'))return;
   const workerPath = relativePath.startsWith('basse/') ? relativePath : 'basse/' + relativePath;
-  await deleteFile(codice, workerPath);
-  await refreshManifest(codice);
-  render();
+  try{
+    await deleteFile(codice, workerPath);
+    await refreshManifest(codice);
+    render();
+  }catch(e){
+    alert('Errore: '+e.message);
+  }
 }
 
 async function svuotaMagazzino(codice){
   if(!confirm('Svuotare TUTTO il magazzino di '+codice+'?'))return;
   if(!confirm('CONFERMA DEFINITIVA?'))return;
+  
   const man=manifesti[codice]||{};
   const files=man.basse||[];
   if(!files.length)return alert('Gia\' vuoto.');
-  for(const f of files) await deleteFile(codice, f.startsWith('basse/')?f:'basse/'+f);
-  await refreshManifest(codice);
-  render();
-  alert('Magazzino svuotato.');
+  
+  try{
+    const deletePromises = files.map(f => {
+      const path = f.startsWith('basse/') ? f : 'basse/'+f;
+      return deleteFile(codice, path);
+    });
+    await Promise.all(deletePromises);
+    await refreshManifest(codice);
+    render();
+    alert('Magazzino svuotato.');
+  }catch(e){
+    alert('Errore: '+e.message);
+  }
 }
 
 function apriSelezione(codice){
@@ -296,7 +349,6 @@ function render(){
     if(folderNames.length){
       foldersHtml=folderNames.map(folder=>{
         const files=basseByFolder[folder];
-        // Escape sicuro per gli apostrofi nei nomi delle cartelle e dei file
         const safeFolder = folder.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         const filesHtml = files.map(f => {
           const safeFile = f.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
@@ -351,7 +403,6 @@ function ripristinoGlobale(e){
   e.target.value='';
 }
 
-/* AVVIO: PRIMA ripristina i clienti dal cloud, POI mostra l'archivio */
 (async()=>{
   await loadCloud();
   for(const c of clienti) await refreshManifest(c.codice);
