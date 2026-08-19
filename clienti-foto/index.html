@@ -58,27 +58,39 @@ label{display:block;margin-top:10px;font-size:11px;font-weight:700;color:var(--s
   <div class="blob b1"></div><div class="blob b2"></div>
   <div class="hero-inner">
     <h1 class="big">Clienti & Foto</h1>
-    <div class="sub">Archivio clienti e caricamento foto</div>
+    <div class="sub">Gestione servizi unici per evitare omonimie</div>
   </div>
 </div>
 <div class="container">
   <div class="card">
-    <h2>Nuovo cliente</h2>
-    <label>Nome</label><input id="newNome" placeholder="Es. Mario">
-    <label>Cognome</label><input id="newCognome" placeholder="Es. Rossi">
-    <button class="btn" onclick="aggiungiCliente()">+ Aggiungi cliente</button>
+    <h2>Nuovo Caricamento Servizio</h2>
+    <p class="hint">Crea un codice servizio unico per ogni evento (es. Mario Rossi Matrimonio 2024).</p>
+    <label>Nome Cliente</label><input id="newCliente" placeholder="Es. Mario Rossi">
+    <label>Tipo Servizio</label>
+    <select id="newTipo">
+      <option value="matrimonio">Matrimonio</option>
+      <option value="battesimo">Battesimo</option>
+      <option value="comunione">Comunione</option>
+      <option value="reportage">Reportage</option>
+      <option value="altro">Altro</option>
+    </select>
+    <label>Anno</label><input id="newAnno" type="number" value="2024" min="2000" max="2099">
+    <button class="btn" onclick="creaServizio()">+ Crea Codice Servizio</button>
+    <div id="codiceGenerato" class="hint" style="margin-top:10px;font-weight:bold;color:var(--taupe-scuro)"></div>
   </div>
+  
   <div class="card">
-    <h2>Carica foto per selezione</h2>
-    <p class="hint">Seleziona l'intera cartella. Il sistema organizzerà le foto automaticamente.</p>
-    <label>Cliente</label><select id="selCliente"></select>
-    <label>Cartella foto</label><input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*">
+    <h2>Carica Foto per Selezione</h2>
+    <p class="hint">Seleziona tutte le cartelle (Casa Sposa, Chiesa, Locale...). Il link sarà unico per questo servizio.</p>
+    <label>Servizio Attivo</label><select id="selServizio"></select>
+    <label>Cartelle Foto</label><input type="file" id="fileInput" webkitdirectory directory multiple accept="image/*">
     <button class="btn" onclick="caricaFoto()">Carica nel magazzino</button>
     <div id="uploadStatus" class="hint"></div>
   </div>
+  
   <div class="card">
-    <h2>Archivio clienti</h2>
-    <p class="hint">Le foto sono organizzate per cartella. Elimina singole foto o intere cartelle se necessario.</p>
+    <h2>Archivio Servizi</h2>
+    <p class="hint">Ogni servizio ha il proprio spazio. Le foto scartate si eliminano automaticamente dopo la selezione.</p>
     <div id="archivioBox"></div>
   </div>
 </div>
@@ -87,16 +99,19 @@ const WORKER='https://acs-api.mairaluigi.workers.dev';
 let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
 if(studioCodice)sessionStorage.setItem('studio',studioCodice);
 function goHome(){location.href='../benvenuto.html'+(studioCodice?'?studio='+studioCodice:'');}
-let clienti=JSON.parse(localStorage.getItem('appcenter_clienti')||'[]');
+
+// Archivio locale dei servizi creati
+let servizi=JSON.parse(localStorage.getItem('appcenter_servizi')||'[]');
 let manifesti={};
-function save(){localStorage.setItem('appcenter_clienti',JSON.stringify(clienti));syncCloud();}
+
+function saveServizi(){localStorage.setItem('appcenter_servizi',JSON.stringify(servizi));syncCloud();}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 
 async function syncCloud(){
   if(!studioCodice)return;
   const box=document.getElementById('syncStatus');
   try{
-    const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente','__db__');fd.append('chiave','clienti');fd.append('data',JSON.stringify(clienti));
+    const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente','__db__');fd.append('chiave','servizi');fd.append('data',JSON.stringify(servizi));
     const r=await fetch(WORKER+'/db-save',{method:'POST',body:fd});const j=await r.json();
     if(j.ok){box.textContent='Sync cloud: ✓';box.classList.remove('ko');}else{box.textContent='Sync cloud: errore';box.classList.add('ko');}
   }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
@@ -106,34 +121,59 @@ async function loadCloud(){
   if(!studioCodice)return;
   const box=document.getElementById('syncStatus');box.textContent='Sync cloud: carico...';
   try{
-    const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=clienti&t='+Date.now(),{cache:'no-store'});
+    const r=await fetch(WORKER+'/db-load?studio='+encodeURIComponent(studioCodice)+'&chiave=servizi&t='+Date.now(),{cache:'no-store'});
     const cloud=await r.json();
     if(Array.isArray(cloud)&&cloud.length){
-      const map={};clienti.forEach(c=>{map[c.codice]=c;});let add=0;
-      cloud.forEach(c=>{if(!c.codice)c.codice=uid();if(!map[c.codice]){map[c.codice]=c;add++;}});
-      clienti=Object.values(map);localStorage.setItem('appcenter_clienti',JSON.stringify(clienti));
-      box.textContent='Sync: '+add+' clienti ripristinati';
+      const map={};servizi.forEach(s=>{map[s.codice]=s;});let add=0;
+      cloud.forEach(s=>{if(!map[s.codice]){map[s.codice]=s;add++;}});
+      servizi=Object.values(map);localStorage.setItem('appcenter_servizi',JSON.stringify(servizi));
+      box.textContent='Sync: '+add+' servizi ripristinati';
     }else{box.textContent='Sync cloud: ✓';box.classList.remove('ko');}
   }catch(e){box.textContent='Sync cloud: offline';box.classList.add('ko');}
 }
 
-function aggiungiCliente(){
-  const nome=document.getElementById('newNome').value.trim();const cognome=document.getElementById('newCognome').value.trim();
-  if(!nome||!cognome)return alert('Nome e cognome obbligatori.');
-  const codice=nome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+cognome.toLowerCase().replace(/[^a-z0-9]/g,'')+'-'+String(clienti.length+1).padStart(3,'0');
-  clienti.push({codice,nome,cognome,creato:new Date().toISOString()});save();
-  document.getElementById('newNome').value='';document.getElementById('newCognome').value='';render();
-  alert('Cliente aggiunto: '+codice);
+function creaServizio(){
+  const nome=document.getElementById('newCliente').value.trim();
+  const tipo=document.getElementById('newTipo').value;
+  const anno=document.getElementById('newAnno').value;
+  if(!nome) return alert('Inserisci il nome del cliente.');
+  
+  // Genera codice univoco: nome-tipo-anno
+  const slug=nome.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-');
+  const codice=slug+'-'+tipo+'-'+anno;
+  
+  // Evita duplicati
+  if(servizi.find(s=>s.codice===codice)) return alert('Questo codice servizio esiste già! Usa un anno diverso o verifica il nome.');
+  
+  const nuovo={codice,cliente:nome,tipo,anno,creato:new Date().toISOString()};
+  servizi.push(nuovo);saveServizi();
+  
+  document.getElementById('codiceGenerato').textContent='Codice creato: '+codice;
+  document.getElementById('newCliente').value='';
+  aggiornaSelect();render();
 }
 
-function aggiornaSelect(){document.getElementById('selCliente').innerHTML=clienti.map(c=>'<option value="'+c.codice+'">'+c.nome+' '+c.cognome+' ('+c.codice+')</option>').join('');}
+function aggiornaSelect(){
+  document.getElementById('selServizio').innerHTML='<option value="">-- Seleziona Servizio --</option>'+
+    servizi.map(s=>'<option value="'+s.codice+'">'+s.cliente+' ('+s.tipo+' '+s.anno+') - '+s.codice+'</option>').join('');
+}
 
 async function caricaFoto(){
-  const codice=document.getElementById('selCliente').value;if(!codice)return alert('Seleziona un cliente.');
-  const input=document.getElementById('fileInput');const files=[...input.files];if(!files.length)return alert('Seleziona una cartella.');
+  const codice=document.getElementById('selServizio').value;if(!codice)return alert('Seleziona un servizio.');
+  const input=document.getElementById('fileInput');const files=[...input.files];if(!files.length)return alert('Seleziona le cartelle.');
   const status=document.getElementById('uploadStatus');status.textContent='Preparazione di '+files.length+' file...';
+  
   const meta=files.map(f=>{const parts=f.webkitRelativePath.split('/');return{name:f.name,folder:parts.length>1?parts[0]:'varie',path:f.webkitRelativePath};});
-  const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);files.forEach(f=>fd.append('file',f));fd.append('meta',JSON.stringify(meta));
+  const svc=servizi.find(s=>s.codice===codice);
+  
+  const fd=new FormData();
+  fd.append('studio',studioCodice);
+  fd.append('servizio',codice); // USIAMO SERVIZIO INVECE DI CLIENTE
+  fd.append('cliente_nome',svc?svc.cliente:'');
+  fd.append('tipo_servizio',svc?svc.tipo:'');
+  files.forEach(f=>fd.append('file',f));
+  fd.append('meta',JSON.stringify(meta));
+  
   status.textContent='Caricamento in corso...';
   try{
     const r=await fetch(WORKER+'/upload',{method:'POST',body:fd});const j=await r.json();
@@ -147,7 +187,8 @@ async function caricaFoto(){
 async function refreshManifest(codice,forceReload=false){
   try{
     if(forceReload||!manifesti[codice]){
-      const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
+      // PASSIAMO SERVIZIO COME PARAMETRO
+      const r=await fetch(WORKER+'/manifest?studio='+encodeURIComponent(studioCodice)+'&servizio='+encodeURIComponent(codice)+'&t='+Date.now(),{cache:'no-store'});
       manifesti[codice]=await r.json();
     }
   }catch(e){console.error('Errore refresh manifest:',e);manifesti[codice]={};}
@@ -156,16 +197,16 @@ async function refreshManifest(codice,forceReload=false){
 async function pulisciManifest(codice){
   if(!confirm('Sincronizzare con il server?'))return;
   try{
-    const r=await fetch(WORKER+'/pulisci-manifest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice})});
+    const r=await fetch(WORKER+'/pulisci-manifest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,servizio:codice})});
     const j=await r.json();
     if(j.error)alert('Errore: '+j.error);
-    else{alert('Sincronizzato: '+j.temp+' foto in attesa, '+j.gallery+' definitive.');await refreshManifest(codice,true);render();}
+    else{alert('Sincronizzato: '+j.temp+' in attesa, '+j.gallery+' definitive.');await refreshManifest(codice,true);render();}
   }catch(e){alert('Errore: '+e.message);}
 }
 
 async function deleteFile(codice,path){
   try{
-    const response=await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,cliente:codice,file:path})});
+    const response=await fetch(WORKER+'/delete-file',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({studio:studioCodice,servizio:codice,file:path})});
     const result=await response.json();
     if(!response.ok||result.error)throw new Error(result.error||'Errore eliminazione: '+response.status);
     return result;
@@ -175,7 +216,6 @@ async function deleteFile(codice,path){
 async function eliminaCartella(codice,folderName){
   if(!confirm('Eliminare la cartella "'+folderName+'" e tutte le sue foto?'))return;
   const man=manifesti[codice]||{};
-  // Cerca sia in temp che in gallery
   const files=(man.tempByFolder&&man.tempByFolder[folderName]?man.tempByFolder[folderName]:[])
              .concat((man.galleryByFolder&&man.galleryByFolder[folderName]?man.galleryByFolder[folderName]:[]));
   if(!files.length)return alert('Cartella vuota o non trovata.');
@@ -199,12 +239,12 @@ async function eliminaFoto(codice,relativePath){
   try{await deleteFile(codice,workerPath);await refreshManifest(codice,true);render();}catch(e){alert('Errore: '+e.message);}
 }
 
-function apriSelezione(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&cliente='+encodeURIComponent(codice),'_blank');}
+function apriSelezione(codice){window.open('../selezione-album/?studio='+encodeURIComponent(studioCodice)+'&servizio='+encodeURIComponent(codice),'_blank');}
 
 async function creaLinkGallery(codice){
   const man=manifesti[codice]||{};
   if(!man.gallery||!man.gallery.length){if(confirm('Nessuna foto definitiva. Aprire selezione?'))apriSelezione(codice);return;}
-  const fd=new FormData();fd.append('studio',studioCodice);fd.append('cliente',codice);fd.append('giorni','180');
+  const fd=new FormData();fd.append('studio',studioCodice);fd.append('servizio',codice);fd.append('giorni','180');
   const ident=JSON.parse(localStorage.getItem('studioIdent')||'{}');
   fd.append('nome_studio',ident.nome||'');fd.append('whatsapp',ident.telefono||'');fd.append('messaggio','La tua gallery è pronta.');
   try{
@@ -218,17 +258,16 @@ async function creaLinkGallery(codice){
 
 function render(){
   aggiornaSelect();const box=document.getElementById('archivioBox');
-  if(!clienti.length){box.innerHTML='<p class="hint">Nessun cliente.</p>';return;}
+  if(!servizi.length){box.innerHTML='<p class="hint">Nessun servizio creato.</p>';return;}
   
-  box.innerHTML=clienti.slice().reverse().map(c=>{
-    const man=manifesti[c.codice]||{};
+  box.innerHTML=servizi.slice().reverse().map(s=>{
+    const man=manifesti[s.codice]||{};
     const tempByFolder=man.tempByFolder||{};
     const galleryByFolder=man.galleryByFolder||{};
     const totaleTemp=man.temp?man.temp.length:0;
     const totaleGallery=man.gallery?man.gallery.length:0;
     
     let foldersHtml='';
-    // Unisci cartelle da temp e gallery
     const allFolders=new Set([...Object.keys(tempByFolder),...Object.keys(galleryByFolder)]);
     
     allFolders.forEach(folder=>{
@@ -241,13 +280,13 @@ function render(){
       const filesHtml=[...tempFiles,...galFiles].map(filePath=>{
         const fileName=filePath.includes('/')?filePath.split('/').pop():filePath;
         const safeFile=fileName.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        return '<div class="file">'+fileName+'<button class="fx" onclick="eliminaFoto(\''+c.codice+'\',\''+safeFile+'\')">✕</button></div>';
+        return '<div class="file">'+fileName+'<button class="fx" onclick="eliminaFoto(\''+s.codice+'\',\''+safeFile+'\')">✕</button></div>';
       }).join('');
       
-      foldersHtml+='<div class="folder-box"><h4><span>'+folder+' <span class="count">'+totalFiles+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+c.codice+'\',\''+safeFolder+'\')">🗑 Elimina cartella</button></h4><div class="files">'+filesHtml+'</div></div>';
+      foldersHtml+='<div class="folder-box"><h4><span>'+folder+' <span class="count">'+totalFiles+' foto</span></span><button class="btn danger small" onclick="eliminaCartella(\''+s.codice+'\',\''+safeFolder+'\')">🗑 Elimina cartella</button></h4><div class="files">'+filesHtml+'</div></div>';
     });
     
-    return '<div class="g-row"><div style="flex:1"><b>'+c.nome+' '+c.cognome+'</b> · <span class="code">'+c.codice+'</span><div class="status">'+totaleTemp+' in selezione · '+totaleGallery+' definitive'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+foldersHtml+'<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" onclick="pulisciManifest(\''+c.codice+'\')">🔄 Sincronizza</button></div></div><div class="rowbtns"><button class="btn" onclick="apriSelezione(\''+c.codice+'\')">Apri selezione Album</button><button class="btn secondary" onclick="creaLinkGallery(\''+c.codice+'\')">Link gallery cliente</button></div></div>';
+    return '<div class="g-row"><div style="flex:1"><b>'+s.cliente+'</b> · <span class="code">'+s.codice+'</span><br><small>'+s.tipo.toUpperCase()+' '+s.anno+'</small><div class="status">'+totaleTemp+' in selezione · '+totaleGallery+' definitive'+(man.scadenza_gallery?' · Gallery fino al '+man.scadenza_gallery:'')+'</div>'+foldersHtml+'<div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn secondary" onclick="pulisciManifest(\''+s.codice+'\')">🔄 Sincronizza</button></div></div><div class="rowbtns"><button class="btn" onclick="apriSelezione(\''+s.codice+'\')">Apri selezione Album</button><button class="btn secondary" onclick="creaLinkGallery(\''+s.codice+'\')">Link gallery cliente</button></div></div>';
   }).join('');
 }
 
@@ -265,7 +304,7 @@ function ripristinoGlobale(e){
   };r.readAsText(f);e.target.value='';
 }
 
-(async()=>{await loadCloud();for(const c of clienti)await refreshManifest(c.codice,true);render();})();
+(async()=>{await loadCloud();for(const s of servizi)await refreshManifest(s.codice,true);render();})();
 </script>
 </body>
 </html>
