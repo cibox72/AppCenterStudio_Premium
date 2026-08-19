@@ -114,17 +114,9 @@
     margin-top: 15px;
     text-align: center;
   }
-  .upload-area h3 {
-    margin-top: 0;
-    color: var(--accent-color);
-  }
-  .upload-area p {
-    margin: 10px 0;
-    color: #666;
-  }
-  input[type="file"] {
-    margin: 15px 0;
-  }
+  .upload-area h3 { margin-top: 0; color: var(--accent-color); }
+  .upload-area p { margin: 10px 0; color: #666; }
+  input[type="file"] { margin: 15px 0; }
   .file-list {
     margin-top: 15px;
     font-size: 0.9em;
@@ -168,8 +160,9 @@
   .client-id {
     font-size: 0.85em;
     color: var(--accent-color);
+    font-weight: bold;
   }
-  .upload-info {
+  .warning-box {
     background: #fff3cd;
     border: 1px solid #ffc107;
     padding: 10px;
@@ -177,17 +170,6 @@
     margin: 10px 0;
     font-size: 0.9em;
     text-align: left;
-  }
-  .warning-box {
-    background: #ffe6e6;
-    border: 2px solid #b00020;
-    padding: 15px;
-    border-radius: 4px;
-    margin: 10px 0;
-    font-size: 0.9em;
-  }
-  .warning-box strong {
-    color: #b00020;
   }
 </style>
 </head>
@@ -304,7 +286,7 @@ function renderStudioView() {
       <input type="text" id="newNome" placeholder="Nome">
       <label>Cognome</label>
       <input type="text" id="newCognome" placeholder="Cognome">
-      <label>ID Cliente (Univoco)</label>
+      <label>ID Cliente (Univoco per servizi futuri)</label>
       <input type="text" id="newIdCliente" placeholder="Es. CLI-2026-001" value="${generateClientId()}">
       <label>Telefono (per invio WhatsApp)</label>
       <input type="tel" id="newTelefono" placeholder="Es. 3331234567">
@@ -385,10 +367,9 @@ function renderArchivio() {
         <h3>📁 Carica intera cartella per ${cliente.cognome} ${cliente.nome}</h3>
         
         <div class="warning-box">
-          <strong>⚠️ Modalità Demo Attiva</strong><br>
-          L'upload dei file su Cloudflare R2 non è ancora configurato. 
-          Questa funzione salva solo i <strong>nomi dei file</strong> nel database per testare il flusso.
-          Per l'upload reale, contatta l'assistenza tecnica.
+          <strong>ℹ️ Modalità Demo Attiva</strong><br>
+          Il sistema salva i nomi dei file nel database per testare il flusso. 
+          L'upload fisico su cloud sarà attivato a breve.
         </div>
         
         <p><strong>Seleziona la cartella dal tuo computer</strong> (es. cartella "Matrimonio" con tutte le foto dentro)</p>
@@ -401,7 +382,7 @@ function renderArchivio() {
           <p id="progressText_${cliente.id}" style="font-size: 0.9em; margin: 10px 0;">Elaborazione in corso...</p>
         </div>
         <div style="margin-top: 15px;">
-          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">💾 Salva Cartella (Demo)</button>
+          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">💾 Salva Cartella</button>
           <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">Annulla</button>
         </div>
       </div>
@@ -409,7 +390,6 @@ function renderArchivio() {
   });
   div.innerHTML = html;
 
-  // Listener per mostrare lista file selezionati dalla cartella
   dbData.clienti.forEach(cliente => {
     const folderInput = document.getElementById(`folderInput_${cliente.id}`);
     if (folderInput) {
@@ -418,8 +398,6 @@ function renderArchivio() {
         const fileList = document.getElementById(`fileList_${cliente.id}`);
         if (files.length > 0) {
           fileList.classList.remove('hidden');
-          
-          // Estrai il nome della cartella dal primo file
           const firstFile = files[0];
           const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
           const cartellaNome = pathParts.length > 1 ? pathParts[0] : 'Cartella selezionata';
@@ -427,14 +405,12 @@ function renderArchivio() {
           let html = `<strong>📁 ${cartellaNome}</strong><br>`;
           html += `<em>${files.length} file trovati nella cartella:</em><br><br>`;
           
-          // Mostra i primi 10 file
           const filesToShow = Array.from(files).slice(0, 10);
           html += filesToShow.map(f => `<div class="file-item"><span>📄 ${f.name}</span><span style="color:#888; font-size:0.85em;">(${(f.size/1024/1024).toFixed(2)} MB)</span></div>`).join('');
           
           if (files.length > 10) {
             html += `<div style="padding:5px; color:#888; text-align:center;">... e altri ${files.length - 10} file</div>`;
           }
-          
           fileList.innerHTML = html;
         } else {
           fileList.classList.add('hidden');
@@ -446,9 +422,7 @@ function renderArchivio() {
 
 function toggleUploadForm(clienteId) {
   const form = document.getElementById(`uploadForm_${clienteId}`);
-  if (form) {
-    form.classList.toggle('hidden');
-  }
+  if (form) form.classList.toggle('hidden');
 }
 
 async function avviaUpload(clienteId) {
@@ -463,7 +437,6 @@ async function avviaUpload(clienteId) {
   const cliente = dbData.clienti.find(c => c.id === clienteId);
   if (!cliente) { alert('Cliente non trovato.'); return; }
 
-  // Estrai il nome della cartella dal path del primo file
   const firstFile = files[0];
   const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
   const nomeCartella = pathParts.length > 1 ? pathParts[0] : `Cartella_${Date.now()}`;
@@ -473,16 +446,10 @@ async function avviaUpload(clienteId) {
   const progressText = document.getElementById(`progressText_${clienteId}`);
   progressSection.classList.remove('hidden');
 
-  const cartellaObj = {
-    nome: nomeCartella,
-    foto: [],
-    data: new Date().toISOString()
-  };
-
+  const cartellaObj = { nome: nomeCartella, foto: [], data: new Date().toISOString() };
   let processedCount = 0;
   const totalFiles = files.length;
 
-  // MODALITÀ DEMO: Salva solo i metadati senza upload reale
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const percent = Math.round(((i + 1) / totalFiles) * 100);
@@ -491,26 +458,21 @@ async function avviaUpload(clienteId) {
     progressFill.textContent = `${percent}%`;
     progressText.textContent = `Elaborazione ${i + 1} di ${totalFiles}: ${file.name}`;
 
-    // Simula elaborazione
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 30));
 
-    // Salva solo i metadati (senza upload su R2)
     cartellaObj.foto.push({
       nome: file.name,
-      url: '#', // URL fittizio per demo
+      url: '#',
       data: new Date().toISOString(),
       dimensione: file.size
     });
     processedCount++;
   }
 
-  // Salva nel database
   cliente.cartelle.push(cartellaObj);
   await saveDb();
 
-  let msg = `✅ Cartella salvata nel database!\n\n Cartella: ${nomeCartella}\n📄 File registrati: ${processedCount}\n\n⚠️ Nota: I file non sono stati caricati su Cloudflare R2 (upload non configurato). Solo i metadati sono stati salvati.`;
-  
-  alert(msg);
+  alert(`✅ Cartella salvata nel database!\n\n📁 Cartella: ${nomeCartella}\n📄 File registrati: ${processedCount}`);
   renderStudioView();
 }
 
@@ -539,8 +501,8 @@ function inviaLinkWhatsApp(clienteId) {
     return;
   }
 
-  // URL corretto per GitHub Pages (con %20 per lo spazio nel nome cartella)
-  const baseUrl = "https://cibox72.github.io/AppCenterStudio_Premium/03%20clienti-foto/index.html";
+  // CORRETTO: la cartella su GitHub si chiama 'clienti-foto', non '03 clienti-foto'
+  const baseUrl = "https://cibox72.github.io/AppCenterStudio_Premium/clienti-foto/index.html";
   const link = `${baseUrl}?id=${cliente.id}&studio=${encodeURIComponent(studioIdent.nome)}`;
   const messaggio = `Ciao ${cliente.nome}, ${studioIdent.nome} ti ha condiviso l'accesso alle tue foto. Clicca qui per visualizzarle: ${link}`;
 
@@ -576,7 +538,7 @@ function renderClientView() {
     cliente.cartelle.forEach(cartella => {
       html += `
         <div class="card">
-          <h3> ${cartella.nome}</h3>
+          <h3>📁 ${cartella.nome}</h3>
           <p>Totale foto: ${cartella.foto ? cartella.foto.length : 0}</p>
           ${cartella.foto && cartella.foto.length > 0 ? `
             <div class="file-list">
