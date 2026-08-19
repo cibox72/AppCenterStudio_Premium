@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 Preventivi & Contratti - Premium Gold</title>
+<script src="../tema.js"></script>
+<script src="https://cloudflare.com"></script>
+<style>
+:root{--nero:#111;--grigio:#444;--bordo:#d9d9d9;--chiaro:#f7f7f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia,'Segoe UI',Tahoma,sans-serif;background:radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,242,247,0.6) 35%, rgba(220,225,235,0.3) 100%),linear-gradient(180deg,#fafafb 0%,#e4e7ee 100%);background-attachment:fixed;color:var(--nero);min-height:100vh}
+.topbar{display:flex;gap:6px;padding:8px 14px;background:rgba(255,255,255,0.85);border-bottom:1px solid var(--bordo);flex-wrap:wrap;align-items:center}
+.topbar .pill{background:rgba(255,255,255,0.8);color:#111;border:1px solid #bbb;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.topbar .pill:hover{background:#111;color:#fff}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 22px;background:linear-gradient(90deg,#000,#333);color:#fff}
+.brandName{font-weight:800;font-size:19px;font-family:Georgia,serif}
+#studioNameHead{font-size:13px;opacity:.85}
+button{font-family:inherit}
+.btn{background:#111;color:#fff;border:none;padding:10px 18px;border-radius:999px;font-weight:600;cursor:pointer;font-size:13px}
+.btn:hover{opacity:.88}
+.btn.secondary{background:#fff;color:#111;border:1px solid #bbb}
+.btn.danger{background:#b00020;color:#fff;border:none}
+.btn.green{background:#1d5c74;color:#fff;border:none}
+.mini{border:1px solid #ccc;background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px}
+nav{display:flex;gap:6px;padding:10px 16px;background:rgba(255,255,255,0.85);border-bottom:1px solid var(--bordo);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.tab{border:1px solid var(--bordo);background:#fff;padding:9px 14px;border-radius999px;cursor:pointer;font-weight:600;color:#222;font-size:13px}
+.tab.active{background:#111;color:#fff}
+main{max-width:1080px;margin:18px auto;padding:0 16px 60px}
+.card{background:rgba(255,255,255,0.92);border:1px solid var(--bordo);border-radius:12px;padding:18px;margin-bottom:16px}
+h2{margin:0 0 12px;font-size:17px;border-left:4px solid #000;padding-left:10px;font-family:Georgia,serif}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{font-size:11px;color:#666;display:block;margin-bottom:3px}
+input,select,textarea{width:100%;padding:8px;border:1px solid var(--bordo);border-radius:8px;background:#fff;font-size:13px;font-family:inherit}
+input[readonly]{background:#f0f0f0;font-weight:700}
+.highlight{background:linear-gradient(90deg,#000,#3a3a3a);color:#fff;padding:16px;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.highlight label{color:#bbb}
+.highlight input{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);color:#fff;font-weight:700}
+.rowBetween{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:#111;color:#fff;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.contratto{background:#b00020}
+.id-cliente-badge{background:#1d5c74;color:#fff;padding:4px 10px;border-radius:6px;font-family:monospace;font-weight:700;font-size:12px}
+.sync-status{font-size:11px;color:#2e7d32;margin-left:10px}
+.sync-status.ko{color:#b00020}
+@media(max-width:800px){.grid,.highlight{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="pill" onclick="history.back()">← Indietro</button>
+  <button class="pill" onclick="goHome()">Home</button>
+  <span class="sync-status" id="syncStatus">Sync cloud: in attesa...</span>
+</div>
+<header>
+  <div class="brand"><span class="brandName">AppCenterStudio Premium Gold</span></div>
+  <div id="studioNameHead"></div>
+</header>
+<nav id="navTabs">
+  <button class="tab active" data-view="preventivo">+ Nuovo Preventivo</button>
+  <button class="tab" data-view="archivio">Preventivi & Contratti</button>
+  <button class="tab" data-view="clienti">Anagrafica Clienti Permanente</button>
+</nav>
+
+<main>
+  <!-- SEZIONE GENERAZIONE PREVENTIVO / CONTRATTO -->
+  <section id="view-preventivo">
+    <div class="card">
+      <div class="rowBetween">
+        <h2 style="margin:0">Dati Documento</h2>
+        <div>
+          <span id="idClienteEsposto" class="id-cliente-badge" style="display:none"></span>
+          <span id="pBadge" class="badge">Nuovo preventivo</span>
+        </div>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        <div><label>Numero Documento (automatico)</label><input id="p_numero" readonly placeholder="Assegnato al salvataggio"></div>
+        <div><label>Data Emissione</label><input id="p_dataCreazione" type="date"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Anagrafica Intestatario Principale (Cliente A)</h2>
+      <div class="grid">
+        <div><label>Nome *</label><input id="a_nome" oninput="ricercaAnagraficaPreesistente(this)"></div>
+        <div><label>Cognome *</label><input id="a_cognome"></div>
+        <div><label>Telefono *</label><input id="a_telefono"></div>
+        <div><label>Email *</label><input id="a_email"></div>
+        <div><label>Codice Fiscale / P.IVA</label><input id="a_cf"></div>
+        <div><label>Città</label><input id="a_citta"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Secondo Intestatario / Coniuge (Cliente B)</h2>
+      <div class="grid">
+        <div><label>Nome</label><input id="b_nome"></div>
+        <div><label>Cognome</label><input id="b_cognome"></div>
+        <div><label>Telefono</label><input id="b_telefono"></div>
+        <div><label>Email</label><input id="b_email"></div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <div><label>DATA DEL SERVIZIO / EVENTO</label><input type="date" id="p_dataServizio"></div>
+      <div><label>TIPO DI EVENTO (Es. Matrimonio, Comunione, Portfolio)</label><input id="p_tipo" placeholder="Es. Matrimonio"></div>
+    </div>
+
+    <div class="card">
+      <h2>Dettagli Economici & Note</h2>
+      <div class="grid">
+        <div><label>Prezzo Base Listino (€)</label><input type="number" id="p_prezzoBase" value="0" oninput="ricalcolaTotale()"></div>
+        <div><label>Sconto (%)</label><input type="number" id="p_sconto" value="0" oninput="ricalcolaTotale()"></div>
+        <div><label>Totale Netto (€)</label><input type="number" id="p_totale" readonly value="0"></div>
+        <div><label>Acconto Versato (€)</label><input type="number" id="p_acconto" value="0"></div>
+      </div>
+      <label style="margin-top:10px">Note Aggiuntive sul Contratto</label>
+      <textarea id="p_note" rows="3" placeholder="Inserisci accordi particolari, tempistiche di consegna..."></textarea>
+      
+      <p style="margin-top:16px">
+        <button class="btn" onclick="salvaDocumento(false)">Salva come Preventivo</button>
+        <button class="btn green" onclick="salvaDocumento(true)">Converti e Salva come Contratto (Genera ID)</button>
+        <button class="btn secondary" onclick="svuotaMaschera()">Nuovo / Pulisci</button>
+      </p>
+    </div>
+  </section>
+
+  <!-- SEZIONE ARCHIVIO DOCUMENTI -->
+  <section id="view-archivio" style="display:none">
+    <div class="card">
+      <h2>Elenco Preventivi e Contratti</h2>
+      <div style="overflow-x:auto">
+        <table id="tabellaDocumenti">
+          <thead>
+            <tr>
+              <th>Num</th>
+              <th>Tipo Doc</th>
+              <th>ID Cliente</th>
+              <th>Cliente</th>
+              <th>Evento</th>
+              <th>Data Servizio</th>
+              <th>Totale</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="LogDocumenti"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEZIONE ARCHIVIO ANAGRAFICHE PERMANENTE -->
+  <section id="view-clienti" style="display:none">
+    <div class="card">
+      <h2>Registro Clienti Permanente Storico (Anti-Omonimia)</h2>
+      <p class="hint">Tutti i clienti inseriti restano memorizzati qui con il proprio codice univoco fisso per evitare confusioni omonime negli anni futuri.</p>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>ID Permanente</th>
+              <th>Cognome & Nome</th>
+              <th>Recapito Telefonico</th>
+              <th>Email</th>
+              <th>Codice Fiscale</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="LogClientiPermanenti"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const WORKER='https://workers.dev';
+let studioCodice=new URLSearchParams(location.search).get('studio')||sessionStorage.getItem('studio')||'';
+if(studioCodice) sessionStorage.setItem('studio',studioCodice);
+
+let dbIniziale = { documenti: [], clienti: [] };
+
+// Gestione Navigazione Tab
+document.querySelectorAll('#navTabs .tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#navTabs .tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const targetView = tab.getAttribute('data-view');
+    
+    document.getElementById('view-preventivo').style.display = targetView === 'preventivo' ? 'block' : 'none';
+    document.getElementById('view-archivio').style.display = targetView === 'archivio' ? 'block' : 'none';
+    document.getElementById('view-clienti').style.display = targetView === 'clienti' ? 'block' : 'none';
+    
+    if(targetView === 'archivio') renderingTabellaDocumenti();
+    if(targetView === 'clienti') renderingTabellaClienti();
+  });
+});
+
