@@ -176,6 +176,18 @@
     border-radius: 4px;
     margin: 10px 0;
     font-size: 0.9em;
+    text-align: left;
+  }
+  .warning-box {
+    background: #ffe6e6;
+    border: 2px solid #b00020;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 0.9em;
+  }
+  .warning-box strong {
+    color: #b00020;
   }
 </style>
 </head>
@@ -365,27 +377,31 @@ function renderArchivio() {
 
     html += `
       <div style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
-        <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')"> Carica Cartella</button>
+        <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">📁 Carica Cartella</button>
         <button class="action-btn" onclick="inviaLinkWhatsApp('${cliente.id}')">Invia Link WhatsApp</button>
         <button class="action-btn danger-btn" onclick="eliminaCliente('${cliente.id}')">Elimina Cliente</button>
       </div>
       <div id="uploadForm_${cliente.id}" class="upload-area hidden">
         <h3>📁 Carica intera cartella per ${cliente.cognome} ${cliente.nome}</h3>
-        <p><strong>Seleziona la cartella dal tuo computer</strong> (es. cartella "Matrimonio" con tutte le foto dentro)</p>
-        <div class="upload-info">
-          💡 <strong>Nota:</strong> Clicca sul pulsante sotto e seleziona la cartella completa dal tuo computer. 
-          Tutti i file all'interno verranno caricati automaticamente.
+        
+        <div class="warning-box">
+          <strong>⚠️ Modalità Demo Attiva</strong><br>
+          L'upload dei file su Cloudflare R2 non è ancora configurato. 
+          Questa funzione salva solo i <strong>nomi dei file</strong> nel database per testare il flusso.
+          Per l'upload reale, contatta l'assistenza tecnica.
         </div>
+        
+        <p><strong>Seleziona la cartella dal tuo computer</strong> (es. cartella "Matrimonio" con tutte le foto dentro)</p>
         <input type="file" id="folderInput_${cliente.id}" webkitdirectory directory multiple style="margin: 15px 0;">
         <div id="fileList_${cliente.id}" class="file-list hidden"></div>
         <div id="progressSection_${cliente.id}" class="hidden">
           <div class="progress-bar">
             <div class="progress-fill" id="progressFill_${cliente.id}" style="width: 0%">0%</div>
           </div>
-          <p id="progressText_${cliente.id}" style="font-size: 0.9em; margin: 10px 0;">In attesa...</p>
+          <p id="progressText_${cliente.id}" style="font-size: 0.9em; margin: 10px 0;">Elaborazione in corso...</p>
         </div>
         <div style="margin-top: 15px;">
-          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">📤 Avvia Caricamento Cartella</button>
+          <button class="action-btn" onclick="avviaUpload('${cliente.id}')">💾 Salva Cartella (Demo)</button>
           <button class="action-btn" onclick="toggleUploadForm('${cliente.id}')">Annulla</button>
         </div>
       </div>
@@ -408,7 +424,7 @@ function renderArchivio() {
           const pathParts = firstFile.webkitRelativePath ? firstFile.webkitRelativePath.split('/') : [];
           const cartellaNome = pathParts.length > 1 ? pathParts[0] : 'Cartella selezionata';
           
-          let html = `<strong> ${cartellaNome}</strong><br>`;
+          let html = `<strong>📁 ${cartellaNome}</strong><br>`;
           html += `<em>${files.length} file trovati nella cartella:</em><br><br>`;
           
           // Mostra i primi 10 file
@@ -463,62 +479,38 @@ async function avviaUpload(clienteId) {
     data: new Date().toISOString()
   };
 
-  let uploadedCount = 0;
-  let failedCount = 0;
+  let processedCount = 0;
   const totalFiles = files.length;
 
+  // MODALITÀ DEMO: Salva solo i metadati senza upload reale
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const percent = Math.round(((i + 1) / totalFiles) * 100);
     
     progressFill.style.width = `${percent}%`;
     progressFill.textContent = `${percent}%`;
-    progressText.textContent = `Caricamento ${i + 1} di ${totalFiles}: ${file.name}`;
+    progressText.textContent = `Elaborazione ${i + 1} di ${totalFiles}: ${file.name}`;
 
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('studio', studioIdent.codice || 'demo');
-      formData.append('cliente', cliente.idCliente);
-      formData.append('cartella', nomeCartella);
-      formData.append('nomeFile', file.name);
+    // Simula elaborazione
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-      const uploadRes = await fetch(`${WORKER_URL}/upload`, {
-        method: 'POST',
-        body: formData
-      });
-
-      if (uploadRes.ok) {
-        const uploadData = await uploadRes.json();
-        cartellaObj.foto.push({
-          nome: file.name,
-          url: uploadData.url || `https://pub-c2b1d2cacc784ad3b4b10b82631b3b0a.r2.dev/${studioIdent.codice || 'demo'}/${cliente.idCliente}/${nomeCartella}/${file.name}`,
-          data: new Date().toISOString(),
-          dimensione: file.size
-        });
-        uploadedCount++;
-      } else {
-        failedCount++;
-        console.warn(`Upload fallito per ${file.name}`);
-      }
-    } catch (err) {
-      failedCount++;
-      console.error(`Errore upload ${file.name}:`, err);
-    }
+    // Salva solo i metadati (senza upload su R2)
+    cartellaObj.foto.push({
+      nome: file.name,
+      url: '#', // URL fittizio per demo
+      data: new Date().toISOString(),
+      dimensione: file.size
+    });
+    processedCount++;
   }
 
-  if (uploadedCount > 0) {
-    cliente.cartelle.push(cartellaObj);
-    await saveDb();
-    let msg = `✅ Caricamento completato!\n\n📁 Cartella: ${nomeCartella}\n✅ File caricati: ${uploadedCount}`;
-    if (failedCount > 0) {
-      msg += `\n️ File falliti: ${failedCount}`;
-    }
-    alert(msg);
-  } else {
-    alert('️ Nessun file caricato. Verifica la connessione o contatta l\'assistenza.');
-  }
+  // Salva nel database
+  cliente.cartelle.push(cartellaObj);
+  await saveDb();
 
+  let msg = `✅ Cartella salvata nel database!\n\n Cartella: ${nomeCartella}\n📄 File registrati: ${processedCount}\n\n⚠️ Nota: I file non sono stati caricati su Cloudflare R2 (upload non configurato). Solo i metadati sono stati salvati.`;
+  
+  alert(msg);
   renderStudioView();
 }
 
@@ -584,14 +576,14 @@ function renderClientView() {
     cliente.cartelle.forEach(cartella => {
       html += `
         <div class="card">
-          <h3>📁 ${cartella.nome}</h3>
+          <h3> ${cartella.nome}</h3>
           <p>Totale foto: ${cartella.foto ? cartella.foto.length : 0}</p>
           ${cartella.foto && cartella.foto.length > 0 ? `
             <div class="file-list">
               ${cartella.foto.map(f => `
                 <div class="file-item">
                   <span>📄 ${f.nome}</span>
-                  <a href="${f.url}" target="_blank" style="color: var(--accent-color);">Scarica</a>
+                  <span style="color:#888; font-size:0.85em;">(${(f.dimensione/1024/1024).toFixed(2)} MB)</span>
                 </div>
               `).join('')}
             </div>
